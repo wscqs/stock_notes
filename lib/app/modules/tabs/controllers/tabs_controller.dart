@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:stock_notes/app/modules/homenote/views/homenote_view.dart';
 import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
 
 class TabsController extends GetxController {
@@ -33,6 +34,14 @@ class TabsController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+  }
+
+  void pushCreatePage() {
+    if (currentIndex.value == 0) {
+      Get.toNamed(Routes.STOCKDETAIL);
+    } else {
+      Get.toNamed(Routes.NOTEDETAIL);
+    }
   }
 
   void setCurrentIndex(index) {

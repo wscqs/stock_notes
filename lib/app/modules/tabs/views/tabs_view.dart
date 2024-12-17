@@ -23,7 +23,9 @@ class TabsView extends GetView<TabsController> {
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            controller.pushCreatePage();
+          },
           child: const Icon(Icons.add),
           foregroundColor: Colors.white,
           backgroundColor: Colors.blue,
