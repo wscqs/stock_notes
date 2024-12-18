@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
-import 'common/comment_style.dart';
+import 'common/globle_service.dart';
+import 'common/langs/translation_library.dart';
+import 'common/styles/theme_data.dart';
 import 'utils/qs_cache.dart';
 
 main() async {
@@ -15,6 +16,7 @@ main() async {
     DeviceOrientation.portraitUp,
   ]);
   await QsCache.preInit();
+  await Get.putAsync(() => GlobalService().init());
   // QsRequest.initDio();
   runApp(ScreenUtilInit(
     designSize: const Size(375, 812), //设计稿宽高的px
@@ -29,26 +31,16 @@ main() async {
         defaultTransition: Transition.rightToLeft,
         navigatorObservers: [FlutterSmartDialog.observer],
         builder: FlutterSmartDialog.init(),
-        theme: ThemeData(
-            scaffoldBackgroundColor: kColorGg,
-            //highlightColor与splashColor 底部 tab 不要效果，highlightColor水波纹也没效果
-            highlightColor: const Color(0x00000000),
-            splashColor: const Color(0x00000000),
-            bottomSheetTheme: BottomSheetThemeData(
-              backgroundColor: kColorGg,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(
-                        16.0)), // Optional: round the top corners
-              ),
-            ),
-            appBarTheme: AppBarTheme(
-              color: kColorGg,
-              // 如果你不想使用阴影，可以将elevation设置为0
-              // elevation: 0,
-              scrolledUnderElevation: 0, //滚动不变色
-              // backgroundColor: kColorGg,
-            )),
+        // 主题
+        themeMode: GlobalService.to.themeMode,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        //国际化
+        locale: GlobalService.to.locale,
+        translations: TranslationLibrary(),
+        fallbackLocale: TranslationLibrary.fallbackLocale,
+        supportedLocales: TranslationLibrary.supportedLocales,
+        localizationsDelegates: TranslationLibrary.localizationsDelegates,
       );
     },
   ));
