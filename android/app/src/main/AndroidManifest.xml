@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="stock_notes"
+        android:label="股票笔记"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
