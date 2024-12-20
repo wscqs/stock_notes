@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
+import '../../somewidget/homedrawer_page/view.dart';
 import '../controllers/homestock_controller.dart';
 
 class HomestockView extends GetView<HomestockController> {
@@ -13,6 +13,7 @@ class HomestockView extends GetView<HomestockController> {
         title: const Text('HomestockView'),
         centerTitle: true,
       ),
+      drawer: HomedrawerPage(),
       body: const Center(
         child: Text(
           'HomestockView is working',
