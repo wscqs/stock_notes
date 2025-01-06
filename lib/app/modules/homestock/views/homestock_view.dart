@@ -12,6 +12,13 @@ class HomestockView extends GetView<HomestockController> {
       appBar: AppBar(
         title: const Text('HomestockView'),
         centerTitle: true,
+        // leading: Builder(builder: (BuildContext context) {
+        //   return IconButton(
+        //       icon: Icon(Icons.wifi_tethering),
+        //       onPressed: () {
+        //         Scaffold.of(context).openDrawer();
+        //       });
+        // }),
       ),
       drawer: HomedrawerPage(),
       body: const Center(

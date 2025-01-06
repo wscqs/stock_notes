@@ -11,6 +11,7 @@ class HomedrawerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      shape: RoundedRectangleBorder(),
       child: ListView(
         padding: EdgeInsets.zero,
         children: const <Widget>[
