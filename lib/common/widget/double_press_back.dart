@@ -7,7 +7,6 @@ import '../../utils/qs_hud.dart';
 typedef DoublePressBackCallback = bool Function();
 
 /// DoublePressBackWidget
-// ignore: must_be_immutable
 class DoublePressBackWidget extends StatelessWidget {
   final Widget child;
   final String? message;
@@ -28,7 +27,7 @@ class DoublePressBackWidget extends StatelessWidget {
     if (_currentBackPressTime == null ||
         now.difference(_currentBackPressTime!) > const Duration(seconds: 2)) {
       _currentBackPressTime = now;
-      QsHud.showToast(message ?? '再次按回以退出');
+      QsHud.showToast(message ?? 'Press back again to exit');
       return false;
     }
     _currentBackPressTime = null;
@@ -39,7 +38,7 @@ class DoublePressBackWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop) {
           return;
         }

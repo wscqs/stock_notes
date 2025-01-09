@@ -6,6 +6,8 @@ import '../modules/homestock/bindings/homestock_binding.dart';
 import '../modules/homestock/views/homestock_view.dart';
 import '../modules/notedetail/bindings/notedetail_binding.dart';
 import '../modules/notedetail/views/notedetail_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 import '../modules/stockdetail/bindings/stockdetail_binding.dart';
 import '../modules/stockdetail/views/stockdetail_view.dart';
 import '../modules/tabs/bindings/tabs_binding.dart';
@@ -43,6 +45,11 @@ class AppPages {
       name: _Paths.NOTEDETAIL,
       page: () => const NotedetailView(),
       binding: NotedetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
     ),
   ];
 }

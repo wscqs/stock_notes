@@ -8,6 +8,7 @@ abstract class Routes {
   static const HOMENOTE = _Paths.HOMENOTE;
   static const STOCKDETAIL = _Paths.STOCKDETAIL;
   static const NOTEDETAIL = _Paths.NOTEDETAIL;
+  static const SPLASH = _Paths.SPLASH;
 }
 
 abstract class _Paths {
@@ -17,4 +18,5 @@ abstract class _Paths {
   static const HOMENOTE = '/homenote';
   static const STOCKDETAIL = '/stockdetail';
   static const NOTEDETAIL = '/notedetail';
+  static const SPLASH = '/splash';
 }
