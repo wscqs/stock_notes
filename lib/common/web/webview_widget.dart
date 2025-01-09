@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -48,30 +46,6 @@ class WebViewWidget extends StatefulWidget {
 }
 
 class _WebViewWidgetState extends State<WebViewWidget> {
-  //webview控制器
-  late InAppWebViewController webViewController;
-  final GlobalKey webViewKey = GlobalKey();
-
-  // webview配置
-  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
-    // 跨平台配置
-    crossPlatform: InAppWebViewOptions(
-      useShouldOverrideUrlLoading: true,
-      mediaPlaybackRequiresUserGesture: false,
-    ),
-    // android平台配置
-    android: AndroidInAppWebViewOptions(
-      //不允许缩放
-      builtInZoomControls: false,
-      //支持HybridComposition
-      useHybridComposition: true,
-    ),
-    // ios平台配置
-    ios: IOSInAppWebViewOptions(
-      allowsInlineMediaPlayback: true,
-    ),
-  );
-
   @override
   void initState() {
     super.initState();
@@ -80,53 +54,18 @@ class _WebViewWidgetState extends State<WebViewWidget> {
   @override
   Widget build(BuildContext context) {
     return InAppWebView(
-        key: webViewKey,
-        initialOptions: options,
-        onWebViewCreated: (controller) {
-          //webview初始化完成之后加载数据
-          webViewController = controller;
-
-          //是否清除缓存后再加载
-          if (widget.clearCache == true) {
-            controller.clearCache();
-          }
-
-          if (widget.onWebViewCreated == null) {
-            if (widget.webViewType == WebViewType.HTMLTEXT) {
-              webViewController.loadData(data: widget.loadResource);
-            } else if (widget.webViewType == WebViewType.URL) {
-              WebUri uri = WebUri(widget.loadResource);
-              webViewController.loadUrl(urlRequest: URLRequest(url: uri));
-            }
-          } else {
-            widget.onWebViewCreated?.call(controller);
-          }
-
-          //注册与js通信回调
-          widget.jsChannelMap?.forEach((handlerName, callback) {
-            webViewController.addJavaScriptHandler(
-                handlerName: handlerName, callback: callback);
-          });
-        },
-        onConsoleMessage: (controller, consoleMessage) {
-          //这里是打印来自于js的conse.log打印
-          log("consoleMessage ====来自于js的打印==== \n $consoleMessage");
-        },
-        onProgressChanged: (InAppWebViewController controller, int progress) {},
-        onLoadStart: (InAppWebViewController controller, Uri? url) {
+      initialUrlRequest: URLRequest(url: WebUri(widget.loadResource)),
+      onLoadStart: (InAppWebViewController controller, Uri? url) {
+        setState(() {
           QsHud.showLoading(duration: const Duration(seconds: 45));
-        },
-        onLoadError: (InAppWebViewController controller, Uri? url, int code,
-            String message) {
-          QsHud.dismiss();
-        },
-        // onReceivedError: (InAppWebViewController controller,
-        //     WebResourceRequest request, WebResourceError error) {
-        //   DialogHelper.dismiss();
-        // },
-        onLoadStop: (InAppWebViewController controller, Uri? url) {
-          QsHud.dismiss();
-        },
-        onPageCommitVisible: (InAppWebViewController controller, Uri? url) {});
+        });
+      },
+      // 页面停止加载时的回调
+      onLoadStop: (InAppWebViewController controller, Uri? url) {
+        setState(() {
+          QsHud.dismiss(); //面停止加载，更新状态为 false
+        });
+      },
+    );
   }
 }

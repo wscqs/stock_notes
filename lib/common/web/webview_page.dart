@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stock_notes/common/web/webview_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../utils/qs_hud.dart';
 
 ///显示网页资源的页面
 class WebViewPage extends StatefulWidget {
   WebViewPage({
     super.key,
     required this.loadResource,
-    this.webViewType = WebViewType.URL,
+    this.webViewType = WebViewType.URL, //html 还没支持，需要再适配
     this.showTitle = true,
     this.title,
     this.jsChannelMap,
@@ -41,6 +45,16 @@ class _WebViewPageState extends State<WebViewPage> {
           ? AppBar(
               title: _buildAppBarTitle(widget.showTitle, widget.title),
               centerTitle: true,
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.copy),
+                  onPressed: _copyUrlToClipboard,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.open_in_browser),
+                  onPressed: _openBrowser,
+                ),
+              ],
             )
           : null,
       body: SafeArea(
@@ -51,6 +65,21 @@ class _WebViewPageState extends State<WebViewPage> {
         ),
       ),
     );
+  }
+
+  void _copyUrlToClipboard() {
+    // 设置数据到剪切板
+    Clipboard.setData(ClipboardData(text: widget.loadResource));
+    QsHud.showToast("复制成功");
+  }
+
+  void _openBrowser() async {
+    Uri uri = Uri.parse(widget.loadResource);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $uri';
+    }
   }
 
   Widget _buildAppBarTitle(bool? showTitle, String? title) {
