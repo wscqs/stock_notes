@@ -39,22 +39,10 @@ class QsDevicePackageInfo {
     return deviceInfoPlugin;
   }
 
-  //todo 不可靠
-  static Future<String> getDeviceIdentifier() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String deviceIdentifier;
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      deviceIdentifier = androidInfo.id; // Android的唯一ID
-    } else if (Platform.isIOS) {
-      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      deviceIdentifier = iosInfo.identifierForVendor ?? ""; // iOS的唯一供应商标识符
-    } else {
-      // 其他平台的处理
-      deviceIdentifier = 'Unsupported platform';
-    }
-    return deviceIdentifier;
-  }
+  // static Future<String> getDeviceIdentifier() async {
+  //   String udid = await FlutterUdid.consistentUdid;
+  //   return udid;
+  // }
 
   // 获取设备型号
   Future<String?> getDeviceModel() async {

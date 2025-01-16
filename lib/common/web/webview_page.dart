@@ -10,7 +10,7 @@ class WebViewPage extends StatefulWidget {
   WebViewPage({
     super.key,
     required this.loadResource,
-    this.webViewType = WebViewType.URL, //html 还没支持，需要再适配
+    this.webViewType = WebViewType.URL,
     this.showTitle = true,
     this.title,
     this.jsChannelMap,
@@ -45,6 +45,31 @@ class _WebViewPageState extends State<WebViewPage> {
           ? AppBar(
               title: _buildAppBarTitle(widget.showTitle, widget.title),
               centerTitle: true,
+              // leading: Row(
+              //   mainAxisAlignment: MainAxisAlignment.start,
+              //   children: [
+              //     IconButton(
+              //       icon: Icon(Icons.arrow_back_ios_new),
+              //       onPressed: () {
+              //         if (_webViewController.canGoBack()) {
+              //           _webViewController.goBack();
+              //         } else {
+              //           Navigator.pop(context);
+              //         }
+              //       },
+              //     ),
+              //     IconButton(
+              //       icon: Icon(
+              //         Icons.home_outlined,
+              //         size: 30,
+              //       ),
+              //       onPressed: () {
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //   ],
+              // ),
+              // leadingWidth: 100,
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.copy),
@@ -70,7 +95,7 @@ class _WebViewPageState extends State<WebViewPage> {
   void _copyUrlToClipboard() {
     // 设置数据到剪切板
     Clipboard.setData(ClipboardData(text: widget.loadResource));
-    QsHud.showToast("复制成功");
+    QsHud.showToast("Copy successful");
   }
 
   void _openBrowser() async {
