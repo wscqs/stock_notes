@@ -52,6 +52,7 @@ dev_dependencies:
 
   flutter_launcher_icons: ^0.14.2
   flutter_native_splash: ^2.4.4
+  package_rename: ^1.8.0
 
 
 flutter:
@@ -80,3 +81,50 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/images/icon.png"
+
+# dart run flutter_native_splash:create
+#flutter_native_splash:
+#  color: "#ffffff"
+#  image: assets/images/icon.png
+#  ##  branding: assets/images/icon.png
+#  #  color_dark: "#ffffff"
+#  #  image_dark: assets/images/icon.png
+#  android_12: #我鸿蒙走了这逻辑，image不设置自动拿icon
+#    color: "#ffffff"
+#  #    image: assets/images/icon.png
+#  #    color_dark: "#ffffff"
+#  #    image_dark: assets/images/icon.png
+#  web: false
+
+# dart run package_rename
+package_rename_config:
+  android:
+    app_name: 股票笔记
+    package_name: com.cqs.stocknotes
+    override_old_package: com.cqs.stock_notes
+    lang: kotlin
+
+  ios:
+    app_name: 股票笔记
+    bundle_name: stocknotes
+    package_name: com.cqs.stocknotes
+#
+#  web:
+#    app_name: Package Rename Demo
+#    description: Package to change project configurations.
+#
+#  linux:
+#    app_name: Package Rename Demo
+#    package_name: rocks.outdatedguy.packagerenamedemo
+#    exe_name: renamedemo-linux-x64
+#
+#  windows:
+#    app_name: Package Rename Demo
+#    organization: OutdatedGuy
+#    copyright_notice: Copyright ©️ 2022 OutdatedGuy. All rights reserved.
+#    exe_name: renamedemo-win32
+#
+  macos:
+    app_name: 股票笔记
+    package_name: com.cqs.stocknotes
+   # copyright_notice: Copyright ©cqs️ 2025 OutdatedGuy. All rights reserved.
