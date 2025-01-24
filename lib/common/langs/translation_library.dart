@@ -2,9 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
-
-import 'locales/locale_en.dart';
-import 'locales/locale_zh.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 
 //国际化学习，这边用的是getx （getx动态切换语言,intl不支持动态）
 //https://blog.csdn.net/ZCC361571217/article/details/140390890

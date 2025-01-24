@@ -209,6 +209,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "7.0.1"
+  flex_color_scheme:
+    dependency: "direct main"
+    description:
+      name: flex_color_scheme
+      sha256: "09bea5d776f694c5a67f2229f2aa500cc7cce369322dc6500ab01cf9ad1b4e1a"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "8.1.0"
+  flex_seed_scheme:
+    dependency: transitive
+    description:
+      name: flex_seed_scheme
+      sha256: d3ba3c5c92d2d79d45e94b4c6c71d01fac3c15017da1545880c53864da5dfeb0
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.5.0"
   flutter:
     dependency: transitive
     description: flutter
@@ -876,4 +892,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.6.0 <4.0.0"
-  flutter: ">=3.24.0"
+  flutter: ">=3.27.0"

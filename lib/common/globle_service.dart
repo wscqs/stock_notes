@@ -18,6 +18,9 @@ class GlobalService extends GetxService {
   ThemeMode _themeMode = ThemeMode.system;
   ThemeMode get themeMode => _themeMode;
 
+  var rxThemeMode = Rx<ThemeMode>(ThemeMode.system);
+  Rx<Locale> rxLocale = Rx<Locale>(PlatformDispatcher.instance.locale);
+
   //语言
   Locale locale = PlatformDispatcher.instance.locale;
   LocaleChangeCallback? localeChangeCallback;
@@ -61,11 +64,13 @@ class GlobalService extends GetxService {
         _themeMode = ThemeMode.dark;
         break;
     }
+    rxThemeMode.value = _themeMode;
   }
 
   /// 更改主题
   Future<void> changeThemeMode(ThemeMode themeMode) async {
     _themeMode = themeMode;
+    rxThemeMode.value = _themeMode;
     Get.changeThemeMode(_themeMode);
     if (_themeMode == ThemeMode.system) {
       await sharedPreferences.setString(themeCodeKey, 'system');
@@ -93,12 +98,14 @@ class GlobalService extends GetxService {
       return;
     }
     locale = supportedLocales[index];
+    rxLocale.value = locale;
     localeChangeCallback?.call(locale);
   }
 
   // 更改语言
   Future<void> changeLocale(Locale value) async {
     locale = value;
+    rxLocale.value = locale;
     localeChangeCallback?.call(locale);
     await sharedPreferences.setString(languageCodeKey, value.languageCode);
     Get.updateLocale(value);

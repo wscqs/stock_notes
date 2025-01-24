@@ -1,8 +1,13 @@
-import '../text_key.dart';
-
-const Map<String, String> en = {
-  TextKey.duihua: 'chat',
-  TextKey.kehu: 'customers',
-  TextKey.wode: 'user',
-  TextKey.shezhiye: "setting Page",
-};
+// const Map<String, String> en = {
+//   TextKey.shezhi: 'setting',
+//   TextKey.guanyu: 'about',
+//   TextKey.shensemoshi: 'dark mode',
+//   TextKey.duoyuyan: 'multi language',
+//   TextKey.gensuixitong: 'follow system',
+//   TextKey.qiansemoshi: 'light mode',
+//   TextKey.zhongwen: 'Chinese',
+//   TextKey.yikaiqi: 'enabled',
+//   TextKey.yiguanbi: 'disabled',
+//   TextKey.English: 'English',
+//   TextKey.queding: 'Sure',
+// };

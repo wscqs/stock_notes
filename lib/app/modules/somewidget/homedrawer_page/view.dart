@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 
+import '../../../routes/app_pages.dart';
 import 'vc.dart';
 
 class HomedrawerPage extends StatelessWidget {
@@ -14,7 +16,7 @@ class HomedrawerPage extends StatelessWidget {
       shape: RoundedRectangleBorder(),
       child: ListView(
         padding: EdgeInsets.zero,
-        children: const <Widget>[
+        children: [
           DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.red,
@@ -32,17 +34,30 @@ class HomedrawerPage extends StatelessWidget {
               ],
             ),
           ),
+          // ListTile(
+          //   leading: Icon(Icons.score),
+          //   title: Text('我的积分'),
+          // ),
           ListTile(
-            leading: Icon(Icons.score),
-            title: Text('我的积分'),
+            // leading: Icon(Icons.settings),
+            title: Text(TextKey.shezhi.tr),
+            onTap: () {
+              Get.toNamed(Routes.SETTING);
+            },
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
           ),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('系统设置'),
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('关于'),
+            title: Text(TextKey.guanyu.tr),
+            onTap: () {
+              Get.toNamed(Routes.ABOUT);
+            },
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
           ),
         ],
       ),

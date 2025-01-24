@@ -19,6 +19,7 @@ dependencies:
   connectivity_plus: ^6.1.2
 
   #UI
+  flex_color_scheme: ^8.1.0 # 主题
   flutter_screenutil: ^5.9.3
   flutter_smart_dialog: ^4.9.8+5
   flutter_inappwebview: ^6.1.5
