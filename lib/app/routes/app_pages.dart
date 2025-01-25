@@ -16,6 +16,8 @@ import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/stockdetail/bindings/stockdetail_binding.dart';
 import '../modules/stockdetail/views/stockdetail_view.dart';
+import '../modules/stockedit/bindings/stockedit_binding.dart';
+import '../modules/stockedit/views/stockedit_view.dart';
 import '../modules/tabs/bindings/tabs_binding.dart';
 import '../modules/tabs/views/tabs_view.dart';
 
@@ -71,6 +73,11 @@ class AppPages {
       name: _Paths.SIMPLESEL,
       page: () => const SimpleselView(),
       binding: SimpleselBinding(),
+    ),
+    GetPage(
+      name: _Paths.STOCKEDIT,
+      page: () => const StockeditView(),
+      binding: StockeditBinding(),
     ),
   ];
 }

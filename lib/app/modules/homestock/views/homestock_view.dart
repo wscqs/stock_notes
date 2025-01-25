@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/widget/keep_alive_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -25,13 +26,6 @@ class HomestockView extends GetView<HomestockController> {
                   size: 28,
                 ))
           ],
-          // leading: Builder(builder: (BuildContext context) {
-          //   return IconButton(
-          //       icon: Icon(Icons.wifi_tethering),
-          //       onPressed: () {
-          //         Scaffold.of(context).openDrawer();
-          //       });
-          // }),
         ),
         drawer: HomedrawerPage(),
         body: _obx(),
@@ -60,9 +54,7 @@ class HomestockView extends GetView<HomestockController> {
             child: ListView.builder(
               itemCount: controller.filteredItems.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(controller.filteredItems[index]),
-                );
+                return HomeStockCell();
               },
             ),
           ),
@@ -88,5 +80,81 @@ class HomestockView extends GetView<HomestockController> {
           }
         },
         child: _contentView());
+  }
+}
+
+class HomeStockCell extends StatelessWidget {
+  const HomeStockCell({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              spacing: 8,
+              children: [
+                Text(
+                  "春秋航空",
+                  style: Get.textTheme.titleMedium,
+                ),
+                Text(
+                  "16.00",
+                  style: Get.textTheme.titleMedium,
+                ),
+                kSpaceMax(),
+                Text(
+                  "买",
+                  style: Get.textTheme.titleMedium,
+                ),
+              ],
+            ),
+            // kSpaceH(2),
+            Row(
+              spacing: 4,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: Text(
+                    "沪",
+                    style: TextStyle(
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+                Text(
+                  "SZ601021",
+                  style: Get.textTheme.bodyMedium,
+                ),
+              ],
+            ),
+            kSpaceH(4),
+            Row(
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: Text(
+                    "16.00",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ),
+                Text(
+                  "2012年7月2号",
+                  style: Get.textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

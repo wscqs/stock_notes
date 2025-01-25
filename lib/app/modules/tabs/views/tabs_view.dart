@@ -14,6 +14,7 @@ class TabsView extends GetView<TabsController> {
   Widget _scaffold(BuildContext context) {
     return DoublePressBackWidget(
       child: Scaffold(
+        extendBody: true, // 使 body 的内容扩展到 bottomNavigationBar 的下方
         resizeToAvoidBottomInset: false, // 禁止调整布局避免键盘遮挡
         body: PageView(
           physics: NeverScrollableScrollPhysics(), // 禁止滚动
@@ -33,7 +34,6 @@ class TabsView extends GetView<TabsController> {
           ),
           foregroundColor: Colors.white,
           backgroundColor: Colors.red,
-          // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(0)),
           shape: CircleBorder(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -46,7 +46,6 @@ class TabsView extends GetView<TabsController> {
                 height: 60,
                 notchMargin: 10,
                 child: Row(
-                  //里边可以放置大部分Widget，让我们随心所欲的设计底栏
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -80,21 +79,6 @@ class TabsView extends GetView<TabsController> {
                     ),
                   ],
                 ),
-                // child: BottomNavigationBar(
-                //     fixedColor: Colors.orange, //选中的颜色
-                //     currentIndex: controller.currentIndex.value, //第几个菜单选中
-                //     // backgroundColor: Colors.brown, // 设置底部导航栏的背景颜色
-                //     onTap: (index) {
-                //       controller.setCurrentIndex(index);
-                //       controller.pageController.jumpToPage(index);
-                //     },
-                //     type: BottomNavigationBarType.fixed, //如果有4个或者4个以上的
-                //     items: const [
-                //       BottomNavigationBarItem(
-                //           icon: Icon(Icons.trending_up), label: "stock"),
-                //       BottomNavigationBarItem(
-                //           icon: Icon(Icons.event_note), label: "note"),
-                //     ]),
               ),
       ),
     );

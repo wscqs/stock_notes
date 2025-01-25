@@ -12,6 +12,20 @@ class TextKey {
   static const queding = 'queding';
   static const quxiao = 'quxiao';
   static const lianxi = 'lianxi';
+  static const gupiao = 'gupiao';
+  static const biji = 'biji';
+  static const baocun = 'baochun';
+  static const jihua = 'jihua';
+
+  static const jige = 'jige';
+  static const buy = 'buy';
+  static const sale = 'sale';
+  static const shouyilv = 'shouyilv';
+  static const liyou = 'liyou';
+  static const shizhi = 'shizhi';
+  static const shiyin = 'shiyin';
+  static const beizui = 'beizui';
+  static const shijianjilu = 'shijianjilu';
 }
 
 const Map<String, String> zh = {
@@ -28,6 +42,19 @@ const Map<String, String> zh = {
   TextKey.queding: '确定',
   TextKey.quxiao: '取消',
   TextKey.lianxi: '联系',
+  TextKey.gupiao: '股票',
+  TextKey.biji: '笔记',
+  TextKey.baocun: '保存',
+  TextKey.jihua: '计划',
+  TextKey.jige: "价格",
+  TextKey.buy: '买',
+  TextKey.sale: '卖',
+  TextKey.shouyilv: '收益率',
+  TextKey.liyou: '理由',
+  TextKey.shizhi: '市值',
+  TextKey.shiyin: '市盈(MMT)',
+  TextKey.beizui: '备注',
+  TextKey.shijianjilu: '事件记录',
 };
 
 const Map<String, String> en = {
@@ -44,4 +71,17 @@ const Map<String, String> en = {
   TextKey.queding: 'Sure',
   TextKey.quxiao: 'Cancel',
   TextKey.lianxi: 'contact',
+  TextKey.gupiao: 'stock',
+  TextKey.biji: 'note',
+  TextKey.baocun: 'save',
+  TextKey.jihua: 'plan',
+  TextKey.jige: "price",
+  TextKey.buy: 'buy',
+  TextKey.sale: 'sale',
+  TextKey.shouyilv: 'Yield',
+  TextKey.liyou: 'reason',
+  TextKey.shizhi: 'market value',
+  TextKey.shiyin: 'P/E(MMT)',
+  TextKey.beizui: 'remarks',
+  TextKey.shijianjilu: 'event record',
 };
