@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'langs/translation_library.dart';
+
 /// 语言改变的回调
 typedef LocaleChangeCallback = Function(Locale locale);
 
@@ -85,11 +87,13 @@ class GlobalService extends GetxService {
   // 初始化本地语言配置
   void _initLocale(List<Locale>? supportedLocales) {
     if (supportedLocales == null) {
-      return;
+      supportedLocales = TranslationLibrary.supportedLocales;
+      // return;
     }
     var langCode = sharedPreferences.getString(languageCodeKey) ?? '';
     if (langCode.isEmpty) {
-      return;
+      langCode = "zh";
+      // return;
     }
     var index = supportedLocales.indexWhere((element) {
       return element.languageCode == langCode;
