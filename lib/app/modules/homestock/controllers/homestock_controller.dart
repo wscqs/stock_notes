@@ -1,14 +1,26 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../base/base_Controller.dart';
 
 class HomestockController extends BaseController {
-  //TODO: Implement HomestockController
+  final TextEditingController searchController = TextEditingController();
+  final items = [
+    "Apple",
+    "Banana",
+    "Orange",
+    "Grapes",
+    "Mango",
+    "Pineapple",
+    "Strawberry",
+    "Blueberry"
+  ].obs;
+  final filteredItems = [].obs;
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
+    filteredItems.value = items; // 默认显示所有项目
   }
 
   @override
@@ -21,5 +33,16 @@ class HomestockController extends BaseController {
     super.onClose();
   }
 
-  void increment() => count.value++;
+  void clickMore() {}
+
+  void filterItems(String query) {
+    if (query.isEmpty) {
+      filteredItems.value = items;
+    } else {
+      filteredItems.value = items
+          .where((item) =>
+              item.toLowerCase().contains(query.toLowerCase())) // 搜索逻辑
+          .toList();
+    }
+  }
 }
