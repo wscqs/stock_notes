@@ -1,15 +1,15 @@
-// //监听登录事件
-// eventBus.on("login", (arg) {
-// // do something
-// });
-//登录成功后触发登录事件，页面A中订阅者会被调用
-// eventBus.emit("login", userInfo);
+// final EventBusCallback eventBuscallback = (arg) {
+//   print(arg);
+// };
+// eventBus.on("testEvent", eventBuscallback);
+// eventBus.off("testEvent", eventBuscallback);
+// eventBus.emit("testEvent", "Hello, World!");
 
 //定义一个top-level（全局）变量，页面引入该文件后可以直接使用bus
 var eventBus = EventBus();
 
 //订阅者回调签名
-typedef void EventCallback(arg);
+typedef void EventBusCallback(arg);
 
 class EventBus {
   //私有构造函数
@@ -22,23 +22,24 @@ class EventBus {
   factory EventBus() => _singleton;
 
   //保存事件订阅者队列，key:事件名(id)，value: 对应事件的订阅者队列
-  final _emap = Map<Object, List<EventCallback>?>();
+  final _emap = Map<Object, List<EventBusCallback>?>();
 
   //添加订阅者
-  void on(eventName, EventCallback f) {
-    _emap[eventName] ??= <EventCallback>[];
+  void on(eventName, EventBusCallback f) {
+    _emap[eventName] ??= <EventBusCallback>[];
     _emap[eventName]!.add(f);
   }
 
-  //移除订阅者
-  void off(eventName, [EventCallback? f]) {
+  //移除指定订阅者
+  void off(eventName, EventBusCallback f) {
     var list = _emap[eventName];
     if (eventName == null || list == null) return;
-    if (f == null) {
-      _emap[eventName] = null;
-    } else {
-      list.remove(f);
-    }
+    list.remove(f);
+  }
+
+  //确定移除eventName所有的订阅者（基本不要用这）
+  void offAll(eventName) {
+    _emap[eventName] = null;
   }
 
   //触发事件，事件触发后该事件所有订阅者会被调用
@@ -52,52 +53,3 @@ class EventBus {
     }
   }
 }
-
-// import 'package:get/get.dart';
-// void main() {
-//   // 注册 EventBusService
-//   Get.put(EventBusService());
-//
-//   runApp(MyApp());
-// }
-// 发送 EventBusService
-// void sendSampleEvent() {
-//   EventBusService eventBus = Get.find<EventBusService>();
-//   eventBus.sendEvent('sampleEvent', 'Hello, this is a test event!');
-// }
-
-// 接收 EventBusService
-// void listenToSampleEvent() {
-//   EventBusService eventBus = Get.find<EventBusService>();
-//   eventBus.listenToEvent('sampleEvent', (data) {
-//     print('Received event data: $data');
-//   });
-// }
-
-// /// GetX 实现类似于 EventBus 的事件发送和监听机制
-// class EventBusService extends GetxService {
-//   // 定义一个 RxMap 来存储事件和其监听者
-//   final _events = <String, Rx<dynamic>>{}.obs;
-//
-//   // 发送事件
-//   void sendEvent(String eventName, dynamic data) {
-//     // 检查事件是否存在，不存在则创建一个新的 Rx 对象
-//     if (!_events.containsKey(eventName)) {
-//       _events[eventName] = Rx<dynamic>(data);
-//     } else {
-//       _events[eventName]?.value = data;
-//     }
-//   }
-//
-//   // 监听事件
-//   void listenToEvent(String eventName, Function(dynamic) callback) {
-//     if (!_events.containsKey(eventName)) {
-//       _events[eventName] = Rx<dynamic>(null);
-//     }
-//
-//     // 监听事件值的变化
-//     _events[eventName]?.listen((data) {
-//       callback(data);
-//     });
-//   }
-// }

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:stock_notes/app/modules/homenote/views/homenote_view.dart';
 import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
 
+import '../../../../common/event_bus.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
 
@@ -16,6 +17,13 @@ class TabsController extends GetxController {
     HomenoteView(),
   ];
   PageController pageController = PageController(initialPage: 0);
+
+  final EventBusCallback eventBuscallback = (arg) {
+    print(arg);
+  };
+  final EventBusCallback eventBuscallbackB = (arg) {
+    print(arg);
+  };
 
   @override
   void onInit() {
@@ -85,6 +93,7 @@ void testRequest() async {
 }
 
 //https://blog.csdn.net/com_ma/article/details/80670428
+//https://blog.csdn.net/afgasdg/article/details/84064421
 // 数据解析函数
 List<Map<String, dynamic>> parseTencentStockData(String rawData) {
   // 按分号分割每个股票的数据

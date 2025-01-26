@@ -100,7 +100,6 @@ class HomeStockCell extends StatelessWidget {
               children: [
                 Text(
                   "春秋航空",
-                  style: Get.textTheme.titleMedium,
                 ),
                 Text(
                   "16.00",
