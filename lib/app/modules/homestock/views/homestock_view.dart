@@ -100,38 +100,39 @@ class HomeStockCell extends StatelessWidget {
               children: [
                 Text(
                   "春秋航空",
+                  style: TextStyle(fontSize: 16),
                 ),
                 Text(
                   "16.00",
-                  style: Get.textTheme.titleMedium,
+                  style: TextStyle(fontSize: 16),
                 ),
                 kSpaceMax(),
                 Text(
                   "买",
-                  style: Get.textTheme.titleMedium,
+                  style: TextStyle(fontSize: 16),
                 ),
               ],
             ),
-            // kSpaceH(2),
+            kSpaceH(2),
             Row(
               spacing: 4,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+                  padding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
                   decoration: BoxDecoration(
                     color: Colors.red,
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                   child: Text(
                     "沪",
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 9,
                     ),
                   ),
                 ),
                 Text(
                   "SZ601021",
-                  style: Get.textTheme.bodyMedium,
+                  style: TextStyle(fontSize: 12),
                 ),
               ],
             ),
@@ -142,12 +143,12 @@ class HomeStockCell extends StatelessWidget {
                 Expanded(
                   child: Text(
                     "16.00",
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 12),
                   ),
                 ),
                 Text(
                   "2012年7月2号",
-                  style: Get.textTheme.bodySmall,
+                  style: TextStyle(fontSize: 12),
                 ),
               ],
             ),

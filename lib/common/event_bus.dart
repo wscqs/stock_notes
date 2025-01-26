@@ -1,4 +1,4 @@
-// final EventBusCallback eventBuscallback = (arg) {
+// late final EventBusCallback eventBuscallback = (arg) {
 //   print(arg);
 // };
 // eventBus.on("testEvent", eventBuscallback);

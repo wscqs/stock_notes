@@ -21,6 +21,14 @@ class HomestockController extends BaseController {
   void onInit() {
     super.onInit();
     filteredItems.value = items; // 默认显示所有项目
+    // 初始化回调，在这里绑定 refreshAppui 方法
+    // eventBuscallbackrefreshAppui = (arg) {
+    //   refreshAppui();
+    // };
+  }
+
+  void refreshAppui() {
+    filteredItems.value = items;
   }
 
   @override

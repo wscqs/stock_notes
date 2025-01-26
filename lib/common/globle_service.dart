@@ -81,7 +81,7 @@ class GlobalService extends GetxService {
           themeCodeKey, themeMode == ThemeMode.dark ? 'dark' : 'light');
     }
     // updateNavigationBar();
-    // refreshAppui();
+    refreshAppui();
   }
 
   // 初始化本地语言配置
@@ -114,5 +114,9 @@ class GlobalService extends GetxService {
     await sharedPreferences.setString(languageCodeKey, value.languageCode);
     Get.updateLocale(value);
     // refreshAppui();
+  }
+
+  void refreshAppui() {
+    // eventBus.emit("refreshAppui");
   }
 }
