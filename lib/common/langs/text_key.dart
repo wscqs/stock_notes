@@ -26,6 +26,10 @@ class TextKey {
   static const beizui = 'beizui';
   static const shijian = 'shijian';
   static const jilu = 'jilu';
+  static const ercihoutui = 'ercihoutui';
+  static const neterror = 'neterror';
+  static const sererror = 'sererror';
+  static const jiazai = 'jiazai';
 }
 
 const Map<String, String> zh = {
@@ -56,6 +60,10 @@ const Map<String, String> zh = {
   TextKey.beizui: '备注',
   TextKey.shijian: '事件',
   TextKey.jilu: '记录',
+  TextKey.ercihoutui: '再点一次退出',
+  TextKey.neterror: '当前网络不可用，请查看网络设置',
+  TextKey.sererror: '服务端出差了，请稍后重试',
+  TextKey.jiazai: '加载中...',
 };
 
 const Map<String, String> en = {
@@ -86,4 +94,9 @@ const Map<String, String> en = {
   TextKey.beizui: 'remarks',
   TextKey.shijian: 'event',
   TextKey.jilu: 'record',
+  TextKey.ercihoutui: 'Press again to exit',
+  TextKey.neterror:
+      'The current network is not available, please check the network settings',
+  TextKey.sererror: 'The server is down, please try again later',
+  TextKey.jiazai: 'loading...',
 };

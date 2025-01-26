@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../utils/qs_hud.dart';
 
@@ -27,7 +29,7 @@ class DoublePressBackWidget extends StatelessWidget {
     if (_currentBackPressTime == null ||
         now.difference(_currentBackPressTime!) > const Duration(seconds: 2)) {
       _currentBackPressTime = now;
-      QsHud.showToast(message ?? 'Press back again to exit');
+      QsHud.showToast(message ?? TextKey.ercihoutui.tr);
       return false;
     }
     _currentBackPressTime = null;

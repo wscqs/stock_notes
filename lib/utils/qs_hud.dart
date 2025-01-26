@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 
-const kSERERROR = "服务端出差了，请稍后重试";
-const kNETERROR = "当前网络不可用，请查看网络设置";
+// const kSERERROR = "服务端出差了，请稍后重试";
+// const kNETERROR = "当前网络不可用，请查看网络设置";
 
 class QsHud {
   QsHud._();
@@ -30,16 +32,19 @@ class QsHud {
   }
 
   static void showToastNetError() {
-    showToast(kNETERROR);
+    // showToast(kNETERROR);
+    showToast(TextKey.neterror.tr);
   }
 
   static void showToastSerError() {
-    showToast(kNETERROR);
+    // showToast(kNETERROR);
+    showToast(TextKey.sererror.tr);
   }
 
   /// 显示加载对话框
   static void showLoading({String message = '加载中...', Duration? duration}) {
-    message = 'loading...';
+    // message = 'loading...';
+    message = TextKey.jiazai.tr;
     SmartDialog.showLoading(
         msg: message, displayTime: duration ?? const Duration(hours: 1));
   }
