@@ -34,6 +34,9 @@ dart run flutter_native_splash:create
 
 
 ## other
+
+代码混淆
+https://docs.flutter.cn/deployment/obfuscate
 Flutter代码补全
 option+j  https://juejin.cn/post/7296660227545104435
 

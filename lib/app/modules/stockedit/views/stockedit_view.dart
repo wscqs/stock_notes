@@ -41,43 +41,115 @@ class StockeditView extends GetView<StockeditController> {
                 ),
               ),
               _gupiaoinfo(context),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(TextKey.jihua.tr, style: Get.textTheme.titleLarge),
-                  kSpaceH(8),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(TextKey.jige.tr,
-                              style: Get.textTheme.titleMedium),
-                          Text(":", style: Get.textTheme.titleMedium),
-                          kSpaceW(8),
-                          Text(TextKey.buy.tr),
-                          kSpaceW(2),
-                          // TextField(
-                          //   decoration: InputDecoration(
-                          //     hintText: '',
-                          //     prefixIcon: Icon(Icons.search),
-                          //     border: OutlineInputBorder(
-                          //       borderRadius: BorderRadius.circular(30.0),
-                          //     ),
-                          //     // filled: true,
-                          //     contentPadding: EdgeInsets.symmetric(
-                          //         horizontal: 16.0, vertical: 12.0),
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
-              ),
+              _gupiaojihua(),
+              _gupiaojilu(),
             ],
           ),
         ));
+  }
+
+  Widget _gupiaojilu() {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(TextKey.jilu.tr, style: Get.textTheme.titleLarge),
+          kSpaceH(12),
+          TextField(
+            maxLines: null, // 允许多行输入
+            decoration: InputDecoration(
+              labelText: TextKey.beizui.tr,
+              border: OutlineInputBorder(),
+              // alignLabelWithHint: true, // 标签文字与多行输入对齐
+            ),
+            // keyboardType: TextInputType.multiline,
+          ),
+          kSpaceH(16),
+          TextField(
+            maxLines: null, // 允许多行输入
+            decoration: InputDecoration(
+              labelText: TextKey.shijian.tr + TextKey.jilu.tr,
+              border: OutlineInputBorder(),
+              // alignLabelWithHint: true, // 标签文字与多行输入对齐
+            ),
+            // keyboardType: TextInputType.multiline,
+          ),
+        ]);
+  }
+
+  Widget _gupiaojihua() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(TextKey.jihua.tr, style: Get.textTheme.titleLarge),
+        kSpaceH(8),
+        Column(
+          children: [
+            _rowjiage(),
+            _rowjiage(), //市值
+            _rowjiage(), //市盈率
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget _rowjiage() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Baseline(
+          baseline: 50, // 设置基线偏移
+          baselineType: TextBaseline.alphabetic,
+          child: Text(TextKey.jige.tr + "：",
+              style: TextStyle(
+                  fontSize: Get.textTheme.titleMedium?.fontSize,
+                  fontWeight: FontWeight.bold)),
+        ),
+        kSpaceW(12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    width: 60,
+                    child: TextField(
+                      decoration: InputDecoration(labelText: TextKey.buy.tr),
+                    ),
+                  ),
+                  kSpaceW(12),
+                  SizedBox(
+                    width: 60,
+                    child: TextField(
+                      decoration: InputDecoration(labelText: TextKey.sale.tr),
+                    ),
+                  ),
+                  kSpaceW(12),
+                  Text(
+                    "收益率:%100",
+                    style: Get.textTheme.titleMedium,
+                  ),
+                ],
+              ),
+              kSpaceH(16),
+              TextField(
+                maxLines: null, // 允许多行输入
+                decoration: InputDecoration(
+                  labelText: TextKey.liyou.tr,
+                  border: OutlineInputBorder(),
+                  // alignLabelWithHint: true, // 标签文字与多行输入对齐
+                ),
+                // keyboardType: TextInputType.multiline,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _gupiaoinfo(BuildContext context) {

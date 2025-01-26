@@ -51,7 +51,7 @@ class TabsView extends GetView<TabsController> {
                   children: [
                     IconButton(
                       padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+                          EdgeInsets.symmetric(vertical: 16, horizontal: 35),
                       icon: Icon(
                         Icons.trending_up,
                         size: 30,
@@ -65,7 +65,7 @@ class TabsView extends GetView<TabsController> {
                     ),
                     IconButton(
                       padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+                          EdgeInsets.symmetric(vertical: 16, horizontal: 35),
                       icon: Icon(
                         Icons.event_note,
                         size: 30,

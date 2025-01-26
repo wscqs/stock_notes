@@ -16,7 +16,6 @@ class TextKey {
   static const biji = 'biji';
   static const baocun = 'baochun';
   static const jihua = 'jihua';
-
   static const jige = 'jige';
   static const buy = 'buy';
   static const sale = 'sale';
@@ -25,7 +24,8 @@ class TextKey {
   static const shizhi = 'shizhi';
   static const shiyin = 'shiyin';
   static const beizui = 'beizui';
-  static const shijianjilu = 'shijianjilu';
+  static const shijian = 'shijian';
+  static const jilu = 'jilu';
 }
 
 const Map<String, String> zh = {
@@ -54,7 +54,8 @@ const Map<String, String> zh = {
   TextKey.shizhi: '市值',
   TextKey.shiyin: '市盈(MMT)',
   TextKey.beizui: '备注',
-  TextKey.shijianjilu: '事件记录',
+  TextKey.shijian: '事件',
+  TextKey.jilu: '记录',
 };
 
 const Map<String, String> en = {
@@ -83,5 +84,6 @@ const Map<String, String> en = {
   TextKey.shizhi: 'market value',
   TextKey.shiyin: 'P/E(MMT)',
   TextKey.beizui: 'remarks',
-  TextKey.shijianjilu: 'event record',
+  TextKey.shijian: 'event',
+  TextKey.jilu: 'record',
 };
