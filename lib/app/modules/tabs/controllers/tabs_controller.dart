@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
+import 'package:fl_charset/fl_charset.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:stock_notes/app/modules/homenote/views/homenote_view.dart';
 import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
 
@@ -41,13 +39,12 @@ class TabsController extends GetxController {
   }
 
   void pushCreatePage() {
-    testRequest();
-    return;
     if (currentIndex.value == 0) {
       Get.toNamed(Routes.STOCKEDIT);
     } else {
       Get.toNamed(Routes.NOTEDETAIL);
     }
+    // testRequest();
   }
 
   void setCurrentIndex(index) {
@@ -67,47 +64,16 @@ class TabsController extends GetxController {
   }
 }
 
-void testRequest2() async {
-  final url = "http://qt.gtimg.cn/q=sh600103,sh600104,sh600105";
-
-  try {
-    // 发起 HTTP 请求
-    final response = await http.get(Uri.parse(url), headers: {
-      "Content-Type": "text/html; charset=GBK",
-    });
-
-    if (response.statusCode == 200) {
-      // 将返回的 GBK 数据手动解码为 UTF-8
-      final decodedData = gbkToUtf8(response.bodyBytes);
-
-      // 转换为 JSON 格式
-      final jsonData = parseTencentStockData(decodedData);
-
-      // 打印结果
-      print(jsonData);
-    } else {
-      print("Request failed with status: ${response.statusCode}");
-    }
-  } catch (e) {
-    print("Error: $e");
-  }
-}
-
-// GBK 转 UTF-8 解码函数
-String gbkToUtf8(List<int> gbkBytes) {
-  return const Utf8Decoder().convert(latin1.decode(gbkBytes).codeUnits);
-}
-
+//数据
 void testRequest() async {
   final url = "https://qt.gtimg.cn/q=sh600103,sh600104,sh600105";
   try {
     // 发起请求
-    final response = await Dio().get(url,
-        options: Options(contentType: "application/x-www-form-urlencoded"));
-
-    // 原始数据
-    final rawData = response.data.toString();
-
+    final response = await Dio().get(
+      url,
+      options: Options(responseType: ResponseType.bytes), // 确保获取的是原始字节数据
+    );
+    String rawData = gbk.decode(response.data);
     // 转换为 JSON 格式
     final jsonData = parseTencentStockData(rawData);
 
@@ -138,16 +104,9 @@ List<Map<String, dynamic>> parseTencentStockData(String rawData) {
     // 将主体部分按 ~ 分割
     final parts = rawContent.split('~');
 
-    String gbkString = parts[1];
-    // 将字符串转换为字节数组（ISO-8859-1）
-    List<int> gbkBytes = latin1.encode(gbkString);
-    // 正确解码为 UTF-8
-    String name = utf8.decode(gbkBytes);
-    // 构造 JSON 对象
     result.add({
       "market_type": parts[0], // 市场类型
-      "name": name, // 股票名称
-      // "name": parts[1], // 股票名称
+      "name": parts[1], // 股票名称
       "code": key, // 股票代码
       "current_price": parts[3], // 当前价格
       // "previous_close": parts[4], // 昨收价
