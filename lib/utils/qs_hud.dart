@@ -20,11 +20,13 @@ class QsHud {
     Duration displayTime = Duration(seconds: displaySeconds);
     if (delaySeconds == 0) {
       SmartDialog.dismiss(status: SmartStatus.toast);
+      SmartDialog.dismiss(status: SmartStatus.loading);
       SmartDialog.showToast(message,
           alignment: Alignment.center, displayTime: displayTime);
     } else {
       Future.delayed(Duration(seconds: delaySeconds), () {
         SmartDialog.dismiss(status: SmartStatus.toast);
+        SmartDialog.dismiss(status: SmartStatus.loading);
         SmartDialog.showToast(message,
             alignment: Alignment.center, displayTime: displayTime);
       });
@@ -51,11 +53,13 @@ class QsHud {
 
   /// 显示成功
   static void showSuccessNotify({String msg = 'success', Duration? duration}) {
+    SmartDialog.dismiss(status: SmartStatus.loading);
     SmartDialog.showNotify(msg: msg, notifyType: NotifyType.success);
   }
 
   /// 显示失败
   static void showErrorNotify({String msg = 'error', Duration? duration}) {
+    SmartDialog.dismiss(status: SmartStatus.loading);
     SmartDialog.showNotify(msg: msg, notifyType: NotifyType.error);
   }
 
