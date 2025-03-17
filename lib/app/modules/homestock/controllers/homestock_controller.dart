@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
 
 class HomestockController extends BaseController {
@@ -52,5 +53,9 @@ class HomestockController extends BaseController {
               item.toLowerCase().contains(query.toLowerCase())) // 搜索逻辑
           .toList();
     }
+  }
+
+  void pushDetailPage() {
+    Get.toNamed(Routes.NOTEDETAIL);
   }
 }

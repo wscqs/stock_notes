@@ -1,0 +1,1 @@
+/Users/cqs/Documents/flutter/stock_notes/build/app/intermediates/cxx/Debug/4r624a6g/obj/x86_64

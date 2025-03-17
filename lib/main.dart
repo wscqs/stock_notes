@@ -12,6 +12,23 @@ import 'utils/qs_cache.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // final database = AppDatabase(); //web 是支持的，后续研究
+  //
+  // List<TodoItem> allItems = await database.todoItems.all().get();
+  // // database.todoItems.
+  // // List<TodoItem> allItems = await (database.select(database.todoItems)
+  // //       ..where((u) => u.title.like('%finish%')))
+  // //     .get();
+  //
+  // // await database.into(database.todoItems).insert(TodoItemsCompanion.insert(
+  // //       title: 'do: finish drift setup',
+  // //       content: 'We can now write queries and define our own tables.',
+  // //     ));
+  // // List<TodoItem> allItems = await database.select(database.todoItems).get();
+  // print('items in database: $allItems');
+
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);

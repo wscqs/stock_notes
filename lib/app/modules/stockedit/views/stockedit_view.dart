@@ -86,23 +86,31 @@ class StockeditView extends GetView<StockeditController> {
         kSpaceH(8),
         Column(
           children: [
-            _rowjiage(),
-            _rowjiage(), //市值
-            _rowjiage(), //市盈率
+            _rowjiage(type: "price"), //市价
+            _rowjiage(type: "market_value"), //市值
+            _rowjiage(type: "p_e_ratio"), //市盈率
           ],
         )
       ],
     );
   }
 
-  Widget _rowjiage() {
+  Widget _rowjiage({required String type}) {
+    String titile = "";
+    if (type == "price") {
+      titile = TextKey.jige.tr;
+    } else if (type == "market_value") {
+      titile = TextKey.shizhi.tr;
+    } else if (type == "p_e_ratio") {
+      titile = TextKey.shiyin.tr;
+    }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Baseline(
           baseline: 50, // 设置基线偏移
           baselineType: TextBaseline.alphabetic,
-          child: Text(TextKey.jige.tr + "：",
+          child: Text(titile + "：",
               style: TextStyle(
                   fontSize: Get.textTheme.titleMedium?.fontSize,
                   fontWeight: FontWeight.bold)),

@@ -2,9 +2,13 @@
 dart pub global activate get_cli
 getx,shell建页面。 get create page:chatdetail
 
-flutter clean                      
+flutter pub cache repair
+flutter clean
 flutter pub get
 flutter build
+
+dart run build_runner build
+dart run build_runner watch
 
 ## 包名 com.wlsp.carrotcards
 

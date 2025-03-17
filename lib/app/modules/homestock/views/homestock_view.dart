@@ -88,7 +88,8 @@ class HomestockView extends GetView<HomestockController> {
 
 class HomeStockCell extends StatelessWidget {
   final int index;
-  const HomeStockCell({
+  final controller = Get.find<HomestockController>();
+  HomeStockCell({
     super.key,
     required this.index,
   });
@@ -127,68 +128,73 @@ class HomeStockCell extends StatelessWidget {
         ],
       ),
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                spacing: 8,
-                children: [
-                  Text(
-                    "春秋航空",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    "16.00",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  kSpaceMax(),
-                  Text(
-                    "买",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-              kSpaceH(2),
-              Row(
-                spacing: 4,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(2),
+        child: InkWell(
+          onTap: () {
+            controller.pushDetailPage();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  spacing: 8,
+                  children: [
+                    Text(
+                      "春秋航空",
+                      style: TextStyle(fontSize: 16),
                     ),
-                    child: Text(
-                      "沪",
-                      style: TextStyle(
-                        fontSize: 9,
+                    Text(
+                      "16.00",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    kSpaceMax(),
+                    Text(
+                      "买",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                kSpaceH(2),
+                Row(
+                  spacing: 4,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      child: Text(
+                        "沪",
+                        style: TextStyle(
+                          fontSize: 9,
+                        ),
                       ),
                     ),
-                  ),
-                  Text(
-                    "SZ601021",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-              kSpaceH(4),
-              Row(
-                spacing: 8,
-                children: [
-                  Expanded(
-                    child: Text(
-                      "16.00",
+                    Text(
+                      "SZ601021",
                       style: TextStyle(fontSize: 12),
                     ),
-                  ),
-                  Text(
-                    "2012年7月2号",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                kSpaceH(4),
+                Row(
+                  spacing: 8,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "16.00",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    Text(
+                      "2012年7月2号",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
