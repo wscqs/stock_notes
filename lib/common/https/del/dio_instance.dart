@@ -1,6 +1,6 @@
-// import 'package:carrotcards/common/https/interceptor/res_data_json_interceptor.dart';
-// import 'package:carrotcards/common/https/qs_account.dart';
-// import 'package:carrotcards/common/https/qs_request.dart';
+// import 'package:tarot/common/https/interceptor/res_data_json_interceptor.dart';
+// import 'package:tarot/common/https/qs_account.dart';
+// import 'package:tarot/common/https/qs_request.dart';
 // import 'package:dio/dio.dart';
 //
 // import 'interceptor/print_log_interceptor.dart';

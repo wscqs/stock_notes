@@ -1,27 +1,35 @@
-import 'package:get_storage/get_storage.dart';
-
 class BaseAPI {
-  static const String testEnvironmentKey = 'testEnvironment';
-  static final GetStorage _storage = GetStorage();
+  // static const String testEnvironmentKey = 'testEnvironment';
+  // static final GetStorage _storage = GetStorage();
 
   static String getBaseURL() {
-    bool isTestEnvironment = _storage.read(testEnvironmentKey) ?? false;
-    return isTestEnvironment
-        ? 'http://www.test.kezhitong.com.cn/'
-        // : "https://www.wanandroid.com/";
-        : 'https://www.znpai.cn/';
+    return 'https://cctest.wlspapp.com/';
+    return 'https://cc.wlspapp.com/';
+    // bool isTestEnvironment = _storage.read(testEnvironmentKey) ?? false;
+    // isTestEnvironment = true;
+    // return isTestEnvironment
+    //     ? 'https://cctest.wlspapp.com/'
+    //     : 'https://cc.wlspapp.com/';
   }
 
   static String getBaseAPIURL() {
     return getBaseURL() + 'api/';
   }
 
+  static String getDeleteAccount() {
+    return getBaseURL() + 'jb.html';
+  }
+
   static String getProtocolURL() {
+    // return "https://www.znpai.cn/protocol.html?type=app_service";
+    return "https://cc.wlspapp.com/rich_text/article/2.html";
     return getBaseURL() + 'protocol.html?type=app_service';
   }
 
   static String getPrivacyURL() {
-    return getBaseURL() + 'protocol.html?type=app_private';
+    return "https://cc.wlspapp.com/rich_text/article/3.html";
+    return "https://www.znpai.cn/protocol.html?type=app_private";
+    // return getBaseURL() + 'protocol.html?type=app_private';
   }
 
   static String getVipServiceURL() {

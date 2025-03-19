@@ -7,6 +7,7 @@ import '../controllers/stockedit_controller.dart';
 
 class StockeditView extends GetView<StockeditController> {
   const StockeditView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,31 +22,58 @@ class StockeditView extends GetView<StockeditController> {
                 child: Text(TextKey.baocun.tr))
           ],
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            spacing: 16,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  hintText: '请输入股票代码',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  // filled: true,
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                ),
+        body: Obx(() {
+          return buildContentView(context);
+        }));
+  }
+
+  Widget buildContentView(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        spacing: 16,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: controller.stockNumController,
+            decoration: InputDecoration(
+              hintText: TextKey.shurugupiaotishi.tr,
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.0),
               ),
-              _gupiaoinfo(context),
-              _gupiaojihua(),
-              _gupiaojilu(),
-            ],
+
+              // filled: true,
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (controller.stockNum.value.isNotEmpty)
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        controller.clearStockNum();
+                      },
+                    ),
+                  IconButton(
+                    icon: Icon(Icons.check, color: Colors.blue),
+                    onPressed: () {
+                      // 处理确认操作
+                      // print("股票代码: ${_controller.text}");
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
-        ));
+          _gupiaoinfo(context),
+          _gupiaojihua(),
+          _gupiaojilu(),
+        ],
+      ),
+    );
   }
 
   Widget _gupiaojilu() {

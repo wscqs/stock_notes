@@ -73,7 +73,7 @@ class TabsController extends GetxController {
 }
 
 //数据
-void testRequest() async {
+void testQTRequest() async {
   final url = "https://qt.gtimg.cn/q=sh600103,sh600104,sh600105";
   try {
     // 发起请求
@@ -92,9 +92,13 @@ void testRequest() async {
   }
 }
 
+// https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=SZ000001,SZ399001&extend=detail
+// https://stock.xueqiu.com/v5/stock/quote.json?symbol=SZ000001&extend=detail
+// 雪球数据都有（多股息），先用雪球
+
 //https://blog.csdn.net/com_ma/article/details/80670428
 //https://blog.csdn.net/afgasdg/article/details/84064421
-// 数据解析函数
+// 数据解析函数  价格，市值，市盈率 （没股息）
 List<Map<String, dynamic>> parseTencentStockData(String rawData) {
   // 按分号分割每个股票的数据
   final lines = rawData.split(';');

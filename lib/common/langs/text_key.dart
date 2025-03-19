@@ -30,6 +30,7 @@ class TextKey {
   static const neterror = 'neterror';
   static const sererror = 'sererror';
   static const jiazai = 'jiazai';
+  static const shurugupiaotishi = 'shurugupiaotishi';
 }
 
 const Map<String, String> zh = {
@@ -64,6 +65,7 @@ const Map<String, String> zh = {
   TextKey.neterror: '当前网络不可用，请查看网络设置',
   TextKey.sererror: '服务端出差了，请稍后重试',
   TextKey.jiazai: '加载中...',
+  TextKey.shurugupiaotishi: '请输入股票代码',
 };
 
 const Map<String, String> en = {
@@ -99,4 +101,5 @@ const Map<String, String> en = {
       'The current network is not available, please check the network settings',
   TextKey.sererror: 'The server is down, please try again later',
   TextKey.jiazai: 'loading...',
+  TextKey.shurugupiaotishi: 'Please enter the stock code',
 };

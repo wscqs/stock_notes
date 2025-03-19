@@ -1,9 +1,9 @@
 // /*
 //  * Http的缓存策略与处理
 //  */
-// import 'package:carrotcards/common/extension/String++.dart';
-// import 'package:carrotcards/common/https/dio_instance.dart';
-// import 'package:carrotcards/utils/qs_cache.dart';
+// import 'package:tarot/common/extension/String++.dart';
+// import 'package:tarot/common/https/dio_instance.dart';
+// import 'package:tarot/utils/qs_cache.dart';
 // import 'package:dio/dio.dart';
 //
 // class CacheControlInterceptor extends Interceptor {

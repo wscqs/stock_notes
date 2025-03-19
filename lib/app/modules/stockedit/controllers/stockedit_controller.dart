@@ -1,12 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class StockeditController extends GetxController {
-  //TODO: Implement StockeditController
+  final stockNum = "".obs;
+  final stockNumController = TextEditingController();
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
+    stockNumController.addListener(_updateStockNum);
+  }
+
+  void _updateStockNum() {
+    stockNum.value = stockNumController.text;
   }
 
   @override
@@ -16,10 +22,14 @@ class StockeditController extends GetxController {
 
   @override
   void onClose() {
+    stockNumController.addListener(_updateStockNum);
+    stockNumController.dispose();
     super.onClose();
   }
 
-  void increment() => count.value++;
-
   void save() {}
+
+  void clearStockNum() {
+    stockNumController.clear();
+  }
 }
