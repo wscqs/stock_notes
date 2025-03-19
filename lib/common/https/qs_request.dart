@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stock_notes/common/https/baseapi.dart';
 import 'package:stock_notes/common/https/qs_account.dart';
-import 'package:stock_notes/common/https/qs_api.dart';
 
 import '../../utils/qs_cache.dart';
 import '../../utils/qs_hud.dart';
@@ -282,37 +281,38 @@ class QsRequest {
       var json = response.data;
       if (json != null) {
         //错误处理
-        if (json['code'] != null && json['code'] != "0") {
-          final int code = int.parse(json['code']);
-          if (code == 10000) {
-            // print("token过期");
-            QsApi.refreshToken(completionHandler: (isSuccess, error) {
-              if (isSuccess!) {
-                goSafe<T>(
-                  url: url,
-                  method: method,
-                  params: params,
-                  decodeType: decodeType,
-                  cache: cache,
-                  showHUD: showHUD,
-                  showErrorToast: showErrorToast,
-                  completionHandler: completionHandler,
-                );
-              }
-            });
-            return;
-          } else if (json['code'] == '11000') {
-            //登录过期
-            // print("登录过期");
-            QsHud.showToast("Login expired");
-            QsAccount.cleanAccount();
-            eventBus.emit("nologin", "1");
-            showErrorToast = false;
-          }
+        if (json['error_code'] != null && json['error_code'] != 0) {
+          // final int code = int.parse(json['code']);
+          // if (code == 10000) {
+          //   // print("token过期");
+          //   QsApi.refreshToken(completionHandler: (isSuccess, error) {
+          //     if (isSuccess!) {
+          //       goSafe<T>(
+          //         url: url,
+          //         method: method,
+          //         params: params,
+          //         decodeType: decodeType,
+          //         cache: cache,
+          //         showHUD: showHUD,
+          //         showErrorToast: showErrorToast,
+          //         completionHandler: completionHandler,
+          //       );
+          //     }
+          //   });
+          //   return;
+          // } else if (json['code'] == '11000') {
+          //   //登录过期
+          //   // print("登录过期");
+          //   QsHud.showToast("Login expired");
+          //   QsAccount.cleanAccount();
+          //   eventBus.emit("nologin", "1");
+          //   showErrorToast = false;
+          // }
           if (showErrorToast) {
-            showErrorToastFunc(json['msg'] ?? 'request failed');
+            showErrorToastFunc(json['error_description'] ?? '请求失败');
           }
-          completionHandler(null, NetException(json['msg'], code));
+          completionHandler(null,
+              NetException(json['error_description'], json['error_code']));
           return;
         } else {
           if (json['data'] != null) {
