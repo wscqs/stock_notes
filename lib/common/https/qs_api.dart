@@ -14,7 +14,7 @@ class QsApi {
     return _instance ??= QsApi._();
   }
 
-  //https://xueqiu.com 下面地址需要 cookie 才能访问，后续再用吧（比腾讯多股息率）
+  //https://xueqiu.com 下面地址需要 cookie 才能访问，后续再用吧（比腾讯多股息率）,用腾讯
   //https://stock.xueqiu.com/v5/stock/quote.json?symbol=SZ000001&extend=detail
   //https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=SZ000001,SZ399001&extend=detail
   static void stocksList<T>(
