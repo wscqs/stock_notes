@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:stock_notes/common/https/baseapi.dart';
 import 'package:stock_notes/common/https/qs_account.dart';
 
 import '../../utils/qs_cache.dart';
@@ -42,7 +41,7 @@ class QsRequest {
         // .setBaseUrl("http://3.21.234.60:1001/")
         // .setBaseUrl("https://testtlp.wlspapp.com/")
         // .setBaseUrl("https://tlp.wlspapp.com/")
-        .setBaseUrl(BaseAPI.getBaseURL())
+        // .setBaseUrl(BaseAPI.getBaseURL())
         // .addInterceptor(PrintLogInterceptor())
         // 代理/https
         // .setHttpClientAdapter(IOHttpClientAdapter()
@@ -329,6 +328,11 @@ class QsRequest {
       }
       completionHandler(object, null);
     } catch (e) {
+      DioException dioe = e as DioException;
+      if (dioe.response != null &&
+          dioe.response!.data["error_code"] == "400016") {
+        QsHud.showToast("需要雪球 cookie");
+      }
       if (showErrorToast) {
         showErrorToastFunc(kServiceDontUse);
       }
