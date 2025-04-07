@@ -22,7 +22,7 @@ dependencies:
   connectivity_plus: ^6.1.3
 
   #UI
-  flex_color_scheme: ^8.1.1 # 主题
+  flex_color_scheme: ^8.2.0 # 主题
   flutter_screenutil: ^5.9.3
   flutter_smart_dialog: ^4.9.8+7
   flutter_inappwebview: ^6.1.5
@@ -45,7 +45,7 @@ dependencies:
   #  share_plus: ^9.0.0
   #  permission_handler: ^11.3.1
   package_info_plus: ^8.2.1
-  device_info_plus: ^11.3.0
+  device_info_plus: ^11.3.3
   # flutter_udid: ^4.0.0 #设备唯一标识
   url_launcher: ^6.3.1
 
@@ -59,10 +59,10 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
   flutter_launcher_icons: ^0.14.3
-  flutter_native_splash: ^2.4.4
-  package_rename: ^1.8.0
+  flutter_native_splash: ^2.4.6
+  package_rename: ^1.9.0
   drift_dev: ^2.26.0
-  build_runner: ^2.4.14 #dart run build_runner build
+  build_runner: ^2.4.15 #dart run build_runner build
 
 flutter:
   uses-material-design: true
