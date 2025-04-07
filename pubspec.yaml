@@ -9,6 +9,7 @@ environment:
 dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.7.2 #路由/状态插件
+  #get: ^5.0.0-release-candidate-9.3.2 #中间件有点问题（SplashMiddleware正式版再试看看）
   #dio: ^5.8.0+1 //web不能运行
   dio: ^5.6.0
   visibility_detector: ^0.4.0+2

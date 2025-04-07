@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
+import '../../commonwidget/stock_searchfield.dart';
 import '../controllers/stockedit_controller.dart';
 
 class StockeditView extends GetView<StockeditController> {
@@ -35,40 +36,24 @@ class StockeditView extends GetView<StockeditController> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            controller: controller.stockNumController,
-            decoration: InputDecoration(
-              hintText: TextKey.shurugupiaotishi.tr,
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
+          Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 280,
               ),
-
-              // filled: true,
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              suffixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (controller.stockNum.value.isNotEmpty)
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        controller.clearStockNum();
-                      },
-                    ),
-                  IconButton(
-                    icon: Icon(Icons.check, color: Colors.blue),
-                    onPressed: () {
-                      // 处理确认操作
-                      // print("股票代码: ${_controller.text}");
-                    },
-                  ),
-                ],
+              child: StockSearchField(
+                controller: controller.stockNumController,
+                onClear: controller.clearStockNum,
+                onSubmit: () {
+                  // 提交逻辑
+                  controller.search();
+                },
+                hintText: TextKey.shurugupiaotishi.tr,
+                stockValue: controller.stockNum,
               ),
             ),
           ),
-          _gupiaoinfo(context),
+          _gupiaoinfo(),
           _gupiaojihua(),
           _gupiaojilu(),
         ],
@@ -125,12 +110,16 @@ class StockeditView extends GetView<StockeditController> {
 
   Widget _rowjiage({required String type}) {
     String titile = "";
+    String value = "";
     if (type == "price") {
       titile = TextKey.jige.tr;
+      value = controller.stockData.value.currentPrice ?? "";
     } else if (type == "market_value") {
       titile = TextKey.shizhi.tr;
+      value = controller.stockData.value.totalMarketCap ?? "";
     } else if (type == "p_e_ratio") {
       titile = TextKey.shiyin.tr;
+      value = controller.stockData.value.peRatioTtm ?? "";
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,10 +127,19 @@ class StockeditView extends GetView<StockeditController> {
         Baseline(
           baseline: 50, // 设置基线偏移
           baselineType: TextBaseline.alphabetic,
-          child: Text(titile + "：",
-              style: TextStyle(
-                  fontSize: Get.textTheme.titleMedium?.fontSize,
-                  fontWeight: FontWeight.bold)),
+          child: SizedBox(
+            width: 52,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(titile + "：",
+                    style: TextStyle(
+                        fontSize: Get.textTheme.titleMedium?.fontSize,
+                        fontWeight: FontWeight.bold)),
+                Text(value),
+              ],
+            ),
+          ),
         ),
         kSpaceW(12),
         Expanded(
@@ -188,36 +186,40 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
-  Widget _gupiaoinfo(BuildContext context) {
+  Widget _gupiaoinfo() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(TextKey.gupiao.tr, style: Get.textTheme.titleLarge),
         kSpaceH(8),
-        RichText(
-          text: TextSpan(
-            text: '春秋航空',
-            style: DefaultTextStyle.of(context).style,
-            children: <TextSpan>[
-              TextSpan(
-                text: ' sz601021',
-              ),
-              TextSpan(
-                text: '股价：16.00',
-              ),
-              TextSpan(
-                text: '市值：16.00',
-              ),
-              TextSpan(
-                text: '市盈（TTM）：16.00',
-              ),
-              TextSpan(
-                text: '市净：16.00',
-              ),
-            ],
-          ),
-        ),
+        (controller.stockData.value.code != null)
+            ? Text(controller.stockData.value.showAllInfo())
+            : Text(TextKey.no.tr, style: TextStyle(color: Colors.grey)),
+
+        // RichText(
+        //   text: TextSpan(
+        //     text: controller.stockData.value.name ?? "",
+        //     // style: DefaultTextStyle.of(context).style,
+        //     children: <TextSpan>[
+        //       TextSpan(
+        //         text: controller.stockData.value.code ?? "",
+        //       ),
+        //       TextSpan(
+        //         text: '股价：16.00',
+        //       ),
+        //       TextSpan(
+        //         text: '市值：16.00',
+        //       ),
+        //       TextSpan(
+        //         text: '市盈（TTM）：16.00',
+        //       ),
+        //       TextSpan(
+        //         text: '市净：16.00',
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }

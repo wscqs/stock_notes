@@ -33,6 +33,9 @@ main() async {
     DeviceOrientation.portraitUp,
   ]);
   await QsCache.preInit();
+  // Get.put(GlobalService().init());
+  // await Get.lazyPut(GlobalService().init());
+  // Get.lazyPut(() => GlobalService().init());
   await Get.putAsync(() => GlobalService().init());
   // QsRequest.initDio();
   runApp(ScreenUtilInit(

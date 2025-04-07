@@ -43,6 +43,11 @@ class QsHud {
     showToast(TextKey.sererror.tr);
   }
 
+  static void showToastSerTXError() {
+    // showToast(kNETERROR);
+    showToast("Tx" + TextKey.sererror.tr);
+  }
+
   /// 显示加载对话框
   static void showLoading({String message = '加载中...', Duration? duration}) {
     // message = 'loading...';

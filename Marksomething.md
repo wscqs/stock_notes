@@ -10,6 +10,14 @@ flutter build
 dart run build_runner build
 dart run build_runner watch
 
+## 修改 .gitignore
+git add .gitignore
+git commit -m "Add or modify .gitignore file"
+
+git rm -r --cached android/app/.cxx/Debug
+git add .
+git commit -m "Update .gitignore to exclude unpackage except res"
+
 ## 包名 com.wlsp.carrotcards
 
 ## 打包flutter

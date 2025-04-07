@@ -31,6 +31,8 @@ class TextKey {
   static const sererror = 'sererror';
   static const jiazai = 'jiazai';
   static const shurugupiaotishi = 'shurugupiaotishi';
+  static const shurugupiaotishinumerror = 'shurugupiaotishinumerror';
+  static const no = 'no';
 }
 
 const Map<String, String> zh = {
@@ -66,6 +68,8 @@ const Map<String, String> zh = {
   TextKey.sererror: '服务端出差了，请稍后重试',
   TextKey.jiazai: '加载中...',
   TextKey.shurugupiaotishi: '请输入股票代码',
+  TextKey.shurugupiaotishinumerror: '股票代码不正确',
+  TextKey.no: '无',
 };
 
 const Map<String, String> en = {
@@ -102,4 +106,6 @@ const Map<String, String> en = {
   TextKey.sererror: 'The server is down, please try again later',
   TextKey.jiazai: 'loading...',
   TextKey.shurugupiaotishi: 'Please enter the stock code',
+  TextKey.shurugupiaotishinumerror: 'Incorrect stock code',
+  TextKey.no: 'No',
 };
