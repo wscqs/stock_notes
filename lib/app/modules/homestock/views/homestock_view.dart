@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/common/comment_style.dart';
+import 'package:stock_notes/common/extension/DateTime++.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/widget/keep_alive_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../../../common/database/database.dart';
 import '../../somewidget/homedrawer_page/view.dart';
 import '../controllers/homestock_controller.dart';
 
@@ -12,24 +15,29 @@ class HomestockView extends GetView<HomestockController> {
   const HomestockView({super.key});
   @override
   Widget build(BuildContext context) {
-    return KeepAliveWidget(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('股票'),
-          centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  controller.clickMore();
-                },
-                icon: Icon(
-                  Icons.more_horiz,
-                  size: 28,
-                ))
-          ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // 关闭键盘
+      },
+      child: KeepAliveWidget(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(TextKey.gupiao.tr),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    controller.clickMore();
+                  },
+                  icon: Icon(
+                    Icons.more_horiz,
+                    size: 28,
+                  ))
+            ],
+          ),
+          drawer: HomedrawerPage(),
+          body: _obx(),
         ),
-        drawer: HomedrawerPage(),
-        body: _obx(),
       ),
     );
   }
@@ -44,19 +52,29 @@ class HomestockView extends GetView<HomestockController> {
             onChanged: controller.filterItems, // 监听输入内容
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
-              hintText: "Search...",
+              hintText: TextKey.search.tr + " ...",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
+              suffixIcon: controller.query.value.isNotEmpty
+                  ? SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: controller.clickSearchClose,
+                      ),
+                    )
+                  : null,
             ),
           ),
           const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
-              itemCount: controller.filteredItems.length,
+              itemCount: controller.items.length,
               itemBuilder: (context, index) {
                 return HomeStockCell(
-                  index: index,
+                  item: controller.items[index],
                 );
               },
             ),
@@ -87,17 +105,18 @@ class HomestockView extends GetView<HomestockController> {
 }
 
 class HomeStockCell extends StatelessWidget {
-  final int index;
+  // final int index;
+  final StockItem item;
   final controller = Get.find<HomestockController>();
   HomeStockCell({
     super.key,
-    required this.index,
+    required this.item,
   });
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: ValueKey(index),
+      key: ValueKey(item.id),
       endActionPane: ActionPane(
         extentRatio: 0.8,
         motion: const BehindMotion(),
@@ -130,7 +149,7 @@ class HomeStockCell extends StatelessWidget {
       child: Card(
         child: InkWell(
           onTap: () {
-            controller.pushDetailPage();
+            controller.pushDetailPage(item);
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -140,11 +159,11 @@ class HomeStockCell extends StatelessWidget {
                   spacing: 8,
                   children: [
                     Text(
-                      "春秋航空",
+                      item.name,
                       style: TextStyle(fontSize: 16),
                     ),
                     Text(
-                      "16.00",
+                      item.currentPrice ?? "",
                       style: TextStyle(fontSize: 16),
                     ),
                     kSpaceMax(),
@@ -159,21 +178,23 @@ class HomeStockCell extends StatelessWidget {
                   spacing: 4,
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+                      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
                       decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(2),
                       ),
-                      child: Text(
-                        "沪",
-                        style: TextStyle(
-                          fontSize: 9,
+                      child: Center(
+                        child: Text(
+                          (item.marketType ?? "") == "51" ? "深" : "沪",
+                          style: TextStyle(
+                            fontSize: 10,
+                          ),
                         ),
                       ),
                     ),
                     Text(
-                      "SZ601021",
-                      style: TextStyle(fontSize: 12),
+                      item.code ?? "",
+                      style: TextStyle(fontSize: 14),
                     ),
                   ],
                 ),
@@ -188,7 +209,7 @@ class HomeStockCell extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "2012年7月2号",
+                      item.createdAt.toDateString() ?? "",
                       style: TextStyle(fontSize: 12),
                     ),
                   ],

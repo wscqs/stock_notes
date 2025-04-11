@@ -11,21 +11,26 @@ class StockeditView extends GetView<StockeditController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(TextKey.gupiao.tr),
-          centerTitle: true,
-          actions: [
-            ElevatedButton(
-                onPressed: () {
-                  controller.save();
-                },
-                child: Text(TextKey.baocun.tr))
-          ],
-        ),
-        body: Obx(() {
-          return buildContentView(context);
-        }));
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // 关闭键盘
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text(TextKey.gupiao.tr),
+            centerTitle: true,
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    controller.save();
+                  },
+                  child: Text(TextKey.baocun.tr))
+            ],
+          ),
+          body: Obx(() {
+            return buildContentView(context);
+          })),
+    );
   }
 
   Widget buildContentView(BuildContext context) {
@@ -69,6 +74,7 @@ class StockeditView extends GetView<StockeditController> {
           Text(TextKey.jilu.tr, style: Get.textTheme.titleLarge),
           kSpaceH(12),
           TextField(
+            controller: controller.pAllRemarkController,
             maxLines: null, // 允许多行输入
             decoration: InputDecoration(
               labelText: TextKey.beizui.tr,
@@ -79,6 +85,7 @@ class StockeditView extends GetView<StockeditController> {
           ),
           kSpaceH(16),
           TextField(
+            controller: controller.pEventRemarkController,
             maxLines: null, // 允许多行输入
             decoration: InputDecoration(
               labelText: TextKey.shijian.tr + TextKey.jilu.tr,
@@ -111,15 +118,28 @@ class StockeditView extends GetView<StockeditController> {
   Widget _rowjiage({required String type}) {
     String titile = "";
     String value = "";
+    TextEditingController? buyTextEditingController;
+    TextEditingController? saleTextEditingController;
+    TextEditingController? remarkTextEditingController;
+
     if (type == "price") {
       titile = TextKey.jige.tr;
       value = controller.stockData.value.currentPrice ?? "";
+      buyTextEditingController = controller.pPriceBuyController;
+      saleTextEditingController = controller.pPriceSaleController;
+      remarkTextEditingController = controller.pPriceRemarkController;
     } else if (type == "market_value") {
       titile = TextKey.shizhi.tr;
       value = controller.stockData.value.totalMarketCap ?? "";
+      buyTextEditingController = controller.pMarketCapBuyController;
+      saleTextEditingController = controller.pMarketCapSaleController;
+      remarkTextEditingController = controller.pMarketRemarkController;
     } else if (type == "p_e_ratio") {
       titile = TextKey.shiyin.tr;
       value = controller.stockData.value.peRatioTtm ?? "";
+      buyTextEditingController = controller.pPeTtmBuyController;
+      saleTextEditingController = controller.pPeTtmSaleController;
+      remarkTextEditingController = controller.pPeTtmRemarkController;
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,6 +172,7 @@ class StockeditView extends GetView<StockeditController> {
                   SizedBox(
                     width: 60,
                     child: TextField(
+                      controller: buyTextEditingController,
                       decoration: InputDecoration(labelText: TextKey.buy.tr),
                     ),
                   ),
@@ -159,6 +180,7 @@ class StockeditView extends GetView<StockeditController> {
                   SizedBox(
                     width: 60,
                     child: TextField(
+                      controller: saleTextEditingController,
                       decoration: InputDecoration(labelText: TextKey.sale.tr),
                     ),
                   ),
@@ -171,6 +193,7 @@ class StockeditView extends GetView<StockeditController> {
               ),
               kSpaceH(16),
               TextField(
+                controller: remarkTextEditingController,
                 maxLines: null, // 允许多行输入
                 decoration: InputDecoration(
                   labelText: TextKey.liyou.tr,

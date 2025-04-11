@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 
 class StockSearchField extends StatelessWidget {
   final TextEditingController controller;
@@ -20,35 +21,47 @@ class StockSearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hintText,
-          prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 12.0,
-          ),
-          suffixIcon: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (stockValue.isNotEmpty)
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: onClear,
-                ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 8, right: 12, bottom: 8, top: 8),
-                child: FilledButton(
-                  onPressed: onSubmit,
-                  child: const Text("Sure"),
-                ),
-              )
-            ],
+      return SizedBox(
+        height: 44,
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hintText,
+            prefixIcon: const Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 12.0,
+            ),
+            suffixIcon: stockValue.isNotEmpty
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: onClear,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8, right: 12, bottom: 8, top: 8),
+                        child: FilledButton(
+                          onPressed: onSubmit,
+                          child: Text(
+                            TextKey.search.tr,
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          style: FilledButton.styleFrom(
+                            minimumSize: Size(0, 30), // 设高
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12!, vertical: 0),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : null,
           ),
         ),
       );

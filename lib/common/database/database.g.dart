@@ -3,12 +3,12 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $TodoItemsTable extends TodoItems
-    with TableInfo<$TodoItemsTable, TodoItem> {
+class $StockItemsTable extends StockItems
+    with TableInfo<$StockItemsTable, StockItem> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TodoItemsTable(this.attachedDatabase, [this._alias]);
+  $StockItemsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -26,29 +26,158 @@ class $TodoItemsTable extends TodoItems
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
   @override
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 32),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _contentMeta =
-      const VerificationMeta('content');
+  late final GeneratedColumn<DateTime> updateAt = GeneratedColumn<DateTime>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _marketTypeMeta =
+      const VerificationMeta('marketType');
   @override
-  late final GeneratedColumn<String> content = GeneratedColumn<String>(
-      'body', aliasedName, false,
+  late final GeneratedColumn<String> marketType = GeneratedColumn<String>(
+      'market_type', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  List<GeneratedColumn> get $columns => [id, createdAt, title, content];
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+      'code', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _currentPriceMeta =
+      const VerificationMeta('currentPrice');
+  @override
+  late final GeneratedColumn<String> currentPrice = GeneratedColumn<String>(
+      'current_price', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _peRatioTtmMeta =
+      const VerificationMeta('peRatioTtm');
+  @override
+  late final GeneratedColumn<String> peRatioTtm = GeneratedColumn<String>(
+      'pe_ratio_ttm', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _totalMarketCapMeta =
+      const VerificationMeta('totalMarketCap');
+  @override
+  late final GeneratedColumn<String> totalMarketCap = GeneratedColumn<String>(
+      'total_market_cap', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pbRatioMeta =
+      const VerificationMeta('pbRatio');
+  @override
+  late final GeneratedColumn<String> pbRatio = GeneratedColumn<String>(
+      'pb_ratio', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _dividendRatioMeta =
+      const VerificationMeta('dividendRatio');
+  @override
+  late final GeneratedColumn<String> dividendRatio = GeneratedColumn<String>(
+      'dividend_ratio', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pPriceBuyMeta =
+      const VerificationMeta('pPriceBuy');
+  @override
+  late final GeneratedColumn<String> pPriceBuy = GeneratedColumn<String>(
+      'p_price_buy', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pPriceSaleMeta =
+      const VerificationMeta('pPriceSale');
+  @override
+  late final GeneratedColumn<String> pPriceSale = GeneratedColumn<String>(
+      'p_price_sale', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pPriceRemarkMeta =
+      const VerificationMeta('pPriceRemark');
+  @override
+  late final GeneratedColumn<String> pPriceRemark = GeneratedColumn<String>(
+      'p_price_remark', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pMarketCapBuyMeta =
+      const VerificationMeta('pMarketCapBuy');
+  @override
+  late final GeneratedColumn<String> pMarketCapBuy = GeneratedColumn<String>(
+      'p_market_cap_buy', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pMarketCapSaleMeta =
+      const VerificationMeta('pMarketCapSale');
+  @override
+  late final GeneratedColumn<String> pMarketCapSale = GeneratedColumn<String>(
+      'p_market_cap_sale', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pMarketRemarkMeta =
+      const VerificationMeta('pMarketRemark');
+  @override
+  late final GeneratedColumn<String> pMarketRemark = GeneratedColumn<String>(
+      'p_market_remark', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pPeTtmBuyMeta =
+      const VerificationMeta('pPeTtmBuy');
+  @override
+  late final GeneratedColumn<String> pPeTtmBuy = GeneratedColumn<String>(
+      'p_pe_ttm_buy', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pPeTtmSaleMeta =
+      const VerificationMeta('pPeTtmSale');
+  @override
+  late final GeneratedColumn<String> pPeTtmSale = GeneratedColumn<String>(
+      'p_pe_ttm_sale', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pPeTtmRemarkMeta =
+      const VerificationMeta('pPeTtmRemark');
+  @override
+  late final GeneratedColumn<String> pPeTtmRemark = GeneratedColumn<String>(
+      'p_pe_ttm_remark', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pAllRemarkMeta =
+      const VerificationMeta('pAllRemark');
+  @override
+  late final GeneratedColumn<String> pAllRemark = GeneratedColumn<String>(
+      'p_all_remark', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pEventRemarkMeta =
+      const VerificationMeta('pEventRemark');
+  @override
+  late final GeneratedColumn<String> pEventRemark = GeneratedColumn<String>(
+      'p_event_remark', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        createdAt,
+        updateAt,
+        marketType,
+        name,
+        code,
+        currentPrice,
+        peRatioTtm,
+        totalMarketCap,
+        pbRatio,
+        dividendRatio,
+        pPriceBuy,
+        pPriceSale,
+        pPriceRemark,
+        pMarketCapBuy,
+        pMarketCapSale,
+        pMarketRemark,
+        pPeTtmBuy,
+        pPeTtmSale,
+        pPeTtmRemark,
+        pAllRemark,
+        pEventRemark
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'todo_items';
+  static const String $name = 'stock_items';
   @override
-  VerificationContext validateIntegrity(Insertable<TodoItem> instance,
+  VerificationContext validateIntegrity(Insertable<StockItem> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -59,17 +188,123 @@ class $TodoItemsTable extends TodoItems
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     }
-    if (data.containsKey('title')) {
-      context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
-    } else if (isInserting) {
-      context.missing(_titleMeta);
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
     }
-    if (data.containsKey('body')) {
-      context.handle(_contentMeta,
-          content.isAcceptableOrUnknown(data['body']!, _contentMeta));
+    if (data.containsKey('market_type')) {
+      context.handle(
+          _marketTypeMeta,
+          marketType.isAcceptableOrUnknown(
+              data['market_type']!, _marketTypeMeta));
     } else if (isInserting) {
-      context.missing(_contentMeta);
+      context.missing(_marketTypeMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('current_price')) {
+      context.handle(
+          _currentPriceMeta,
+          currentPrice.isAcceptableOrUnknown(
+              data['current_price']!, _currentPriceMeta));
+    }
+    if (data.containsKey('pe_ratio_ttm')) {
+      context.handle(
+          _peRatioTtmMeta,
+          peRatioTtm.isAcceptableOrUnknown(
+              data['pe_ratio_ttm']!, _peRatioTtmMeta));
+    }
+    if (data.containsKey('total_market_cap')) {
+      context.handle(
+          _totalMarketCapMeta,
+          totalMarketCap.isAcceptableOrUnknown(
+              data['total_market_cap']!, _totalMarketCapMeta));
+    }
+    if (data.containsKey('pb_ratio')) {
+      context.handle(_pbRatioMeta,
+          pbRatio.isAcceptableOrUnknown(data['pb_ratio']!, _pbRatioMeta));
+    }
+    if (data.containsKey('dividend_ratio')) {
+      context.handle(
+          _dividendRatioMeta,
+          dividendRatio.isAcceptableOrUnknown(
+              data['dividend_ratio']!, _dividendRatioMeta));
+    }
+    if (data.containsKey('p_price_buy')) {
+      context.handle(
+          _pPriceBuyMeta,
+          pPriceBuy.isAcceptableOrUnknown(
+              data['p_price_buy']!, _pPriceBuyMeta));
+    }
+    if (data.containsKey('p_price_sale')) {
+      context.handle(
+          _pPriceSaleMeta,
+          pPriceSale.isAcceptableOrUnknown(
+              data['p_price_sale']!, _pPriceSaleMeta));
+    }
+    if (data.containsKey('p_price_remark')) {
+      context.handle(
+          _pPriceRemarkMeta,
+          pPriceRemark.isAcceptableOrUnknown(
+              data['p_price_remark']!, _pPriceRemarkMeta));
+    }
+    if (data.containsKey('p_market_cap_buy')) {
+      context.handle(
+          _pMarketCapBuyMeta,
+          pMarketCapBuy.isAcceptableOrUnknown(
+              data['p_market_cap_buy']!, _pMarketCapBuyMeta));
+    }
+    if (data.containsKey('p_market_cap_sale')) {
+      context.handle(
+          _pMarketCapSaleMeta,
+          pMarketCapSale.isAcceptableOrUnknown(
+              data['p_market_cap_sale']!, _pMarketCapSaleMeta));
+    }
+    if (data.containsKey('p_market_remark')) {
+      context.handle(
+          _pMarketRemarkMeta,
+          pMarketRemark.isAcceptableOrUnknown(
+              data['p_market_remark']!, _pMarketRemarkMeta));
+    }
+    if (data.containsKey('p_pe_ttm_buy')) {
+      context.handle(
+          _pPeTtmBuyMeta,
+          pPeTtmBuy.isAcceptableOrUnknown(
+              data['p_pe_ttm_buy']!, _pPeTtmBuyMeta));
+    }
+    if (data.containsKey('p_pe_ttm_sale')) {
+      context.handle(
+          _pPeTtmSaleMeta,
+          pPeTtmSale.isAcceptableOrUnknown(
+              data['p_pe_ttm_sale']!, _pPeTtmSaleMeta));
+    }
+    if (data.containsKey('p_pe_ttm_remark')) {
+      context.handle(
+          _pPeTtmRemarkMeta,
+          pPeTtmRemark.isAcceptableOrUnknown(
+              data['p_pe_ttm_remark']!, _pPeTtmRemarkMeta));
+    }
+    if (data.containsKey('p_all_remark')) {
+      context.handle(
+          _pAllRemarkMeta,
+          pAllRemark.isAcceptableOrUnknown(
+              data['p_all_remark']!, _pAllRemarkMeta));
+    }
+    if (data.containsKey('p_event_remark')) {
+      context.handle(
+          _pEventRemarkMeta,
+          pEventRemark.isAcceptableOrUnknown(
+              data['p_event_remark']!, _pEventRemarkMeta));
     }
     return context;
   }
@@ -77,63 +312,253 @@ class $TodoItemsTable extends TodoItems
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TodoItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+  StockItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TodoItem(
+    return StockItem(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      content: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}body'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_at'])!,
+      marketType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}market_type'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      code: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}code'])!,
+      currentPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}current_price']),
+      peRatioTtm: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}pe_ratio_ttm']),
+      totalMarketCap: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}total_market_cap']),
+      pbRatio: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}pb_ratio']),
+      dividendRatio: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}dividend_ratio']),
+      pPriceBuy: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_price_buy']),
+      pPriceSale: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_price_sale']),
+      pPriceRemark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_price_remark']),
+      pMarketCapBuy: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}p_market_cap_buy']),
+      pMarketCapSale: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}p_market_cap_sale']),
+      pMarketRemark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_market_remark']),
+      pPeTtmBuy: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_pe_ttm_buy']),
+      pPeTtmSale: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_pe_ttm_sale']),
+      pPeTtmRemark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_pe_ttm_remark']),
+      pAllRemark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_all_remark']),
+      pEventRemark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}p_event_remark']),
     );
   }
 
   @override
-  $TodoItemsTable createAlias(String alias) {
-    return $TodoItemsTable(attachedDatabase, alias);
+  $StockItemsTable createAlias(String alias) {
+    return $StockItemsTable(attachedDatabase, alias);
   }
 }
 
-class TodoItem extends DataClass implements Insertable<TodoItem> {
+class StockItem extends DataClass implements Insertable<StockItem> {
   final int id;
   final DateTime createdAt;
-  final String title;
-  final String content;
-  const TodoItem(
+  final DateTime updateAt;
+  final String marketType;
+  final String name;
+  final String code;
+  final String? currentPrice;
+  final String? peRatioTtm;
+  final String? totalMarketCap;
+  final String? pbRatio;
+  final String? dividendRatio;
+  final String? pPriceBuy;
+  final String? pPriceSale;
+  final String? pPriceRemark;
+  final String? pMarketCapBuy;
+  final String? pMarketCapSale;
+  final String? pMarketRemark;
+  final String? pPeTtmBuy;
+  final String? pPeTtmSale;
+  final String? pPeTtmRemark;
+  final String? pAllRemark;
+  final String? pEventRemark;
+  const StockItem(
       {required this.id,
       required this.createdAt,
-      required this.title,
-      required this.content});
+      required this.updateAt,
+      required this.marketType,
+      required this.name,
+      required this.code,
+      this.currentPrice,
+      this.peRatioTtm,
+      this.totalMarketCap,
+      this.pbRatio,
+      this.dividendRatio,
+      this.pPriceBuy,
+      this.pPriceSale,
+      this.pPriceRemark,
+      this.pMarketCapBuy,
+      this.pMarketCapSale,
+      this.pMarketRemark,
+      this.pPeTtmBuy,
+      this.pPeTtmSale,
+      this.pPeTtmRemark,
+      this.pAllRemark,
+      this.pEventRemark});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['title'] = Variable<String>(title);
-    map['body'] = Variable<String>(content);
+    map['update_at'] = Variable<DateTime>(updateAt);
+    map['market_type'] = Variable<String>(marketType);
+    map['name'] = Variable<String>(name);
+    map['code'] = Variable<String>(code);
+    if (!nullToAbsent || currentPrice != null) {
+      map['current_price'] = Variable<String>(currentPrice);
+    }
+    if (!nullToAbsent || peRatioTtm != null) {
+      map['pe_ratio_ttm'] = Variable<String>(peRatioTtm);
+    }
+    if (!nullToAbsent || totalMarketCap != null) {
+      map['total_market_cap'] = Variable<String>(totalMarketCap);
+    }
+    if (!nullToAbsent || pbRatio != null) {
+      map['pb_ratio'] = Variable<String>(pbRatio);
+    }
+    if (!nullToAbsent || dividendRatio != null) {
+      map['dividend_ratio'] = Variable<String>(dividendRatio);
+    }
+    if (!nullToAbsent || pPriceBuy != null) {
+      map['p_price_buy'] = Variable<String>(pPriceBuy);
+    }
+    if (!nullToAbsent || pPriceSale != null) {
+      map['p_price_sale'] = Variable<String>(pPriceSale);
+    }
+    if (!nullToAbsent || pPriceRemark != null) {
+      map['p_price_remark'] = Variable<String>(pPriceRemark);
+    }
+    if (!nullToAbsent || pMarketCapBuy != null) {
+      map['p_market_cap_buy'] = Variable<String>(pMarketCapBuy);
+    }
+    if (!nullToAbsent || pMarketCapSale != null) {
+      map['p_market_cap_sale'] = Variable<String>(pMarketCapSale);
+    }
+    if (!nullToAbsent || pMarketRemark != null) {
+      map['p_market_remark'] = Variable<String>(pMarketRemark);
+    }
+    if (!nullToAbsent || pPeTtmBuy != null) {
+      map['p_pe_ttm_buy'] = Variable<String>(pPeTtmBuy);
+    }
+    if (!nullToAbsent || pPeTtmSale != null) {
+      map['p_pe_ttm_sale'] = Variable<String>(pPeTtmSale);
+    }
+    if (!nullToAbsent || pPeTtmRemark != null) {
+      map['p_pe_ttm_remark'] = Variable<String>(pPeTtmRemark);
+    }
+    if (!nullToAbsent || pAllRemark != null) {
+      map['p_all_remark'] = Variable<String>(pAllRemark);
+    }
+    if (!nullToAbsent || pEventRemark != null) {
+      map['p_event_remark'] = Variable<String>(pEventRemark);
+    }
     return map;
   }
 
-  TodoItemsCompanion toCompanion(bool nullToAbsent) {
-    return TodoItemsCompanion(
+  StockItemsCompanion toCompanion(bool nullToAbsent) {
+    return StockItemsCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
-      title: Value(title),
-      content: Value(content),
+      updateAt: Value(updateAt),
+      marketType: Value(marketType),
+      name: Value(name),
+      code: Value(code),
+      currentPrice: currentPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentPrice),
+      peRatioTtm: peRatioTtm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(peRatioTtm),
+      totalMarketCap: totalMarketCap == null && nullToAbsent
+          ? const Value.absent()
+          : Value(totalMarketCap),
+      pbRatio: pbRatio == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pbRatio),
+      dividendRatio: dividendRatio == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dividendRatio),
+      pPriceBuy: pPriceBuy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pPriceBuy),
+      pPriceSale: pPriceSale == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pPriceSale),
+      pPriceRemark: pPriceRemark == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pPriceRemark),
+      pMarketCapBuy: pMarketCapBuy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pMarketCapBuy),
+      pMarketCapSale: pMarketCapSale == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pMarketCapSale),
+      pMarketRemark: pMarketRemark == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pMarketRemark),
+      pPeTtmBuy: pPeTtmBuy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pPeTtmBuy),
+      pPeTtmSale: pPeTtmSale == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pPeTtmSale),
+      pPeTtmRemark: pPeTtmRemark == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pPeTtmRemark),
+      pAllRemark: pAllRemark == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pAllRemark),
+      pEventRemark: pEventRemark == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pEventRemark),
     );
   }
 
-  factory TodoItem.fromJson(Map<String, dynamic> json,
+  factory StockItem.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TodoItem(
+    return StockItem(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      title: serializer.fromJson<String>(json['title']),
-      content: serializer.fromJson<String>(json['content']),
+      updateAt: serializer.fromJson<DateTime>(json['updateAt']),
+      marketType: serializer.fromJson<String>(json['marketType']),
+      name: serializer.fromJson<String>(json['name']),
+      code: serializer.fromJson<String>(json['code']),
+      currentPrice: serializer.fromJson<String?>(json['currentPrice']),
+      peRatioTtm: serializer.fromJson<String?>(json['peRatioTtm']),
+      totalMarketCap: serializer.fromJson<String?>(json['totalMarketCap']),
+      pbRatio: serializer.fromJson<String?>(json['pbRatio']),
+      dividendRatio: serializer.fromJson<String?>(json['dividendRatio']),
+      pPriceBuy: serializer.fromJson<String?>(json['pPriceBuy']),
+      pPriceSale: serializer.fromJson<String?>(json['pPriceSale']),
+      pPriceRemark: serializer.fromJson<String?>(json['pPriceRemark']),
+      pMarketCapBuy: serializer.fromJson<String?>(json['pMarketCapBuy']),
+      pMarketCapSale: serializer.fromJson<String?>(json['pMarketCapSale']),
+      pMarketRemark: serializer.fromJson<String?>(json['pMarketRemark']),
+      pPeTtmBuy: serializer.fromJson<String?>(json['pPeTtmBuy']),
+      pPeTtmSale: serializer.fromJson<String?>(json['pPeTtmSale']),
+      pPeTtmRemark: serializer.fromJson<String?>(json['pPeTtmRemark']),
+      pAllRemark: serializer.fromJson<String?>(json['pAllRemark']),
+      pEventRemark: serializer.fromJson<String?>(json['pEventRemark']),
     );
   }
   @override
@@ -142,93 +567,386 @@ class TodoItem extends DataClass implements Insertable<TodoItem> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'title': serializer.toJson<String>(title),
-      'content': serializer.toJson<String>(content),
+      'updateAt': serializer.toJson<DateTime>(updateAt),
+      'marketType': serializer.toJson<String>(marketType),
+      'name': serializer.toJson<String>(name),
+      'code': serializer.toJson<String>(code),
+      'currentPrice': serializer.toJson<String?>(currentPrice),
+      'peRatioTtm': serializer.toJson<String?>(peRatioTtm),
+      'totalMarketCap': serializer.toJson<String?>(totalMarketCap),
+      'pbRatio': serializer.toJson<String?>(pbRatio),
+      'dividendRatio': serializer.toJson<String?>(dividendRatio),
+      'pPriceBuy': serializer.toJson<String?>(pPriceBuy),
+      'pPriceSale': serializer.toJson<String?>(pPriceSale),
+      'pPriceRemark': serializer.toJson<String?>(pPriceRemark),
+      'pMarketCapBuy': serializer.toJson<String?>(pMarketCapBuy),
+      'pMarketCapSale': serializer.toJson<String?>(pMarketCapSale),
+      'pMarketRemark': serializer.toJson<String?>(pMarketRemark),
+      'pPeTtmBuy': serializer.toJson<String?>(pPeTtmBuy),
+      'pPeTtmSale': serializer.toJson<String?>(pPeTtmSale),
+      'pPeTtmRemark': serializer.toJson<String?>(pPeTtmRemark),
+      'pAllRemark': serializer.toJson<String?>(pAllRemark),
+      'pEventRemark': serializer.toJson<String?>(pEventRemark),
     };
   }
 
-  TodoItem copyWith(
-          {int? id, DateTime? createdAt, String? title, String? content}) =>
-      TodoItem(
+  StockItem copyWith(
+          {int? id,
+          DateTime? createdAt,
+          DateTime? updateAt,
+          String? marketType,
+          String? name,
+          String? code,
+          Value<String?> currentPrice = const Value.absent(),
+          Value<String?> peRatioTtm = const Value.absent(),
+          Value<String?> totalMarketCap = const Value.absent(),
+          Value<String?> pbRatio = const Value.absent(),
+          Value<String?> dividendRatio = const Value.absent(),
+          Value<String?> pPriceBuy = const Value.absent(),
+          Value<String?> pPriceSale = const Value.absent(),
+          Value<String?> pPriceRemark = const Value.absent(),
+          Value<String?> pMarketCapBuy = const Value.absent(),
+          Value<String?> pMarketCapSale = const Value.absent(),
+          Value<String?> pMarketRemark = const Value.absent(),
+          Value<String?> pPeTtmBuy = const Value.absent(),
+          Value<String?> pPeTtmSale = const Value.absent(),
+          Value<String?> pPeTtmRemark = const Value.absent(),
+          Value<String?> pAllRemark = const Value.absent(),
+          Value<String?> pEventRemark = const Value.absent()}) =>
+      StockItem(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
-        title: title ?? this.title,
-        content: content ?? this.content,
+        updateAt: updateAt ?? this.updateAt,
+        marketType: marketType ?? this.marketType,
+        name: name ?? this.name,
+        code: code ?? this.code,
+        currentPrice:
+            currentPrice.present ? currentPrice.value : this.currentPrice,
+        peRatioTtm: peRatioTtm.present ? peRatioTtm.value : this.peRatioTtm,
+        totalMarketCap:
+            totalMarketCap.present ? totalMarketCap.value : this.totalMarketCap,
+        pbRatio: pbRatio.present ? pbRatio.value : this.pbRatio,
+        dividendRatio:
+            dividendRatio.present ? dividendRatio.value : this.dividendRatio,
+        pPriceBuy: pPriceBuy.present ? pPriceBuy.value : this.pPriceBuy,
+        pPriceSale: pPriceSale.present ? pPriceSale.value : this.pPriceSale,
+        pPriceRemark:
+            pPriceRemark.present ? pPriceRemark.value : this.pPriceRemark,
+        pMarketCapBuy:
+            pMarketCapBuy.present ? pMarketCapBuy.value : this.pMarketCapBuy,
+        pMarketCapSale:
+            pMarketCapSale.present ? pMarketCapSale.value : this.pMarketCapSale,
+        pMarketRemark:
+            pMarketRemark.present ? pMarketRemark.value : this.pMarketRemark,
+        pPeTtmBuy: pPeTtmBuy.present ? pPeTtmBuy.value : this.pPeTtmBuy,
+        pPeTtmSale: pPeTtmSale.present ? pPeTtmSale.value : this.pPeTtmSale,
+        pPeTtmRemark:
+            pPeTtmRemark.present ? pPeTtmRemark.value : this.pPeTtmRemark,
+        pAllRemark: pAllRemark.present ? pAllRemark.value : this.pAllRemark,
+        pEventRemark:
+            pEventRemark.present ? pEventRemark.value : this.pEventRemark,
       );
-  TodoItem copyWithCompanion(TodoItemsCompanion data) {
-    return TodoItem(
+  StockItem copyWithCompanion(StockItemsCompanion data) {
+    return StockItem(
       id: data.id.present ? data.id.value : this.id,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      title: data.title.present ? data.title.value : this.title,
-      content: data.content.present ? data.content.value : this.content,
+      updateAt: data.updateAt.present ? data.updateAt.value : this.updateAt,
+      marketType:
+          data.marketType.present ? data.marketType.value : this.marketType,
+      name: data.name.present ? data.name.value : this.name,
+      code: data.code.present ? data.code.value : this.code,
+      currentPrice: data.currentPrice.present
+          ? data.currentPrice.value
+          : this.currentPrice,
+      peRatioTtm:
+          data.peRatioTtm.present ? data.peRatioTtm.value : this.peRatioTtm,
+      totalMarketCap: data.totalMarketCap.present
+          ? data.totalMarketCap.value
+          : this.totalMarketCap,
+      pbRatio: data.pbRatio.present ? data.pbRatio.value : this.pbRatio,
+      dividendRatio: data.dividendRatio.present
+          ? data.dividendRatio.value
+          : this.dividendRatio,
+      pPriceBuy: data.pPriceBuy.present ? data.pPriceBuy.value : this.pPriceBuy,
+      pPriceSale:
+          data.pPriceSale.present ? data.pPriceSale.value : this.pPriceSale,
+      pPriceRemark: data.pPriceRemark.present
+          ? data.pPriceRemark.value
+          : this.pPriceRemark,
+      pMarketCapBuy: data.pMarketCapBuy.present
+          ? data.pMarketCapBuy.value
+          : this.pMarketCapBuy,
+      pMarketCapSale: data.pMarketCapSale.present
+          ? data.pMarketCapSale.value
+          : this.pMarketCapSale,
+      pMarketRemark: data.pMarketRemark.present
+          ? data.pMarketRemark.value
+          : this.pMarketRemark,
+      pPeTtmBuy: data.pPeTtmBuy.present ? data.pPeTtmBuy.value : this.pPeTtmBuy,
+      pPeTtmSale:
+          data.pPeTtmSale.present ? data.pPeTtmSale.value : this.pPeTtmSale,
+      pPeTtmRemark: data.pPeTtmRemark.present
+          ? data.pPeTtmRemark.value
+          : this.pPeTtmRemark,
+      pAllRemark:
+          data.pAllRemark.present ? data.pAllRemark.value : this.pAllRemark,
+      pEventRemark: data.pEventRemark.present
+          ? data.pEventRemark.value
+          : this.pEventRemark,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('TodoItem(')
+    return (StringBuffer('StockItem(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
-          ..write('title: $title, ')
-          ..write('content: $content')
+          ..write('updateAt: $updateAt, ')
+          ..write('marketType: $marketType, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('currentPrice: $currentPrice, ')
+          ..write('peRatioTtm: $peRatioTtm, ')
+          ..write('totalMarketCap: $totalMarketCap, ')
+          ..write('pbRatio: $pbRatio, ')
+          ..write('dividendRatio: $dividendRatio, ')
+          ..write('pPriceBuy: $pPriceBuy, ')
+          ..write('pPriceSale: $pPriceSale, ')
+          ..write('pPriceRemark: $pPriceRemark, ')
+          ..write('pMarketCapBuy: $pMarketCapBuy, ')
+          ..write('pMarketCapSale: $pMarketCapSale, ')
+          ..write('pMarketRemark: $pMarketRemark, ')
+          ..write('pPeTtmBuy: $pPeTtmBuy, ')
+          ..write('pPeTtmSale: $pPeTtmSale, ')
+          ..write('pPeTtmRemark: $pPeTtmRemark, ')
+          ..write('pAllRemark: $pAllRemark, ')
+          ..write('pEventRemark: $pEventRemark')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdAt, title, content);
+  int get hashCode => Object.hashAll([
+        id,
+        createdAt,
+        updateAt,
+        marketType,
+        name,
+        code,
+        currentPrice,
+        peRatioTtm,
+        totalMarketCap,
+        pbRatio,
+        dividendRatio,
+        pPriceBuy,
+        pPriceSale,
+        pPriceRemark,
+        pMarketCapBuy,
+        pMarketCapSale,
+        pMarketRemark,
+        pPeTtmBuy,
+        pPeTtmSale,
+        pPeTtmRemark,
+        pAllRemark,
+        pEventRemark
+      ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TodoItem &&
+      (other is StockItem &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
-          other.title == this.title &&
-          other.content == this.content);
+          other.updateAt == this.updateAt &&
+          other.marketType == this.marketType &&
+          other.name == this.name &&
+          other.code == this.code &&
+          other.currentPrice == this.currentPrice &&
+          other.peRatioTtm == this.peRatioTtm &&
+          other.totalMarketCap == this.totalMarketCap &&
+          other.pbRatio == this.pbRatio &&
+          other.dividendRatio == this.dividendRatio &&
+          other.pPriceBuy == this.pPriceBuy &&
+          other.pPriceSale == this.pPriceSale &&
+          other.pPriceRemark == this.pPriceRemark &&
+          other.pMarketCapBuy == this.pMarketCapBuy &&
+          other.pMarketCapSale == this.pMarketCapSale &&
+          other.pMarketRemark == this.pMarketRemark &&
+          other.pPeTtmBuy == this.pPeTtmBuy &&
+          other.pPeTtmSale == this.pPeTtmSale &&
+          other.pPeTtmRemark == this.pPeTtmRemark &&
+          other.pAllRemark == this.pAllRemark &&
+          other.pEventRemark == this.pEventRemark);
 }
 
-class TodoItemsCompanion extends UpdateCompanion<TodoItem> {
+class StockItemsCompanion extends UpdateCompanion<StockItem> {
   final Value<int> id;
   final Value<DateTime> createdAt;
-  final Value<String> title;
-  final Value<String> content;
-  const TodoItemsCompanion({
+  final Value<DateTime> updateAt;
+  final Value<String> marketType;
+  final Value<String> name;
+  final Value<String> code;
+  final Value<String?> currentPrice;
+  final Value<String?> peRatioTtm;
+  final Value<String?> totalMarketCap;
+  final Value<String?> pbRatio;
+  final Value<String?> dividendRatio;
+  final Value<String?> pPriceBuy;
+  final Value<String?> pPriceSale;
+  final Value<String?> pPriceRemark;
+  final Value<String?> pMarketCapBuy;
+  final Value<String?> pMarketCapSale;
+  final Value<String?> pMarketRemark;
+  final Value<String?> pPeTtmBuy;
+  final Value<String?> pPeTtmSale;
+  final Value<String?> pPeTtmRemark;
+  final Value<String?> pAllRemark;
+  final Value<String?> pEventRemark;
+  const StockItemsCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
-    this.title = const Value.absent(),
-    this.content = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.marketType = const Value.absent(),
+    this.name = const Value.absent(),
+    this.code = const Value.absent(),
+    this.currentPrice = const Value.absent(),
+    this.peRatioTtm = const Value.absent(),
+    this.totalMarketCap = const Value.absent(),
+    this.pbRatio = const Value.absent(),
+    this.dividendRatio = const Value.absent(),
+    this.pPriceBuy = const Value.absent(),
+    this.pPriceSale = const Value.absent(),
+    this.pPriceRemark = const Value.absent(),
+    this.pMarketCapBuy = const Value.absent(),
+    this.pMarketCapSale = const Value.absent(),
+    this.pMarketRemark = const Value.absent(),
+    this.pPeTtmBuy = const Value.absent(),
+    this.pPeTtmSale = const Value.absent(),
+    this.pPeTtmRemark = const Value.absent(),
+    this.pAllRemark = const Value.absent(),
+    this.pEventRemark = const Value.absent(),
   });
-  TodoItemsCompanion.insert({
+  StockItemsCompanion.insert({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
-    required String title,
-    required String content,
-  })  : title = Value(title),
-        content = Value(content);
-  static Insertable<TodoItem> custom({
+    this.updateAt = const Value.absent(),
+    required String marketType,
+    required String name,
+    required String code,
+    this.currentPrice = const Value.absent(),
+    this.peRatioTtm = const Value.absent(),
+    this.totalMarketCap = const Value.absent(),
+    this.pbRatio = const Value.absent(),
+    this.dividendRatio = const Value.absent(),
+    this.pPriceBuy = const Value.absent(),
+    this.pPriceSale = const Value.absent(),
+    this.pPriceRemark = const Value.absent(),
+    this.pMarketCapBuy = const Value.absent(),
+    this.pMarketCapSale = const Value.absent(),
+    this.pMarketRemark = const Value.absent(),
+    this.pPeTtmBuy = const Value.absent(),
+    this.pPeTtmSale = const Value.absent(),
+    this.pPeTtmRemark = const Value.absent(),
+    this.pAllRemark = const Value.absent(),
+    this.pEventRemark = const Value.absent(),
+  })  : marketType = Value(marketType),
+        name = Value(name),
+        code = Value(code);
+  static Insertable<StockItem> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
-    Expression<String>? title,
-    Expression<String>? content,
+    Expression<DateTime>? updateAt,
+    Expression<String>? marketType,
+    Expression<String>? name,
+    Expression<String>? code,
+    Expression<String>? currentPrice,
+    Expression<String>? peRatioTtm,
+    Expression<String>? totalMarketCap,
+    Expression<String>? pbRatio,
+    Expression<String>? dividendRatio,
+    Expression<String>? pPriceBuy,
+    Expression<String>? pPriceSale,
+    Expression<String>? pPriceRemark,
+    Expression<String>? pMarketCapBuy,
+    Expression<String>? pMarketCapSale,
+    Expression<String>? pMarketRemark,
+    Expression<String>? pPeTtmBuy,
+    Expression<String>? pPeTtmSale,
+    Expression<String>? pPeTtmRemark,
+    Expression<String>? pAllRemark,
+    Expression<String>? pEventRemark,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (createdAt != null) 'created_at': createdAt,
-      if (title != null) 'title': title,
-      if (content != null) 'body': content,
+      if (updateAt != null) 'update_at': updateAt,
+      if (marketType != null) 'market_type': marketType,
+      if (name != null) 'name': name,
+      if (code != null) 'code': code,
+      if (currentPrice != null) 'current_price': currentPrice,
+      if (peRatioTtm != null) 'pe_ratio_ttm': peRatioTtm,
+      if (totalMarketCap != null) 'total_market_cap': totalMarketCap,
+      if (pbRatio != null) 'pb_ratio': pbRatio,
+      if (dividendRatio != null) 'dividend_ratio': dividendRatio,
+      if (pPriceBuy != null) 'p_price_buy': pPriceBuy,
+      if (pPriceSale != null) 'p_price_sale': pPriceSale,
+      if (pPriceRemark != null) 'p_price_remark': pPriceRemark,
+      if (pMarketCapBuy != null) 'p_market_cap_buy': pMarketCapBuy,
+      if (pMarketCapSale != null) 'p_market_cap_sale': pMarketCapSale,
+      if (pMarketRemark != null) 'p_market_remark': pMarketRemark,
+      if (pPeTtmBuy != null) 'p_pe_ttm_buy': pPeTtmBuy,
+      if (pPeTtmSale != null) 'p_pe_ttm_sale': pPeTtmSale,
+      if (pPeTtmRemark != null) 'p_pe_ttm_remark': pPeTtmRemark,
+      if (pAllRemark != null) 'p_all_remark': pAllRemark,
+      if (pEventRemark != null) 'p_event_remark': pEventRemark,
     });
   }
 
-  TodoItemsCompanion copyWith(
+  StockItemsCompanion copyWith(
       {Value<int>? id,
       Value<DateTime>? createdAt,
-      Value<String>? title,
-      Value<String>? content}) {
-    return TodoItemsCompanion(
+      Value<DateTime>? updateAt,
+      Value<String>? marketType,
+      Value<String>? name,
+      Value<String>? code,
+      Value<String?>? currentPrice,
+      Value<String?>? peRatioTtm,
+      Value<String?>? totalMarketCap,
+      Value<String?>? pbRatio,
+      Value<String?>? dividendRatio,
+      Value<String?>? pPriceBuy,
+      Value<String?>? pPriceSale,
+      Value<String?>? pPriceRemark,
+      Value<String?>? pMarketCapBuy,
+      Value<String?>? pMarketCapSale,
+      Value<String?>? pMarketRemark,
+      Value<String?>? pPeTtmBuy,
+      Value<String?>? pPeTtmSale,
+      Value<String?>? pPeTtmRemark,
+      Value<String?>? pAllRemark,
+      Value<String?>? pEventRemark}) {
+    return StockItemsCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
-      title: title ?? this.title,
-      content: content ?? this.content,
+      updateAt: updateAt ?? this.updateAt,
+      marketType: marketType ?? this.marketType,
+      name: name ?? this.name,
+      code: code ?? this.code,
+      currentPrice: currentPrice ?? this.currentPrice,
+      peRatioTtm: peRatioTtm ?? this.peRatioTtm,
+      totalMarketCap: totalMarketCap ?? this.totalMarketCap,
+      pbRatio: pbRatio ?? this.pbRatio,
+      dividendRatio: dividendRatio ?? this.dividendRatio,
+      pPriceBuy: pPriceBuy ?? this.pPriceBuy,
+      pPriceSale: pPriceSale ?? this.pPriceSale,
+      pPriceRemark: pPriceRemark ?? this.pPriceRemark,
+      pMarketCapBuy: pMarketCapBuy ?? this.pMarketCapBuy,
+      pMarketCapSale: pMarketCapSale ?? this.pMarketCapSale,
+      pMarketRemark: pMarketRemark ?? this.pMarketRemark,
+      pPeTtmBuy: pPeTtmBuy ?? this.pPeTtmBuy,
+      pPeTtmSale: pPeTtmSale ?? this.pPeTtmSale,
+      pPeTtmRemark: pPeTtmRemark ?? this.pPeTtmRemark,
+      pAllRemark: pAllRemark ?? this.pAllRemark,
+      pEventRemark: pEventRemark ?? this.pEventRemark,
     );
   }
 
@@ -241,22 +959,94 @@ class TodoItemsCompanion extends UpdateCompanion<TodoItem> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
+    if (updateAt.present) {
+      map['update_at'] = Variable<DateTime>(updateAt.value);
     }
-    if (content.present) {
-      map['body'] = Variable<String>(content.value);
+    if (marketType.present) {
+      map['market_type'] = Variable<String>(marketType.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (currentPrice.present) {
+      map['current_price'] = Variable<String>(currentPrice.value);
+    }
+    if (peRatioTtm.present) {
+      map['pe_ratio_ttm'] = Variable<String>(peRatioTtm.value);
+    }
+    if (totalMarketCap.present) {
+      map['total_market_cap'] = Variable<String>(totalMarketCap.value);
+    }
+    if (pbRatio.present) {
+      map['pb_ratio'] = Variable<String>(pbRatio.value);
+    }
+    if (dividendRatio.present) {
+      map['dividend_ratio'] = Variable<String>(dividendRatio.value);
+    }
+    if (pPriceBuy.present) {
+      map['p_price_buy'] = Variable<String>(pPriceBuy.value);
+    }
+    if (pPriceSale.present) {
+      map['p_price_sale'] = Variable<String>(pPriceSale.value);
+    }
+    if (pPriceRemark.present) {
+      map['p_price_remark'] = Variable<String>(pPriceRemark.value);
+    }
+    if (pMarketCapBuy.present) {
+      map['p_market_cap_buy'] = Variable<String>(pMarketCapBuy.value);
+    }
+    if (pMarketCapSale.present) {
+      map['p_market_cap_sale'] = Variable<String>(pMarketCapSale.value);
+    }
+    if (pMarketRemark.present) {
+      map['p_market_remark'] = Variable<String>(pMarketRemark.value);
+    }
+    if (pPeTtmBuy.present) {
+      map['p_pe_ttm_buy'] = Variable<String>(pPeTtmBuy.value);
+    }
+    if (pPeTtmSale.present) {
+      map['p_pe_ttm_sale'] = Variable<String>(pPeTtmSale.value);
+    }
+    if (pPeTtmRemark.present) {
+      map['p_pe_ttm_remark'] = Variable<String>(pPeTtmRemark.value);
+    }
+    if (pAllRemark.present) {
+      map['p_all_remark'] = Variable<String>(pAllRemark.value);
+    }
+    if (pEventRemark.present) {
+      map['p_event_remark'] = Variable<String>(pEventRemark.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('TodoItemsCompanion(')
+    return (StringBuffer('StockItemsCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
-          ..write('title: $title, ')
-          ..write('content: $content')
+          ..write('updateAt: $updateAt, ')
+          ..write('marketType: $marketType, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('currentPrice: $currentPrice, ')
+          ..write('peRatioTtm: $peRatioTtm, ')
+          ..write('totalMarketCap: $totalMarketCap, ')
+          ..write('pbRatio: $pbRatio, ')
+          ..write('dividendRatio: $dividendRatio, ')
+          ..write('pPriceBuy: $pPriceBuy, ')
+          ..write('pPriceSale: $pPriceSale, ')
+          ..write('pPriceRemark: $pPriceRemark, ')
+          ..write('pMarketCapBuy: $pMarketCapBuy, ')
+          ..write('pMarketCapSale: $pMarketCapSale, ')
+          ..write('pMarketRemark: $pMarketRemark, ')
+          ..write('pPeTtmBuy: $pPeTtmBuy, ')
+          ..write('pPeTtmSale: $pPeTtmSale, ')
+          ..write('pPeTtmRemark: $pPeTtmRemark, ')
+          ..write('pAllRemark: $pAllRemark, ')
+          ..write('pEventRemark: $pEventRemark')
           ..write(')'))
         .toString();
   }
@@ -265,30 +1055,66 @@ class TodoItemsCompanion extends UpdateCompanion<TodoItem> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $TodoItemsTable todoItems = $TodoItemsTable(this);
+  late final $StockItemsTable stockItems = $StockItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [todoItems];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [stockItems];
 }
 
-typedef $$TodoItemsTableCreateCompanionBuilder = TodoItemsCompanion Function({
+typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
   Value<int> id,
   Value<DateTime> createdAt,
-  required String title,
-  required String content,
+  Value<DateTime> updateAt,
+  required String marketType,
+  required String name,
+  required String code,
+  Value<String?> currentPrice,
+  Value<String?> peRatioTtm,
+  Value<String?> totalMarketCap,
+  Value<String?> pbRatio,
+  Value<String?> dividendRatio,
+  Value<String?> pPriceBuy,
+  Value<String?> pPriceSale,
+  Value<String?> pPriceRemark,
+  Value<String?> pMarketCapBuy,
+  Value<String?> pMarketCapSale,
+  Value<String?> pMarketRemark,
+  Value<String?> pPeTtmBuy,
+  Value<String?> pPeTtmSale,
+  Value<String?> pPeTtmRemark,
+  Value<String?> pAllRemark,
+  Value<String?> pEventRemark,
 });
-typedef $$TodoItemsTableUpdateCompanionBuilder = TodoItemsCompanion Function({
+typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<int> id,
   Value<DateTime> createdAt,
-  Value<String> title,
-  Value<String> content,
+  Value<DateTime> updateAt,
+  Value<String> marketType,
+  Value<String> name,
+  Value<String> code,
+  Value<String?> currentPrice,
+  Value<String?> peRatioTtm,
+  Value<String?> totalMarketCap,
+  Value<String?> pbRatio,
+  Value<String?> dividendRatio,
+  Value<String?> pPriceBuy,
+  Value<String?> pPriceSale,
+  Value<String?> pPriceRemark,
+  Value<String?> pMarketCapBuy,
+  Value<String?> pMarketCapSale,
+  Value<String?> pMarketRemark,
+  Value<String?> pPeTtmBuy,
+  Value<String?> pPeTtmSale,
+  Value<String?> pPeTtmRemark,
+  Value<String?> pAllRemark,
+  Value<String?> pEventRemark,
 });
 
-class $$TodoItemsTableFilterComposer
-    extends Composer<_$AppDatabase, $TodoItemsTable> {
-  $$TodoItemsTableFilterComposer({
+class $$StockItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $StockItemsTable> {
+  $$StockItemsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -301,16 +1127,72 @@ class $$TodoItemsTableFilterComposer
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnFilters(column));
+  ColumnFilters<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get marketType => $composableBuilder(
+      column: $table.marketType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get code => $composableBuilder(
+      column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get currentPrice => $composableBuilder(
+      column: $table.currentPrice, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get peRatioTtm => $composableBuilder(
+      column: $table.peRatioTtm, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get totalMarketCap => $composableBuilder(
+      column: $table.totalMarketCap,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pbRatio => $composableBuilder(
+      column: $table.pbRatio, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get dividendRatio => $composableBuilder(
+      column: $table.dividendRatio, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pPriceBuy => $composableBuilder(
+      column: $table.pPriceBuy, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pPriceSale => $composableBuilder(
+      column: $table.pPriceSale, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pPriceRemark => $composableBuilder(
+      column: $table.pPriceRemark, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pMarketCapBuy => $composableBuilder(
+      column: $table.pMarketCapBuy, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pMarketCapSale => $composableBuilder(
+      column: $table.pMarketCapSale,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pMarketRemark => $composableBuilder(
+      column: $table.pMarketRemark, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pPeTtmBuy => $composableBuilder(
+      column: $table.pPeTtmBuy, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pPeTtmSale => $composableBuilder(
+      column: $table.pPeTtmSale, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pPeTtmRemark => $composableBuilder(
+      column: $table.pPeTtmRemark, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pAllRemark => $composableBuilder(
+      column: $table.pAllRemark, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pEventRemark => $composableBuilder(
+      column: $table.pEventRemark, builder: (column) => ColumnFilters(column));
 }
 
-class $$TodoItemsTableOrderingComposer
-    extends Composer<_$AppDatabase, $TodoItemsTable> {
-  $$TodoItemsTableOrderingComposer({
+class $$StockItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StockItemsTable> {
+  $$StockItemsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -323,16 +1205,79 @@ class $$TodoItemsTableOrderingComposer
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get title => $composableBuilder(
-      column: $table.title, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get marketType => $composableBuilder(
+      column: $table.marketType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get code => $composableBuilder(
+      column: $table.code, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get currentPrice => $composableBuilder(
+      column: $table.currentPrice,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get peRatioTtm => $composableBuilder(
+      column: $table.peRatioTtm, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get totalMarketCap => $composableBuilder(
+      column: $table.totalMarketCap,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pbRatio => $composableBuilder(
+      column: $table.pbRatio, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get dividendRatio => $composableBuilder(
+      column: $table.dividendRatio,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pPriceBuy => $composableBuilder(
+      column: $table.pPriceBuy, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pPriceSale => $composableBuilder(
+      column: $table.pPriceSale, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pPriceRemark => $composableBuilder(
+      column: $table.pPriceRemark,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pMarketCapBuy => $composableBuilder(
+      column: $table.pMarketCapBuy,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pMarketCapSale => $composableBuilder(
+      column: $table.pMarketCapSale,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pMarketRemark => $composableBuilder(
+      column: $table.pMarketRemark,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pPeTtmBuy => $composableBuilder(
+      column: $table.pPeTtmBuy, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pPeTtmSale => $composableBuilder(
+      column: $table.pPeTtmSale, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pPeTtmRemark => $composableBuilder(
+      column: $table.pPeTtmRemark,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pAllRemark => $composableBuilder(
+      column: $table.pAllRemark, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pEventRemark => $composableBuilder(
+      column: $table.pEventRemark,
+      builder: (column) => ColumnOrderings(column));
 }
 
-class $$TodoItemsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TodoItemsTable> {
-  $$TodoItemsTableAnnotationComposer({
+class $$StockItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StockItemsTable> {
+  $$StockItemsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -345,58 +1290,184 @@ class $$TodoItemsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  GeneratedColumn<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => column);
+  GeneratedColumn<DateTime> get updateAt =>
+      $composableBuilder(column: $table.updateAt, builder: (column) => column);
 
-  GeneratedColumn<String> get content =>
-      $composableBuilder(column: $table.content, builder: (column) => column);
+  GeneratedColumn<String> get marketType => $composableBuilder(
+      column: $table.marketType, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get currentPrice => $composableBuilder(
+      column: $table.currentPrice, builder: (column) => column);
+
+  GeneratedColumn<String> get peRatioTtm => $composableBuilder(
+      column: $table.peRatioTtm, builder: (column) => column);
+
+  GeneratedColumn<String> get totalMarketCap => $composableBuilder(
+      column: $table.totalMarketCap, builder: (column) => column);
+
+  GeneratedColumn<String> get pbRatio =>
+      $composableBuilder(column: $table.pbRatio, builder: (column) => column);
+
+  GeneratedColumn<String> get dividendRatio => $composableBuilder(
+      column: $table.dividendRatio, builder: (column) => column);
+
+  GeneratedColumn<String> get pPriceBuy =>
+      $composableBuilder(column: $table.pPriceBuy, builder: (column) => column);
+
+  GeneratedColumn<String> get pPriceSale => $composableBuilder(
+      column: $table.pPriceSale, builder: (column) => column);
+
+  GeneratedColumn<String> get pPriceRemark => $composableBuilder(
+      column: $table.pPriceRemark, builder: (column) => column);
+
+  GeneratedColumn<String> get pMarketCapBuy => $composableBuilder(
+      column: $table.pMarketCapBuy, builder: (column) => column);
+
+  GeneratedColumn<String> get pMarketCapSale => $composableBuilder(
+      column: $table.pMarketCapSale, builder: (column) => column);
+
+  GeneratedColumn<String> get pMarketRemark => $composableBuilder(
+      column: $table.pMarketRemark, builder: (column) => column);
+
+  GeneratedColumn<String> get pPeTtmBuy =>
+      $composableBuilder(column: $table.pPeTtmBuy, builder: (column) => column);
+
+  GeneratedColumn<String> get pPeTtmSale => $composableBuilder(
+      column: $table.pPeTtmSale, builder: (column) => column);
+
+  GeneratedColumn<String> get pPeTtmRemark => $composableBuilder(
+      column: $table.pPeTtmRemark, builder: (column) => column);
+
+  GeneratedColumn<String> get pAllRemark => $composableBuilder(
+      column: $table.pAllRemark, builder: (column) => column);
+
+  GeneratedColumn<String> get pEventRemark => $composableBuilder(
+      column: $table.pEventRemark, builder: (column) => column);
 }
 
-class $$TodoItemsTableTableManager extends RootTableManager<
+class $$StockItemsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $TodoItemsTable,
-    TodoItem,
-    $$TodoItemsTableFilterComposer,
-    $$TodoItemsTableOrderingComposer,
-    $$TodoItemsTableAnnotationComposer,
-    $$TodoItemsTableCreateCompanionBuilder,
-    $$TodoItemsTableUpdateCompanionBuilder,
-    (TodoItem, BaseReferences<_$AppDatabase, $TodoItemsTable, TodoItem>),
-    TodoItem,
+    $StockItemsTable,
+    StockItem,
+    $$StockItemsTableFilterComposer,
+    $$StockItemsTableOrderingComposer,
+    $$StockItemsTableAnnotationComposer,
+    $$StockItemsTableCreateCompanionBuilder,
+    $$StockItemsTableUpdateCompanionBuilder,
+    (StockItem, BaseReferences<_$AppDatabase, $StockItemsTable, StockItem>),
+    StockItem,
     PrefetchHooks Function()> {
-  $$TodoItemsTableTableManager(_$AppDatabase db, $TodoItemsTable table)
+  $$StockItemsTableTableManager(_$AppDatabase db, $StockItemsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$TodoItemsTableFilterComposer($db: db, $table: table),
+              $$StockItemsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$TodoItemsTableOrderingComposer($db: db, $table: table),
+              $$StockItemsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$TodoItemsTableAnnotationComposer($db: db, $table: table),
+              $$StockItemsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
-            Value<String> title = const Value.absent(),
-            Value<String> content = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            Value<String> marketType = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> code = const Value.absent(),
+            Value<String?> currentPrice = const Value.absent(),
+            Value<String?> peRatioTtm = const Value.absent(),
+            Value<String?> totalMarketCap = const Value.absent(),
+            Value<String?> pbRatio = const Value.absent(),
+            Value<String?> dividendRatio = const Value.absent(),
+            Value<String?> pPriceBuy = const Value.absent(),
+            Value<String?> pPriceSale = const Value.absent(),
+            Value<String?> pPriceRemark = const Value.absent(),
+            Value<String?> pMarketCapBuy = const Value.absent(),
+            Value<String?> pMarketCapSale = const Value.absent(),
+            Value<String?> pMarketRemark = const Value.absent(),
+            Value<String?> pPeTtmBuy = const Value.absent(),
+            Value<String?> pPeTtmSale = const Value.absent(),
+            Value<String?> pPeTtmRemark = const Value.absent(),
+            Value<String?> pAllRemark = const Value.absent(),
+            Value<String?> pEventRemark = const Value.absent(),
           }) =>
-              TodoItemsCompanion(
+              StockItemsCompanion(
             id: id,
             createdAt: createdAt,
-            title: title,
-            content: content,
+            updateAt: updateAt,
+            marketType: marketType,
+            name: name,
+            code: code,
+            currentPrice: currentPrice,
+            peRatioTtm: peRatioTtm,
+            totalMarketCap: totalMarketCap,
+            pbRatio: pbRatio,
+            dividendRatio: dividendRatio,
+            pPriceBuy: pPriceBuy,
+            pPriceSale: pPriceSale,
+            pPriceRemark: pPriceRemark,
+            pMarketCapBuy: pMarketCapBuy,
+            pMarketCapSale: pMarketCapSale,
+            pMarketRemark: pMarketRemark,
+            pPeTtmBuy: pPeTtmBuy,
+            pPeTtmSale: pPeTtmSale,
+            pPeTtmRemark: pPeTtmRemark,
+            pAllRemark: pAllRemark,
+            pEventRemark: pEventRemark,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
-            required String title,
-            required String content,
+            Value<DateTime> updateAt = const Value.absent(),
+            required String marketType,
+            required String name,
+            required String code,
+            Value<String?> currentPrice = const Value.absent(),
+            Value<String?> peRatioTtm = const Value.absent(),
+            Value<String?> totalMarketCap = const Value.absent(),
+            Value<String?> pbRatio = const Value.absent(),
+            Value<String?> dividendRatio = const Value.absent(),
+            Value<String?> pPriceBuy = const Value.absent(),
+            Value<String?> pPriceSale = const Value.absent(),
+            Value<String?> pPriceRemark = const Value.absent(),
+            Value<String?> pMarketCapBuy = const Value.absent(),
+            Value<String?> pMarketCapSale = const Value.absent(),
+            Value<String?> pMarketRemark = const Value.absent(),
+            Value<String?> pPeTtmBuy = const Value.absent(),
+            Value<String?> pPeTtmSale = const Value.absent(),
+            Value<String?> pPeTtmRemark = const Value.absent(),
+            Value<String?> pAllRemark = const Value.absent(),
+            Value<String?> pEventRemark = const Value.absent(),
           }) =>
-              TodoItemsCompanion.insert(
+              StockItemsCompanion.insert(
             id: id,
             createdAt: createdAt,
-            title: title,
-            content: content,
+            updateAt: updateAt,
+            marketType: marketType,
+            name: name,
+            code: code,
+            currentPrice: currentPrice,
+            peRatioTtm: peRatioTtm,
+            totalMarketCap: totalMarketCap,
+            pbRatio: pbRatio,
+            dividendRatio: dividendRatio,
+            pPriceBuy: pPriceBuy,
+            pPriceSale: pPriceSale,
+            pPriceRemark: pPriceRemark,
+            pMarketCapBuy: pMarketCapBuy,
+            pMarketCapSale: pMarketCapSale,
+            pMarketRemark: pMarketRemark,
+            pPeTtmBuy: pPeTtmBuy,
+            pPeTtmSale: pPeTtmSale,
+            pPeTtmRemark: pPeTtmRemark,
+            pAllRemark: pAllRemark,
+            pEventRemark: pEventRemark,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -405,22 +1476,22 @@ class $$TodoItemsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$TodoItemsTableProcessedTableManager = ProcessedTableManager<
+typedef $$StockItemsTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
-    $TodoItemsTable,
-    TodoItem,
-    $$TodoItemsTableFilterComposer,
-    $$TodoItemsTableOrderingComposer,
-    $$TodoItemsTableAnnotationComposer,
-    $$TodoItemsTableCreateCompanionBuilder,
-    $$TodoItemsTableUpdateCompanionBuilder,
-    (TodoItem, BaseReferences<_$AppDatabase, $TodoItemsTable, TodoItem>),
-    TodoItem,
+    $StockItemsTable,
+    StockItem,
+    $$StockItemsTableFilterComposer,
+    $$StockItemsTableOrderingComposer,
+    $$StockItemsTableAnnotationComposer,
+    $$StockItemsTableCreateCompanionBuilder,
+    $$StockItemsTableUpdateCompanionBuilder,
+    (StockItem, BaseReferences<_$AppDatabase, $StockItemsTable, StockItem>),
+    StockItem,
     PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$TodoItemsTableTableManager get todoItems =>
-      $$TodoItemsTableTableManager(_db, _db.todoItems);
+  $$StockItemsTableTableManager get stockItems =>
+      $$StockItemsTableTableManager(_db, _db.stockItems);
 }

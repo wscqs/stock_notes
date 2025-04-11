@@ -4,6 +4,38 @@ import 'package:drift/drift.dart';
 
 export 'dart:ui' show Color;
 
+// String? marketType;
+// String? name;
+// String? code;
+// String? currentPrice;
+// String? peRatioTtm;
+// String? totalMarketCap;
+// String? pbRatio;
+class StockItems extends Table with TableMixin {
+  TextColumn get marketType => text()();
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+  TextColumn get currentPrice => text().nullable()();
+  TextColumn get peRatioTtm => text().nullable()();
+  TextColumn get totalMarketCap => text().nullable()();
+  TextColumn get pbRatio => text().nullable()(); //市净率也先不做
+  TextColumn get dividendRatio => text().nullable()(); //股息暂时没有
+
+  //p 计划
+  TextColumn get pPriceBuy => text().nullable()();
+  TextColumn get pPriceSale => text().nullable()();
+  TextColumn get pPriceRemark => text().nullable()();
+  TextColumn get pMarketCapBuy => text().nullable()();
+  TextColumn get pMarketCapSale => text().nullable()();
+  TextColumn get pMarketRemark => text().nullable()();
+  TextColumn get pPeTtmBuy => text().nullable()();
+  TextColumn get pPeTtmSale => text().nullable()();
+  TextColumn get pPeTtmRemark => text().nullable()();
+
+  TextColumn get pAllRemark => text().nullable()();
+  TextColumn get pEventRemark => text().nullable()();
+}
+
 class TodoItems extends Table with TableMixin {
   TextColumn get title => text().withLength(min: 6, max: 32)();
   TextColumn get content => text().named('body')();
@@ -33,6 +65,8 @@ mixin TableMixin on Table {
 
   // Column for created at timestamp
   late final createdAt = dateTime().withDefault(currentDateAndTime)();
+  // 更新时间，每次更新时手动设置
+  late final updateAt = dateTime().withDefault(currentDateAndTime)();
 }
 
 // Tables can mix-in common definitions if needed

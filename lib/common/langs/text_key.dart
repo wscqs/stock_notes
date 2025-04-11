@@ -33,6 +33,9 @@ class TextKey {
   static const shurugupiaotishi = 'shurugupiaotishi';
   static const shurugupiaotishinumerror = 'shurugupiaotishinumerror';
   static const no = 'no';
+  static const search = 'search';
+  static const success = 'success';
+  static const fails = 'fails';
 }
 
 const Map<String, String> zh = {
@@ -70,6 +73,9 @@ const Map<String, String> zh = {
   TextKey.shurugupiaotishi: '请输入股票代码',
   TextKey.shurugupiaotishinumerror: '股票代码不正确',
   TextKey.no: '无',
+  TextKey.search: '搜索',
+  TextKey.success: '成功',
+  TextKey.fails: '失败',
 };
 
 const Map<String, String> en = {
@@ -108,4 +114,7 @@ const Map<String, String> en = {
   TextKey.shurugupiaotishi: 'Please enter the stock code',
   TextKey.shurugupiaotishinumerror: 'Incorrect stock code',
   TextKey.no: 'No',
+  TextKey.search: 'Search',
+  TextKey.success: 'success',
+  TextKey.fails: 'fails',
 };
