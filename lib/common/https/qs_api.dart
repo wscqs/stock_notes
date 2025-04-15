@@ -44,6 +44,7 @@ class QsApi {
   Future<List<StockTxModel>?> requestStockData(
       {required List<String> stockCodes}) async {
     final url = buildStockUrl(stockCodes);
+    print(url);
     List<StockTxModel>? datas;
     try {
       // 发起请求

@@ -36,6 +36,11 @@ class TextKey {
   static const search = 'search';
   static const success = 'success';
   static const fails = 'fails';
+  static const all = 'all';
+  static const collect = 'collect';
+  static const delete = 'delete';
+  static const noData = 'noData';
+  static const look = 'look';
 }
 
 const Map<String, String> zh = {
@@ -76,6 +81,11 @@ const Map<String, String> zh = {
   TextKey.search: '搜索',
   TextKey.success: '成功',
   TextKey.fails: '失败',
+  TextKey.all: '全部',
+  TextKey.collect: '收藏',
+  TextKey.delete: '删除',
+  TextKey.noData: '暂无数据',
+  TextKey.look: '查看',
 };
 
 const Map<String, String> en = {
@@ -117,4 +127,9 @@ const Map<String, String> en = {
   TextKey.search: 'Search',
   TextKey.success: 'success',
   TextKey.fails: 'fails',
+  TextKey.all: 'All',
+  TextKey.collect: 'Collect',
+  TextKey.delete: 'Delete',
+  TextKey.noData: 'No data',
+  TextKey.look: 'Look',
 };

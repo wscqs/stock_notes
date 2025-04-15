@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:stock_notes/common/widget/keep_alive_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../../common/database/database.dart';
+import '../../../../common/widget/qs_empty_view.dart';
 import '../../somewidget/homedrawer_page/view.dart';
 import '../controllers/homestock_controller.dart';
 
@@ -34,6 +36,7 @@ class HomestockView extends GetView<HomestockController> {
                     size: 28,
                   ))
             ],
+            bottom: buildSectionTop(),
           ),
           drawer: HomedrawerPage(),
           body: _obx(),
@@ -42,35 +45,93 @@ class HomestockView extends GetView<HomestockController> {
     );
   }
 
+  PreferredSize buildSectionTop() {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(76), // 指定 TabBar 高度
+      child: Obx(() {
+        return Container(
+          // color: kColorContentBg,
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              buildHotPopViews(),
+              kSpaceW(8),
+              Expanded(child: buildTopSearch()),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  DropdownButtonHideUnderline buildHotPopViews() {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<String>(
+        isExpanded: true,
+        hint: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                controller.order[controller.selectedOrderIndex.value],
+                // style: TextStyle(fontSize: 14, color: Colors.black),
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                size: 20,
+                // color: Colors.black,
+              )
+            ],
+          ),
+        ),
+        items: controller.order
+            .map((String item) => DropdownItem<String>(
+                  value: item,
+                  height: 44,
+                  child: Text(
+                    item,
+                    style: const TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ))
+            .toList(),
+        onChanged: (String? value) {
+          controller.selectedOrderIndex.value =
+              controller.order.indexOf(value!);
+          controller.getDatas();
+        },
+        iconStyleData: IconStyleData(
+          iconSize: 0,
+        ),
+        buttonStyleData: ButtonStyleData(
+          padding: EdgeInsets.only(left: 4, right: 4),
+          height: 44,
+          width: 72,
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(15),
+          //   color: Colors.grey[300],
+          // ),
+        ),
+        dropdownStyleData: DropdownStyleData(
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(8),
+          // ),
+          offset: const Offset(-8, 0),
+        ),
+      ),
+    );
+  }
+
   Widget _contentView() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          TextField(
-            controller: controller.searchController,
-            onChanged: controller.filterItems, // 监听输入内容
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              hintText: TextKey.search.tr + " ...",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              suffixIcon: controller.query.value.isNotEmpty
-                  ? SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: IconButton(
-                        icon: const Icon(Icons.close, size: 20),
-                        onPressed: controller.clickSearchClose,
-                      ),
-                    )
-                  : null,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: ListView.builder(
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+      child: controller.items.isEmpty
+          ? QsEmptyView(
+              message: TextKey.noData.tr,
+            )
+          : ListView.builder(
               itemCount: controller.items.length,
               itemBuilder: (context, index) {
                 return HomeStockCell(
@@ -78,8 +139,29 @@ class HomestockView extends GetView<HomestockController> {
                 );
               },
             ),
-          ),
-        ],
+    );
+  }
+
+  Widget buildTopSearch() {
+    return TextField(
+      controller: controller.searchController,
+      onChanged: controller.filterItems, // 监听输入内容
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.search),
+        hintText: TextKey.search.tr + " ...",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        suffixIcon: controller.query.value.isNotEmpty
+            ? SizedBox(
+                width: 44,
+                height: 44,
+                child: IconButton(
+                  icon: const Icon(Icons.close, size: 20),
+                  onPressed: controller.clickSearchClose,
+                ),
+              )
+            : null,
       ),
     );
   }
@@ -117,41 +199,7 @@ class HomeStockCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Slidable(
       key: ValueKey(item.id),
-      endActionPane: ActionPane(
-        extentRatio: 0.7,
-        motion: const BehindMotion(),
-        children: [
-          SlideAction(
-            color: Colors.blue,
-            icon: item.opTop ? Icons.push_pin : Icons.push_pin_outlined,
-            onPressed: () {
-              controller.clickOpTop(item);
-            },
-            // flex: 2,
-          ),
-          SlideAction(
-            color: Colors.orange,
-            icon: Icons.tab,
-            // flex: 2,
-          ),
-          SlideAction(
-            color: Colors.yellow,
-            icon: item.opCollect ? Icons.star : Icons.star_border_outlined,
-            onPressed: () {
-              controller.clickOpCollect(item);
-            },
-            // flex: 2,
-          ),
-          SlideAction(
-            color: Colors.red,
-            icon: Icons.delete_forever,
-            // flex: 1,
-            onPressed: () {
-              controller.clickOpDelete(item);
-            },
-          ),
-        ],
-      ),
+      endActionPane: buildActionPane(),
       child: Card(
         child: InkWell(
           onTap: () {
@@ -225,7 +273,7 @@ class HomeStockCell extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "16.00",
+                        "tag",
                         style: TextStyle(fontSize: 12),
                       ),
                     ),
@@ -240,6 +288,62 @@ class HomeStockCell extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  ActionPane buildActionPane() {
+    final isRestoreMode = controller.selectedOrderIndex == 2;
+
+    return ActionPane(
+      extentRatio: isRestoreMode ? 0.35 : 0.7,
+      motion: const BehindMotion(),
+      children: isRestoreMode
+          ? [
+              SlideAction(
+                color: Colors.green,
+                icon: Icons.restore,
+                onPressed: () {
+                  controller.clickOpRestore(item);
+                },
+              ),
+              SlideAction(
+                color: Colors.red,
+                icon: Icons.delete_forever,
+                onPressed: () {
+                  controller.clickOpDelete(item);
+                },
+              ),
+            ]
+          : [
+              SlideAction(
+                color: Colors.blue,
+                icon: item.opTop ? Icons.push_pin : Icons.push_pin_outlined,
+                onPressed: () {
+                  controller.clickOpTop(item);
+                },
+              ),
+              SlideAction(
+                color: Colors.orange,
+                icon: Icons.tab,
+                onPressed: () {
+                  // controller.clickOpCategory(item);
+                },
+              ),
+              SlideAction(
+                color: Colors.yellow,
+                icon: item.opCollect ? Icons.star : Icons.star_border_outlined,
+                onPressed: () {
+                  controller.clickOpCollect(item);
+                },
+              ),
+              SlideAction(
+                color: Colors.red,
+                icon: Icons.delete_forever,
+                onPressed: () {
+                  controller.clickOpDelete(item);
+                },
+              ),
+            ],
     );
   }
 }
@@ -277,18 +381,5 @@ class SlideAction extends StatelessWidget {
       ),
       padding: EdgeInsets.zero,
     );
-    // return SlidableAction(
-    //   flex: flex,
-    //   backgroundColor: color,
-    //   foregroundColor: Colors.white,
-    //   borderRadius: BorderRadius.circular(20),
-    //   onPressed: (_) {
-    //     // print(icon);
-    //     onPressed?.call();
-    //   },
-    //   icon: icon,
-    //   label: label,
-    //   // padding: EdgeInsets.zero,
-    // );
   }
 }

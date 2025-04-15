@@ -7,6 +7,7 @@ import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
 import '../../../../common/database/database.dart';
+import '../../../../common/web/webview_page.dart';
 
 class StockeditController extends GetxController {
   final stockNum = "".obs;
@@ -27,10 +28,21 @@ class StockeditController extends GetxController {
   final serStockData = StockTxModel().obs;
   final localStockData = Rxn<StockItem>();
 
+  final pPriceYieldRate = 0.0.obs;
+  final pMarketCapYieldRate = 0.0.obs;
+  final pPeTtmYieldRate = 0.0.obs;
+
   @override
   void onInit() {
     super.onInit();
     stockNumController.addListener(_updateStockNum);
+    pPriceBuyController.addListener(_updateYieldRate);
+    pPriceSaleController.addListener(_updateYieldRate);
+    pMarketCapBuyController.addListener(_updateYieldRate);
+    pMarketCapSaleController.addListener(_updateYieldRate);
+    pPeTtmBuyController.addListener(_updateYieldRate);
+    pPeTtmSaleController.addListener(_updateYieldRate);
+
     localStockData.value = Get.arguments;
     if (localStockData.value != null) {
       stockNum.value = localStockData.value?.code ?? "";
@@ -57,16 +69,33 @@ class StockeditController extends GetxController {
     stockNum.value = stockNumController.text;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void _updateYieldRate() {
+    if (pPriceBuyController.text.isNotEmpty &&
+        pPriceSaleController.text.isNotEmpty &&
+        (double.tryParse(pPriceBuyController.text) ?? 0.0) >= 0) {
+      pPriceYieldRate.value = (double.parse(pPriceSaleController.text) -
+              double.parse(pPriceBuyController.text)) /
+          double.parse(pPriceBuyController.text);
+    }
+    if (pMarketCapBuyController.text.isNotEmpty &&
+        pMarketCapSaleController.text.isNotEmpty &&
+        (double.tryParse(pMarketCapBuyController.text) ?? 0.0) >= 0) {
+      pMarketCapYieldRate.value = (double.parse(pMarketCapSaleController.text) -
+              double.parse(pMarketCapBuyController.text)) /
+          double.parse(pMarketCapBuyController.text);
+    }
+    if (pPeTtmBuyController.text.isNotEmpty &&
+        pPeTtmSaleController.text.isNotEmpty &&
+        (double.tryParse(pPeTtmBuyController.text) ?? 0.0) >= 0) {
+      pPeTtmYieldRate.value = (double.parse(pPeTtmSaleController.text) -
+              double.parse(pPeTtmBuyController.text)) /
+          double.parse(pPeTtmBuyController.text);
+    }
   }
 
   @override
-  void onClose() {
-    stockNumController.addListener(_updateStockNum);
-    stockNumController.dispose();
-    super.onClose();
+  void onReady() {
+    super.onReady();
   }
 
   Future<void> search() async {
@@ -130,5 +159,34 @@ class StockeditController extends GetxController {
 
   void clearStockNum() {
     stockNumController.clear();
+  }
+
+  void clickLookStock() {
+    String code = serStockData.value.code ?? ""; // 也可能是 sh000001、sz002415 等
+    String prefix = code.substring(0, 2); // hs / sh / sz
+    String number = code.substring(2); // 000506
+    String stockCode = '${prefix}_$number';
+    Get.to(() => WebViewPage(
+          loadResource: "https://m.10jqka.com.cn/stockpage/$stockCode",
+        ));
+  }
+
+  @override
+  void onClose() {
+    stockNumController.removeListener(_updateStockNum);
+    stockNumController.dispose();
+    pPriceBuyController.removeListener(_updateYieldRate);
+    pPriceBuyController.dispose();
+    pPriceSaleController.removeListener(_updateYieldRate);
+    pPriceSaleController.dispose();
+    pMarketCapBuyController.removeListener(_updateYieldRate);
+    pMarketCapBuyController.dispose();
+    pMarketCapSaleController.removeListener(_updateYieldRate);
+    pMarketCapSaleController.dispose();
+    pPeTtmBuyController.removeListener(_updateYieldRate);
+    pPeTtmBuyController.dispose();
+    pPeTtmSaleController.removeListener(_updateYieldRate);
+    pPeTtmSaleController.dispose();
+    super.onClose();
   }
 }

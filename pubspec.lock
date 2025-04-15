@@ -321,6 +321,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.4"
+  dropdown_button2:
+    dependency: "direct main"
+    description:
+      name: dropdown_button2
+      sha256: "95f5fa6f33e3ac3e3a9150be024101d7a82ff808210009a8f700255045b9429e"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0-beta.22"
   encrypt:
     dependency: "direct main"
     description:

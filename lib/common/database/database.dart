@@ -83,4 +83,28 @@ class AppDatabase extends _$AppDatabase {
           ]))
         .get();
   }
+
+  Future<List<StockItem>> getStockItemsOnHomeWithDelete() {
+    return (select(stockItems)
+          ..where((tbl) => tbl.opDelete.equals(true))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
+            (tbl) =>
+                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  Future<List<StockItem>> getStockItemsOnHomeWithCollect() {
+    return (select(stockItems)
+          ..where((tbl) => tbl.opCollect.equals(true))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
+            (tbl) =>
+                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
 }

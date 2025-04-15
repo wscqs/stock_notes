@@ -121,25 +121,28 @@ class StockeditView extends GetView<StockeditController> {
     TextEditingController? buyTextEditingController;
     TextEditingController? saleTextEditingController;
     TextEditingController? remarkTextEditingController;
-
+    double yieldRate = 0.0;
     if (type == "price") {
       titile = TextKey.jige.tr;
       value = controller.serStockData.value.currentPrice ?? "";
       buyTextEditingController = controller.pPriceBuyController;
       saleTextEditingController = controller.pPriceSaleController;
       remarkTextEditingController = controller.pPriceRemarkController;
+      yieldRate = controller.pPriceYieldRate.value;
     } else if (type == "market_value") {
       titile = TextKey.shizhi.tr;
       value = controller.serStockData.value.totalMarketCap ?? "";
       buyTextEditingController = controller.pMarketCapBuyController;
       saleTextEditingController = controller.pMarketCapSaleController;
       remarkTextEditingController = controller.pMarketRemarkController;
+      yieldRate = controller.pMarketCapYieldRate.value;
     } else if (type == "p_e_ratio") {
       titile = TextKey.shiyin.tr;
       value = controller.serStockData.value.peRatioTtm ?? "";
       buyTextEditingController = controller.pPeTtmBuyController;
       saleTextEditingController = controller.pPeTtmSaleController;
       remarkTextEditingController = controller.pPeTtmRemarkController;
+      yieldRate = controller.pPeTtmYieldRate.value;
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,6 +177,7 @@ class StockeditView extends GetView<StockeditController> {
                     child: TextField(
                       controller: buyTextEditingController,
                       decoration: InputDecoration(labelText: TextKey.buy.tr),
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                   kSpaceW(12),
@@ -182,13 +186,16 @@ class StockeditView extends GetView<StockeditController> {
                     child: TextField(
                       controller: saleTextEditingController,
                       decoration: InputDecoration(labelText: TextKey.sale.tr),
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                   kSpaceW(12),
-                  Text(
-                    "收益率:%100",
-                    style: Get.textTheme.titleMedium,
-                  ),
+                  if (yieldRate > 0)
+                    Text(
+                      TextKey.shouyilv.tr +
+                          " ${(yieldRate * 100).toStringAsFixed(1)}%",
+                      style: Get.textTheme.titleMedium,
+                    ),
                 ],
               ),
               kSpaceH(16),
@@ -214,7 +221,21 @@ class StockeditView extends GetView<StockeditController> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(TextKey.gupiao.tr, style: Get.textTheme.titleLarge),
+        Row(
+          children: [
+            Text(TextKey.gupiao.tr, style: Get.textTheme.titleLarge),
+            (controller.serStockData.value.code != null)
+                ? TextButton(
+                    onPressed: () {
+                      controller.clickLookStock();
+                    },
+                    child: Text(
+                      TextKey.look.tr,
+                    ),
+                  )
+                : SizedBox(),
+          ],
+        ),
         kSpaceH(8),
         (controller.serStockData.value.code != null)
             ? Text(controller.serStockData.value.showAllInfo())

@@ -1,6 +1,7 @@
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/database.dart';
 import '../../../routes/app_pages.dart';
@@ -26,6 +27,13 @@ class HomestockController extends BaseController {
   final items = <StockItem>[].obs; //显示的
   final db = AppDatabase();
 
+  List<String> order = [
+    TextKey.all.tr,
+    TextKey.collect.tr,
+    TextKey.delete.tr,
+  ];
+  final selectedOrderIndex = 0.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -39,7 +47,13 @@ class HomestockController extends BaseController {
   }
 
   Future<void> getDatas() async {
-    dbItems.value = await db.getStockItemsOnHome();
+    if (selectedOrderIndex.value == 0) {
+      dbItems.value = await db.getStockItemsOnHome();
+    } else if (selectedOrderIndex.value == 1) {
+      dbItems.value = await db.getStockItemsOnHomeWithCollect();
+    } else if (selectedOrderIndex.value == 2) {
+      dbItems.value = await db.getStockItemsOnHomeWithDelete();
+    }
     String query = searchController.text;
     filterItems(query);
   }
@@ -61,6 +75,12 @@ class HomestockController extends BaseController {
 
   @override
   void onResume() {
+    order = [
+      TextKey.all.tr,
+      TextKey.collect.tr,
+      TextKey.delete.tr,
+    ];
+    selectedOrderIndex.value = selectedOrderIndex.value;
     super.onResume();
     getDatas();
   }
@@ -98,15 +118,15 @@ class HomestockController extends BaseController {
     getDatas();
   }
 
-  // void deleteItem(StockItem item) {
-  //   db.deleteStock(item);
-  //   db.updateStockWithOp(item.copyWith(opDelete: !item.opDelete));
-  //   getDatas();
-  // }
-
   //只是到历史记录
   void clickOpDelete(StockItem item) {
-    db.updateStockWithOp(item.copyWith(opDelete: !item.opDelete));
+    db.updateStockWithOp(item.copyWith(opDelete: true));
+    getDatas();
+  }
+
+  //本地删除
+  void clickDbDelete(StockItem item) {
+    db.deleteStock(item);
     getDatas();
   }
 
@@ -117,6 +137,11 @@ class HomestockController extends BaseController {
 
   void clickOpCollect(StockItem item) {
     db.updateStockWithOp(item.copyWith(opCollect: !item.opCollect));
+    getDatas();
+  }
+
+  void clickOpRestore(StockItem item) {
+    db.updateStockWithOp(item.copyWith(opDelete: false));
     getDatas();
   }
 }
