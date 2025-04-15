@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/database/database.dart';
+import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
 
 class HomestockController extends BaseController {
@@ -38,7 +39,7 @@ class HomestockController extends BaseController {
   }
 
   Future<void> getDatas() async {
-    dbItems.value = await db.getStockItemsByTimeDesc();
+    dbItems.value = await db.getStockItemsOnHome();
     String query = searchController.text;
     filterItems(query);
   }
@@ -89,15 +90,33 @@ class HomestockController extends BaseController {
   }
 
   void pushDetailPage(StockItem item) {
-    // Get.toNamed(Routes.STOCKEDIT, arguments: item);
-    // Get.toNamed(Routes.NOTEDETAIL);
-    // Get.toNamed(Routes.STOCKEDIT, arguments: item);
-    db.updateStock(item);
-    getDatas();
+    Get.toNamed(Routes.STOCKEDIT, arguments: item.copyWith());
   }
 
   clickSearchClose() {
     searchController.clear();
+    getDatas();
+  }
+
+  // void deleteItem(StockItem item) {
+  //   db.deleteStock(item);
+  //   db.updateStockWithOp(item.copyWith(opDelete: !item.opDelete));
+  //   getDatas();
+  // }
+
+  //只是到历史记录
+  void clickOpDelete(StockItem item) {
+    db.updateStockWithOp(item.copyWith(opDelete: !item.opDelete));
+    getDatas();
+  }
+
+  void clickOpTop(StockItem item) {
+    db.updateStockWithOp(item.copyWith(opTop: !item.opTop));
+    getDatas();
+  }
+
+  void clickOpCollect(StockItem item) {
+    db.updateStockWithOp(item.copyWith(opCollect: !item.opCollect));
     getDatas();
   }
 }

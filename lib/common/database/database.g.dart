@@ -80,6 +80,35 @@ class $StockItemsTable extends StockItems
   late final GeneratedColumn<String> dividendRatio = GeneratedColumn<String>(
       'dividend_ratio', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _opTopMeta = const VerificationMeta('opTop');
+  @override
+  late final GeneratedColumn<bool> opTop = GeneratedColumn<bool>(
+      'op_top', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("op_top" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _opCollectMeta =
+      const VerificationMeta('opCollect');
+  @override
+  late final GeneratedColumn<bool> opCollect = GeneratedColumn<bool>(
+      'op_collect', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("op_collect" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _opDeleteMeta =
+      const VerificationMeta('opDelete');
+  @override
+  late final GeneratedColumn<bool> opDelete = GeneratedColumn<bool>(
+      'op_delete', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("op_delete" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _pPriceBuyMeta =
       const VerificationMeta('pPriceBuy');
   @override
@@ -159,6 +188,9 @@ class $StockItemsTable extends StockItems
         totalMarketCap,
         pbRatio,
         dividendRatio,
+        opTop,
+        opCollect,
+        opDelete,
         pPriceBuy,
         pPriceSale,
         pPriceRemark,
@@ -239,6 +271,18 @@ class $StockItemsTable extends StockItems
           _dividendRatioMeta,
           dividendRatio.isAcceptableOrUnknown(
               data['dividend_ratio']!, _dividendRatioMeta));
+    }
+    if (data.containsKey('op_top')) {
+      context.handle(
+          _opTopMeta, opTop.isAcceptableOrUnknown(data['op_top']!, _opTopMeta));
+    }
+    if (data.containsKey('op_collect')) {
+      context.handle(_opCollectMeta,
+          opCollect.isAcceptableOrUnknown(data['op_collect']!, _opCollectMeta));
+    }
+    if (data.containsKey('op_delete')) {
+      context.handle(_opDeleteMeta,
+          opDelete.isAcceptableOrUnknown(data['op_delete']!, _opDeleteMeta));
     }
     if (data.containsKey('p_price_buy')) {
       context.handle(
@@ -337,6 +381,12 @@ class $StockItemsTable extends StockItems
           .read(DriftSqlType.string, data['${effectivePrefix}pb_ratio']),
       dividendRatio: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}dividend_ratio']),
+      opTop: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}op_top'])!,
+      opCollect: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}op_collect'])!,
+      opDelete: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}op_delete'])!,
       pPriceBuy: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}p_price_buy']),
       pPriceSale: attachedDatabase.typeMapping
@@ -380,6 +430,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
   final String? totalMarketCap;
   final String? pbRatio;
   final String? dividendRatio;
+  final bool opTop;
+  final bool opCollect;
+  final bool opDelete;
   final String? pPriceBuy;
   final String? pPriceSale;
   final String? pPriceRemark;
@@ -403,6 +456,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       this.totalMarketCap,
       this.pbRatio,
       this.dividendRatio,
+      required this.opTop,
+      required this.opCollect,
+      required this.opDelete,
       this.pPriceBuy,
       this.pPriceSale,
       this.pPriceRemark,
@@ -438,6 +494,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
     if (!nullToAbsent || dividendRatio != null) {
       map['dividend_ratio'] = Variable<String>(dividendRatio);
     }
+    map['op_top'] = Variable<bool>(opTop);
+    map['op_collect'] = Variable<bool>(opCollect);
+    map['op_delete'] = Variable<bool>(opDelete);
     if (!nullToAbsent || pPriceBuy != null) {
       map['p_price_buy'] = Variable<String>(pPriceBuy);
     }
@@ -497,6 +556,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       dividendRatio: dividendRatio == null && nullToAbsent
           ? const Value.absent()
           : Value(dividendRatio),
+      opTop: Value(opTop),
+      opCollect: Value(opCollect),
+      opDelete: Value(opDelete),
       pPriceBuy: pPriceBuy == null && nullToAbsent
           ? const Value.absent()
           : Value(pPriceBuy),
@@ -548,6 +610,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       totalMarketCap: serializer.fromJson<String?>(json['totalMarketCap']),
       pbRatio: serializer.fromJson<String?>(json['pbRatio']),
       dividendRatio: serializer.fromJson<String?>(json['dividendRatio']),
+      opTop: serializer.fromJson<bool>(json['opTop']),
+      opCollect: serializer.fromJson<bool>(json['opCollect']),
+      opDelete: serializer.fromJson<bool>(json['opDelete']),
       pPriceBuy: serializer.fromJson<String?>(json['pPriceBuy']),
       pPriceSale: serializer.fromJson<String?>(json['pPriceSale']),
       pPriceRemark: serializer.fromJson<String?>(json['pPriceRemark']),
@@ -576,6 +641,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       'totalMarketCap': serializer.toJson<String?>(totalMarketCap),
       'pbRatio': serializer.toJson<String?>(pbRatio),
       'dividendRatio': serializer.toJson<String?>(dividendRatio),
+      'opTop': serializer.toJson<bool>(opTop),
+      'opCollect': serializer.toJson<bool>(opCollect),
+      'opDelete': serializer.toJson<bool>(opDelete),
       'pPriceBuy': serializer.toJson<String?>(pPriceBuy),
       'pPriceSale': serializer.toJson<String?>(pPriceSale),
       'pPriceRemark': serializer.toJson<String?>(pPriceRemark),
@@ -602,6 +670,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           Value<String?> totalMarketCap = const Value.absent(),
           Value<String?> pbRatio = const Value.absent(),
           Value<String?> dividendRatio = const Value.absent(),
+          bool? opTop,
+          bool? opCollect,
+          bool? opDelete,
           Value<String?> pPriceBuy = const Value.absent(),
           Value<String?> pPriceSale = const Value.absent(),
           Value<String?> pPriceRemark = const Value.absent(),
@@ -628,6 +699,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         pbRatio: pbRatio.present ? pbRatio.value : this.pbRatio,
         dividendRatio:
             dividendRatio.present ? dividendRatio.value : this.dividendRatio,
+        opTop: opTop ?? this.opTop,
+        opCollect: opCollect ?? this.opCollect,
+        opDelete: opDelete ?? this.opDelete,
         pPriceBuy: pPriceBuy.present ? pPriceBuy.value : this.pPriceBuy,
         pPriceSale: pPriceSale.present ? pPriceSale.value : this.pPriceSale,
         pPriceRemark:
@@ -667,6 +741,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       dividendRatio: data.dividendRatio.present
           ? data.dividendRatio.value
           : this.dividendRatio,
+      opTop: data.opTop.present ? data.opTop.value : this.opTop,
+      opCollect: data.opCollect.present ? data.opCollect.value : this.opCollect,
+      opDelete: data.opDelete.present ? data.opDelete.value : this.opDelete,
       pPriceBuy: data.pPriceBuy.present ? data.pPriceBuy.value : this.pPriceBuy,
       pPriceSale:
           data.pPriceSale.present ? data.pPriceSale.value : this.pPriceSale,
@@ -710,6 +787,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           ..write('totalMarketCap: $totalMarketCap, ')
           ..write('pbRatio: $pbRatio, ')
           ..write('dividendRatio: $dividendRatio, ')
+          ..write('opTop: $opTop, ')
+          ..write('opCollect: $opCollect, ')
+          ..write('opDelete: $opDelete, ')
           ..write('pPriceBuy: $pPriceBuy, ')
           ..write('pPriceSale: $pPriceSale, ')
           ..write('pPriceRemark: $pPriceRemark, ')
@@ -738,6 +818,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         totalMarketCap,
         pbRatio,
         dividendRatio,
+        opTop,
+        opCollect,
+        opDelete,
         pPriceBuy,
         pPriceSale,
         pPriceRemark,
@@ -765,6 +848,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           other.totalMarketCap == this.totalMarketCap &&
           other.pbRatio == this.pbRatio &&
           other.dividendRatio == this.dividendRatio &&
+          other.opTop == this.opTop &&
+          other.opCollect == this.opCollect &&
+          other.opDelete == this.opDelete &&
           other.pPriceBuy == this.pPriceBuy &&
           other.pPriceSale == this.pPriceSale &&
           other.pPriceRemark == this.pPriceRemark &&
@@ -790,6 +876,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
   final Value<String?> totalMarketCap;
   final Value<String?> pbRatio;
   final Value<String?> dividendRatio;
+  final Value<bool> opTop;
+  final Value<bool> opCollect;
+  final Value<bool> opDelete;
   final Value<String?> pPriceBuy;
   final Value<String?> pPriceSale;
   final Value<String?> pPriceRemark;
@@ -813,6 +902,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.totalMarketCap = const Value.absent(),
     this.pbRatio = const Value.absent(),
     this.dividendRatio = const Value.absent(),
+    this.opTop = const Value.absent(),
+    this.opCollect = const Value.absent(),
+    this.opDelete = const Value.absent(),
     this.pPriceBuy = const Value.absent(),
     this.pPriceSale = const Value.absent(),
     this.pPriceRemark = const Value.absent(),
@@ -837,6 +929,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.totalMarketCap = const Value.absent(),
     this.pbRatio = const Value.absent(),
     this.dividendRatio = const Value.absent(),
+    this.opTop = const Value.absent(),
+    this.opCollect = const Value.absent(),
+    this.opDelete = const Value.absent(),
     this.pPriceBuy = const Value.absent(),
     this.pPriceSale = const Value.absent(),
     this.pPriceRemark = const Value.absent(),
@@ -863,6 +958,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     Expression<String>? totalMarketCap,
     Expression<String>? pbRatio,
     Expression<String>? dividendRatio,
+    Expression<bool>? opTop,
+    Expression<bool>? opCollect,
+    Expression<bool>? opDelete,
     Expression<String>? pPriceBuy,
     Expression<String>? pPriceSale,
     Expression<String>? pPriceRemark,
@@ -887,6 +985,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       if (totalMarketCap != null) 'total_market_cap': totalMarketCap,
       if (pbRatio != null) 'pb_ratio': pbRatio,
       if (dividendRatio != null) 'dividend_ratio': dividendRatio,
+      if (opTop != null) 'op_top': opTop,
+      if (opCollect != null) 'op_collect': opCollect,
+      if (opDelete != null) 'op_delete': opDelete,
       if (pPriceBuy != null) 'p_price_buy': pPriceBuy,
       if (pPriceSale != null) 'p_price_sale': pPriceSale,
       if (pPriceRemark != null) 'p_price_remark': pPriceRemark,
@@ -913,6 +1014,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       Value<String?>? totalMarketCap,
       Value<String?>? pbRatio,
       Value<String?>? dividendRatio,
+      Value<bool>? opTop,
+      Value<bool>? opCollect,
+      Value<bool>? opDelete,
       Value<String?>? pPriceBuy,
       Value<String?>? pPriceSale,
       Value<String?>? pPriceRemark,
@@ -936,6 +1040,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       totalMarketCap: totalMarketCap ?? this.totalMarketCap,
       pbRatio: pbRatio ?? this.pbRatio,
       dividendRatio: dividendRatio ?? this.dividendRatio,
+      opTop: opTop ?? this.opTop,
+      opCollect: opCollect ?? this.opCollect,
+      opDelete: opDelete ?? this.opDelete,
       pPriceBuy: pPriceBuy ?? this.pPriceBuy,
       pPriceSale: pPriceSale ?? this.pPriceSale,
       pPriceRemark: pPriceRemark ?? this.pPriceRemark,
@@ -985,6 +1092,15 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     }
     if (dividendRatio.present) {
       map['dividend_ratio'] = Variable<String>(dividendRatio.value);
+    }
+    if (opTop.present) {
+      map['op_top'] = Variable<bool>(opTop.value);
+    }
+    if (opCollect.present) {
+      map['op_collect'] = Variable<bool>(opCollect.value);
+    }
+    if (opDelete.present) {
+      map['op_delete'] = Variable<bool>(opDelete.value);
     }
     if (pPriceBuy.present) {
       map['p_price_buy'] = Variable<String>(pPriceBuy.value);
@@ -1036,6 +1152,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
           ..write('totalMarketCap: $totalMarketCap, ')
           ..write('pbRatio: $pbRatio, ')
           ..write('dividendRatio: $dividendRatio, ')
+          ..write('opTop: $opTop, ')
+          ..write('opCollect: $opCollect, ')
+          ..write('opDelete: $opDelete, ')
           ..write('pPriceBuy: $pPriceBuy, ')
           ..write('pPriceSale: $pPriceSale, ')
           ..write('pPriceRemark: $pPriceRemark, ')
@@ -1075,6 +1194,9 @@ typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
   Value<String?> totalMarketCap,
   Value<String?> pbRatio,
   Value<String?> dividendRatio,
+  Value<bool> opTop,
+  Value<bool> opCollect,
+  Value<bool> opDelete,
   Value<String?> pPriceBuy,
   Value<String?> pPriceSale,
   Value<String?> pPriceRemark,
@@ -1099,6 +1221,9 @@ typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<String?> totalMarketCap,
   Value<String?> pbRatio,
   Value<String?> dividendRatio,
+  Value<bool> opTop,
+  Value<bool> opCollect,
+  Value<bool> opDelete,
   Value<String?> pPriceBuy,
   Value<String?> pPriceSale,
   Value<String?> pPriceRemark,
@@ -1154,6 +1279,15 @@ class $$StockItemsTableFilterComposer
 
   ColumnFilters<String> get dividendRatio => $composableBuilder(
       column: $table.dividendRatio, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get opTop => $composableBuilder(
+      column: $table.opTop, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get opCollect => $composableBuilder(
+      column: $table.opCollect, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get opDelete => $composableBuilder(
+      column: $table.opDelete, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get pPriceBuy => $composableBuilder(
       column: $table.pPriceBuy, builder: (column) => ColumnFilters(column));
@@ -1234,6 +1368,15 @@ class $$StockItemsTableOrderingComposer
   ColumnOrderings<String> get dividendRatio => $composableBuilder(
       column: $table.dividendRatio,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get opTop => $composableBuilder(
+      column: $table.opTop, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get opCollect => $composableBuilder(
+      column: $table.opCollect, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get opDelete => $composableBuilder(
+      column: $table.opDelete, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get pPriceBuy => $composableBuilder(
       column: $table.pPriceBuy, builder: (column) => ColumnOrderings(column));
@@ -1317,6 +1460,15 @@ class $$StockItemsTableAnnotationComposer
   GeneratedColumn<String> get dividendRatio => $composableBuilder(
       column: $table.dividendRatio, builder: (column) => column);
 
+  GeneratedColumn<bool> get opTop =>
+      $composableBuilder(column: $table.opTop, builder: (column) => column);
+
+  GeneratedColumn<bool> get opCollect =>
+      $composableBuilder(column: $table.opCollect, builder: (column) => column);
+
+  GeneratedColumn<bool> get opDelete =>
+      $composableBuilder(column: $table.opDelete, builder: (column) => column);
+
   GeneratedColumn<String> get pPriceBuy =>
       $composableBuilder(column: $table.pPriceBuy, builder: (column) => column);
 
@@ -1385,6 +1537,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<String?> totalMarketCap = const Value.absent(),
             Value<String?> pbRatio = const Value.absent(),
             Value<String?> dividendRatio = const Value.absent(),
+            Value<bool> opTop = const Value.absent(),
+            Value<bool> opCollect = const Value.absent(),
+            Value<bool> opDelete = const Value.absent(),
             Value<String?> pPriceBuy = const Value.absent(),
             Value<String?> pPriceSale = const Value.absent(),
             Value<String?> pPriceRemark = const Value.absent(),
@@ -1409,6 +1564,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             totalMarketCap: totalMarketCap,
             pbRatio: pbRatio,
             dividendRatio: dividendRatio,
+            opTop: opTop,
+            opCollect: opCollect,
+            opDelete: opDelete,
             pPriceBuy: pPriceBuy,
             pPriceSale: pPriceSale,
             pPriceRemark: pPriceRemark,
@@ -1433,6 +1591,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<String?> totalMarketCap = const Value.absent(),
             Value<String?> pbRatio = const Value.absent(),
             Value<String?> dividendRatio = const Value.absent(),
+            Value<bool> opTop = const Value.absent(),
+            Value<bool> opCollect = const Value.absent(),
+            Value<bool> opDelete = const Value.absent(),
             Value<String?> pPriceBuy = const Value.absent(),
             Value<String?> pPriceSale = const Value.absent(),
             Value<String?> pPriceRemark = const Value.absent(),
@@ -1457,6 +1618,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             totalMarketCap: totalMarketCap,
             pbRatio: pbRatio,
             dividendRatio: dividendRatio,
+            opTop: opTop,
+            opCollect: opCollect,
+            opDelete: opDelete,
             pPriceBuy: pPriceBuy,
             pPriceSale: pPriceSale,
             pPriceRemark: pPriceRemark,

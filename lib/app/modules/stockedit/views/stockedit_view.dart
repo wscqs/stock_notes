@@ -124,19 +124,19 @@ class StockeditView extends GetView<StockeditController> {
 
     if (type == "price") {
       titile = TextKey.jige.tr;
-      value = controller.stockData.value.currentPrice ?? "";
+      value = controller.serStockData.value.currentPrice ?? "";
       buyTextEditingController = controller.pPriceBuyController;
       saleTextEditingController = controller.pPriceSaleController;
       remarkTextEditingController = controller.pPriceRemarkController;
     } else if (type == "market_value") {
       titile = TextKey.shizhi.tr;
-      value = controller.stockData.value.totalMarketCap ?? "";
+      value = controller.serStockData.value.totalMarketCap ?? "";
       buyTextEditingController = controller.pMarketCapBuyController;
       saleTextEditingController = controller.pMarketCapSaleController;
       remarkTextEditingController = controller.pMarketRemarkController;
     } else if (type == "p_e_ratio") {
       titile = TextKey.shiyin.tr;
-      value = controller.stockData.value.peRatioTtm ?? "";
+      value = controller.serStockData.value.peRatioTtm ?? "";
       buyTextEditingController = controller.pPeTtmBuyController;
       saleTextEditingController = controller.pPeTtmSaleController;
       remarkTextEditingController = controller.pPeTtmRemarkController;
@@ -216,8 +216,8 @@ class StockeditView extends GetView<StockeditController> {
       children: [
         Text(TextKey.gupiao.tr, style: Get.textTheme.titleLarge),
         kSpaceH(8),
-        (controller.stockData.value.code != null)
-            ? Text(controller.stockData.value.showAllInfo())
+        (controller.serStockData.value.code != null)
+            ? Text(controller.serStockData.value.showAllInfo())
             : Text(TextKey.no.tr, style: TextStyle(color: Colors.grey)),
 
         // RichText(

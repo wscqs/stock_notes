@@ -21,6 +21,10 @@ class StockItems extends Table with TableMixin {
   TextColumn get pbRatio => text().nullable()(); //市净率也先不做
   TextColumn get dividendRatio => text().nullable()(); //股息暂时没有
 
+  BoolColumn get opTop => boolean().withDefault(const Constant(false))();
+  BoolColumn get opCollect => boolean().withDefault(const Constant(false))();
+  BoolColumn get opDelete => boolean().withDefault(const Constant(false))();
+
   //p 计划
   TextColumn get pPriceBuy => text().nullable()();
   TextColumn get pPriceSale => text().nullable()();
@@ -31,7 +35,6 @@ class StockItems extends Table with TableMixin {
   TextColumn get pPeTtmBuy => text().nullable()();
   TextColumn get pPeTtmSale => text().nullable()();
   TextColumn get pPeTtmRemark => text().nullable()();
-
   TextColumn get pAllRemark => text().nullable()();
   TextColumn get pEventRemark => text().nullable()();
 }

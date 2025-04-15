@@ -118,22 +118,28 @@ class HomeStockCell extends StatelessWidget {
     return Slidable(
       key: ValueKey(item.id),
       endActionPane: ActionPane(
-        extentRatio: 0.8,
+        extentRatio: 0.7,
         motion: const BehindMotion(),
         children: [
           SlideAction(
-            color: Colors.green,
-            icon: Icons.vertical_align_top,
+            color: Colors.blue,
+            icon: item.opTop ? Icons.push_pin : Icons.push_pin_outlined,
+            onPressed: () {
+              controller.clickOpTop(item);
+            },
             // flex: 2,
           ),
           SlideAction(
-            color: Colors.blue,
+            color: Colors.orange,
             icon: Icons.tab,
             // flex: 2,
           ),
           SlideAction(
             color: Colors.yellow,
-            icon: Icons.star,
+            icon: item.opCollect ? Icons.star : Icons.star_border_outlined,
+            onPressed: () {
+              controller.clickOpCollect(item);
+            },
             // flex: 2,
           ),
           SlideAction(
@@ -141,7 +147,7 @@ class HomeStockCell extends StatelessWidget {
             icon: Icons.delete_forever,
             // flex: 1,
             onPressed: () {
-              // controller.deleteHistory(index);
+              controller.clickOpDelete(item);
             },
           ),
         ],
@@ -156,16 +162,30 @@ class HomeStockCell extends StatelessWidget {
             child: Column(
               children: [
                 Row(
-                  spacing: 8,
+                  // spacing: 8,
                   children: [
                     Text(
                       item.name,
                       style: TextStyle(fontSize: 16),
                     ),
+                    kSpaceW(8),
                     Text(
                       item.currentPrice ?? "",
                       style: TextStyle(fontSize: 16),
                     ),
+                    kSpaceW(8),
+                    if (item.opTop)
+                      Icon(
+                        Icons.push_pin,
+                        size: 15,
+                        color: Colors.blue.shade700,
+                      ),
+                    if (item.opCollect)
+                      Icon(
+                        Icons.star,
+                        size: 15,
+                        color: Colors.yellow.shade700,
+                      ),
                     kSpaceMax(),
                     Text(
                       "买",
@@ -188,6 +208,7 @@ class HomeStockCell extends StatelessWidget {
                           (item.marketType ?? "") == "51" ? "深" : "沪",
                           style: TextStyle(
                             fontSize: 10,
+                            color: Colors.white.withValues(alpha: 0.8),
                           ),
                         ),
                       ),

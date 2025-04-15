@@ -33,12 +33,29 @@ class AppDatabase extends _$AppDatabase {
   // }
 
   Future<void> addStock(StockItemsCompanion item) => stockItems.insertOne(item);
+  Future<void> addStockOnConflictUpdate(StockItemsCompanion item) {
+    //item updateAt 设置为当前时间
+    item = item.copyWith(updateAt: Value(DateTime.now()));
+    return stockItems.insertOnConflictUpdate(item);
+  }
+
   Future<void> deleteStock(StockItem itemDelete) =>
       managers.stockItems.filter((f) => f.id(itemDelete.id)).delete();
+  // Future<void> deleteStockToHistory(StockItem itemDelete) {
+  //   //删除进入历史（opDelete 设置 true）
+  //   itemDelete = itemDelete.copyWith(opDelete: true);
+  //   return (update(stockItems)..where((tbl) => tbl.id.equals(itemDelete.id)))
+  //       .write(itemDelete);
+  // }
+  // //删除所有
+  // Future<void> deleteAllStock() {
+  //   return stockItems.deleteAll();
+  // }
 
-  Future<void> updateStock(StockItem itemUpdate) {
-    final updatedItem = itemUpdate.copyWith(updateAt: DateTime.now());
-    return managers.stockItems.replace(updatedItem);
+  //操作不改动修改时间
+  Future<void> updateStockWithOp(StockItem itemUpdate) {
+    // final updatedItem = itemUpdate.copyWith(updateAt: DateTime.now());
+    return managers.stockItems.replace(itemUpdate);
   }
 
   // Future<List<StockItem>> get allStockItems => managers.stockItems.get();
@@ -46,9 +63,21 @@ class AppDatabase extends _$AppDatabase {
   //   return await managers.stockItems.get();
   // }
 
-  Future<List<StockItem>> getStockItemsByTimeDesc() {
+  // Future<List<StockItem>> getStockItemsByTimeDesc() {
+  //   return (select(stockItems)
+  //         ..orderBy([
+  //           (tbl) =>
+  //               OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+  //         ]))
+  //       .get();
+  // }
+  //排除掉删除的，时间倒叙，置顶排序。
+  Future<List<StockItem>> getStockItemsOnHome() {
     return (select(stockItems)
+          ..where((tbl) => tbl.opDelete.equals(false))
           ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
             (tbl) =>
                 OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
           ]))

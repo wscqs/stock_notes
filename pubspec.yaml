@@ -32,6 +32,11 @@ dependencies:
   #readmore: ^3.0.0
   #linkfy_text: ^1.1.6 文本链接化
 
+  #icon
+  #font_awesome_flutter: ^10.8.0
+  #remixicon: ^1.4.1
+  #lucide_icons_flutter: ^2.0.3
+
   #存储
   shared_preferences: ^2.5.2
   get_storage: ^2.1.1

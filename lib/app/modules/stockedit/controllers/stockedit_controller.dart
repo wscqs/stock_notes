@@ -24,12 +24,33 @@ class StockeditController extends GetxController {
   final pAllRemarkController = TextEditingController();
   final pEventRemarkController = TextEditingController();
 
-  final stockData = StockTxModel().obs;
+  final serStockData = StockTxModel().obs;
+  final localStockData = Rxn<StockItem>();
 
   @override
   void onInit() {
     super.onInit();
     stockNumController.addListener(_updateStockNum);
+    localStockData.value = Get.arguments;
+    if (localStockData.value != null) {
+      stockNum.value = localStockData.value?.code ?? "";
+      stockNumController.text = stockNum.value;
+      search();
+      pPriceBuyController.text = localStockData.value?.pPriceBuy ?? "";
+      pPriceSaleController.text = localStockData.value?.pPriceSale ?? "";
+      pPriceRemarkController.text = localStockData.value?.pPriceRemark ?? "";
+      pMarketCapBuyController.text = localStockData.value?.pMarketCapBuy ?? "";
+      pMarketCapSaleController.text =
+          localStockData.value?.pMarketCapSale ?? "";
+      pMarketRemarkController.text = localStockData.value?.pMarketRemark ?? "";
+      pPeTtmBuyController.text = localStockData.value?.pPeTtmBuy ?? "";
+      pPeTtmSaleController.text = localStockData.value?.pPeTtmSale ?? "";
+      pPeTtmRemarkController.text = localStockData.value?.pPeTtmRemark ?? "";
+      pAllRemarkController.text = localStockData.value?.pAllRemark ?? "";
+      pEventRemarkController.text = localStockData.value?.pEventRemark ?? "";
+
+      // pMarketCapBuyController.text = localStockData.value!
+    }
   }
 
   void _updateStockNum() {
@@ -63,30 +84,47 @@ class StockeditController extends GetxController {
     var testQTRequest = await QsApi.instance()
         .requestStockData(stockCodes: [stockNum.toString()]);
     QsHud.dismiss();
-    stockData.value = testQTRequest?.first ?? StockTxModel();
-    print(stockData.value.code);
+    serStockData.value = testQTRequest?.first ?? StockTxModel();
+    print(serStockData.value.code);
     // print(testQTRequest.toString());
   }
 
   Future<void> save() async {
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
-    if (stockData.value.code == null || stockData.value.code!.isEmpty) {
+    if (serStockData.value.code == null || serStockData.value.code!.isEmpty) {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;
     }
     final db = AppDatabase();
-    StockItemsCompanion item = StockItemsCompanion.insert(
-      marketType: stockData.value.marketType!,
-      code: stockData.value.code!,
-      name: stockData.value.name!,
-      currentPrice: Value(stockData.value.currentPrice),
-      totalMarketCap: Value(stockData.value.totalMarketCap),
-      peRatioTtm: Value(stockData.value.peRatioTtm),
+    StockItemsCompanion itemCompanion = StockItemsCompanion.insert(
+      marketType: serStockData.value.marketType!,
+      code: serStockData.value.code!,
+      name: serStockData.value.name!,
+      currentPrice: Value(serStockData.value.currentPrice),
+      totalMarketCap: Value(serStockData.value.totalMarketCap),
+      peRatioTtm: Value(serStockData.value.peRatioTtm),
       pPriceBuy: Value(pPriceBuyController.text),
       pPriceSale: Value(pPriceSaleController.text),
+      pPriceRemark: Value(pPriceRemarkController.text),
+      pMarketCapBuy: Value(pMarketCapBuyController.text),
+      pMarketCapSale: Value(pMarketCapSaleController.text),
+      pMarketRemark: Value(pMarketRemarkController.text),
+      pPeTtmBuy: Value(pPeTtmBuyController.text),
+      pPeTtmSale: Value(pPeTtmSaleController.text),
+      pPeTtmRemark: Value(pPeTtmRemarkController.text),
+      pAllRemark: Value(pAllRemarkController.text),
+      pEventRemark: Value(pEventRemarkController.text),
     );
-    db.addStock(item);
+    if (localStockData.value != null) {
+      //localStockData 更新
+      StockItemsCompanion itemUpdate = itemCompanion.copyWith(
+        id: Value(localStockData.value!.id),
+      );
+      db.addStockOnConflictUpdate(itemUpdate);
+    } else {
+      db.addStock(itemCompanion);
+    }
     QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
   }
 
