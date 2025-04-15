@@ -17,7 +17,11 @@ class StockeditView extends GetView<StockeditController> {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: Text(TextKey.gupiao.tr),
+            title: Obx(() {
+              return Text(controller.isLocalData.value
+                  ? controller.localStockData.value!.name
+                  : TextKey.gupiao.tr);
+            }),
             centerTitle: true,
             actions: [
               ElevatedButton(
@@ -41,27 +45,31 @@ class StockeditView extends GetView<StockeditController> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 280,
-              ),
-              child: StockSearchField(
-                controller: controller.stockNumController,
-                onClear: controller.clearStockNum,
-                onSubmit: () {
-                  // 提交逻辑
-                  controller.search();
-                },
-                hintText: TextKey.shurugupiaotishi.tr,
-                stockValue: controller.stockNum,
-              ),
-            ),
-          ),
+          if (!controller.isLocalData.value) buildCenterSearchFiled(),
           _gupiaoinfo(),
           _gupiaojihua(),
           _gupiaojilu(),
         ],
+      ),
+    );
+  }
+
+  Center buildCenterSearchFiled() {
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 280,
+        ),
+        child: StockSearchField(
+          controller: controller.stockNumController,
+          onClear: controller.clearStockNum,
+          onSubmit: () {
+            // 提交逻辑
+            controller.search();
+          },
+          hintText: TextKey.shurugupiaotishi.tr,
+          stockValue: controller.stockNum,
+        ),
       ),
     );
   }
@@ -233,7 +241,14 @@ class StockeditView extends GetView<StockeditController> {
                       TextKey.look.tr,
                     ),
                   )
-                : SizedBox(),
+                : TextButton(
+                    onPressed: () {
+                      controller.search();
+                    },
+                    child: Text(
+                      TextKey.refresh.tr,
+                    ),
+                  ),
           ],
         ),
         kSpaceH(8),

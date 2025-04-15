@@ -27,6 +27,7 @@ class StockeditController extends GetxController {
 
   final serStockData = StockTxModel().obs;
   final localStockData = Rxn<StockItem>();
+  final isLocalData = false.obs;
 
   final pPriceYieldRate = 0.0.obs;
   final pMarketCapYieldRate = 0.0.obs;
@@ -45,6 +46,7 @@ class StockeditController extends GetxController {
 
     localStockData.value = Get.arguments;
     if (localStockData.value != null) {
+      isLocalData.value = true;
       stockNum.value = localStockData.value?.code ?? "";
       stockNumController.text = stockNum.value;
       search();

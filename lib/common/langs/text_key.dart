@@ -41,6 +41,7 @@ class TextKey {
   static const delete = 'delete';
   static const noData = 'noData';
   static const look = 'look';
+  static const refresh = 'refresh';
 }
 
 const Map<String, String> zh = {
@@ -86,6 +87,7 @@ const Map<String, String> zh = {
   TextKey.delete: '删除',
   TextKey.noData: '暂无数据',
   TextKey.look: '查看',
+  TextKey.refresh: '刷新',
 };
 
 const Map<String, String> en = {
@@ -132,4 +134,5 @@ const Map<String, String> en = {
   TextKey.delete: 'Delete',
   TextKey.noData: 'No data',
   TextKey.look: 'Look',
+  TextKey.refresh: 'Refresh',
 };
