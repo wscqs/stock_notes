@@ -85,7 +85,7 @@ class HomestockController extends BaseController
       TextKey.collect.tr,
       TextKey.delete.tr,
     ];
-    selectedOrderIndex.value = selectedOrderIndex.value;
+    selectedOrderIndex.refresh();
     super.onResume();
     getDatas();
   }

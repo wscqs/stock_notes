@@ -47,12 +47,12 @@ class StockeditView extends GetView<StockeditController> {
         children: [
           if (!controller.isLocalData.value) ...[
             buildCenterSearchFiled(),
-            kSpaceH(8),
+            kSpaceH(12),
           ],
           _gupiaoinfo(),
-          kSpaceH(32),
+          kSpaceH(24),
           _gupiaojihua(),
-          kSpaceH(32),
+          kSpaceH(24),
           _gupiaojilu(),
         ],
       ),
