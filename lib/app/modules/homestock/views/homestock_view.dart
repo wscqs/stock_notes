@@ -131,14 +131,21 @@ class HomestockView extends GetView<HomestockController> {
           ? QsEmptyView(
               message: TextKey.noData.tr,
             )
-          : ListView.builder(
-              itemCount: controller.items.length,
-              itemBuilder: (context, index) {
-                return HomeStockCell(
-                  item: controller.items[index],
-                );
-              },
-            ),
+          : listView(),
+    );
+  }
+
+  Widget listView() {
+    return SlidableAutoCloseBehavior(
+      child: ListView.builder(
+        itemCount: controller.items.length,
+        itemBuilder: (context, index) {
+          return HomeStockCell(
+            item: controller.items[index],
+            index: index,
+          );
+        },
+      ),
     );
   }
 
@@ -187,12 +194,13 @@ class HomestockView extends GetView<HomestockController> {
 }
 
 class HomeStockCell extends StatelessWidget {
-  // final int index;
+  final int index;
   final StockItem item;
   final controller = Get.find<HomestockController>();
   HomeStockCell({
     super.key,
     required this.item,
+    required this.index,
   });
 
   @override
@@ -200,94 +208,98 @@ class HomeStockCell extends StatelessWidget {
     return Slidable(
       key: ValueKey(item.id),
       endActionPane: buildActionPane(),
-      child: Card(
-        child: InkWell(
-          onTap: () {
-            controller.pushDetailPage(item);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  // spacing: 8,
-                  children: [
-                    Text(
-                      item.name,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    kSpaceW(8),
-                    Text(
-                      item.currentPrice ?? "",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    kSpaceW(8),
-                    if (item.opTop)
-                      Icon(
-                        Icons.push_pin,
-                        size: 15,
-                        color: Colors.blue.shade700,
+      child: Builder(builder: (context) {
+        controller.slidableContexts[index] = context;
+        return Card(
+          child: InkWell(
+            onTap: () {
+              controller.pushDetailPage(item);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Row(
+                    // spacing: 8,
+                    children: [
+                      Text(
+                        item.name,
+                        style: TextStyle(fontSize: 16),
                       ),
-                    if (item.opCollect)
-                      Icon(
-                        Icons.star,
-                        size: 15,
-                        color: Colors.yellow.shade700,
+                      kSpaceW(8),
+                      Text(
+                        item.currentPrice ?? "",
+                        style: TextStyle(fontSize: 16),
                       ),
-                    kSpaceMax(),
-                    Text(
-                      "买",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-                kSpaceH(2),
-                Row(
-                  spacing: 4,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(2),
+                      kSpaceW(8),
+                      if (item.opTop)
+                        Icon(
+                          Icons.push_pin,
+                          size: 15,
+                          color: Colors.blue.shade700,
+                        ),
+                      if (item.opCollect)
+                        Icon(
+                          Icons.star,
+                          size: 15,
+                          color: Colors.yellow.shade700,
+                        ),
+                      kSpaceMax(),
+                      Text(
+                        "买",
+                        style: TextStyle(fontSize: 16),
                       ),
-                      child: Center(
-                        child: Text(
-                          (item.marketType ?? "") == "51" ? "深" : "沪",
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white.withValues(alpha: 0.8),
+                    ],
+                  ),
+                  kSpaceH(2),
+                  Row(
+                    spacing: 4,
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        child: Center(
+                          child: Text(
+                            (item.marketType ?? "") == "51" ? "深" : "沪",
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.white.withValues(alpha: 0.8),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Text(
-                      item.code ?? "",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-                kSpaceH(4),
-                Row(
-                  spacing: 8,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "tag",
+                      Text(
+                        item.code ?? "",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  kSpaceH(4),
+                  Row(
+                    spacing: 8,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "tag",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                      Text(
+                        item.createdAt.toDateString() ?? "",
                         style: TextStyle(fontSize: 12),
                       ),
-                    ),
-                    Text(
-                      item.createdAt.toDateString() ?? "",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 

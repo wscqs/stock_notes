@@ -1,0 +1,2 @@
+/Users/cqs/Documents/flutter/stock_notes/android/app/.cxx/RelWithDebInfo/4l6f1u2w/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/cqs/Documents/flutter/stock_notes/android/app/.cxx/RelWithDebInfo/4l6f1u2w/arm64-v8a/CMakeFiles/rebuild_cache.dir

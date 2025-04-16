@@ -1,5 +1,6 @@
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
@@ -7,9 +8,13 @@ import '../../../../common/database/database.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
 
-class HomestockController extends BaseController {
+class HomestockController extends BaseController
+    with GetTickerProviderStateMixin {
   final TextEditingController searchController = TextEditingController();
   final query = "".obs;
+
+  late var slidableContexts = <BuildContext>[];
+
   // final database = AppDatabase();
   //
   // final items = [
@@ -36,6 +41,7 @@ class HomestockController extends BaseController {
 
   @override
   Future<void> onInit() async {
+    // slidableController = SlidableController(this);
     super.onInit();
     getDatas();
     // filteredItems.value = items; // 默认显示所有项目
@@ -87,8 +93,13 @@ class HomestockController extends BaseController {
 
   @override
   void onPause() {
-    super.onPause();
+    // Slidable.of(Get.context!)
+    //     ?.close(); //跳到别的页面关闭。无效。就是 context获取的不对，别的方法尝试，无解决。
+    for (var slidableContexts in slidableContexts) {
+      Slidable.of(slidableContexts)?.close();
+    }
     FocusScope.of(Get.context!).unfocus(); // 关闭键盘
+    super.onPause();
   }
 
   void clickMore() {
@@ -99,14 +110,19 @@ class HomestockController extends BaseController {
 
   void filterItems(String query) {
     this.query.value = query;
+    var filterItems = <StockItem>[];
     if (query.isEmpty) {
-      items.value = dbItems;
+      filterItems = dbItems;
     } else {
-      items.value = dbItems
+      filterItems = dbItems
           .where((item) =>
               item.name.contains(query) || item.code.contains(query)) // 搜索逻辑
           .toList();
     }
+    // Get.context 不对，页面初始化后赋值
+    slidableContexts =
+        List.generate(filterItems.length, (index) => Get.context!);
+    items.value = filterItems;
   }
 
   void pushDetailPage(StockItem item) {
