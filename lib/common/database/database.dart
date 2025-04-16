@@ -4,6 +4,9 @@ import 'package:stock_notes/common/database/tables.dart';
 
 part 'database.g.dart';
 
+//  await Get.putAsync(() async => AppDatabase());
+//  final db = Get.find<AppDatabase>();
+
 @DriftDatabase(tables: [StockItems]) //TodoItems,
 class AppDatabase extends _$AppDatabase {
   // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
@@ -71,6 +74,12 @@ class AppDatabase extends _$AppDatabase {
   //         ]))
   //       .get();
   // }
+
+  Future<StockItem> getStockItem(String code) {
+    return (select(stockItems)..where((tbl) => tbl.code.equals(code)))
+        .getSingle();
+  }
+
   //排除掉删除的，时间倒叙，置顶排序。
   Future<List<StockItem>> getStockItemsOnHome() {
     return (select(stockItems)

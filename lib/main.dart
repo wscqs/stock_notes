@@ -5,6 +5,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
+import 'common/database/database.dart';
 import 'common/globle_service.dart';
 import 'common/langs/translation_library.dart';
 import 'common/styles/theme_data.dart';
@@ -34,6 +35,8 @@ main() async {
   ]);
   await QsCache.preInit();
   await Get.putAsync(() => GlobalService().init());
+  await Get.putAsync(() async => AppDatabase());
+
   // QsRequest.initDio();
   runApp(ScreenUtilInit(
     designSize: const Size(375, 812), //设计稿宽高的px

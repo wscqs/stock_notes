@@ -47,9 +47,16 @@ class StockeditController extends GetxController {
     localStockData.value = Get.arguments;
     if (localStockData.value != null) {
       isLocalData.value = true;
+      _dealHasLocalDataRefreshUI();
+      search();
+    }
+  }
+
+  //根据有没有本地数据，刷新页面
+  void _dealHasLocalDataRefreshUI() {
+    if (localStockData.value != null) {
       stockNum.value = localStockData.value?.code ?? "";
       stockNumController.text = stockNum.value;
-      search();
       pPriceBuyController.text = localStockData.value?.pPriceBuy ?? "";
       pPriceSaleController.text = localStockData.value?.pPriceSale ?? "";
       pPriceRemarkController.text = localStockData.value?.pPriceRemark ?? "";
@@ -62,8 +69,21 @@ class StockeditController extends GetxController {
       pPeTtmRemarkController.text = localStockData.value?.pPeTtmRemark ?? "";
       pAllRemarkController.text = localStockData.value?.pAllRemark ?? "";
       pEventRemarkController.text = localStockData.value?.pEventRemark ?? "";
-
-      // pMarketCapBuyController.text = localStockData.value!
+    } else {
+      // isLocalData.value = false;
+      // stockNum.value ="";
+      stockNumController.text = stockNum.value;
+      pPriceBuyController.text = "";
+      pPriceSaleController.text = "";
+      pPriceRemarkController.text = "";
+      pMarketCapBuyController.text = "";
+      pMarketCapSaleController.text = "";
+      pMarketRemarkController.text = "";
+      pPeTtmBuyController.text = "";
+      pPeTtmSaleController.text = "";
+      pPeTtmRemarkController.text = "";
+      pAllRemarkController.text = "";
+      pEventRemarkController.text = "";
     }
   }
 
@@ -116,7 +136,15 @@ class StockeditController extends GetxController {
         .requestStockData(stockCodes: [stockNum.toString()]);
     QsHud.dismiss();
     serStockData.value = testQTRequest?.first ?? StockTxModel();
-    print(serStockData.value.code);
+    // print(serStockData.value.code);
+
+    //本地看看有没有，有就直接变修改本地数据
+    if (!isLocalData.value && serStockData.value.code != null) {
+      final db = Get.find<AppDatabase>();
+      var stockItem = await db.getStockItem(serStockData.value.code!);
+      localStockData.value = stockItem;
+      _dealHasLocalDataRefreshUI();
+    }
     // print(testQTRequest.toString());
   }
 
@@ -127,7 +155,7 @@ class StockeditController extends GetxController {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;
     }
-    final db = AppDatabase();
+    final db = Get.find<AppDatabase>();
     StockItemsCompanion itemCompanion = StockItemsCompanion.insert(
       marketType: serStockData.value.marketType!,
       code: serStockData.value.code!,
@@ -157,6 +185,7 @@ class StockeditController extends GetxController {
       db.addStock(itemCompanion);
     }
     QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
+    Get.back();
   }
 
   void clearStockNum() {

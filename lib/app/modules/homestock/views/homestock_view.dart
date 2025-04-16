@@ -19,7 +19,7 @@ class HomestockView extends GetView<HomestockController> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).unfocus(); // 关闭键盘
+        controller.cancelUIoP();
       },
       child: KeepAliveWidget(
         child: Scaffold(

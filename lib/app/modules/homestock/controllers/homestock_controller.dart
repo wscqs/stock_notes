@@ -30,8 +30,7 @@ class HomestockController extends BaseController
   final dbItems = <StockItem>[].obs;
   // List<StockItem>
   final items = <StockItem>[].obs; //显示的
-  final db = AppDatabase();
-
+  final db = Get.find<AppDatabase>();
   List<String> order = [
     TextKey.all.tr,
     TextKey.collect.tr,
@@ -93,13 +92,19 @@ class HomestockController extends BaseController
 
   @override
   void onPause() {
+    cancelUIoP();
+    super.onPause();
+  }
+
+  //取消一些 UI 页面操作
+  void cancelUIoP() {
     // Slidable.of(Get.context!)
     //     ?.close(); //跳到别的页面关闭。无效。就是 context获取的不对，别的方法尝试，无解决。
+    //关闭左滑
     for (var slidableContexts in slidableContexts) {
       Slidable.of(slidableContexts)?.close();
     }
     FocusScope.of(Get.context!).unfocus(); // 关闭键盘
-    super.onPause();
   }
 
   void clickMore() {

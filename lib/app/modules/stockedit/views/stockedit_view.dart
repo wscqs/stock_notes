@@ -41,13 +41,18 @@ class StockeditView extends GetView<StockeditController> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
-        spacing: 16,
+        // spacing: 16,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!controller.isLocalData.value) buildCenterSearchFiled(),
+          if (!controller.isLocalData.value) ...[
+            buildCenterSearchFiled(),
+            kSpaceH(8),
+          ],
           _gupiaoinfo(),
+          kSpaceH(32),
           _gupiaojihua(),
+          kSpaceH(32),
           _gupiaojilu(),
         ],
       ),
@@ -200,10 +205,11 @@ class StockeditView extends GetView<StockeditController> {
                   kSpaceW(12),
                   if (yieldRate > 0)
                     Text(
-                      TextKey.shouyilv.tr +
-                          " ${(yieldRate * 100).toStringAsFixed(1)}%",
-                      style: Get.textTheme.titleMedium,
-                    ),
+                        TextKey.shouyilv.tr +
+                            ": ${(yieldRate * 100).toStringAsFixed(1)}%",
+                        style: TextStyle(
+                          color: Colors.grey,
+                        )),
                 ],
               ),
               kSpaceH(16),
@@ -232,23 +238,21 @@ class StockeditView extends GetView<StockeditController> {
         Row(
           children: [
             Text(TextKey.gupiao.tr, style: Get.textTheme.titleLarge),
-            (controller.serStockData.value.code != null)
-                ? TextButton(
-                    onPressed: () {
-                      controller.clickLookStock();
-                    },
-                    child: Text(
-                      TextKey.look.tr,
-                    ),
-                  )
-                : TextButton(
-                    onPressed: () {
-                      controller.search();
-                    },
-                    child: Text(
-                      TextKey.refresh.tr,
-                    ),
+            if (controller.serStockData.value.code != null &&
+                (controller.stockNum?.isNotEmpty ?? false))
+              SizedBox(
+                height: 32,
+                child: TextButton(
+                  onPressed: controller.serStockData.value.code != null
+                      ? controller.clickLookStock
+                      : controller.search,
+                  child: Text(
+                    controller.serStockData.value.code != null
+                        ? TextKey.look.tr
+                        : TextKey.refresh.tr,
                   ),
+                ),
+              ),
           ],
         ),
         kSpaceH(8),
