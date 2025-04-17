@@ -15,19 +15,8 @@ class HomestockController extends BaseController
 
   late var slidableContexts = <BuildContext>[];
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final FocusNode searchFocusNode = FocusNode();
 
-  // final database = AppDatabase();
-  //
-  // final items = [
-  //   "Apple",
-  //   "Banana",
-  //   "Orange",
-  //   "Grapes",
-  //   "Mango",
-  //   "Pineapple",
-  //   "Strawberry",
-  //   "Blueberry"
-  // ].obs;
   final dbItems = <StockItem>[].obs;
   // List<StockItem>
   final items = <StockItem>[].obs; //显示的
@@ -41,10 +30,8 @@ class HomestockController extends BaseController
 
   @override
   Future<void> onInit() async {
-    // slidableController = SlidableController(this);
     super.onInit();
     getDatas();
-    // filteredItems.value = items; // 默认显示所有项目
 
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {
@@ -64,10 +51,7 @@ class HomestockController extends BaseController
     filterItems(query);
   }
 
-  void refreshAppui() {
-    // filteredItems.value = items;
-    // getDatas();
-  }
+  void refreshAppui() {}
 
   @override
   void onReady() {
@@ -94,6 +78,7 @@ class HomestockController extends BaseController
   @override
   void onPause() {
     closeDrawer();
+    cancelUIoP();
     super.onPause();
   }
 
@@ -107,11 +92,12 @@ class HomestockController extends BaseController
   void cancelUIoP() {
     // Slidable.of(Get.context!)
     //     ?.close(); //跳到别的页面关闭。无效。就是 context获取的不对，别的方法尝试，无解决。
+    // FocusScope.of(get.currentContext!).unfocus();//有一些异常
     //关闭左滑
     for (var slidableContexts in slidableContexts) {
       Slidable.of(slidableContexts)?.close();
     }
-    FocusScope.of(Get.context!).unfocus(); // 关闭键盘
+    searchFocusNode.unfocus(); // 关闭键盘
   }
 
   void clickMore() {
@@ -138,6 +124,7 @@ class HomestockController extends BaseController
   }
 
   void pushDetailPage(StockItem item) {
+    cancelUIoP();
     Get.toNamed(Routes.STOCKEDIT, arguments: item.copyWith());
   }
 

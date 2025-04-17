@@ -152,6 +152,7 @@ class HomestockView extends GetView<HomestockController> {
 
   Widget buildTopSearch() {
     return TextField(
+      focusNode: controller.searchFocusNode,
       controller: controller.searchController,
       onChanged: controller.filterItems, // 监听输入内容
       decoration: InputDecoration(
