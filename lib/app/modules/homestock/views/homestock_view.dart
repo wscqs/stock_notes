@@ -23,6 +23,7 @@ class HomestockView extends GetView<HomestockController> {
       },
       child: KeepAliveWidget(
         child: Scaffold(
+          key: controller.scaffoldKey,
           appBar: AppBar(
             title: Text(TextKey.gupiao.tr),
             centerTitle: true,

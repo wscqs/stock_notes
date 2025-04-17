@@ -14,6 +14,7 @@ class HomestockController extends BaseController
   final query = "".obs;
 
   late var slidableContexts = <BuildContext>[];
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   // final database = AppDatabase();
   //
@@ -92,8 +93,14 @@ class HomestockController extends BaseController
 
   @override
   void onPause() {
-    cancelUIoP();
+    closeDrawer();
     super.onPause();
+  }
+
+  void closeDrawer() {
+    if (scaffoldKey.currentState?.isDrawerOpen ?? false) {
+      Navigator.of(scaffoldKey.currentContext!).pop();
+    }
   }
 
   //取消一些 UI 页面操作

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/app/modules/homenote/views/homenote_view.dart';
+import 'package:stock_notes/app/modules/homestock/controllers/homestock_controller.dart';
 import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
 
 import '../../../../common/event_bus.dart';
@@ -27,10 +27,10 @@ class TabsController extends GetxController {
   void onInit() {
     super.onInit();
 
-    pageController.addListener(() {
-      // 当页面切换时，尝试关闭当前页面中的 Slidable
-      Slidable.of(Get.context!)?.close();
-    });
+    // pageController.addListener(() {
+    //   // 当页面切换时，尝试关闭当前页面中的 Slidable
+    //   Slidable.of(Get.context!)?.close();
+    // });
     // setSystemNavigationBarColor(Colors.black, Brightness.light);
   }
 
@@ -45,6 +45,9 @@ class TabsController extends GetxController {
   }
 
   void pushCreatePage() {
+    //特殊处理closeDrawer
+    Get.find<HomestockController>().closeDrawer();
+
     if (currentIndex.value == 0) {
       Get.toNamed(Routes.STOCKEDIT);
     } else {

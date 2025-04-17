@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../routes/app_pages.dart';
+import '../../homestock/controllers/homestock_controller.dart';
 import 'vc.dart';
 
 class HomedrawerPage extends StatelessWidget {
   HomedrawerPage({Key? key}) : super(key: key);
 
   final HomedrawerVC vc = Get.put(HomedrawerVC());
+  final HomestockController parentVC = Get.find<HomestockController>();
 
   @override
   Widget build(BuildContext context) {
