@@ -1171,15 +1171,427 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
   }
 }
 
+class $NoteItemsTable extends NoteItems
+    with TableInfo<$NoteItemsTable, NoteItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<DateTime> updateAt = GeneratedColumn<DateTime>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _opTopMeta = const VerificationMeta('opTop');
+  @override
+  late final GeneratedColumn<bool> opTop = GeneratedColumn<bool>(
+      'op_top', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("op_top" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _opCollectMeta =
+      const VerificationMeta('opCollect');
+  @override
+  late final GeneratedColumn<bool> opCollect = GeneratedColumn<bool>(
+      'op_collect', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("op_collect" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _opDeleteMeta =
+      const VerificationMeta('opDelete');
+  @override
+  late final GeneratedColumn<bool> opDelete = GeneratedColumn<bool>(
+      'op_delete', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("op_delete" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, createdAt, updateAt, title, content, opTop, opCollect, opDelete];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_items';
+  @override
+  VerificationContext validateIntegrity(Insertable<NoteItem> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    }
+    if (data.containsKey('op_top')) {
+      context.handle(
+          _opTopMeta, opTop.isAcceptableOrUnknown(data['op_top']!, _opTopMeta));
+    }
+    if (data.containsKey('op_collect')) {
+      context.handle(_opCollectMeta,
+          opCollect.isAcceptableOrUnknown(data['op_collect']!, _opCollectMeta));
+    }
+    if (data.containsKey('op_delete')) {
+      context.handle(_opDeleteMeta,
+          opDelete.isAcceptableOrUnknown(data['op_delete']!, _opDeleteMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoteItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteItem(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_at'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content']),
+      opTop: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}op_top'])!,
+      opCollect: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}op_collect'])!,
+      opDelete: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}op_delete'])!,
+    );
+  }
+
+  @override
+  $NoteItemsTable createAlias(String alias) {
+    return $NoteItemsTable(attachedDatabase, alias);
+  }
+}
+
+class NoteItem extends DataClass implements Insertable<NoteItem> {
+  final int id;
+  final DateTime createdAt;
+  final DateTime updateAt;
+  final String title;
+  final String? content;
+  final bool opTop;
+  final bool opCollect;
+  final bool opDelete;
+  const NoteItem(
+      {required this.id,
+      required this.createdAt,
+      required this.updateAt,
+      required this.title,
+      this.content,
+      required this.opTop,
+      required this.opCollect,
+      required this.opDelete});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['update_at'] = Variable<DateTime>(updateAt);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || content != null) {
+      map['content'] = Variable<String>(content);
+    }
+    map['op_top'] = Variable<bool>(opTop);
+    map['op_collect'] = Variable<bool>(opCollect);
+    map['op_delete'] = Variable<bool>(opDelete);
+    return map;
+  }
+
+  NoteItemsCompanion toCompanion(bool nullToAbsent) {
+    return NoteItemsCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updateAt: Value(updateAt),
+      title: Value(title),
+      content: content == null && nullToAbsent
+          ? const Value.absent()
+          : Value(content),
+      opTop: Value(opTop),
+      opCollect: Value(opCollect),
+      opDelete: Value(opDelete),
+    );
+  }
+
+  factory NoteItem.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteItem(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updateAt: serializer.fromJson<DateTime>(json['updateAt']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String?>(json['content']),
+      opTop: serializer.fromJson<bool>(json['opTop']),
+      opCollect: serializer.fromJson<bool>(json['opCollect']),
+      opDelete: serializer.fromJson<bool>(json['opDelete']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updateAt': serializer.toJson<DateTime>(updateAt),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String?>(content),
+      'opTop': serializer.toJson<bool>(opTop),
+      'opCollect': serializer.toJson<bool>(opCollect),
+      'opDelete': serializer.toJson<bool>(opDelete),
+    };
+  }
+
+  NoteItem copyWith(
+          {int? id,
+          DateTime? createdAt,
+          DateTime? updateAt,
+          String? title,
+          Value<String?> content = const Value.absent(),
+          bool? opTop,
+          bool? opCollect,
+          bool? opDelete}) =>
+      NoteItem(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        updateAt: updateAt ?? this.updateAt,
+        title: title ?? this.title,
+        content: content.present ? content.value : this.content,
+        opTop: opTop ?? this.opTop,
+        opCollect: opCollect ?? this.opCollect,
+        opDelete: opDelete ?? this.opDelete,
+      );
+  NoteItem copyWithCompanion(NoteItemsCompanion data) {
+    return NoteItem(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updateAt: data.updateAt.present ? data.updateAt.value : this.updateAt,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      opTop: data.opTop.present ? data.opTop.value : this.opTop,
+      opCollect: data.opCollect.present ? data.opCollect.value : this.opCollect,
+      opDelete: data.opDelete.present ? data.opDelete.value : this.opDelete,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteItem(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('opTop: $opTop, ')
+          ..write('opCollect: $opCollect, ')
+          ..write('opDelete: $opDelete')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, createdAt, updateAt, title, content, opTop, opCollect, opDelete);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteItem &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updateAt == this.updateAt &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.opTop == this.opTop &&
+          other.opCollect == this.opCollect &&
+          other.opDelete == this.opDelete);
+}
+
+class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updateAt;
+  final Value<String> title;
+  final Value<String?> content;
+  final Value<bool> opTop;
+  final Value<bool> opCollect;
+  final Value<bool> opDelete;
+  const NoteItemsCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.opTop = const Value.absent(),
+    this.opCollect = const Value.absent(),
+    this.opDelete = const Value.absent(),
+  });
+  NoteItemsCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    required String title,
+    this.content = const Value.absent(),
+    this.opTop = const Value.absent(),
+    this.opCollect = const Value.absent(),
+    this.opDelete = const Value.absent(),
+  }) : title = Value(title);
+  static Insertable<NoteItem> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updateAt,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<bool>? opTop,
+    Expression<bool>? opCollect,
+    Expression<bool>? opDelete,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updateAt != null) 'update_at': updateAt,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (opTop != null) 'op_top': opTop,
+      if (opCollect != null) 'op_collect': opCollect,
+      if (opDelete != null) 'op_delete': opDelete,
+    });
+  }
+
+  NoteItemsCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updateAt,
+      Value<String>? title,
+      Value<String?>? content,
+      Value<bool>? opTop,
+      Value<bool>? opCollect,
+      Value<bool>? opDelete}) {
+    return NoteItemsCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updateAt: updateAt ?? this.updateAt,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      opTop: opTop ?? this.opTop,
+      opCollect: opCollect ?? this.opCollect,
+      opDelete: opDelete ?? this.opDelete,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<DateTime>(updateAt.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (opTop.present) {
+      map['op_top'] = Variable<bool>(opTop.value);
+    }
+    if (opCollect.present) {
+      map['op_collect'] = Variable<bool>(opCollect.value);
+    }
+    if (opDelete.present) {
+      map['op_delete'] = Variable<bool>(opDelete.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('opTop: $opTop, ')
+          ..write('opCollect: $opCollect, ')
+          ..write('opDelete: $opDelete')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $StockItemsTable stockItems = $StockItemsTable(this);
+  late final $NoteItemsTable noteItems = $NoteItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [stockItems];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [stockItems, noteItems];
 }
 
 typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
@@ -1652,10 +2064,216 @@ typedef $$StockItemsTableProcessedTableManager = ProcessedTableManager<
     (StockItem, BaseReferences<_$AppDatabase, $StockItemsTable, StockItem>),
     StockItem,
     PrefetchHooks Function()>;
+typedef $$NoteItemsTableCreateCompanionBuilder = NoteItemsCompanion Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  required String title,
+  Value<String?> content,
+  Value<bool> opTop,
+  Value<bool> opCollect,
+  Value<bool> opDelete,
+});
+typedef $$NoteItemsTableUpdateCompanionBuilder = NoteItemsCompanion Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  Value<String> title,
+  Value<String?> content,
+  Value<bool> opTop,
+  Value<bool> opCollect,
+  Value<bool> opDelete,
+});
+
+class $$NoteItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $NoteItemsTable> {
+  $$NoteItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get opTop => $composableBuilder(
+      column: $table.opTop, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get opCollect => $composableBuilder(
+      column: $table.opCollect, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get opDelete => $composableBuilder(
+      column: $table.opDelete, builder: (column) => ColumnFilters(column));
+}
+
+class $$NoteItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $NoteItemsTable> {
+  $$NoteItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get opTop => $composableBuilder(
+      column: $table.opTop, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get opCollect => $composableBuilder(
+      column: $table.opCollect, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get opDelete => $composableBuilder(
+      column: $table.opDelete, builder: (column) => ColumnOrderings(column));
+}
+
+class $$NoteItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NoteItemsTable> {
+  $$NoteItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateAt =>
+      $composableBuilder(column: $table.updateAt, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<bool> get opTop =>
+      $composableBuilder(column: $table.opTop, builder: (column) => column);
+
+  GeneratedColumn<bool> get opCollect =>
+      $composableBuilder(column: $table.opCollect, builder: (column) => column);
+
+  GeneratedColumn<bool> get opDelete =>
+      $composableBuilder(column: $table.opDelete, builder: (column) => column);
+}
+
+class $$NoteItemsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $NoteItemsTable,
+    NoteItem,
+    $$NoteItemsTableFilterComposer,
+    $$NoteItemsTableOrderingComposer,
+    $$NoteItemsTableAnnotationComposer,
+    $$NoteItemsTableCreateCompanionBuilder,
+    $$NoteItemsTableUpdateCompanionBuilder,
+    (NoteItem, BaseReferences<_$AppDatabase, $NoteItemsTable, NoteItem>),
+    NoteItem,
+    PrefetchHooks Function()> {
+  $$NoteItemsTableTableManager(_$AppDatabase db, $NoteItemsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String?> content = const Value.absent(),
+            Value<bool> opTop = const Value.absent(),
+            Value<bool> opCollect = const Value.absent(),
+            Value<bool> opDelete = const Value.absent(),
+          }) =>
+              NoteItemsCompanion(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            title: title,
+            content: content,
+            opTop: opTop,
+            opCollect: opCollect,
+            opDelete: opDelete,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            required String title,
+            Value<String?> content = const Value.absent(),
+            Value<bool> opTop = const Value.absent(),
+            Value<bool> opCollect = const Value.absent(),
+            Value<bool> opDelete = const Value.absent(),
+          }) =>
+              NoteItemsCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            title: title,
+            content: content,
+            opTop: opTop,
+            opCollect: opCollect,
+            opDelete: opDelete,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$NoteItemsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $NoteItemsTable,
+    NoteItem,
+    $$NoteItemsTableFilterComposer,
+    $$NoteItemsTableOrderingComposer,
+    $$NoteItemsTableAnnotationComposer,
+    $$NoteItemsTableCreateCompanionBuilder,
+    $$NoteItemsTableUpdateCompanionBuilder,
+    (NoteItem, BaseReferences<_$AppDatabase, $NoteItemsTable, NoteItem>),
+    NoteItem,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$StockItemsTableTableManager get stockItems =>
       $$StockItemsTableTableManager(_db, _db.stockItems);
+  $$NoteItemsTableTableManager get noteItems =>
+      $$NoteItemsTableTableManager(_db, _db.noteItems);
 }

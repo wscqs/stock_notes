@@ -7,7 +7,7 @@ part 'database.g.dart';
 //  await Get.putAsync(() async => AppDatabase());
 //  final db = Get.find<AppDatabase>();
 
-@DriftDatabase(tables: [StockItems]) //TodoItems,
+@DriftDatabase(tables: [StockItems, NoteItems])
 class AppDatabase extends _$AppDatabase {
   // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
   AppDatabase() : super(_openConnection());
@@ -25,16 +25,7 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  // Future<void> addTodo(TodoItem item) => into(todoItems).insert(item);
-  // Future<void> deleteTodo(TodoItem itemDelete) =>
-  //     managers.todoItems.filter((f) => f.id(itemDelete.id)).delete();
-  // Future<void> updateTodo(TodoItem itemUpdate) =>
-  //     managers.todoItems.replace(itemUpdate);
-  // Future<List<TodoItem>> get allTodoItems => managers.todoItems.get();
-  // Future<List<TodoItem>> getAllTodoItems() async {
-  //   return await managers.todoItems.get();
-  // }
-
+  //stock
   Future<void> addStock(StockItemsCompanion item) => stockItems.insertOne(item);
   Future<void> addStockOnConflictUpdate(StockItemsCompanion item) {
     //item updateAt 设置为当前时间
@@ -42,8 +33,6 @@ class AppDatabase extends _$AppDatabase {
     return stockItems.insertOnConflictUpdate(item);
   }
 
-  // Future<void> deleteStock(StockItem itemDelete) =>
-  //     managers.stockItems.filter((f) => f.id(itemDelete.id)).delete();
   //真正删除（如果是删除到删除列表，用更新）
   Future<void> deleteStock(StockItem itemDelete) {
     return (delete(stockItems)..where((tbl) => tbl.id.equals(itemDelete.id)))
@@ -65,24 +54,6 @@ class AppDatabase extends _$AppDatabase {
       batch.replaceAll(stockItems, items);
     });
   }
-
-  // Future<void> updateStockWithContent(StockItem itemUpdate) {
-  //   final updatedItem = itemUpdate.copyWith(updateAt: DateTime.now());
-  //   return managers.stockItems.replace(itemUpdate);
-  // }
-  // Future<List<StockItem>> get allStockItems => managers.stockItems.get();
-  // Future<List<StockItem>> getAllStockItems() async {
-  //   return await managers.stockItems.get();
-  // }
-
-  // Future<List<StockItem>> getStockItemsByTimeDesc() {
-  //   return (select(stockItems)
-  //         ..orderBy([
-  //           (tbl) =>
-  //               OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
-  //         ]))
-  //       .get();
-  // }
 
   Future<StockItem> getStockItem(String code) {
     return (select(stockItems)..where((tbl) => tbl.code.equals(code)))
@@ -120,6 +91,67 @@ class AppDatabase extends _$AppDatabase {
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
+            (tbl) =>
+                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  //note
+  Future<void> addNote(NoteItemsCompanion item) => noteItems.insertOne(item);
+  Future<void> addNoteOnConflictUpdate(NoteItemsCompanion item) {
+    //item updateAt 设置为当前时间
+    item = item.copyWith(updateAt: Value(DateTime.now()));
+    return noteItems.insertOnConflictUpdate(item);
+  }
+
+  Future<void> deleteNote(NoteItem itemDelete) {
+    return (delete(noteItems)..where((tbl) => tbl.id.equals(itemDelete.id)))
+        .go();
+  }
+
+  Future<void> deleteNoteList(List<NoteItem> items) {
+    final ids = items.map((e) => e.id).toList();
+    return (delete(noteItems)..where((tbl) => tbl.id.isIn(ids))).go();
+  }
+
+  Future<void> updateNoteWithOp(NoteItem itemUpdate) {
+    return update(noteItems).replace(itemUpdate);
+  }
+
+  Future<void> updateBatchNoteWithOp(List<NoteItem> items) {
+    return batch((batch) {
+      batch.replaceAll(noteItems, items);
+    });
+  }
+
+  Future<NoteItem> getNoteItem(int id) {
+    return (select(noteItems)..where((tbl) => tbl.id.equals(id))).getSingle();
+  }
+
+  Future<List<NoteItem>> getNoteItemsOnHome() {
+    return (select(noteItems)
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  Future<List<NoteItem>> getNoteItemsOnHomeWithDelete() {
+    return (select(noteItems)
+          ..where((tbl) => tbl.opDelete.equals(true))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  Future<List<NoteItem>> getNoteItemsOnHomeWithCollect() {
+    return (select(noteItems)
+          ..where((tbl) => tbl.opCollect.equals(true))
+          ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
           ]))

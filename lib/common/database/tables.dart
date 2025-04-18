@@ -39,10 +39,18 @@ class StockItems extends Table with TableMixin {
   TextColumn get pEventRemark => text().nullable()();
 }
 
+class NoteItems extends Table with TableMixin {
+  TextColumn get title => text()();
+  TextColumn get content => text().nullable()();
+  BoolColumn get opTop => boolean().withDefault(const Constant(false))();
+  BoolColumn get opCollect => boolean().withDefault(const Constant(false))();
+  BoolColumn get opDelete => boolean().withDefault(const Constant(false))();
+}
+
 class TodoItems extends Table with TableMixin {
   TextColumn get title => text().withLength(min: 6, max: 32)();
   TextColumn get content => text().named('body')();
-  // DateTimeColumn get createdAt => dateTime().nullable()();
+// DateTimeColumn get createdAt => dateTime().nullable()();
 }
 
 @DataClassName('TodoEntry')
