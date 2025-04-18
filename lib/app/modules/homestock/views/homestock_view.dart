@@ -52,7 +52,6 @@ class HomestockView extends GetView<HomestockController> {
       preferredSize: Size.fromHeight(76), // 指定 TabBar 高度
       child: Obx(() {
         return Container(
-          // color: kColorContentBg,
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
@@ -83,12 +82,10 @@ class HomestockView extends GetView<HomestockController> {
             children: [
               Text(
                 controller.order[controller.selectedOrderIndex.value],
-                // style: TextStyle(fontSize: 14, color: Colors.black),
               ),
               Icon(
                 Icons.arrow_drop_down,
                 size: 20,
-                // color: Colors.black,
               )
             ],
           ),
@@ -117,10 +114,6 @@ class HomestockView extends GetView<HomestockController> {
           padding: EdgeInsets.only(left: 4, right: 4),
           height: 44,
           width: 72,
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.circular(15),
-          //   color: Colors.grey[300],
-          // ),
         ),
         dropdownStyleData: DropdownStyleData(
           // decoration: BoxDecoration(

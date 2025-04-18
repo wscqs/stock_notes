@@ -33,9 +33,6 @@ class HomestockController extends BaseController
   final isOperate = false.obs;
   final selItems = <StockItem>[].obs; //选择的items
 
-  //是否操作状态
-  // final isOperate = false.obs;
-
   @override
   Future<void> onInit() async {
     super.onInit();
