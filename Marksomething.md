@@ -37,6 +37,8 @@ https://blog.csdn.net/wsyx768/article/details/136319899
 flutter pub run flutter_launcher_icons
 dart run flutter_native_splash:create
 
+iPhone市场图用 ProMax 截图
+
 
 
 

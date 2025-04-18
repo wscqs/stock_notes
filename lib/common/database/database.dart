@@ -42,25 +42,34 @@ class AppDatabase extends _$AppDatabase {
     return stockItems.insertOnConflictUpdate(item);
   }
 
-  Future<void> deleteStock(StockItem itemDelete) =>
-      managers.stockItems.filter((f) => f.id(itemDelete.id)).delete();
-  // Future<void> deleteStockToHistory(StockItem itemDelete) {
-  //   //删除进入历史（opDelete 设置 true）
-  //   itemDelete = itemDelete.copyWith(opDelete: true);
-  //   return (update(stockItems)..where((tbl) => tbl.id.equals(itemDelete.id)))
-  //       .write(itemDelete);
-  // }
-  // //删除所有
-  // Future<void> deleteAllStock() {
-  //   return stockItems.deleteAll();
-  // }
-
-  //操作不改动修改时间
-  Future<void> updateStockWithOp(StockItem itemUpdate) {
-    // final updatedItem = itemUpdate.copyWith(updateAt: DateTime.now());
-    return managers.stockItems.replace(itemUpdate);
+  // Future<void> deleteStock(StockItem itemDelete) =>
+  //     managers.stockItems.filter((f) => f.id(itemDelete.id)).delete();
+  //真正删除（如果是删除到删除列表，用更新）
+  Future<void> deleteStock(StockItem itemDelete) {
+    return (delete(stockItems)..where((tbl) => tbl.id.equals(itemDelete.id)))
+        .go();
   }
 
+  Future<void> deleteStockList(List<StockItem> items) {
+    final ids = items.map((e) => e.id).toList();
+    return (delete(stockItems)..where((tbl) => tbl.id.isIn(ids))).go();
+  }
+
+  // 单条更新，不改动 updatedAt
+  Future<void> updateStockWithOp(StockItem itemUpdate) {
+    return update(stockItems).replace(itemUpdate);
+  }
+
+  Future<void> updateBatchStockWithOp(List<StockItem> items) {
+    return batch((batch) {
+      batch.replaceAll(stockItems, items);
+    });
+  }
+
+  // Future<void> updateStockWithContent(StockItem itemUpdate) {
+  //   final updatedItem = itemUpdate.copyWith(updateAt: DateTime.now());
+  //   return managers.stockItems.replace(itemUpdate);
+  // }
   // Future<List<StockItem>> get allStockItems => managers.stockItems.get();
   // Future<List<StockItem>> getAllStockItems() async {
   //   return await managers.stockItems.get();

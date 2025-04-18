@@ -15,6 +15,7 @@ import '../controllers/homestock_controller.dart';
 
 class HomestockView extends GetView<HomestockController> {
   const HomestockView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -55,7 +56,13 @@ class HomestockView extends GetView<HomestockController> {
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              buildHotPopViews(),
+              IgnorePointer(
+                ignoring: controller.isOperate.value,
+                child: Opacity(
+                  opacity: controller.isOperate.value ? 0.8 : 1,
+                  child: buildHotPopViews(),
+                ),
+              ),
               kSpaceW(8),
               Expanded(child: buildTopSearch()),
             ],
@@ -199,6 +206,7 @@ class HomeStockCell extends StatelessWidget {
   final int index;
   final StockItem item;
   final controller = Get.find<HomestockController>();
+
   HomeStockCell({
     super.key,
     required this.item,
@@ -212,96 +220,116 @@ class HomeStockCell extends StatelessWidget {
       endActionPane: buildActionPane(),
       child: Builder(builder: (context) {
         controller.slidableContexts[index] = context;
-        return Card(
-          child: InkWell(
-            onTap: () {
-              controller.pushDetailPage(item);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Row(
-                    // spacing: 8,
+        return GestureDetector(
+          onLongPress: () {
+            controller.longPressCell(item);
+          },
+          child: Card(
+            child: InkWell(
+              onTap: () {
+                controller.clickCell(item);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Obx(() {
+                  return Row(
                     children: [
-                      Text(
-                        item.name,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      kSpaceW(8),
-                      Text(
-                        item.currentPrice ?? "",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      kSpaceW(8),
-                      if (item.opTop)
-                        Icon(
-                          Icons.push_pin,
-                          size: 15,
-                          color: Colors.blue.shade700,
-                        ),
-                      if (item.opCollect)
-                        Icon(
-                          Icons.star,
-                          size: 15,
-                          color: Colors.yellow.shade700,
-                        ),
-                      kSpaceMax(),
-                      Text(
-                        "买",
-                        style: TextStyle(fontSize: 16),
-                      ),
+                      Expanded(child: buildContents()),
+                      if (controller.isOperate.value) ...[
+                        kSpaceW(16),
+                        Icon(controller.selItems.contains(item)
+                            ? Icons.check_box_rounded
+                            : Icons.check_box_outline_blank_rounded)
+                      ],
                     ],
-                  ),
-                  kSpaceH(2),
-                  Row(
-                    spacing: 4,
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                        child: Center(
-                          child: Text(
-                            (item.marketType ?? "") == "51" ? "深" : "沪",
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.white.withValues(alpha: 0.8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        item.code ?? "",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  kSpaceH(4),
-                  Row(
-                    spacing: 8,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "tag",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                      Text(
-                        item.createdAt.toDateString() ?? "",
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ],
+                  );
+                }),
               ),
             ),
           ),
         );
       }),
+    );
+  }
+
+  Column buildContents() {
+    return Column(
+      children: [
+        Row(
+          // spacing: 8,
+          children: [
+            Text(
+              item.name,
+              style: TextStyle(fontSize: 16),
+            ),
+            kSpaceW(8),
+            Text(
+              item.currentPrice ?? "",
+              style: TextStyle(fontSize: 16),
+            ),
+            kSpaceW(8),
+            if (item.opTop)
+              Icon(
+                Icons.push_pin,
+                size: 15,
+                color: Colors.blue.shade700,
+              ),
+            if (item.opCollect)
+              Icon(
+                Icons.star,
+                size: 15,
+                color: Colors.yellow.shade700,
+              ),
+            kSpaceMax(),
+            Text(
+              "买",
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+        kSpaceH(2),
+        Row(
+          spacing: 4,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Center(
+                child: Text(
+                  (item.marketType ?? "") == "51" ? "深" : "沪",
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              item.code ?? "",
+              style: TextStyle(fontSize: 14),
+            ),
+          ],
+        ),
+        kSpaceH(4),
+        Row(
+          spacing: 8,
+          children: [
+            Expanded(
+              child: Text(
+                "tag",
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+            Text(
+              item.createdAt.toDateString() ?? "",
+              style: TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

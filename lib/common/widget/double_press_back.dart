@@ -13,6 +13,8 @@ class DoublePressBackWidget extends StatelessWidget {
   final Widget child;
   final String? message;
   final DoublePressBackCallback? backCallback;
+  final DoublePressBackCallback?
+      oneBackCallback; //页面操作模式下，一次回调可以处理后退操作. 操作给 true，没操作要 false
 
   DateTime? _currentBackPressTime;
 
@@ -21,6 +23,7 @@ class DoublePressBackWidget extends StatelessWidget {
     required this.child,
     this.message,
     this.backCallback,
+    this.oneBackCallback,
   });
 
   // 返回键退出
@@ -42,6 +45,9 @@ class DoublePressBackWidget extends StatelessWidget {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) {
+          return;
+        }
+        if (oneBackCallback?.call() ?? false) {
           return;
         }
         if (closeOnConfirm()) {

@@ -7,6 +7,7 @@ import 'package:stock_notes/common/langs/text_key.dart';
 import '../../../../common/database/database.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
+import '../../tabs/controllers/tabs_controller.dart';
 
 class HomestockController extends BaseController
     with GetTickerProviderStateMixin {
@@ -28,11 +29,17 @@ class HomestockController extends BaseController
   ];
   final selectedOrderIndex = 0.obs;
 
+  final tabsController = Get.find<TabsController>();
+  final isOperate = false.obs;
+  final selItems = <StockItem>[].obs; //选择的items
+
+  //是否操作状态
+  // final isOperate = false.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
     getDatas();
-
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {
     //   refreshAppui();
@@ -77,7 +84,6 @@ class HomestockController extends BaseController
 
   @override
   void onPause() {
-    closeDrawer();
     cancelUIoP();
     super.onPause();
   }
@@ -98,6 +104,11 @@ class HomestockController extends BaseController
       Slidable.of(slidableContexts)?.close();
     }
     searchFocusNode.unfocus(); // 关闭键盘
+  }
+
+  //是否在删除列表(删除列表有些特殊处理）
+  bool isCurrentDeleteList() {
+    return selectedOrderIndex.value == 2;
   }
 
   void clickMore() {
@@ -123,6 +134,29 @@ class HomestockController extends BaseController
     items.value = filterItems;
   }
 
+  void clickCell(StockItem item) {
+    if (isOperate.value) {
+      if (selItems.contains(item)) {
+        selItems.remove(item);
+      } else {
+        selItems.add(item);
+      }
+    } else {
+      pushDetailPage(item);
+    }
+  }
+
+  void longPressCell(StockItem item) {
+    if (!isOperate.value) {
+      selItems.clear();
+    }
+    dealUIisOperate(true);
+    if (selItems.contains(item)) {
+    } else {
+      selItems.add(item);
+    }
+  }
+
   void pushDetailPage(StockItem item) {
     cancelUIoP();
     Get.toNamed(Routes.STOCKEDIT, arguments: item.copyWith());
@@ -133,9 +167,42 @@ class HomestockController extends BaseController
     getDatas();
   }
 
-  //只是到历史记录
+  void dealUIisOperate(bool isOperate) {
+    this.isOperate.value = isOperate;
+    this.isOperate.refresh();
+    Get.find<TabsController>().isOperate.value = isOperate;
+    if (!isOperate) {
+      selItems.clear();
+    }
+  }
+
+  void clickTabOpAllCheck() {
+    selItems.addAll(items);
+  }
+
+  void clickTabOpBatchDelete() {
+    if (isCurrentDeleteList()) {
+      db.deleteStockList(selItems);
+    } else {
+      var opSelItems =
+          selItems.map((item) => item.copyWith(opDelete: true)).toList();
+      db.updateBatchStockWithOp(opSelItems);
+    }
+    dealUIisOperate(false);
+    getDatas();
+  }
+
+  void clickTabOpBack() {
+    dealUIisOperate(false);
+  }
+
   void clickOpDelete(StockItem item) {
-    db.updateStockWithOp(item.copyWith(opDelete: true));
+    if (isCurrentDeleteList()) {
+      //删除列表真正删除
+      db.deleteStock(item);
+    } else {
+      db.updateStockWithOp(item.copyWith(opDelete: true));
+    }
     getDatas();
   }
 

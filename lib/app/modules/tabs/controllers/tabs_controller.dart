@@ -23,10 +23,12 @@ class TabsController extends GetxController {
     print(arg);
   };
 
+  //是否操作状态
+  final isOperate = false.obs;
+
   @override
   void onInit() {
     super.onInit();
-
     // pageController.addListener(() {
     //   // 当页面切换时，尝试关闭当前页面中的 Slidable
     //   Slidable.of(Get.context!)?.close();
@@ -45,15 +47,27 @@ class TabsController extends GetxController {
   }
 
   void pushCreatePage() {
-    //特殊处理closeDrawer
-    Get.find<HomestockController>().closeDrawer();
+    closeDrawer();
 
-    if (currentIndex.value == 0) {
-      Get.toNamed(Routes.STOCKEDIT);
+    if (isOperate.value) {
+      if (currentIndex.value == 0) {
+        Get.find<HomestockController>().clickTabOpBatchDelete();
+        // Get.toNamed(Routes.STOCKEDIT);
+      } else {
+        // Get.toNamed(Routes.NOTEDETAIL);
+      }
     } else {
-      Get.toNamed(Routes.NOTEDETAIL);
+      if (currentIndex.value == 0) {
+        Get.toNamed(Routes.STOCKEDIT);
+      } else {
+        Get.toNamed(Routes.NOTEDETAIL);
+      }
     }
-    // testRequest();
+  }
+
+  //特殊处理closeDrawer
+  void closeDrawer() {
+    Get.find<HomestockController>().closeDrawer();
   }
 
   void setCurrentIndex(index) {
@@ -66,7 +80,35 @@ class TabsController extends GetxController {
     getShowView.controller.onResume();
   }
 
+  void cancelUIoP() {
+    Get.find<HomestockController>().cancelUIoP();
+    if (isOperate.value) {
+      clickOpTab(2);
+    }
+  }
+
+  void clickOpTab(int index) {
+    if (index == 0) {
+      //check
+      if (currentIndex.value == 0) {
+        Get.find<HomestockController>().clickTabOpAllCheck();
+      } else {
+        // Get.find<HomestockController>().clickTabOpBack();
+      }
+    } else {
+      //back
+      if (currentIndex.value == 0) {
+        Get.find<HomestockController>().clickTabOpBack();
+      } else {
+        // Get.find<HomestockController>().clickTabOpBack();
+      }
+      isOperate.value = false;
+    }
+  }
+
   void clickTab(int index) {
+    closeDrawer();
+
     currentIndex.value = index;
     setCurrentIndex(currentIndex.value);
     pageController.jumpToPage(currentIndex.value);

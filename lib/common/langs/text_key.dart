@@ -42,6 +42,8 @@ class TextKey {
   static const noData = 'noData';
   static const look = 'look';
   static const refresh = 'refresh';
+  static const back = 'back';
+  static const allcheck = 'allcheck';
 }
 
 const Map<String, String> zh = {
@@ -88,6 +90,8 @@ const Map<String, String> zh = {
   TextKey.noData: '暂无数据',
   TextKey.look: '查看',
   TextKey.refresh: '刷新',
+  TextKey.back: '后退',
+  TextKey.allcheck: '全选',
 };
 
 const Map<String, String> en = {
@@ -135,4 +139,6 @@ const Map<String, String> en = {
   TextKey.noData: 'No data',
   TextKey.look: 'Look',
   TextKey.refresh: 'Refresh',
+  TextKey.back: 'Back',
+  TextKey.allcheck: 'All Check',
 };
