@@ -44,6 +44,8 @@ class TextKey {
   static const refresh = 'refresh';
   static const back = 'back';
   static const allcheck = 'allcheck';
+  static const biaoti = 'biaoti';
+  static const shuruneirongtishi = 'shuruneirongtishi';
 }
 
 const Map<String, String> zh = {
@@ -92,6 +94,8 @@ const Map<String, String> zh = {
   TextKey.refresh: '刷新',
   TextKey.back: '后退',
   TextKey.allcheck: '全选',
+  TextKey.biaoti: '标题',
+  TextKey.shuruneirongtishi: '请输入内容',
 };
 
 const Map<String, String> en = {
@@ -141,4 +145,6 @@ const Map<String, String> en = {
   TextKey.refresh: 'Refresh',
   TextKey.back: 'Back',
   TextKey.allcheck: 'All Check',
+  TextKey.biaoti: 'Title',
+  TextKey.shuruneirongtishi: 'Please enter content',
 };

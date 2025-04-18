@@ -60,7 +60,7 @@ class TabsController extends GetxController {
       if (currentIndex.value == 0) {
         Get.toNamed(Routes.STOCKEDIT);
       } else {
-        Get.toNamed(Routes.NOTEDETAIL);
+        Get.toNamed(Routes.NOTEEDIT);
       }
     }
   }

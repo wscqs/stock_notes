@@ -13,6 +13,7 @@ abstract class Routes {
   static const ABOUT = _Paths.ABOUT;
   static const SIMPLESEL = _Paths.SIMPLESEL;
   static const STOCKEDIT = _Paths.STOCKEDIT;
+  static const NOTEEDIT = _Paths.NOTEEDIT;
 }
 
 abstract class _Paths {
@@ -27,4 +28,5 @@ abstract class _Paths {
   static const ABOUT = '/about';
   static const SIMPLESEL = '/simplesel';
   static const STOCKEDIT = '/stockedit';
+  static const NOTEEDIT = '/noteedit';
 }

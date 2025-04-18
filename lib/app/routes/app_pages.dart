@@ -8,6 +8,8 @@ import '../modules/homestock/bindings/homestock_binding.dart';
 import '../modules/homestock/views/homestock_view.dart';
 import '../modules/notedetail/bindings/notedetail_binding.dart';
 import '../modules/notedetail/views/notedetail_view.dart';
+import '../modules/noteedit/bindings/noteedit_binding.dart';
+import '../modules/noteedit/views/noteedit_view.dart';
 import '../modules/setting/bindings/setting_binding.dart';
 import '../modules/setting/views/setting_view.dart';
 import '../modules/simplesel/bindings/simplesel_binding.dart';
@@ -78,6 +80,11 @@ class AppPages {
       name: _Paths.STOCKEDIT,
       page: () => const StockeditView(),
       binding: StockeditBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOTEEDIT,
+      page: () => const NoteeditView(),
+      binding: NoteeditBinding(),
     ),
   ];
 }
