@@ -13,7 +13,20 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  //改表要处理合并migration
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from == 1) {
+            await migrator.createTable(noteItems);
+          }
+        },
+        onCreate: (migrator) async {
+          await migrator.createAll();
+        },
+      );
 
   static QueryExecutor _openConnection() {
     return driftDatabase(

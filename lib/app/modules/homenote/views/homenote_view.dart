@@ -10,6 +10,7 @@ import '../../../../common/comment_style.dart';
 import '../../../../common/database/database.dart';
 import '../../../../common/langs/text_key.dart';
 import '../../../../common/widget/qs_empty_view.dart';
+import '../../homestock/views/homestock_view.dart';
 import '../controllers/homenote_controller.dart';
 
 class HomenoteView extends GetView<HomenoteController> {
@@ -195,7 +196,7 @@ class HomenoteView extends GetView<HomenoteController> {
 
 class HomeNoteCell extends StatelessWidget {
   final int index;
-  final StockItem item;
+  final NoteItem item;
   final controller = Get.find<HomenoteController>();
 
   HomeNoteCell({
@@ -247,16 +248,19 @@ class HomeNoteCell extends StatelessWidget {
     return Column(
       children: [
         Row(
-          // spacing: 8,
           children: [
             Text(
-              item.name,
+              item.title,
               style: TextStyle(fontSize: 16),
             ),
-            kSpaceW(8),
+          ],
+        ),
+        kSpaceH(2),
+        Row(
+          children: [
             Text(
-              item.currentPrice ?? "",
-              style: TextStyle(fontSize: 16),
+              item.createdAt.toDateString() ?? "",
+              style: TextStyle(fontSize: 12),
             ),
             kSpaceW(8),
             if (item.opTop)
@@ -271,53 +275,6 @@ class HomeNoteCell extends StatelessWidget {
                 size: 15,
                 color: Colors.yellow.shade700,
               ),
-            kSpaceMax(),
-            Text(
-              "买",
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-        kSpaceH(2),
-        Row(
-          spacing: 4,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Center(
-                child: Text(
-                  (item.marketType ?? "") == "51" ? "深" : "沪",
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.white.withValues(alpha: 0.8),
-                  ),
-                ),
-              ),
-            ),
-            Text(
-              item.code ?? "",
-              style: TextStyle(fontSize: 14),
-            ),
-          ],
-        ),
-        kSpaceH(4),
-        Row(
-          spacing: 8,
-          children: [
-            Expanded(
-              child: Text(
-                "tag",
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-            Text(
-              item.createdAt.toDateString() ?? "",
-              style: TextStyle(fontSize: 12),
-            ),
           ],
         ),
       ],
@@ -374,38 +331,38 @@ class HomeNoteCell extends StatelessWidget {
   }
 }
 
-class SlideAction extends StatelessWidget {
-  const SlideAction({
-    Key? key,
-    required this.color,
-    required this.icon,
-    this.flex = 1,
-    this.onPressed,
-    this.label,
-  }) : super(key: key);
-
-  final Color color;
-  final IconData icon;
-  final int flex;
-  final String? label;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomSlidableAction(
-      flex: flex,
-      backgroundColor: color,
-      foregroundColor: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      onPressed: (_) {
-        // print(icon);
-        onPressed?.call();
-      },
-      child: Icon(
-        icon,
-        size: 28,
-      ),
-      padding: EdgeInsets.zero,
-    );
-  }
-}
+// class SlideAction extends StatelessWidget {
+//   const SlideAction({
+//     Key? key,
+//     required this.color,
+//     required this.icon,
+//     this.flex = 1,
+//     this.onPressed,
+//     this.label,
+//   }) : super(key: key);
+//
+//   final Color color;
+//   final IconData icon;
+//   final int flex;
+//   final String? label;
+//   final VoidCallback? onPressed;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return CustomSlidableAction(
+//       flex: flex,
+//       backgroundColor: color,
+//       foregroundColor: Colors.white,
+//       borderRadius: BorderRadius.circular(20),
+//       onPressed: (_) {
+//         // print(icon);
+//         onPressed?.call();
+//       },
+//       child: Icon(
+//         icon,
+//         size: 28,
+//       ),
+//       padding: EdgeInsets.zero,
+//     );
+//   }
+// }

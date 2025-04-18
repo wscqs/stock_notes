@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stock_notes/app/modules/homenote/controllers/homenote_controller.dart';
 import 'package:stock_notes/app/modules/homenote/views/homenote_view.dart';
 import 'package:stock_notes/app/modules/homestock/controllers/homestock_controller.dart';
 import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
@@ -52,9 +53,8 @@ class TabsController extends GetxController {
     if (isOperate.value) {
       if (currentIndex.value == 0) {
         Get.find<HomestockController>().clickTabOpBatchDelete();
-        // Get.toNamed(Routes.STOCKEDIT);
       } else {
-        // Get.toNamed(Routes.NOTEDETAIL);
+        Get.find<HomenoteController>().clickTabOpBatchDelete();
       }
     } else {
       if (currentIndex.value == 0) {
@@ -93,14 +93,14 @@ class TabsController extends GetxController {
       if (currentIndex.value == 0) {
         Get.find<HomestockController>().clickTabOpAllCheck();
       } else {
-        // Get.find<HomestockController>().clickTabOpBack();
+        Get.find<HomenoteController>().clickTabOpAllCheck();
       }
     } else {
       //back
       if (currentIndex.value == 0) {
         Get.find<HomestockController>().clickTabOpBack();
       } else {
-        // Get.find<HomestockController>().clickTabOpBack();
+        Get.find<HomenoteController>().clickTabOpBack();
       }
       isOperate.value = false;
     }
