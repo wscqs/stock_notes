@@ -46,9 +46,20 @@ class NoteeditController extends GetxController {
   final localData = Rxn<NoteItem>();
   final isLocalData = false.obs;
 
+  final isEditing = false.obs;
+
   @override
   void onInit() {
     super.onInit();
+    editorFocusNode.addListener(() {
+      if (editorFocusNode.hasFocus) {
+        print("Editor is focused (editing).");
+        isEditing.value = true;
+      } else {
+        print("Editor is not focused.");
+        isEditing.value = false;
+      }
+    });
     localData.value = Get.arguments;
     if (localData.value != null) {
       isLocalData.value = true;
@@ -62,6 +73,7 @@ class NoteeditController extends GetxController {
       final content = localData.value?.content;
       if (content != null && content.isNotEmpty) {
         quillController.document = Document.fromJson(jsonDecode(content));
+        // quillController.readOnly = true;
         // final delta = Delta.fromJson(jsonDecode(content));
         // quillController.document = Document.fromDelta(delta);
       }
@@ -114,7 +126,7 @@ class NoteeditController extends GetxController {
     } else {
       db.addNote(itemsCompanion);
     }
-    QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
-    Get.back();
+    // QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
+    // Get.back();
   }
 }

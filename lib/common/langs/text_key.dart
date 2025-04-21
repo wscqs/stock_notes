@@ -46,6 +46,7 @@ class TextKey {
   static const allcheck = 'allcheck';
   static const biaoti = 'biaoti';
   static const shuruneirongtishi = 'shuruneirongtishi';
+  static const edit = 'edit';
 }
 
 const Map<String, String> zh = {
@@ -96,6 +97,7 @@ const Map<String, String> zh = {
   TextKey.allcheck: '全选',
   TextKey.biaoti: '标题',
   TextKey.shuruneirongtishi: '请输入内容',
+  TextKey.edit: '编辑',
 };
 
 const Map<String, String> en = {
@@ -147,4 +149,5 @@ const Map<String, String> en = {
   TextKey.allcheck: 'All Check',
   TextKey.biaoti: 'Title',
   TextKey.shuruneirongtishi: 'Please enter content',
+  TextKey.edit: 'Edit',
 };

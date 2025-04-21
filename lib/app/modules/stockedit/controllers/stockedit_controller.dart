@@ -77,6 +77,7 @@ class StockeditController extends GetxController {
       pPeTtmRemarkController.text = localStockData.value?.pPeTtmRemark ?? "";
       pAllRemarkController.text = localStockData.value?.pAllRemark ?? "";
       pEventRemarkController.text = localStockData.value?.pEventRemark ?? "";
+      _updateBuySalePoints();
     } else {
       // isLocalData.value = false;
       // stockNum.value ="";
@@ -121,8 +122,12 @@ class StockeditController extends GetxController {
               double.parse(pPeTtmBuyController.text)) /
           double.parse(pPeTtmBuyController.text);
     }
+    _updateBuySalePoints();
+  }
 
-    if (serStockData.value != null) {
+  void _updateBuySalePoints() {
+    if (serStockData.value != null &&
+        (serStockData.value?.code ?? "").isNotEmpty) {
       if (pPriceBuyController.text.isNotEmpty &&
           serStockData.value!.currentPrice!.isNotEmpty) {
         pPriceBuyPoints.value = (double.parse(pPriceBuyController.text) -
@@ -187,13 +192,18 @@ class StockeditController extends GetxController {
     serStockData.value = testQTRequest?.first ?? StockTxModel();
     // print(serStockData.value.code);
 
-    //本地看看有没有，有就直接变修改本地数据
-    if (!isLocalData.value && serStockData.value.code != null) {
-      final db = Get.find<AppDatabase>();
-      var stockItem = await db.getStockItem(serStockData.value.code!);
-      localStockData.value = stockItem;
-      _dealHasLocalDataRefreshUI();
+    if (serStockData.value.code != null) {
+      //本地看看有没有，有就直接变修改本地数据
+      if (!isLocalData.value) {
+        final db = Get.find<AppDatabase>();
+        var stockItem = await db.getStockItem(serStockData.value.code!);
+        localStockData.value = stockItem;
+        _dealHasLocalDataRefreshUI();
+      } else {
+        _updateBuySalePoints(); //更新买卖点数
+      }
     }
+
     // print(testQTRequest.toString());
   }
 

@@ -10,144 +10,144 @@ import '../controllers/noteedit_controller.dart';
 
 class NoteeditView extends GetView<NoteeditController> {
   const NoteeditView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(TextKey.biji.tr),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                controller.save();
-              },
-              child: Text(TextKey.baocun.tr))
-          // IconButton(
-          //   icon: const Icon(Icons.output),
-          //   tooltip: 'Print Delta JSON to log',
-          //   onPressed: () {
-          //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          //         content:
-          //             Text('The JSON Delta has been printed to the console.')));
-          //     debugPrint(jsonEncode(
-          //         controller.quillController.document.toDelta().toJson())
-          //     );
-          //   },
-          // ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              child: TextField(
-                controller: controller.titleController,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  hintText: TextKey.biaoti.tr,
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-              ),
-            ),
-            Expanded(
-              child: QuillEditor(
-                focusNode: controller.editorFocusNode,
-                scrollController: controller.editorScrollController,
-                controller: controller.quillController,
-                config: QuillEditorConfig(
-                  placeholder: '',
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                  // embedBuilders: [
-                  // ...FlutterQuillEmbeds.editorBuilders(
-                  //   imageEmbedConfig: QuillEditorImageEmbedConfig(
-                  //     imageProviderBuilder: (context, imageUrl) {
-                  //       // https://pub.dev/packages/flutter_quill_extensions#-image-assets
-                  //       if (imageUrl.startsWith('assets/')) {
-                  //         return AssetImage(imageUrl);
-                  //       }
-                  //       return null;
-                  //     },
-                  //   ),
-                  // videoEmbedConfig: QuillEditorVideoEmbedConfig(
-                  //   customVideoBuilder: (videoUrl, readOnly) {
-                  //     // To load YouTube videos https://github.com/singerdmx/flutter-quill/releases/tag/v10.8.0
-                  //     return null;
-                  //   },
-                  // ),
-                  // ),
-                  // TimeStampEmbedBuilder(),
-                  // ],
-                ),
-              ),
-            ),
-            QuillSimpleToolbar(
-              controller: controller.quillController,
-              config: QuillSimpleToolbarConfig(
-                // embedButtons: FlutterQuillEmbeds.toolbarButtons(), //等以后有服务器再添
-                // multiRowsDisplay: false,
-                showFontFamily: false,
-                showFontSize: false,
-                // showBoldButton: false,
-                showItalicButton: false,
-                showSmallButton: false,
-                showUnderLineButton: false,
-                showStrikeThrough: false,
-                showInlineCode: false,
-                // showColorButton: false,
-                showBackgroundColorButton: false,
-                // showClearFormat: false,
-                showCodeBlock: false,
-                showListNumbers: false,
-                showListBullets: false,
-                showIndent: false,
-                showSubscript: false,
-                showSuperscript: false,
-                showQuote: false,
-                showSearchButton: false,
-                showHeaderStyle: false,
-                showLineHeightButton: false,
-                showListCheck: false,
-                // showDividers: false,
-                // customButtons: [
-                //   QuillToolbarCustomButtonOptions(
-                //     icon: const Icon(Icons.add_alarm_rounded),
-                //     onPressed: () {
-                //       _controller.document.insert(
-                //         _controller.selection.extentOffset,
-                //         TimeStampEmbed(
-                //           DateTime.now().toString(),
-                //         ),
-                //       );
-                //
-                //       _controller.updateSelection(
-                //         TextSelection.collapsed(
-                //           offset: _controller.selection.extentOffset + 1,
-                //         ),
-                //         ChangeSource.local,
-                //       );
-                //     },
-                //   ),
-                // ],
-                buttonOptions: QuillSimpleToolbarButtonOptions(
-                  base: QuillToolbarBaseButtonOptions(
-                    afterButtonPressed: () {
-                      final isDesktop = {
-                        TargetPlatform.linux,
-                        TargetPlatform.windows,
-                        TargetPlatform.macOS
-                      }.contains(defaultTargetPlatform);
-                      if (isDesktop) {
-                        controller.editorFocusNode.requestFocus();
-                      }
-                    },
+    return Obx(() {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(TextKey.biji.tr),
+          actions: [
+            ElevatedButton(
+                onPressed: controller.save, child: Text(TextKey.baocun.tr))
+          ],
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: TextField(
+                  controller: controller.titleController,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                  decoration: InputDecoration(
+                    hintText: TextKey.biaoti.tr,
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    // if (!controller.isEditing.value) {
+                    //   FocusScope.of(context).requestFocus(FocusNode());
+                    // }
+                  },
+                  child: QuillEditor(
+                    focusNode: controller.editorFocusNode,
+                    scrollController: controller.editorScrollController,
+                    controller: controller.quillController,
+                    config: QuillEditorConfig(
+                      placeholder: '',
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 16),
+                      // embedBuilders: [
+                      // ...FlutterQuillEmbeds.editorBuilders(
+                      //   imageEmbedConfig: QuillEditorImageEmbedConfig(
+                      //     imageProviderBuilder: (context, imageUrl) {
+                      //       // https://pub.dev/packages/flutter_quill_extensions#-image-assets
+                      //       if (imageUrl.startsWith('assets/')) {
+                      //         return AssetImage(imageUrl);
+                      //       }
+                      //       return null;
+                      //     },
+                      //   ),
+                      // videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                      //   customVideoBuilder: (videoUrl, readOnly) {
+                      //     // To load YouTube videos https://github.com/singerdmx/flutter-quill/releases/tag/v10.8.0
+                      //     return null;
+                      //   },
+                      // ),
+                      // ),
+                      // TimeStampEmbedBuilder(),
+                      // ],
+                    ),
+                  ),
+                ),
+              ),
+              if (controller.isEditing.value) buildQuillSimpleToolbar(),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  QuillSimpleToolbar buildQuillSimpleToolbar() {
+    return QuillSimpleToolbar(
+      controller: controller.quillController,
+      config: QuillSimpleToolbarConfig(
+        // embedButtons: FlutterQuillEmbeds.toolbarButtons(), //等以后有服务器再添
+        // multiRowsDisplay: false,
+        showFontFamily: false,
+        showFontSize: false,
+        // showBoldButton: false,
+        showItalicButton: false,
+        showSmallButton: false,
+        showUnderLineButton: false,
+        showStrikeThrough: false,
+        showInlineCode: false,
+        // showColorButton: false,
+        showBackgroundColorButton: false,
+        // showClearFormat: false,
+        showCodeBlock: false,
+        showListNumbers: false,
+        showListBullets: false,
+        showIndent: false,
+        showSubscript: false,
+        showSuperscript: false,
+        showQuote: false,
+        showSearchButton: false,
+        showHeaderStyle: false,
+        showLineHeightButton: false,
+        showListCheck: false,
+        // showDividers: false,
+        // customButtons: [
+        //   QuillToolbarCustomButtonOptions(
+        //     icon: const Icon(Icons.add_alarm_rounded),
+        //     onPressed: () {
+        //       _controller.document.insert(
+        //         _controller.selection.extentOffset,
+        //         TimeStampEmbed(
+        //           DateTime.now().toString(),
+        //         ),
+        //       );
+        //
+        //       _controller.updateSelection(
+        //         TextSelection.collapsed(
+        //           offset: _controller.selection.extentOffset + 1,
+        //         ),
+        //         ChangeSource.local,
+        //       );
+        //     },
+        //   ),
+        // ],
+        buttonOptions: QuillSimpleToolbarButtonOptions(
+          base: QuillToolbarBaseButtonOptions(
+            afterButtonPressed: () {
+              final isDesktop = {
+                TargetPlatform.linux,
+                TargetPlatform.windows,
+                TargetPlatform.macOS
+              }.contains(defaultTargetPlatform);
+              if (isDesktop) {
+                controller.editorFocusNode.requestFocus();
+              }
+            },
+          ),
         ),
       ),
     );
