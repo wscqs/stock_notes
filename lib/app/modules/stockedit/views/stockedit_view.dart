@@ -135,6 +135,8 @@ class StockeditView extends GetView<StockeditController> {
     TextEditingController? saleTextEditingController;
     TextEditingController? remarkTextEditingController;
     double yieldRate = 0.0;
+    double buyPoints = 0.0;
+    double salePoints = 0.0;
     if (type == "price") {
       titile = TextKey.jige.tr;
       value = controller.serStockData.value.currentPrice ?? "";
@@ -142,6 +144,8 @@ class StockeditView extends GetView<StockeditController> {
       saleTextEditingController = controller.pPriceSaleController;
       remarkTextEditingController = controller.pPriceRemarkController;
       yieldRate = controller.pPriceYieldRate.value;
+      buyPoints = controller.pPriceBuyPoints.value;
+      salePoints = controller.pPriceSalePoints.value;
     } else if (type == "market_value") {
       titile = TextKey.shizhi.tr;
       value = controller.serStockData.value.totalMarketCap ?? "";
@@ -149,6 +153,8 @@ class StockeditView extends GetView<StockeditController> {
       saleTextEditingController = controller.pMarketCapSaleController;
       remarkTextEditingController = controller.pMarketRemarkController;
       yieldRate = controller.pMarketCapYieldRate.value;
+      buyPoints = controller.pMarketCapBuyPoints.value;
+      salePoints = controller.pMarketCapSalePoints.value;
     } else if (type == "p_e_ratio") {
       titile = TextKey.shiyin.tr;
       value = controller.serStockData.value.peRatioTtm ?? "";
@@ -156,7 +162,20 @@ class StockeditView extends GetView<StockeditController> {
       saleTextEditingController = controller.pPeTtmSaleController;
       remarkTextEditingController = controller.pPeTtmRemarkController;
       yieldRate = controller.pPeTtmYieldRate.value;
+      buyPoints = controller.pPeTtmBuyPoints.value;
+      salePoints = controller.pPeTtmSalePoints.value;
     }
+    String buyLabelText = TextKey.buy.tr;
+    if (buyPoints != 0.0) {
+      buyLabelText =
+          TextKey.buy.tr + ": ${(buyPoints * 100).toStringAsFixed(1)}%";
+    }
+    String saleLabelText = TextKey.sale.tr;
+    if (salePoints != 0.0) {
+      saleLabelText =
+          TextKey.sale.tr + ": ${(salePoints * 100).toStringAsFixed(1)}%";
+    }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -186,19 +205,19 @@ class StockeditView extends GetView<StockeditController> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   SizedBox(
-                    width: 60,
+                    width: 64,
                     child: TextField(
                       controller: buyTextEditingController,
-                      decoration: InputDecoration(labelText: TextKey.buy.tr),
+                      decoration: InputDecoration(labelText: buyLabelText),
                       keyboardType: TextInputType.number,
                     ),
                   ),
                   kSpaceW(12),
                   SizedBox(
-                    width: 60,
+                    width: 64,
                     child: TextField(
                       controller: saleTextEditingController,
-                      decoration: InputDecoration(labelText: TextKey.sale.tr),
+                      decoration: InputDecoration(labelText: saleLabelText),
                       keyboardType: TextInputType.number,
                     ),
                   ),

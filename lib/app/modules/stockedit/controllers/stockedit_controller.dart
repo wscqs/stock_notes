@@ -29,9 +29,17 @@ class StockeditController extends GetxController {
   final localStockData = Rxn<StockItem>();
   final isLocalData = false.obs;
 
+  //针对卖买，计算收益率
   final pPriceYieldRate = 0.0.obs;
   final pMarketCapYieldRate = 0.0.obs;
   final pPeTtmYieldRate = 0.0.obs;
+  //对应当前价格，计算点数
+  final pPriceBuyPoints = 0.0.obs;
+  final pMarketCapBuyPoints = 0.0.obs;
+  final pPeTtmBuyPoints = 0.0.obs;
+  final pPriceSalePoints = 0.0.obs;
+  final pMarketCapSalePoints = 0.0.obs;
+  final pPeTtmSalePoints = 0.0.obs;
 
   @override
   void onInit() {
@@ -112,6 +120,47 @@ class StockeditController extends GetxController {
       pPeTtmYieldRate.value = (double.parse(pPeTtmSaleController.text) -
               double.parse(pPeTtmBuyController.text)) /
           double.parse(pPeTtmBuyController.text);
+    }
+
+    if (serStockData.value != null) {
+      if (pPriceBuyController.text.isNotEmpty &&
+          serStockData.value!.currentPrice!.isNotEmpty) {
+        pPriceBuyPoints.value = (double.parse(pPriceBuyController.text) -
+                double.parse(serStockData.value!.currentPrice!)) /
+            double.parse(serStockData.value!.currentPrice!);
+      }
+      if (pMarketCapBuyController.text.isNotEmpty &&
+          serStockData.value!.totalMarketCap!.isNotEmpty) {
+        pMarketCapBuyPoints.value =
+            (double.parse(pMarketCapBuyController.text) -
+                    double.parse(serStockData.value!.totalMarketCap!)) /
+                double.parse(serStockData.value!.totalMarketCap!);
+      }
+      if (pPeTtmBuyController.text.isNotEmpty &&
+          serStockData.value!.peRatioTtm!.isNotEmpty) {
+        pPeTtmBuyPoints.value = (double.parse(pPeTtmBuyController.text) -
+                double.parse(serStockData.value!.peRatioTtm!)) /
+            double.parse(serStockData.value!.peRatioTtm!);
+      }
+      if (pPriceSaleController.text.isNotEmpty &&
+          serStockData.value!.currentPrice!.isNotEmpty) {
+        pPriceSalePoints.value = (double.parse(pPriceSaleController.text) -
+                double.parse(serStockData.value!.currentPrice!)) /
+            double.parse(serStockData.value!.currentPrice!);
+      }
+      if (pMarketCapSaleController.text.isNotEmpty &&
+          serStockData.value!.totalMarketCap!.isNotEmpty) {
+        pMarketCapSalePoints.value =
+            (double.parse(pMarketCapSaleController.text) -
+                    double.parse(serStockData.value!.totalMarketCap!)) /
+                double.parse(serStockData.value!.totalMarketCap!);
+      }
+      if (pPeTtmSaleController.text.isNotEmpty &&
+          serStockData.value!.peRatioTtm!.isNotEmpty) {
+        pPeTtmSalePoints.value = (double.parse(pPeTtmSaleController.text) -
+                double.parse(serStockData.value!.peRatioTtm!)) /
+            double.parse(serStockData.value!.peRatioTtm!);
+      }
     }
   }
 
