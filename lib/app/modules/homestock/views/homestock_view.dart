@@ -73,7 +73,7 @@ class HomestockView extends GetView<HomestockController> {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(left: 16, right: 16, bottom: 12),
+              padding: EdgeInsets.only(left: 20, right: 0, bottom: 12),
               child: Row(
                 children: [
                   Wrap(
@@ -386,7 +386,7 @@ class HomeStockCell extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: 66,
+                  width: 72,
                   child: Text(
                     item.createdAt.toDateString(),
                     style: TextStyle(fontSize: 12),
@@ -400,7 +400,7 @@ class HomeStockCell extends StatelessWidget {
           right: 0,
           top: 0,
           child: SizedBox(
-            width: 66,
+            width: 72,
             child: Text(
               item.showCellConditionInfo() ?? "",
               style: TextStyle(fontSize: 10),

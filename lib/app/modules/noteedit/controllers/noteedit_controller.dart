@@ -64,6 +64,9 @@ class NoteeditController extends GetxController {
     if (localData.value != null) {
       isLocalData.value = true;
       _dealHasLocalDataRefreshUI();
+    } else {
+      //新建
+      editorFocusNode.requestFocus();
     }
   }
 
@@ -126,7 +129,7 @@ class NoteeditController extends GetxController {
     } else {
       db.addNote(itemsCompanion);
     }
-    // QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
-    // Get.back();
+    QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
+    Get.back();
   }
 }
