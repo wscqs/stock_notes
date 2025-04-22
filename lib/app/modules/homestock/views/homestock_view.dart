@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -49,25 +50,105 @@ class HomestockView extends GetView<HomestockController> {
 
   PreferredSize buildSectionTop() {
     return PreferredSize(
-      preferredSize: Size.fromHeight(76), // 指定 TabBar 高度
+      preferredSize: Size.fromHeight(76 + 30), // 指定 TabBar 高度
       child: Obx(() {
-        return Container(
-          padding: EdgeInsets.all(16),
-          child: Row(
-            children: [
-              IgnorePointer(
-                ignoring: controller.isOperate.value,
-                child: Opacity(
-                  opacity: controller.isOperate.value ? 0.8 : 1,
-                  child: buildHotPopViews(),
-                ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding:
+                  EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
+              child: Row(
+                children: [
+                  IgnorePointer(
+                    ignoring: controller.isOperate.value,
+                    child: Opacity(
+                      opacity: controller.isOperate.value ? 0.8 : 1,
+                      child: buildHotPopViews(),
+                    ),
+                  ),
+                  kSpaceW(8),
+                  Expanded(child: buildTopSearch()),
+                ],
               ),
-              kSpaceW(8),
-              Expanded(child: buildTopSearch()),
-            ],
-          ),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 16, right: 16, bottom: 12),
+              child: Row(
+                children: [
+                  Wrap(
+                    spacing: 12, // 主轴(水平)方向间距
+                    runSpacing: 8, // 纵轴（垂直）方向间距
+                    alignment: WrapAlignment.start, //沿主轴方向居中
+                    children: controller.selConditions
+                        .map((name) => getSelConditionItemView(name))
+                        .toList(),
+                  ),
+                  kSpaceMax(),
+                  if (controller.selCondition.value.isNotEmpty)
+                    buildConditionSegmentedControl(),
+                ],
+              ),
+            ),
+          ],
         );
       }),
+    );
+  }
+
+  CupertinoSegmentedControl<String> buildConditionSegmentedControl() {
+    return CupertinoSegmentedControl<String>(
+      selectedColor: Colors.red,
+      disabledColor: Colors.white,
+      unselectedColor: Colors.grey.withValues(alpha: 0.15),
+      borderColor: Colors.grey.withValues(alpha: 0.15),
+      onValueChanged: (String value) {
+        controller.onTapSelConditionSegment(value);
+      },
+      children: {
+        for (var entry in controller.segments.entries)
+          entry.key: Padding(
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            child: Text(
+              entry.value,
+              style: TextStyle(
+                color: controller.selectedSegment.value == entry.key
+                    ? Colors.red
+                    : Colors.grey,
+                fontSize: 12,
+              ),
+            ),
+          )
+      },
+    );
+  }
+
+  Widget getSelConditionItemView(String name) {
+    return InkWell(
+      onTap: () {
+        controller.onTapSelCondition(name);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 8, top: 4, bottom: 4, right: 8),
+        decoration: BoxDecoration(
+            color: Colors.grey.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(4)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min, // 宽度自适应,
+          children: [
+            kSpaceW(2),
+            Text(
+              name,
+              style: TextStyle(
+                  color: name == controller.selCondition.value
+                      ? Colors.red
+                      : Get.theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -245,83 +326,87 @@ class HomeStockCell extends StatelessWidget {
     );
   }
 
-  Column buildContents() {
-    return Column(
+  Widget buildContents() {
+    return Stack(
       children: [
-        Row(
-          // spacing: 8,
+        Column(
           children: [
-            Text(
-              item.name,
-              style: TextStyle(fontSize: 16),
+            Row(
+              children: [
+                Text(
+                  item.name,
+                  style: TextStyle(fontSize: 16),
+                ),
+                kSpaceW(8),
+                Text(
+                  item.currentPrice ?? "",
+                  style: TextStyle(fontSize: 16),
+                ),
+                kSpaceW(8),
+                if (item.opTop)
+                  Icon(
+                    Icons.push_pin,
+                    size: 15,
+                    color: Colors.blue.shade700,
+                  ),
+                if (item.opCollect)
+                  Icon(
+                    Icons.star,
+                    size: 15,
+                    color: Colors.yellow.shade700,
+                  ),
+                kSpaceMax(),
+              ],
             ),
-            kSpaceW(8),
-            Text(
-              item.currentPrice ?? "",
-              style: TextStyle(fontSize: 16),
-            ),
-            kSpaceW(8),
-            if (item.opTop)
-              Icon(
-                Icons.push_pin,
-                size: 15,
-                color: Colors.blue.shade700,
-              ),
-            if (item.opCollect)
-              Icon(
-                Icons.star,
-                size: 15,
-                color: Colors.yellow.shade700,
-              ),
-            kSpaceMax(),
-            Text(
-              "买",
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-        kSpaceH(2),
-        Row(
-          spacing: 4,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Center(
-                child: Text(
-                  (item.marketType ?? "") == "51" ? "深" : "沪",
+            kSpaceH(2),
+            Row(
+              spacing: 4,
+              children: [
+                Text(
+                  item.code ?? "",
+                  style: TextStyle(fontSize: 14),
+                ),
+                Text(
+                  (item.marketType ?? "") == "51" ? "· 深" : "· 沪",
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 11,
                     color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
-              ),
+              ],
             ),
-            Text(
-              item.code ?? "",
-              style: TextStyle(fontSize: 14),
+            kSpaceH(4),
+            Row(
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: Text(
+                    "tag",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+                SizedBox(
+                  width: 66,
+                  child: Text(
+                    item.createdAt.toDateString(),
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        kSpaceH(4),
-        Row(
-          spacing: 8,
-          children: [
-            Expanded(
-              child: Text(
-                "tag",
-                style: TextStyle(fontSize: 12),
-              ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: SizedBox(
+            width: 66,
+            child: Text(
+              item.showCellConditionInfo() ?? "",
+              style: TextStyle(fontSize: 10),
             ),
-            Text(
-              item.createdAt.toDateString() ?? "",
-              style: TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
+          ),
+        )
       ],
     );
   }

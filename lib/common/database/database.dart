@@ -171,3 +171,226 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 }
+
+//Stock
+
+const kNearPoints = 0.03;
+
+enum ConditionStatus {
+  none, // 未符合
+  nearBuy, // 临近买
+  nearSell, // 临近卖
+  nearBoth, // 临近买卖
+  targetBuy, // 满足买
+  targetSell, // 满足卖
+  targetBoth, // 满足买卖
+}
+
+extension ConditionStatusLabel on ConditionStatus {
+  String get label {
+    switch (this) {
+      case ConditionStatus.targetBuy:
+        return '满足买';
+      case ConditionStatus.targetSell:
+        return '满足卖';
+      case ConditionStatus.targetBoth:
+        return '满足买卖';
+      case ConditionStatus.nearBuy:
+        return '临近买';
+      case ConditionStatus.nearSell:
+        return '临近卖';
+      case ConditionStatus.nearBoth:
+        return '临近买卖';
+      default:
+        return '';
+    }
+  }
+}
+
+class StockItemExtraState {
+  ConditionStatus priceCondition;
+  ConditionStatus marketCapCondition;
+  ConditionStatus peTtmCondition;
+
+  StockItemExtraState({
+    ConditionStatus? priceCondition,
+    ConditionStatus? marketCapCondition,
+    ConditionStatus? peTtmCondition,
+  })  : priceCondition = priceCondition ?? ConditionStatus.none,
+        marketCapCondition = marketCapCondition ?? ConditionStatus.none,
+        peTtmCondition = peTtmCondition ?? ConditionStatus.none;
+}
+
+final Map<int, StockItemExtraState> _stockItemExtras = {};
+StockItemExtraState _getExtra(int id) {
+  return _stockItemExtras.putIfAbsent(id, () => StockItemExtraState());
+}
+
+extension StockItemExt on StockItem {
+  StockItemExtraState get extra => _getExtra(id);
+
+  ConditionStatus get priceCondition => extra.priceCondition;
+  set priceCondition(ConditionStatus value) => extra.priceCondition = value;
+
+  ConditionStatus get marketCapCondition => extra.marketCapCondition;
+  set marketCapCondition(ConditionStatus value) =>
+      extra.marketCapCondition = value;
+
+  ConditionStatus get peTtmCondition => extra.peTtmCondition;
+  set peTtmCondition(ConditionStatus value) => extra.peTtmCondition = value;
+
+  double? pPriceBuyPoints() {
+    double? pPriceBuyPoints;
+    if ((pPriceBuy ?? "").isNotEmpty && (currentPrice ?? "").isNotEmpty) {
+      pPriceBuyPoints =
+          (double.parse(pPriceBuy!) - double.parse(currentPrice!)) /
+              double.parse(currentPrice!);
+    }
+    return pPriceBuyPoints;
+  }
+
+  double? pMarketCapBuyPoints() {
+    double? pMarketCapBuyPoints;
+    if ((pMarketCapBuy ?? "").isNotEmpty && (totalMarketCap ?? "").isNotEmpty) {
+      pMarketCapBuyPoints =
+          (double.parse(pMarketCapBuy!) - double.parse(totalMarketCap!)) /
+              double.parse(totalMarketCap!);
+    }
+    return pMarketCapBuyPoints;
+  }
+
+  double? pPeTtmBuyPoints() {
+    double? pPeTtmBuyPoints;
+    if ((pPeTtmBuy ?? "").isNotEmpty && (peRatioTtm ?? "").isNotEmpty) {
+      pPeTtmBuyPoints = (double.parse(pPeTtmBuy!) - double.parse(peRatioTtm!)) /
+          double.parse(peRatioTtm!);
+    }
+    return pPeTtmBuyPoints;
+  }
+
+  double? pPriceSalePoints() {
+    double? pPriceSalePoints;
+    if ((pPriceSale ?? "").isNotEmpty && (currentPrice ?? "").isNotEmpty) {
+      pPriceSalePoints =
+          (double.parse(pPriceSale!) - double.parse(currentPrice!)) /
+              double.parse(currentPrice!);
+    }
+    return pPriceSalePoints;
+  }
+
+  double? pMarketCapSalePoints() {
+    double? pMarketCapSalePoints;
+    if ((pMarketCapSale ?? "").isNotEmpty &&
+        (totalMarketCap ?? "").isNotEmpty) {
+      pMarketCapSalePoints =
+          (double.parse(pMarketCapSale!) - double.parse(totalMarketCap!)) /
+              double.parse(totalMarketCap!);
+    }
+    return pMarketCapSalePoints;
+  }
+
+  double? pPeTtmSalePoints() {
+    double? pPeTtmSalePoints;
+    if ((pPeTtmSale ?? "").isNotEmpty && (peRatioTtm ?? "").isNotEmpty) {
+      pPeTtmSalePoints =
+          (double.parse(pPeTtmSale!) - double.parse(peRatioTtm!)) /
+              double.parse(peRatioTtm!);
+    }
+    return pPeTtmSalePoints;
+  }
+
+  //自己设置一些条件
+  void setConditions() {
+    priceCondition = setVarCondition(
+      buyPoint: pPriceBuyPoints(),
+      salePoint: pPriceSalePoints(),
+    );
+    marketCapCondition = setVarCondition(
+      buyPoint: pMarketCapBuyPoints(),
+      salePoint: pMarketCapSalePoints(),
+    );
+    peTtmCondition = setVarCondition(
+      buyPoint: pPeTtmBuyPoints(),
+      salePoint: pPeTtmSalePoints(),
+    );
+  }
+
+  ConditionStatus setVarCondition({
+    double? buyPoint,
+    double? salePoint,
+  }) {
+    bool isTargetBuy = buyPoint != null && buyPoint >= 0.0;
+    bool isNearBuy = buyPoint != null && buyPoint >= -kNearPoints;
+    bool isTargetSell = salePoint != null && salePoint <= 0.0;
+    bool isNearSell = salePoint != null && salePoint <= kNearPoints;
+    ConditionStatus tempCondition = ConditionStatus.none;
+    if (isTargetBuy && isTargetSell) {
+      tempCondition = ConditionStatus.targetBoth;
+    } else if (isTargetBuy) {
+      tempCondition = ConditionStatus.targetBuy;
+    } else if (isTargetSell) {
+      tempCondition = ConditionStatus.targetSell;
+    } else if (isNearBuy && isNearSell) {
+      tempCondition = ConditionStatus.nearBoth;
+    } else if (isNearBuy) {
+      tempCondition = ConditionStatus.nearBuy;
+    } else if (isNearSell) {
+      tempCondition = ConditionStatus.nearSell;
+    }
+    return tempCondition;
+  }
+
+  //股票页面使用
+  String showCellConditionInfo() {
+    String showCellConditionInfo = "";
+    if (priceCondition.label.isNotEmpty) {
+      showCellConditionInfo = "价格:${priceCondition.label}";
+    }
+    if (marketCapCondition.label.isNotEmpty) {
+      showCellConditionInfo =
+          showCellConditionInfo + "\n" + "市值:${marketCapCondition.label}";
+    }
+    if (peTtmCondition.label.isNotEmpty) {
+      showCellConditionInfo =
+          showCellConditionInfo + "\n" + "Pe:${peTtmCondition.label}";
+    }
+    return showCellConditionInfo;
+  }
+
+  //首页条件筛选
+  bool homeConditionTarget(ConditionStatus status) {
+    if (status == ConditionStatus.targetBoth) {
+      return priceCondition == ConditionStatus.targetBoth ||
+          priceCondition == ConditionStatus.targetBuy ||
+          priceCondition == ConditionStatus.targetSell ||
+          peTtmCondition == ConditionStatus.targetBoth ||
+          peTtmCondition == ConditionStatus.targetSell ||
+          peTtmCondition == ConditionStatus.targetBuy ||
+          marketCapCondition == ConditionStatus.targetBoth ||
+          marketCapCondition == ConditionStatus.targetBuy ||
+          marketCapCondition == ConditionStatus.targetSell;
+    } else {
+      return status == priceCondition ||
+          status == marketCapCondition ||
+          status == peTtmCondition;
+    }
+  }
+
+  bool homeConditionNear(ConditionStatus status) {
+    if (status == ConditionStatus.nearBoth) {
+      return priceCondition == ConditionStatus.nearBoth ||
+          priceCondition == ConditionStatus.nearBuy ||
+          priceCondition == ConditionStatus.nearSell ||
+          peTtmCondition == ConditionStatus.nearBoth ||
+          peTtmCondition == ConditionStatus.nearSell ||
+          peTtmCondition == ConditionStatus.nearBuy ||
+          marketCapCondition == ConditionStatus.nearBoth ||
+          marketCapCondition == ConditionStatus.nearBuy ||
+          marketCapCondition == ConditionStatus.nearSell;
+    } else {
+      return status == priceCondition ||
+          status == marketCapCondition ||
+          status == peTtmCondition;
+    }
+  }
+}

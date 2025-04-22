@@ -18,7 +18,7 @@ class HomestockController extends BaseController
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final FocusNode searchFocusNode = FocusNode();
 
-  final dbItems = <StockItem>[].obs;
+  late var dbItems = <StockItem>[];
   // List<StockItem>
   final items = <StockItem>[].obs; //显示的
   final db = Get.find<AppDatabase>();
@@ -33,6 +33,16 @@ class HomestockController extends BaseController
   final isOperate = false.obs;
   final selItems = <StockItem>[].obs; //选择的items
 
+  final selCondition = ''.obs;
+  List<String> selConditions = ['满足买卖', '临近买卖'];
+
+  final selectedSegment = "all".obs;
+  final Map<String, String> segments = <String, String>{
+    "all": '所有',
+    "bug": '买',
+    "sale": '卖',
+  };
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -45,12 +55,13 @@ class HomestockController extends BaseController
 
   Future<void> getDatas() async {
     if (selectedOrderIndex.value == 0) {
-      dbItems.value = await db.getStockItemsOnHome();
+      dbItems = await db.getStockItemsOnHome();
     } else if (selectedOrderIndex.value == 1) {
-      dbItems.value = await db.getStockItemsOnHomeWithCollect();
+      dbItems = await db.getStockItemsOnHomeWithCollect();
     } else if (selectedOrderIndex.value == 2) {
-      dbItems.value = await db.getStockItemsOnHomeWithDelete();
+      dbItems = await db.getStockItemsOnHomeWithDelete();
     }
+    _updateDbItemsWithSetCondition();
     String query = searchController.text;
     filterItems(query);
   }
@@ -125,10 +136,35 @@ class HomestockController extends BaseController
               item.name.contains(query) || item.code.contains(query)) // 搜索逻辑
           .toList();
     }
+
+    if (selCondition.isNotEmpty) {
+      filterItems = _updateFilterItemsWithSelCondition(filterItems);
+    }
     // Get.context 不对，页面初始化后赋值
     slidableContexts =
         List.generate(filterItems.length, (index) => Get.context!);
     items.value = filterItems;
+  }
+
+  List<StockItem> _updateFilterItemsWithSelCondition(List<StockItem> list) {
+    if (selCondition.value == '满足买卖') {
+      ConditionStatus status = ConditionStatus.targetBoth;
+      if (selectedSegment.value == 'bug') {
+        status = ConditionStatus.targetBuy;
+      } else if (selectedSegment.value == 'sale') {
+        status = ConditionStatus.targetSell;
+      }
+      list = list.where((item) => item.homeConditionTarget(status)).toList();
+    } else if (selCondition.value == '临近买卖') {
+      ConditionStatus status = ConditionStatus.nearBoth;
+      if (selectedSegment.value == 'bug') {
+        status = ConditionStatus.nearBuy;
+      } else if (selectedSegment.value == 'sale') {
+        status = ConditionStatus.nearSell;
+      }
+      list = list.where((item) => item.homeConditionNear(status)).toList();
+    }
+    return list;
   }
 
   void clickCell(StockItem item) {
@@ -222,5 +258,27 @@ class HomestockController extends BaseController
   void clickOpRestore(StockItem item) {
     db.updateStockWithOp(item.copyWith(opDelete: false));
     getDatas();
+  }
+
+  void onTapSelCondition(String name) {
+    if (selCondition.value == name) {
+      selCondition.value = '';
+    } else {
+      selCondition.value = name;
+    }
+    selectedSegment.value = "all";
+    getDatas();
+  }
+
+  void _updateDbItemsWithSetCondition() {
+    for (final item in dbItems) {
+      item.setConditions();
+    }
+  }
+
+  void onTapSelConditionSegment(String value) {
+    selectedSegment.value = value;
+    getDatas();
+    // selectedSegment.refresh();
   }
 }

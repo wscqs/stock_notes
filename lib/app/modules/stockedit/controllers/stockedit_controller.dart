@@ -133,6 +133,8 @@ class StockeditController extends GetxController {
         pPriceBuyPoints.value = (double.parse(pPriceBuyController.text) -
                 double.parse(serStockData.value!.currentPrice!)) /
             double.parse(serStockData.value!.currentPrice!);
+      } else {
+        pPriceBuyPoints.value = 0.0;
       }
       if (pMarketCapBuyController.text.isNotEmpty &&
           serStockData.value!.totalMarketCap!.isNotEmpty) {
@@ -140,18 +142,25 @@ class StockeditController extends GetxController {
             (double.parse(pMarketCapBuyController.text) -
                     double.parse(serStockData.value!.totalMarketCap!)) /
                 double.parse(serStockData.value!.totalMarketCap!);
+      } else {
+        pMarketCapBuyPoints.value = 0.0;
       }
       if (pPeTtmBuyController.text.isNotEmpty &&
           serStockData.value!.peRatioTtm!.isNotEmpty) {
-        pPeTtmBuyPoints.value = (double.parse(pPeTtmBuyController.text) -
-                double.parse(serStockData.value!.peRatioTtm!)) /
-            double.parse(serStockData.value!.peRatioTtm!);
+        pPeTtmBuyPoints.value =
+            ((double.tryParse(pPeTtmBuyController.text) ?? 0.0) -
+                    double.parse(serStockData.value!.peRatioTtm!)) /
+                double.parse(serStockData.value!.peRatioTtm!);
+      } else {
+        pPeTtmBuyPoints.value = 0.0;
       }
       if (pPriceSaleController.text.isNotEmpty &&
           serStockData.value!.currentPrice!.isNotEmpty) {
         pPriceSalePoints.value = (double.parse(pPriceSaleController.text) -
                 double.parse(serStockData.value!.currentPrice!)) /
             double.parse(serStockData.value!.currentPrice!);
+      } else {
+        pPriceSalePoints.value = 0.0;
       }
       if (pMarketCapSaleController.text.isNotEmpty &&
           serStockData.value!.totalMarketCap!.isNotEmpty) {
@@ -159,12 +168,17 @@ class StockeditController extends GetxController {
             (double.parse(pMarketCapSaleController.text) -
                     double.parse(serStockData.value!.totalMarketCap!)) /
                 double.parse(serStockData.value!.totalMarketCap!);
+      } else {
+        pMarketCapSalePoints.value = 0.0;
       }
       if (pPeTtmSaleController.text.isNotEmpty &&
           serStockData.value!.peRatioTtm!.isNotEmpty) {
-        pPeTtmSalePoints.value = (double.parse(pPeTtmSaleController.text) -
-                double.parse(serStockData.value!.peRatioTtm!)) /
-            double.parse(serStockData.value!.peRatioTtm!);
+        pPeTtmSalePoints.value =
+            ((double.tryParse(pPeTtmSaleController.text) ?? 0.0) -
+                    double.parse(serStockData.value!.peRatioTtm!)) /
+                double.parse(serStockData.value!.peRatioTtm!);
+      } else {
+        pPeTtmSalePoints.value = 0.0;
       }
     }
   }
