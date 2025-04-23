@@ -27,25 +27,8 @@ class TabsController extends GetxController {
   //是否操作状态
   final isOperate = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    // pageController.addListener(() {
-    //   // 当页面切换时，尝试关闭当前页面中的 Slidable
-    //   Slidable.of(Get.context!)?.close();
-    // });
-    // setSystemNavigationBarColor(Colors.black, Brightness.light);
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   void pushCreatePage() {
     closeDrawer();

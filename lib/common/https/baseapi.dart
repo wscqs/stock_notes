@@ -13,17 +13,17 @@ class BaseAPI {
   }
 
   static String getBaseAPIURL() {
-    return getBaseURL() + 'api/';
+    return '${getBaseURL()}api/';
   }
 
   static String getDeleteAccount() {
-    return getBaseURL() + 'jb.html';
+    return '${getBaseURL()}jb.html';
   }
 
   static String getProtocolURL() {
     // return "https://www.znpai.cn/protocol.html?type=app_service";
     return "https://cc.wlspapp.com/rich_text/article/2.html";
-    return getBaseURL() + 'protocol.html?type=app_service';
+    return '${getBaseURL()}protocol.html?type=app_service';
   }
 
   static String getPrivacyURL() {
@@ -33,6 +33,6 @@ class BaseAPI {
   }
 
   static String getVipServiceURL() {
-    return getBaseURL() + 'protocol.html?type=vip_service';
+    return '${getBaseURL()}protocol.html?type=vip_service';
   }
 }

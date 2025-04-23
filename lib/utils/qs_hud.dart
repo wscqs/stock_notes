@@ -45,7 +45,7 @@ class QsHud {
 
   static void showToastSerTXError() {
     // showToast(kNETERROR);
-    showToast("Tx" + TextKey.sererror.tr);
+    showToast("Tx${TextKey.sererror.tr}");
   }
 
   /// 显示加载对话框

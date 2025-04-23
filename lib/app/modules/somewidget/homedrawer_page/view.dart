@@ -7,7 +7,7 @@ import '../../homestock/controllers/homestock_controller.dart';
 import 'vc.dart';
 
 class HomedrawerPage extends StatelessWidget {
-  HomedrawerPage({Key? key}) : super(key: key);
+  HomedrawerPage({super.key});
 
   final HomedrawerVC vc = Get.put(HomedrawerVC());
   final HomestockController parentVC = Get.find<HomestockController>();

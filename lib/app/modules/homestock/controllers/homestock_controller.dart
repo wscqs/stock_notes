@@ -69,16 +69,6 @@ class HomestockController extends BaseController
   void refreshAppui() {}
 
   @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  @override
   void onResume() {
     order = [
       TextKey.all.tr,
@@ -279,6 +269,5 @@ class HomestockController extends BaseController
   void onTapSelConditionSegment(String value) {
     selectedSegment.value = value;
     getDatas();
-    // selectedSegment.refresh();
   }
 }

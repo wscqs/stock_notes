@@ -8,13 +8,13 @@ class QsEmptyView extends StatelessWidget {
   final TextStyle? textStyle;
 
   const QsEmptyView({
-    Key? key,
+    super.key,
     this.message = '暂无数据',
     this.icon = Icons.inbox,
     this.iconSize = 80,
     this.iconColor = Colors.grey,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

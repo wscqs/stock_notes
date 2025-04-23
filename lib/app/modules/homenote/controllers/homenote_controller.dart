@@ -56,15 +56,7 @@ class HomenoteController extends BaseController
 
   void refreshAppui() {}
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   @override
   void onResume() {

@@ -7,7 +7,7 @@ import '../../utils/qs_hud.dart';
 
 ///显示网页资源的页面
 class WebViewPage extends StatefulWidget {
-  WebViewPage({
+  const WebViewPage({
     super.key,
     required this.loadResource,
     this.webViewType = WebViewType.URL,

@@ -238,7 +238,7 @@ class HomestockView extends GetView<HomestockController> {
       onChanged: controller.filterItems, // 监听输入内容
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
-        hintText: TextKey.search.tr + " ...",
+        hintText: "${TextKey.search.tr} ...",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
@@ -470,13 +470,13 @@ class HomeStockCell extends StatelessWidget {
 
 class SlideAction extends StatelessWidget {
   const SlideAction({
-    Key? key,
+    super.key,
     required this.color,
     required this.icon,
     this.flex = 1,
     this.onPressed,
     this.label,
-  }) : super(key: key);
+  });
 
   final Color color;
   final IconData icon;
@@ -495,11 +495,11 @@ class SlideAction extends StatelessWidget {
         // print(icon);
         onPressed?.call();
       },
+      padding: EdgeInsets.zero,
       child: Icon(
         icon,
         size: 28,
       ),
-      padding: EdgeInsets.zero,
     );
   }
 }

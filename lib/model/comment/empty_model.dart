@@ -7,7 +7,7 @@ class EmptyModel extends BaseNetModel {
   }
 
   EmptyModel();
-  EmptyModel.fromJson(dynamic json) {}
+  EmptyModel.fromJson(dynamic json);
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     return map;

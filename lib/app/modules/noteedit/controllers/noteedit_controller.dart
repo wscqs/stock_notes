@@ -71,21 +71,12 @@ class NoteeditController extends GetxController {
   }
 
   void _dealHasLocalDataRefreshUI() {
-    if (isLocalData.value != null) {
-      titleController.text = localData.value?.title ?? "";
-      final content = localData.value?.content;
-      if (content != null && content.isNotEmpty) {
-        quillController.document = Document.fromJson(jsonDecode(content));
-        // quillController.readOnly = true;
-        // final delta = Delta.fromJson(jsonDecode(content));
-        // quillController.document = Document.fromDelta(delta);
-      }
-    } else {}
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
+    titleController.text = localData.value?.title ?? "";
+    final content = localData.value?.content;
+    if (content != null && content.isNotEmpty) {
+      quillController.document = Document.fromJson(jsonDecode(content));
+      // quillController.readOnly = true;
+    }
   }
 
   @override

@@ -9,10 +9,6 @@ import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
 
 class SplashController extends BaseController {
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onReady() {
@@ -20,10 +16,6 @@ class SplashController extends BaseController {
     _loadData();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   // 延迟加载数据，显示闪屏页
   _loadData() async {

@@ -174,12 +174,12 @@ class StockeditView extends GetView<StockeditController> {
     String buyLabelText = TextKey.buy.tr;
     if (buyPoints != 0.0) {
       buyLabelText =
-          TextKey.buy.tr + ": ${(buyPoints * 100).toStringAsFixed(1)}%";
+          "${TextKey.buy.tr}: ${(buyPoints * 100).toStringAsFixed(1)}%";
     }
     String saleLabelText = TextKey.sale.tr;
     if (salePoints != 0.0) {
       saleLabelText =
-          TextKey.sale.tr + ": ${(salePoints * 100).toStringAsFixed(1)}%";
+          "${TextKey.sale.tr}: ${(salePoints * 100).toStringAsFixed(1)}%";
     }
 
     return Row(
@@ -193,7 +193,7 @@ class StockeditView extends GetView<StockeditController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(titile + "：",
+                Text("$titile：",
                     style: TextStyle(
                         fontSize: Get.textTheme.titleMedium?.fontSize,
                         fontWeight: FontWeight.bold)),
@@ -230,8 +230,7 @@ class StockeditView extends GetView<StockeditController> {
                   kSpaceW(12),
                   if (yieldRate > 0)
                     Text(
-                        TextKey.shouyilv.tr +
-                            ": ${(yieldRate * 100).toStringAsFixed(1)}%",
+                        "${TextKey.shouyilv.tr}: ${(yieldRate * 100).toStringAsFixed(1)}%",
                         style: TextStyle(
                           color: Colors.grey,
                         )),
@@ -264,7 +263,7 @@ class StockeditView extends GetView<StockeditController> {
           children: [
             Text(TextKey.gupiao.tr, style: Get.textTheme.titleLarge),
             if (controller.serStockData.value.code != null &&
-                (controller.stockNum?.isNotEmpty ?? false))
+                (controller.stockNum.isNotEmpty ?? false))
               SizedBox(
                 height: 32,
                 child: TextButton(

@@ -6,7 +6,7 @@ import '../../../../common/widget/double_press_back.dart';
 import '../controllers/tabs_controller.dart';
 
 class TabsView extends GetView<TabsController> {
-  const TabsView({Key? key}) : super(key: key);
+  const TabsView({super.key});
   @override
   Widget build(BuildContext context) {
     return Obx(() => _scaffold(context));
@@ -34,13 +34,13 @@ class TabsView extends GetView<TabsController> {
           onPressed: () {
             controller.pushCreatePage();
           },
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.red,
+          shape: CircleBorder(),
           child: Icon(
             controller.isOperate.value ? Icons.delete : Icons.add,
             size: 36,
           ),
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.red,
-          shape: CircleBorder(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: MediaQuery.of(context).viewInsets.bottom > 0

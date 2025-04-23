@@ -86,10 +86,7 @@ class GlobalService extends GetxService {
 
   // 初始化本地语言配置
   void _initLocale(List<Locale>? supportedLocales) {
-    if (supportedLocales == null) {
-      supportedLocales = TranslationLibrary.supportedLocales;
-      // return;
-    }
+    supportedLocales ??= TranslationLibrary.supportedLocales;
     var langCode = sharedPreferences.getString(languageCodeKey) ?? '';
     if (langCode.isEmpty) {
       langCode = "zh";

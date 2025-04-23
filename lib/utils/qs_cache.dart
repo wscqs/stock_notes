@@ -28,16 +28,12 @@ class QsCache {
   }
 
   static QsCache getInstance() {
-    if (_instance == null) {
-      _instance = QsCache._();
-    }
+    _instance ??= QsCache._();
     return _instance!;
   }
 
   void init() async {
-    if (prefs == null) {
-      prefs = await SharedPreferences.getInstance();
-    }
+    prefs ??= await SharedPreferences.getInstance();
   }
 
   ///warn:不支持model,model存进去从本地内存取出是map，所以不要用model

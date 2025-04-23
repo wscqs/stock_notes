@@ -1,4 +1,5 @@
 /// state : "success"
+library;
 
 class StatusModel {
   StatusModel({

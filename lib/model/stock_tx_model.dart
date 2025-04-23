@@ -5,6 +5,7 @@
 /// pe_ratio_ttm : "42.27"
 /// total_market_cap : "49.80"
 /// pb_ratio : "1.27"
+library;
 
 class StockTxModel {
   StockTxModel({

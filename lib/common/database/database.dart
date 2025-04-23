@@ -348,11 +348,11 @@ extension StockItemExt on StockItem {
     }
     if (marketCapCondition.label.isNotEmpty) {
       showCellConditionInfo =
-          showCellConditionInfo + "\n" + "市值:${marketCapCondition.label}";
+          "$showCellConditionInfo\n市值:${marketCapCondition.label}";
     }
     if (peTtmCondition.label.isNotEmpty) {
       showCellConditionInfo =
-          showCellConditionInfo + "\n" + "Pe:${peTtmCondition.label}";
+          "$showCellConditionInfo\nPe:${peTtmCondition.label}";
     }
     return showCellConditionInfo;
   }

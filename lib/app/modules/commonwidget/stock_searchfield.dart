@@ -48,14 +48,14 @@ class StockSearchField extends StatelessWidget {
                             left: 8, right: 12, bottom: 8, top: 8),
                         child: FilledButton(
                           onPressed: onSubmit,
-                          child: Text(
-                            TextKey.search.tr,
-                            style: TextStyle(fontSize: 13),
-                          ),
                           style: FilledButton.styleFrom(
                             minimumSize: Size(0, 30), // 设高
                             padding: EdgeInsets.symmetric(
-                                horizontal: 12!, vertical: 0),
+                                horizontal: 12, vertical: 0),
+                          ),
+                          child: Text(
+                            TextKey.search.tr,
+                            style: TextStyle(fontSize: 13),
                           ),
                         ),
                       )

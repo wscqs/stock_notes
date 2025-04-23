@@ -156,7 +156,7 @@ class HomenoteView extends GetView<HomenoteController> {
       onChanged: controller.filterItems, // 监听输入内容
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
-        hintText: TextKey.search.tr + " ...",
+        hintText: "${TextKey.search.tr} ...",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),

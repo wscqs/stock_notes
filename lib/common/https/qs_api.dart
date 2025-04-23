@@ -57,7 +57,7 @@ class QsApi {
       final jsonData = parseTencentStockData(rawData);
       datas = [];
       for (var item in jsonData) {
-        datas?.add(StockTxModel.fromJson(item));
+        datas.add(StockTxModel.fromJson(item));
         // print(item);
       }
       // String a = jsonData.toString();
@@ -175,7 +175,7 @@ class QsApi {
         decodeType: TokenModel(),
         completionHandler: (model, error) {
           if (model != null) {
-            TokenModel tempModel = model as TokenModel;
+            TokenModel tempModel = model;
             tempModel.refreshToken = QsAccount.loginToken;
             QsAccount.saveTokenModel(tempModel);
             completionHandler(true, null);

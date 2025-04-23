@@ -32,12 +32,12 @@ class NetConfig {
   List<Interceptor>? interceptors;
 
   /// Timeout in milliseconds for opening url.
-  /// [Dio] will throw the [DioError] with [DioErrorType.connectionTimeout] type
+  /// [Dio] will throw the [DioException] with [DioExceptionType.connectionTimeout] type
   ///  when time out.
   Duration? connectTimeout;
 
   /// Timeout in milliseconds for sending data.
-  /// [Dio] will throw the [DioError] with [DioErrorType.sendTimeout] type
+  /// [Dio] will throw the [DioException] with [DioExceptionType.sendTimeout] type
   ///  when time out.
   Duration? sendTimeout;
 

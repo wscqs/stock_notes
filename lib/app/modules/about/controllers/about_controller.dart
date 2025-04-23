@@ -3,20 +3,8 @@ import 'package:get/get.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 class AboutController extends GetxController {
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   void toCustomerService() {
     Get.dialog(AlertDialog(

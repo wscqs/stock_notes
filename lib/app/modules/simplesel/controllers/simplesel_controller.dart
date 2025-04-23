@@ -33,15 +33,7 @@ class SimpleselController extends GetxController {
     }
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   void sel(int index) {
     selKey.value = datas[index]["value"];

@@ -12,7 +12,7 @@ class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll("#", "");
     if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor; // 如果没有透明度值，添加FF作为透明度（不透明）
+      hexColor = "FF$hexColor"; // 如果没有透明度值，添加FF作为透明度（不透明）
     }
     return int.parse(hexColor, radix: 16);
   }

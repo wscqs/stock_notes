@@ -15,7 +15,7 @@ enum WebViewType {
 }
 
 ///定义js通信回调方法
-typedef dynamic JsChannelCallback(List<dynamic> arguments);
+typedef JsChannelCallback = dynamic Function(List<dynamic> arguments);
 
 ///封装的WebView组件
 class WebViewWidget extends StatefulWidget {
