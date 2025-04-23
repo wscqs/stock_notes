@@ -1,10 +1,12 @@
-import 'package:drift_db_viewer/drift_db_viewer.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Value;
+import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/database.dart';
+import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
 import '../../tabs/controllers/tabs_controller.dart';
@@ -47,6 +49,7 @@ class HomestockController extends BaseController
   Future<void> onInit() async {
     super.onInit();
     getDatas();
+    dbSyncSerData(isShowLoading: false);
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {
     //   refreshAppui();
@@ -109,10 +112,49 @@ class HomestockController extends BaseController
     return selectedOrderIndex.value == 2;
   }
 
-  void clickMore() {
-    final database = AppDatabase();
-    Navigator.of(Get.context!)
-        .push(MaterialPageRoute(builder: (context) => DriftDbViewer(database)));
+  // void clickMore() {
+  //   final database = AppDatabase();
+  //   Navigator.of(Get.context!)
+  //       .push(MaterialPageRoute(builder: (context) => DriftDbViewer(database)));
+  // }
+
+  Future<void> clickRefresh() async {
+    dbSyncSerData(isShowLoading: true);
+  }
+
+  Future<void> dbSyncSerData({bool isShowLoading = false}) async {
+    //db里面数据拿到所有的 code 数据数组
+    var stockCodes = dbItems.map((item) => item.code).toList();
+    if (stockCodes.isEmpty) {
+      return;
+    }
+    if (isShowLoading) {
+      QsHud.showLoading();
+    }
+    var qTRequest =
+        await QsApi.instance().requestStockData(stockCodes: stockCodes);
+    // print(qTRequest.toString());
+    if (qTRequest != null && qTRequest.length > 0) {
+      for (var item in dbItems) {
+        for (var serItem in qTRequest) {
+          if (item.code == serItem.code) {
+            final updatedItem = StockItemsCompanion(
+              code: Value(item.code), // where 条件用
+              name: Value(serItem.name!),
+              currentPrice: Value(serItem.currentPrice), // 要更新的字段
+              pbRatio: Value(serItem.pbRatio),
+              totalMarketCap: Value(serItem.totalMarketCap),
+              peRatioTtm: Value(serItem.peRatioTtm),
+            );
+            db.updateStock(updatedItem, item.code);
+          }
+        }
+      }
+    }
+    if (isShowLoading) {
+      QsHud.dismiss();
+    }
+    getDatas();
   }
 
   void filterItems(String query) {

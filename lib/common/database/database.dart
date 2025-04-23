@@ -62,6 +62,14 @@ class AppDatabase extends _$AppDatabase {
     return update(stockItems).replace(itemUpdate);
   }
 
+  Future<void> updateStock(
+    StockItemsCompanion updatedItem,
+    String code,
+  ) {
+    return (update(stockItems)..where((tbl) => tbl.code.equals(code)))
+        .write(updatedItem);
+  }
+
   Future<void> updateBatchStockWithOp(List<StockItem> items) {
     return batch((batch) {
       batch.replaceAll(stockItems, items);

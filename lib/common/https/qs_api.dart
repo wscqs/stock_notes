@@ -21,24 +21,24 @@ class QsApi {
   //https://xueqiu.com 下面地址需要 cookie 才能访问，后续再用吧（比腾讯多股息率）,用腾讯
   //https://stock.xueqiu.com/v5/stock/quote.json?symbol=SZ000001&extend=detail
   //https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=SZ000001,SZ399001&extend=detail
-  static void stocksList<T>(
-      {required String stocks,
-      T? decodeType,
-      required FinishedCallback<T> completionHandler}) {
-    Map<String, dynamic> map = {
-      "extend": "detail",
-      "symbol": stocks,
-    };
-    // CachePolicy cache =
-    //     page > 1 ? CachePolicy.Default : CachePolicy.ReturnCache_DidLoad;
-    QsRequest.go(
-        url: "https://stock.xueqiu.com/v5/stock/batch/quote.json",
-        params: map,
-        // cache: cache,
-        decodeType: decodeType,
-        // showHUD: true,
-        completionHandler: completionHandler);
-  }
+  // static void stocksList<T>(
+  //     {required String stocks,
+  //     T? decodeType,
+  //     required FinishedCallback<T> completionHandler}) {
+  //   Map<String, dynamic> map = {
+  //     "extend": "detail",
+  //     "symbol": stocks,
+  //   };
+  //   // CachePolicy cache =
+  //   //     page > 1 ? CachePolicy.Default : CachePolicy.ReturnCache_DidLoad;
+  //   QsRequest.go(
+  //       url: "https://stock.xueqiu.com/v5/stock/batch/quote.json",
+  //       params: map,
+  //       // cache: cache,
+  //       decodeType: decodeType,
+  //       // showHUD: true,
+  //       completionHandler: completionHandler);
+  // }
 
   //数据
   Future<List<StockTxModel>?> requestStockData(
@@ -99,8 +99,9 @@ class QsApi {
     final List<Map<String, dynamic>> result = [];
 
     for (var line in lines) {
+      line = line.trim();
       // 跳过空行
-      if (line.trim().isEmpty) continue;
+      if (line.isEmpty) continue;
 
       // 提取每条数据的主体部分 (去掉 v_ 和引号)
       final startIndex = line.indexOf('="');

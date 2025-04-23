@@ -32,10 +32,10 @@ class HomestockView extends GetView<HomestockController> {
             actions: [
               IconButton(
                   onPressed: () {
-                    controller.clickMore();
+                    controller.clickRefresh();
                   },
                   icon: Icon(
-                    Icons.more_horiz,
+                    Icons.replay_circle_filled_rounded,
                     size: 28,
                   ))
             ],
