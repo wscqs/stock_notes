@@ -14,72 +14,83 @@ class NoteeditView extends GetView<NoteeditController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(TextKey.biji.tr),
-          actions: [
-            ElevatedButton(
-                onPressed: controller.save, child: Text(TextKey.baocun.tr))
-          ],
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                child: TextField(
-                  controller: controller.titleController,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
-                    hintText: TextKey.biaoti.tr,
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    // if (!controller.isEditing.value) {
-                    //   FocusScope.of(context).requestFocus(FocusNode());
-                    // }
-                  },
-                  child: QuillEditor(
-                    focusNode: controller.editorFocusNode,
-                    scrollController: controller.editorScrollController,
-                    controller: controller.quillController,
-                    config: QuillEditorConfig(
-                      placeholder: '',
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 16),
-                      // embedBuilders: [
-                      // ...FlutterQuillEmbeds.editorBuilders(
-                      //   imageEmbedConfig: QuillEditorImageEmbedConfig(
-                      //     imageProviderBuilder: (context, imageUrl) {
-                      //       // https://pub.dev/packages/flutter_quill_extensions#-image-assets
-                      //       if (imageUrl.startsWith('assets/')) {
-                      //         return AssetImage(imageUrl);
-                      //       }
-                      //       return null;
-                      //     },
-                      //   ),
-                      // videoEmbedConfig: QuillEditorVideoEmbedConfig(
-                      //   customVideoBuilder: (videoUrl, readOnly) {
-                      //     // To load YouTube videos https://github.com/singerdmx/flutter-quill/releases/tag/v10.8.0
-                      //     return null;
-                      //   },
-                      // ),
-                      // ),
-                      // TimeStampEmbedBuilder(),
-                      // ],
+      return PopScope(
+        canPop: controller.canPop, // 动态控制返回手势是否生效
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return; // 已处理弹出则直接返回
+          final allowed = await controller.handlePop();
+          if (allowed) {
+            //不保存也后退
+            Get.back(); // 手动触发返回
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(TextKey.biji.tr),
+            actions: [
+              ElevatedButton(
+                  onPressed: controller.save, child: Text(TextKey.baocun.tr))
+            ],
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  child: TextField(
+                    controller: controller.titleController,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                    decoration: InputDecoration(
+                      hintText: TextKey.biaoti.tr,
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
-              ),
-              if (controller.isEditing.value) buildQuillSimpleToolbar(),
-            ],
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      // if (!controller.isEditing.value) {
+                      //   FocusScope.of(context).requestFocus(FocusNode());
+                      // }
+                    },
+                    child: QuillEditor(
+                      focusNode: controller.editorFocusNode,
+                      scrollController: controller.editorScrollController,
+                      controller: controller.quillController,
+                      config: QuillEditorConfig(
+                        placeholder: '',
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 16),
+                        // embedBuilders: [
+                        // ...FlutterQuillEmbeds.editorBuilders(
+                        //   imageEmbedConfig: QuillEditorImageEmbedConfig(
+                        //     imageProviderBuilder: (context, imageUrl) {
+                        //       // https://pub.dev/packages/flutter_quill_extensions#-image-assets
+                        //       if (imageUrl.startsWith('assets/')) {
+                        //         return AssetImage(imageUrl);
+                        //       }
+                        //       return null;
+                        //     },
+                        //   ),
+                        // videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                        //   customVideoBuilder: (videoUrl, readOnly) {
+                        //     // To load YouTube videos https://github.com/singerdmx/flutter-quill/releases/tag/v10.8.0
+                        //     return null;
+                        //   },
+                        // ),
+                        // ),
+                        // TimeStampEmbedBuilder(),
+                        // ],
+                      ),
+                    ),
+                  ),
+                ),
+                if (controller.isEditing.value) buildQuillSimpleToolbar(),
+              ],
+            ),
           ),
         ),
       );

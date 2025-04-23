@@ -47,6 +47,8 @@ class TextKey {
   static const biaoti = 'biaoti';
   static const shuruneirongtishi = 'shuruneirongtishi';
   static const edit = 'edit';
+  static const bu = 'bu';
+  static const shifoubaocungenggai = 'shifoubaocungenggai';
 }
 
 const Map<String, String> zh = {
@@ -98,6 +100,8 @@ const Map<String, String> zh = {
   TextKey.biaoti: '标题',
   TextKey.shuruneirongtishi: '请输入内容',
   TextKey.edit: '编辑',
+  TextKey.bu: '不',
+  TextKey.shifoubaocungenggai: '是否保存更改?',
 };
 
 const Map<String, String> en = {
@@ -150,4 +154,6 @@ const Map<String, String> en = {
   TextKey.biaoti: 'Title',
   TextKey.shuruneirongtishi: 'Please enter content',
   TextKey.edit: 'Edit',
+  TextKey.bu: 'No',
+  TextKey.shifoubaocungenggai: 'Do you want to save the changes?',
 };

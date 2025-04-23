@@ -48,6 +48,58 @@ class NoteeditController extends GetxController {
 
   final isEditing = false.obs;
 
+  bool canPop = false; // 控制是否允许返回。true不拦截，false 才能进入handlePop判断
+  Future<bool> handlePop() async {
+    if (isLocalData.value) {
+      final localContent = localData.value?.content;
+      final localTitle = localData.value?.title!;
+      if (localTitle == titleController.text &&
+          localContent != null &&
+          localContent.isNotEmpty) {
+        final localDocContent =
+            Document.fromJson(jsonDecode(localContent)).toPlainText();
+        final currentDocContent = quillController.document.toPlainText();
+        if (localDocContent == currentDocContent) {
+          return true;
+        }
+      }
+    } else {
+      String content = quillController.document.toPlainText().trim();
+      if (titleController.text.isEmpty && content.length == 0) return true;
+    }
+    // 弹出二次确认对话框
+    final confirm = await showDialog<bool>(
+      context: Get.context!,
+      // barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        // title: const Text('是否保存更改?'),
+        content: Padding(
+          padding: const EdgeInsets.only(left: 4, top: 4),
+          child: Text(TextKey.shifoubaocungenggai.tr,
+              style: TextStyle(fontSize: 16)),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(); //第一个关闭Dialog
+              Get.back();
+            },
+            child: Text(TextKey.bu.tr + TextKey.baocun.tr),
+          ),
+          TextButton(
+            onPressed: () {
+              save();
+              Get.back();
+              Get.back();
+            },
+            child: Text(TextKey.baocun.tr),
+          ),
+        ],
+      ),
+    );
+    return false;
+  }
+
   @override
   void onInit() {
     super.onInit();
