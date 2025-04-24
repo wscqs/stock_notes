@@ -7,7 +7,7 @@ part 'database.g.dart';
 //  await Get.putAsync(() async => AppDatabase());
 //  final db = Get.find<AppDatabase>();
 
-@DriftDatabase(tables: [StockItems, NoteItems])
+@DriftDatabase(tables: [StockItems, NoteItems, StockItemTags, StockTags])
 class AppDatabase extends _$AppDatabase {
   // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
   AppDatabase() : super(_openConnection());

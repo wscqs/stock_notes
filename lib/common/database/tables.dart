@@ -1,16 +1,7 @@
-import 'dart:ui';
-
 import 'package:drift/drift.dart';
 
 export 'dart:ui' show Color;
 
-// String? marketType;
-// String? name;
-// String? code;
-// String? currentPrice;
-// String? peRatioTtm;
-// String? totalMarketCap;
-// String? pbRatio;
 class StockItems extends Table with TableMixin {
   TextColumn get marketType => text()();
   TextColumn get name => text()();
@@ -47,49 +38,64 @@ class NoteItems extends Table with TableMixin {
   BoolColumn get opDelete => boolean().withDefault(const Constant(false))();
 }
 
-class TodoItems extends Table with TableMixin {
-  TextColumn get title => text().withLength(min: 6, max: 32)();
-  TextColumn get content => text().named('body')();
-// DateTimeColumn get createdAt => dateTime().nullable()();
-}
-
-@DataClassName('TodoEntry')
-class TodoEntries extends Table with AutoIncrementingPrimaryKey {
-  TextColumn get description => text()();
-
-  // entries can optionally be in a category.
-  IntColumn get category => integer().nullable().references(Categories, #id)();
-  DateTimeColumn get dueDate => dateTime().nullable()();
-}
-
-@DataClassName('Category')
-class Categories extends Table with AutoIncrementingPrimaryKey {
-  TextColumn get name => text()();
-  // We can use type converters to store custom classes in tables.
-  // Here, we're storing colors as integers.
-  IntColumn get color => integer().map(const ColorConverter())();
-}
-
 mixin TableMixin on Table {
-  // Primary key column
-  late final id = integer().autoIncrement()();
-
-  // Column for created at timestamp
-  late final createdAt = dateTime().withDefault(currentDateAndTime)();
-  // 更新时间，每次更新时手动设置
-  late final updateAt = dateTime().withDefault(currentDateAndTime)();
-}
-
-// Tables can mix-in common definitions if needed
-mixin AutoIncrementingPrimaryKey on Table {
   IntColumn get id => integer().autoIncrement()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updateAt => dateTime().withDefault(currentDateAndTime)();
 }
 
-class ColorConverter extends TypeConverter<Color, int> {
-  const ColorConverter();
-  @override
-  Color fromSql(int fromDb) => Color(fromDb);
-  @override
-  // ignore: deprecated_member_use
-  int toSql(Color value) => value.value;
+class StockItemTags extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text().nullable()();
 }
+
+class StockTags extends Table {
+  IntColumn get stockId => integer().references(StockItems, #id)();
+  IntColumn get tagId => integer().references(StockItemTags, #id)();
+  @override
+  Set<Column> get primaryKey => {stockId, tagId};
+}
+
+// class NoteTags extends Table {
+//   IntColumn get noteId =>
+//       integer().customConstraint('REFERENCES note_items(id)')();
+//   IntColumn get tagId => integer().customConstraint('REFERENCES tags(id)')();
+//   @override
+//   Set<Column> get primaryKey => {noteId, tagId};
+// }
+
+// class TodoItems extends Table with TableMixin {
+//   TextColumn get title => text().withLength(min: 6, max: 32)();
+//   TextColumn get content => text().named('body')();
+// // DateTimeColumn get createdAt => dateTime().nullable()();
+// }
+// @DataClassName('TodoEntry')
+// class TodoEntries extends Table with AutoIncrementingPrimaryKey {
+//   TextColumn get description => text()();
+//
+//   // entries can optionally be in a category.
+//   IntColumn get category => integer().nullable().references(Categories, #id)();
+//   DateTimeColumn get dueDate => dateTime().nullable()();
+// }
+//
+// @DataClassName('Category')
+// class Categories extends Table with AutoIncrementingPrimaryKey {
+//   TextColumn get name => text()();
+//   // We can use type converters to store custom classes in tables.
+//   // Here, we're storing colors as integers.
+//   IntColumn get color => integer().map(const ColorConverter())();
+// }
+//
+// // Tables can mix-in common definitions if needed
+// mixin AutoIncrementingPrimaryKey on Table {
+//   IntColumn get id => integer().autoIncrement()();
+// }
+//
+// class ColorConverter extends TypeConverter<Color, int> {
+//   const ColorConverter();
+//   @override
+//   Color fromSql(int fromDb) => Color(fromDb);
+//   @override
+//   // ignore: deprecated_member_use
+//   int toSql(Color value) => value.value;
+// }

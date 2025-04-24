@@ -1582,16 +1582,395 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
   }
 }
 
+class $StockItemTagsTable extends StockItemTags
+    with TableInfo<$StockItemTagsTable, StockItemTag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StockItemTagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stock_item_tags';
+  @override
+  VerificationContext validateIntegrity(Insertable<StockItemTag> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StockItemTag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StockItemTag(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+    );
+  }
+
+  @override
+  $StockItemTagsTable createAlias(String alias) {
+    return $StockItemTagsTable(attachedDatabase, alias);
+  }
+}
+
+class StockItemTag extends DataClass implements Insertable<StockItemTag> {
+  final int id;
+  final String? name;
+  const StockItemTag({required this.id, this.name});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    return map;
+  }
+
+  StockItemTagsCompanion toCompanion(bool nullToAbsent) {
+    return StockItemTagsCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+    );
+  }
+
+  factory StockItemTag.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StockItemTag(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+    };
+  }
+
+  StockItemTag copyWith(
+          {int? id, Value<String?> name = const Value.absent()}) =>
+      StockItemTag(
+        id: id ?? this.id,
+        name: name.present ? name.value : this.name,
+      );
+  StockItemTag copyWithCompanion(StockItemTagsCompanion data) {
+    return StockItemTag(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockItemTag(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StockItemTag && other.id == this.id && other.name == this.name);
+}
+
+class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
+  final Value<int> id;
+  final Value<String?> name;
+  const StockItemTagsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  StockItemTagsCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  static Insertable<StockItemTag> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+    });
+  }
+
+  StockItemTagsCompanion copyWith({Value<int>? id, Value<String?>? name}) {
+    return StockItemTagsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockItemTagsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StockTagsTable extends StockTags
+    with TableInfo<$StockTagsTable, StockTag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StockTagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _stockIdMeta =
+      const VerificationMeta('stockId');
+  @override
+  late final GeneratedColumn<int> stockId = GeneratedColumn<int>(
+      'stock_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES stock_items (id)'));
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<int> tagId = GeneratedColumn<int>(
+      'tag_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES stock_item_tags (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [stockId, tagId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stock_tags';
+  @override
+  VerificationContext validateIntegrity(Insertable<StockTag> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('stock_id')) {
+      context.handle(_stockIdMeta,
+          stockId.isAcceptableOrUnknown(data['stock_id']!, _stockIdMeta));
+    } else if (isInserting) {
+      context.missing(_stockIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(
+          _tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {stockId, tagId};
+  @override
+  StockTag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StockTag(
+      stockId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stock_id'])!,
+      tagId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}tag_id'])!,
+    );
+  }
+
+  @override
+  $StockTagsTable createAlias(String alias) {
+    return $StockTagsTable(attachedDatabase, alias);
+  }
+}
+
+class StockTag extends DataClass implements Insertable<StockTag> {
+  final int stockId;
+  final int tagId;
+  const StockTag({required this.stockId, required this.tagId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['stock_id'] = Variable<int>(stockId);
+    map['tag_id'] = Variable<int>(tagId);
+    return map;
+  }
+
+  StockTagsCompanion toCompanion(bool nullToAbsent) {
+    return StockTagsCompanion(
+      stockId: Value(stockId),
+      tagId: Value(tagId),
+    );
+  }
+
+  factory StockTag.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StockTag(
+      stockId: serializer.fromJson<int>(json['stockId']),
+      tagId: serializer.fromJson<int>(json['tagId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'stockId': serializer.toJson<int>(stockId),
+      'tagId': serializer.toJson<int>(tagId),
+    };
+  }
+
+  StockTag copyWith({int? stockId, int? tagId}) => StockTag(
+        stockId: stockId ?? this.stockId,
+        tagId: tagId ?? this.tagId,
+      );
+  StockTag copyWithCompanion(StockTagsCompanion data) {
+    return StockTag(
+      stockId: data.stockId.present ? data.stockId.value : this.stockId,
+      tagId: data.tagId.present ? data.tagId.value : this.tagId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockTag(')
+          ..write('stockId: $stockId, ')
+          ..write('tagId: $tagId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(stockId, tagId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StockTag &&
+          other.stockId == this.stockId &&
+          other.tagId == this.tagId);
+}
+
+class StockTagsCompanion extends UpdateCompanion<StockTag> {
+  final Value<int> stockId;
+  final Value<int> tagId;
+  final Value<int> rowid;
+  const StockTagsCompanion({
+    this.stockId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StockTagsCompanion.insert({
+    required int stockId,
+    required int tagId,
+    this.rowid = const Value.absent(),
+  })  : stockId = Value(stockId),
+        tagId = Value(tagId);
+  static Insertable<StockTag> custom({
+    Expression<int>? stockId,
+    Expression<int>? tagId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (stockId != null) 'stock_id': stockId,
+      if (tagId != null) 'tag_id': tagId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StockTagsCompanion copyWith(
+      {Value<int>? stockId, Value<int>? tagId, Value<int>? rowid}) {
+    return StockTagsCompanion(
+      stockId: stockId ?? this.stockId,
+      tagId: tagId ?? this.tagId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (stockId.present) {
+      map['stock_id'] = Variable<int>(stockId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<int>(tagId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockTagsCompanion(')
+          ..write('stockId: $stockId, ')
+          ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $StockItemsTable stockItems = $StockItemsTable(this);
   late final $NoteItemsTable noteItems = $NoteItemsTable(this);
+  late final $StockItemTagsTable stockItemTags = $StockItemTagsTable(this);
+  late final $StockTagsTable stockTags = $StockTagsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [stockItems, noteItems];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [stockItems, noteItems, stockItemTags, stockTags];
 }
 
 typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
@@ -1648,6 +2027,26 @@ typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<String?> pAllRemark,
   Value<String?> pEventRemark,
 });
+
+final class $$StockItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $StockItemsTable, StockItem> {
+  $$StockItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$StockTagsTable, List<StockTag>>
+      _stockTagsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.stockTags,
+              aliasName:
+                  $_aliasNameGenerator(db.stockItems.id, db.stockTags.stockId));
+
+  $$StockTagsTableProcessedTableManager get stockTagsRefs {
+    final manager = $$StockTagsTableTableManager($_db, $_db.stockTags)
+        .filter((f) => f.stockId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_stockTagsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
 
 class $$StockItemsTableFilterComposer
     extends Composer<_$AppDatabase, $StockItemsTable> {
@@ -1734,6 +2133,27 @@ class $$StockItemsTableFilterComposer
 
   ColumnFilters<String> get pEventRemark => $composableBuilder(
       column: $table.pEventRemark, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> stockTagsRefs(
+      Expression<bool> Function($$StockTagsTableFilterComposer f) f) {
+    final $$StockTagsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.stockTags,
+        getReferencedColumn: (t) => t.stockId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockTagsTableFilterComposer(
+              $db: $db,
+              $table: $db.stockTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$StockItemsTableOrderingComposer
@@ -1913,6 +2333,27 @@ class $$StockItemsTableAnnotationComposer
 
   GeneratedColumn<String> get pEventRemark => $composableBuilder(
       column: $table.pEventRemark, builder: (column) => column);
+
+  Expression<T> stockTagsRefs<T extends Object>(
+      Expression<T> Function($$StockTagsTableAnnotationComposer a) f) {
+    final $$StockTagsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.stockTags,
+        getReferencedColumn: (t) => t.stockId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockTagsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.stockTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$StockItemsTableTableManager extends RootTableManager<
@@ -1924,9 +2365,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
     $$StockItemsTableAnnotationComposer,
     $$StockItemsTableCreateCompanionBuilder,
     $$StockItemsTableUpdateCompanionBuilder,
-    (StockItem, BaseReferences<_$AppDatabase, $StockItemsTable, StockItem>),
+    (StockItem, $$StockItemsTableReferences),
     StockItem,
-    PrefetchHooks Function()> {
+    PrefetchHooks Function({bool stockTagsRefs})> {
   $$StockItemsTableTableManager(_$AppDatabase db, $StockItemsTable table)
       : super(TableManagerState(
           db: db,
@@ -2046,9 +2487,35 @@ class $$StockItemsTableTableManager extends RootTableManager<
             pEventRemark: pEventRemark,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$StockItemsTableReferences(db, table, e)
+                  ))
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({stockTagsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (stockTagsRefs) db.stockTags],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (stockTagsRefs)
+                    await $_getPrefetchedData<StockItem, $StockItemsTable,
+                            StockTag>(
+                        currentTable: table,
+                        referencedTable:
+                            $$StockItemsTableReferences._stockTagsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$StockItemsTableReferences(db, table, p0)
+                                .stockTagsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.stockId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
         ));
 }
 
@@ -2061,9 +2528,9 @@ typedef $$StockItemsTableProcessedTableManager = ProcessedTableManager<
     $$StockItemsTableAnnotationComposer,
     $$StockItemsTableCreateCompanionBuilder,
     $$StockItemsTableUpdateCompanionBuilder,
-    (StockItem, BaseReferences<_$AppDatabase, $StockItemsTable, StockItem>),
+    (StockItem, $$StockItemsTableReferences),
     StockItem,
-    PrefetchHooks Function()>;
+    PrefetchHooks Function({bool stockTagsRefs})>;
 typedef $$NoteItemsTableCreateCompanionBuilder = NoteItemsCompanion Function({
   Value<int> id,
   Value<DateTime> createdAt,
@@ -2268,6 +2735,514 @@ typedef $$NoteItemsTableProcessedTableManager = ProcessedTableManager<
     (NoteItem, BaseReferences<_$AppDatabase, $NoteItemsTable, NoteItem>),
     NoteItem,
     PrefetchHooks Function()>;
+typedef $$StockItemTagsTableCreateCompanionBuilder = StockItemTagsCompanion
+    Function({
+  Value<int> id,
+  Value<String?> name,
+});
+typedef $$StockItemTagsTableUpdateCompanionBuilder = StockItemTagsCompanion
+    Function({
+  Value<int> id,
+  Value<String?> name,
+});
+
+final class $$StockItemTagsTableReferences
+    extends BaseReferences<_$AppDatabase, $StockItemTagsTable, StockItemTag> {
+  $$StockItemTagsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$StockTagsTable, List<StockTag>>
+      _stockTagsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.stockTags,
+          aliasName:
+              $_aliasNameGenerator(db.stockItemTags.id, db.stockTags.tagId));
+
+  $$StockTagsTableProcessedTableManager get stockTagsRefs {
+    final manager = $$StockTagsTableTableManager($_db, $_db.stockTags)
+        .filter((f) => f.tagId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_stockTagsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$StockItemTagsTableFilterComposer
+    extends Composer<_$AppDatabase, $StockItemTagsTable> {
+  $$StockItemTagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> stockTagsRefs(
+      Expression<bool> Function($$StockTagsTableFilterComposer f) f) {
+    final $$StockTagsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.stockTags,
+        getReferencedColumn: (t) => t.tagId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockTagsTableFilterComposer(
+              $db: $db,
+              $table: $db.stockTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$StockItemTagsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StockItemTagsTable> {
+  $$StockItemTagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+}
+
+class $$StockItemTagsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StockItemTagsTable> {
+  $$StockItemTagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  Expression<T> stockTagsRefs<T extends Object>(
+      Expression<T> Function($$StockTagsTableAnnotationComposer a) f) {
+    final $$StockTagsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.stockTags,
+        getReferencedColumn: (t) => t.tagId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockTagsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.stockTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$StockItemTagsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $StockItemTagsTable,
+    StockItemTag,
+    $$StockItemTagsTableFilterComposer,
+    $$StockItemTagsTableOrderingComposer,
+    $$StockItemTagsTableAnnotationComposer,
+    $$StockItemTagsTableCreateCompanionBuilder,
+    $$StockItemTagsTableUpdateCompanionBuilder,
+    (StockItemTag, $$StockItemTagsTableReferences),
+    StockItemTag,
+    PrefetchHooks Function({bool stockTagsRefs})> {
+  $$StockItemTagsTableTableManager(_$AppDatabase db, $StockItemTagsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StockItemTagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StockItemTagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StockItemTagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> name = const Value.absent(),
+          }) =>
+              StockItemTagsCompanion(
+            id: id,
+            name: name,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> name = const Value.absent(),
+          }) =>
+              StockItemTagsCompanion.insert(
+            id: id,
+            name: name,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$StockItemTagsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({stockTagsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (stockTagsRefs) db.stockTags],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (stockTagsRefs)
+                    await $_getPrefetchedData<StockItemTag, $StockItemTagsTable,
+                            StockTag>(
+                        currentTable: table,
+                        referencedTable: $$StockItemTagsTableReferences
+                            ._stockTagsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$StockItemTagsTableReferences(db, table, p0)
+                                .stockTagsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.tagId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$StockItemTagsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $StockItemTagsTable,
+    StockItemTag,
+    $$StockItemTagsTableFilterComposer,
+    $$StockItemTagsTableOrderingComposer,
+    $$StockItemTagsTableAnnotationComposer,
+    $$StockItemTagsTableCreateCompanionBuilder,
+    $$StockItemTagsTableUpdateCompanionBuilder,
+    (StockItemTag, $$StockItemTagsTableReferences),
+    StockItemTag,
+    PrefetchHooks Function({bool stockTagsRefs})>;
+typedef $$StockTagsTableCreateCompanionBuilder = StockTagsCompanion Function({
+  required int stockId,
+  required int tagId,
+  Value<int> rowid,
+});
+typedef $$StockTagsTableUpdateCompanionBuilder = StockTagsCompanion Function({
+  Value<int> stockId,
+  Value<int> tagId,
+  Value<int> rowid,
+});
+
+final class $$StockTagsTableReferences
+    extends BaseReferences<_$AppDatabase, $StockTagsTable, StockTag> {
+  $$StockTagsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $StockItemsTable _stockIdTable(_$AppDatabase db) =>
+      db.stockItems.createAlias(
+          $_aliasNameGenerator(db.stockTags.stockId, db.stockItems.id));
+
+  $$StockItemsTableProcessedTableManager get stockId {
+    final $_column = $_itemColumn<int>('stock_id')!;
+
+    final manager = $$StockItemsTableTableManager($_db, $_db.stockItems)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_stockIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $StockItemTagsTable _tagIdTable(_$AppDatabase db) =>
+      db.stockItemTags.createAlias(
+          $_aliasNameGenerator(db.stockTags.tagId, db.stockItemTags.id));
+
+  $$StockItemTagsTableProcessedTableManager get tagId {
+    final $_column = $_itemColumn<int>('tag_id')!;
+
+    final manager = $$StockItemTagsTableTableManager($_db, $_db.stockItemTags)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tagIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$StockTagsTableFilterComposer
+    extends Composer<_$AppDatabase, $StockTagsTable> {
+  $$StockTagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StockItemsTableFilterComposer get stockId {
+    final $$StockItemsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.stockId,
+        referencedTable: $db.stockItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemsTableFilterComposer(
+              $db: $db,
+              $table: $db.stockItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$StockItemTagsTableFilterComposer get tagId {
+    final $$StockItemTagsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.tagId,
+        referencedTable: $db.stockItemTags,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemTagsTableFilterComposer(
+              $db: $db,
+              $table: $db.stockItemTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$StockTagsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StockTagsTable> {
+  $$StockTagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StockItemsTableOrderingComposer get stockId {
+    final $$StockItemsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.stockId,
+        referencedTable: $db.stockItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemsTableOrderingComposer(
+              $db: $db,
+              $table: $db.stockItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$StockItemTagsTableOrderingComposer get tagId {
+    final $$StockItemTagsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.tagId,
+        referencedTable: $db.stockItemTags,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemTagsTableOrderingComposer(
+              $db: $db,
+              $table: $db.stockItemTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$StockTagsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StockTagsTable> {
+  $$StockTagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$StockItemsTableAnnotationComposer get stockId {
+    final $$StockItemsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.stockId,
+        referencedTable: $db.stockItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.stockItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$StockItemTagsTableAnnotationComposer get tagId {
+    final $$StockItemTagsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.tagId,
+        referencedTable: $db.stockItemTags,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemTagsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.stockItemTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$StockTagsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $StockTagsTable,
+    StockTag,
+    $$StockTagsTableFilterComposer,
+    $$StockTagsTableOrderingComposer,
+    $$StockTagsTableAnnotationComposer,
+    $$StockTagsTableCreateCompanionBuilder,
+    $$StockTagsTableUpdateCompanionBuilder,
+    (StockTag, $$StockTagsTableReferences),
+    StockTag,
+    PrefetchHooks Function({bool stockId, bool tagId})> {
+  $$StockTagsTableTableManager(_$AppDatabase db, $StockTagsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StockTagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StockTagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StockTagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> stockId = const Value.absent(),
+            Value<int> tagId = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StockTagsCompanion(
+            stockId: stockId,
+            tagId: tagId,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required int stockId,
+            required int tagId,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              StockTagsCompanion.insert(
+            stockId: stockId,
+            tagId: tagId,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$StockTagsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({stockId = false, tagId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (stockId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.stockId,
+                    referencedTable:
+                        $$StockTagsTableReferences._stockIdTable(db),
+                    referencedColumn:
+                        $$StockTagsTableReferences._stockIdTable(db).id,
+                  ) as T;
+                }
+                if (tagId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.tagId,
+                    referencedTable: $$StockTagsTableReferences._tagIdTable(db),
+                    referencedColumn:
+                        $$StockTagsTableReferences._tagIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$StockTagsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $StockTagsTable,
+    StockTag,
+    $$StockTagsTableFilterComposer,
+    $$StockTagsTableOrderingComposer,
+    $$StockTagsTableAnnotationComposer,
+    $$StockTagsTableCreateCompanionBuilder,
+    $$StockTagsTableUpdateCompanionBuilder,
+    (StockTag, $$StockTagsTableReferences),
+    StockTag,
+    PrefetchHooks Function({bool stockId, bool tagId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2276,4 +3251,8 @@ class $AppDatabaseManager {
       $$StockItemsTableTableManager(_db, _db.stockItems);
   $$NoteItemsTableTableManager get noteItems =>
       $$NoteItemsTableTableManager(_db, _db.noteItems);
+  $$StockItemTagsTableTableManager get stockItemTags =>
+      $$StockItemTagsTableTableManager(_db, _db.stockItemTags);
+  $$StockTagsTableTableManager get stockTags =>
+      $$StockTagsTableTableManager(_db, _db.stockTags);
 }
