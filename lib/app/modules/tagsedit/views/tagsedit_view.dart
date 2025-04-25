@@ -108,10 +108,6 @@ class TagseditView extends GetView<TagseditController> {
             .toList(),
         onChanged: (String? value) {
           controller.onTapOp(value!, item);
-          // QsHud.showToast(value!);
-          // controller.selectedOrderIndex.value =
-          //     controller.order.indexOf(value!);
-          // controller.getDatas();
         },
         iconStyleData: IconStyleData(
           iconSize: 0,

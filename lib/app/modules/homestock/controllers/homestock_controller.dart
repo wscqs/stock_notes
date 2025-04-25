@@ -1,7 +1,9 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value;
+import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
@@ -43,6 +45,9 @@ class HomestockController extends BaseController
     "bug": '买',
     "sale": '卖',
   };
+
+  final selTags = <StockItemTag>[].obs;
+  final tags = <StockItemTag>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -143,9 +148,11 @@ class HomestockController extends BaseController
         for (var serItem in qTRequest) {
           if (item.code == serItem.code) {
             final updatedItem = StockItemsCompanion(
-              code: Value(item.code), // where 条件用
+              code: Value(item.code),
+              // where 条件用
               name: Value(serItem.name!),
-              currentPrice: Value(serItem.currentPrice), // 要更新的字段
+              currentPrice: Value(serItem.currentPrice),
+              // 要更新的字段
               pbRatio: Value(serItem.pbRatio),
               totalMarketCap: Value(serItem.totalMarketCap),
               peRatioTtm: Value(serItem.peRatioTtm),
@@ -176,6 +183,11 @@ class HomestockController extends BaseController
     if (selCondition.isNotEmpty) {
       filterItems = _updateFilterItemsWithSelCondition(filterItems);
     }
+
+    if (selTags.isNotEmpty) {
+      filterItems = _updateFilterItemsWithSelTags(filterItems);
+    }
+
     // Get.context 不对，页面初始化后赋值
     slidableContexts =
         List.generate(filterItems.length, (index) => Get.context!);
@@ -319,5 +331,105 @@ class HomestockController extends BaseController
 
   void clickPushTag(StockItem item) {
     Get.toNamed(Routes.TAGSEDIT, arguments: item);
+  }
+
+  //标签过滤功能
+  Future<void> clickFilterPop(BuildContext context) async {
+    await getTagsData();
+    SmartDialog.showAttach(
+      targetContext: context,
+      maskColor: Colors.transparent,
+      alignment: Alignment.bottomCenter,
+      animationType: SmartAnimationType.centerScale_otherSlide,
+      builder: (_) {
+        return getTagsPopWidget();
+      },
+    );
+  }
+
+  Future<void> getTagsData() async {
+    tags.value = await db.getStockItemTags();
+  }
+
+  Widget getTagsPopWidget() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      color: Get.theme.colorScheme.surface,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          kSpaceH(8),
+          Text(
+            TextKey.biaoqian.tr,
+            style: TextStyle(
+                fontSize: 16,
+                color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.8)),
+          ),
+          kSpaceH(12),
+          Obx(() {
+            return Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: tags.map((tag) {
+                return getSelTagItemView(tag);
+              }).toList(),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget getSelTagItemView(StockItemTag item) {
+    return GestureDetector(
+      onTap: () {
+        onTapSelTag(item);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 12, top: 4, bottom: 4, right: 12),
+        decoration: BoxDecoration(
+            color: Colors.grey.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(4)),
+        child: Text(
+          item.name,
+          style: TextStyle(
+            color: selTags.value.contains(item)
+                ? Colors.red
+                : Get.theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            fontSize: 15,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void onTapSelTag(StockItemTag item) {
+    selTags.value.contains(item)
+        ? selTags.value.remove(item)
+        : selTags.value.add(item);
+    tags.refresh();
+    getDatas();
+    SmartDialog.dismiss(status: SmartStatus.attach);
+  }
+
+  void clickFilterClose() {
+    selCondition.value = '';
+    selectedSegment.value = "all";
+    selTags.value.clear();
+    getDatas();
+    SmartDialog.dismiss(status: SmartStatus.attach);
+  }
+
+  List<StockItem> _updateFilterItemsWithSelTags(List<StockItem> filterItems) {
+    if (selTags.value.isEmpty) {
+      return filterItems;
+    } else {
+      return filterItems.where((item) {
+        return item.tagList.any((tag) {
+          return selTags.value.contains(tag);
+        });
+      }).toList();
+    }
   }
 }

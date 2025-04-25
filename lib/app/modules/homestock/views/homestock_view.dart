@@ -95,6 +95,41 @@ class HomestockView extends GetView<HomestockController> {
                   kSpaceMax(),
                   if (controller.selCondition.value.isNotEmpty)
                     buildConditionSegmentedControl(),
+                  if (controller.selCondition.value.isNotEmpty ||
+                      controller.selTags.value.length > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: InkWell(
+                          onTap: () {
+                            controller.clickFilterClose();
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 4),
+                            child: Icon(
+                              Icons.filter_list_off_outlined,
+                              size: 18,
+                              color: Colors.blueAccent,
+                            ),
+                          )),
+                    ),
+                  Builder(builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: InkWell(
+                          onTap: () {
+                            controller.clickFilterPop(context);
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 4),
+                            child: Icon(
+                              Icons.filter_list_outlined,
+                              size: 18,
+                            ),
+                          )),
+                    );
+                  }),
                 ],
               ),
             ),
