@@ -101,7 +101,7 @@ class HomestockController extends BaseController
     // FocusScope.of(get.currentContext!).unfocus();//有一些异常
     //关闭左滑
     for (var slidableContexts in slidableContexts) {
-      Slidable.of(slidableContexts)?.close();
+      Slidable.of(slidableContexts)?.close(duration: 0.milliseconds);
     }
     searchFocusNode.unfocus(); // 关闭键盘
   }
