@@ -395,7 +395,7 @@ class HomeStockCell extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    "tag",
+                    item.homeCellShowTagNames() ?? "",
                     style: TextStyle(fontSize: 12),
                   ),
                 ),

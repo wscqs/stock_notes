@@ -85,6 +85,48 @@ class AppDatabase extends _$AppDatabase {
         .getSingleOrNull();
   }
 
+  Future<List<StockItem>> getStockItemsWithTagsByStockItems(
+      List<StockItem> items) async {
+    if (items.isEmpty) return [];
+    final stockIds = items.map((e) => e.id).toList();
+    // 查询所有 stockId 对应的标签关联（一次性）
+    final tagJoinQuery = select(stockItemTags).join([
+      innerJoin(stockTags, stockTags.tagId.equalsExp(stockItemTags.id)),
+    ])
+      ..where(stockTags.stockId.isIn(stockIds));
+    final joinedRows = await tagJoinQuery.get();
+    // 构造 Map<stockId, List<Tag>>
+    final tagMap = <int, List<StockItemTag>>{};
+    for (final row in joinedRows) {
+      final tag = row.readTable(stockItemTags);
+      final stockId = row.readTable(stockTags).stockId;
+      tagMap.putIfAbsent(stockId, () => []).add(tag);
+    }
+    // 赋值 tagList
+    for (final item in items) {
+      item.tagList = tagMap[item.id] ?? [];
+    }
+    return items;
+  }
+
+  // //列表赋值标签
+  // Future<List<StockItem>> getStockItemsWithTagsByStockItems(
+  //     List<StockItem> items) async {
+  //   List<StockItem> results = [];
+  //   for (final item in items) {
+  //     final tagQuery = select(stockItemTags).join([
+  //       innerJoin(stockTags, stockTags.tagId.equalsExp(stockItemTags.id)),
+  //     ])
+  //       ..where(stockTags.stockId.equals(item.id));
+  //     final tagRows = await tagQuery.get();
+  //     final tagList =
+  //         tagRows.map((row) => row.readTable(stockItemTags)).toList();
+  //     item.tagList = tagList;
+  //     results.add(item);
+  //   }
+  //   return results;
+  // }
+
   //排除掉删除的，时间倒叙，置顶排序。
   Future<List<StockItem>> getStockItemsOnHome() {
     return (select(stockItems)
@@ -278,14 +320,17 @@ class StockItemExtraState {
   ConditionStatus priceCondition;
   ConditionStatus marketCapCondition;
   ConditionStatus peTtmCondition;
+  List<StockItemTag> tagList;
 
   StockItemExtraState({
     ConditionStatus? priceCondition,
     ConditionStatus? marketCapCondition,
     ConditionStatus? peTtmCondition,
+    List<StockItemTag>? tagList,
   })  : priceCondition = priceCondition ?? ConditionStatus.none,
         marketCapCondition = marketCapCondition ?? ConditionStatus.none,
-        peTtmCondition = peTtmCondition ?? ConditionStatus.none;
+        peTtmCondition = peTtmCondition ?? ConditionStatus.none,
+        tagList = tagList ?? [];
 }
 
 final Map<int, StockItemExtraState> _stockItemExtras = {};
@@ -305,6 +350,13 @@ extension StockItemExt on StockItem {
 
   ConditionStatus get peTtmCondition => extra.peTtmCondition;
   set peTtmCondition(ConditionStatus value) => extra.peTtmCondition = value;
+
+  List<StockItemTag> get tagList => extra.tagList;
+  set tagList(List<StockItemTag> value) => extra.tagList = value;
+
+  String? homeCellShowTagNames() {
+    return tagList.map((e) => e.name).join(" · ");
+  }
 
   double? pPriceBuyPoints() {
     double? pPriceBuyPoints;

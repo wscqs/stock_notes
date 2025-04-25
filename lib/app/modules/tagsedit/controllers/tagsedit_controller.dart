@@ -105,26 +105,32 @@ class TagseditController extends GetxController {
     StockItemTagsCompanion itemCompanion = StockItemTagsCompanion.insert(
       name: tagNameController.text,
     );
-    if (item != null && item.name != tagNameController.text) {
+    if (item != null) {
       if (item.name == tagNameController.text) {
         //没改动保存直接关闭
         QsHud.dismiss();
         return;
       }
-      StockItemTag? hasItem = await db.getStockItemTag(tagNameController.text);
-      if (hasItem != null) {
-        QsHud.showToast(TextKey.biaoqianmingyicunzai.tr);
-        return;
-      }
+      if (await isHasItem(tagNameController.text)) return;
       StockItemTagsCompanion itemUpdate = itemCompanion.copyWith(
         id: Value(item!.id),
       );
       db.addStockItemTagOnConflictUpdate(itemUpdate);
     } else {
+      if (await isHasItem(tagNameController.text)) return;
       db.addStockItemTag(itemCompanion);
     }
     getData();
     QsHud.dismiss();
+  }
+
+  Future<bool> isHasItem(String name) async {
+    StockItemTag? hasItem = await db.getStockItemTag(name);
+    if (hasItem != null) {
+      QsHud.showToast(TextKey.biaoqianmingyicunzai.tr);
+      return true;
+    }
+    return false;
   }
 
   // 标签与股票关系保存
