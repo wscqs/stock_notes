@@ -49,6 +49,11 @@ class TextKey {
   static const edit = 'edit';
   static const bu = 'bu';
   static const shifoubaocungenggai = 'shifoubaocungenggai';
+  static const biaoqian = 'biaoqian';
+  static const xingjianbiaoqian = 'xingjianbiaoqian';
+  static const xugaibiaoqian = 'xugaibiaoqian';
+  static const biaoqianmingyicunzai = 'biaoqianmingyicunzai';
+  static const querengdelete = 'querengdelete';
 }
 
 const Map<String, String> zh = {
@@ -102,6 +107,11 @@ const Map<String, String> zh = {
   TextKey.edit: '编辑',
   TextKey.bu: '不',
   TextKey.shifoubaocungenggai: '是否保存更改?',
+  TextKey.biaoqian: '标签',
+  TextKey.xingjianbiaoqian: '新建标签',
+  TextKey.xugaibiaoqian: '修改标签',
+  TextKey.biaoqianmingyicunzai: '标签名已存在！',
+  TextKey.querengdelete: '确定删除?',
 };
 
 const Map<String, String> en = {
@@ -156,4 +166,9 @@ const Map<String, String> en = {
   TextKey.edit: 'Edit',
   TextKey.bu: 'No',
   TextKey.shifoubaocungenggai: 'Do you want to save the changes?',
+  TextKey.biaoqian: 'Tag',
+  TextKey.xingjianbiaoqian: 'Create Tag',
+  TextKey.xugaibiaoqian: 'Edit Tag',
+  TextKey.biaoqianmingyicunzai: 'The tag name already exists!',
+  TextKey.querengdelete: 'Are you sure to delete?',
 };

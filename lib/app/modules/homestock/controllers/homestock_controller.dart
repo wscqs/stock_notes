@@ -13,6 +13,7 @@ import '../../tabs/controllers/tabs_controller.dart';
 
 class HomestockController extends BaseController
     with GetTickerProviderStateMixin {
+  final db = Get.find<AppDatabase>();
   final TextEditingController searchController = TextEditingController();
   final query = "".obs;
 
@@ -21,9 +22,7 @@ class HomestockController extends BaseController
   final FocusNode searchFocusNode = FocusNode();
 
   late var dbItems = <StockItem>[];
-  // List<StockItem>
   final items = <StockItem>[].obs; //显示的
-  final db = Get.find<AppDatabase>();
   List<String> order = [
     TextKey.all.tr,
     TextKey.collect.tr,
@@ -311,5 +310,9 @@ class HomestockController extends BaseController
   void onTapSelConditionSegment(String value) {
     selectedSegment.value = value;
     getDatas();
+  }
+
+  void clickPushTag(StockItem item) {
+    Get.toNamed(Routes.TAGSEDIT, arguments: item);
   }
 }

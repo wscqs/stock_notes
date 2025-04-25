@@ -22,6 +22,8 @@ import '../modules/stockedit/bindings/stockedit_binding.dart';
 import '../modules/stockedit/views/stockedit_view.dart';
 import '../modules/tabs/bindings/tabs_binding.dart';
 import '../modules/tabs/views/tabs_view.dart';
+import '../modules/tagsedit/bindings/tagsedit_binding.dart';
+import '../modules/tagsedit/views/tagsedit_view.dart';
 
 part 'app_routes.dart';
 
@@ -85,6 +87,11 @@ class AppPages {
       name: _Paths.NOTEEDIT,
       page: () => const NoteeditView(),
       binding: NoteeditBinding(),
+    ),
+    GetPage(
+      name: _Paths.TAGSEDIT,
+      page: () => const TagseditView(),
+      binding: TagseditBinding(),
     ),
   ];
 }

@@ -1600,8 +1600,8 @@ class $StockItemTagsTable extends StockItemTags
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, name];
   @override
@@ -1620,6 +1620,8 @@ class $StockItemTagsTable extends StockItemTags
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     return context;
   }
@@ -1633,7 +1635,7 @@ class $StockItemTagsTable extends StockItemTags
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
     );
   }
 
@@ -1645,22 +1647,20 @@ class $StockItemTagsTable extends StockItemTags
 
 class StockItemTag extends DataClass implements Insertable<StockItemTag> {
   final int id;
-  final String? name;
-  const StockItemTag({required this.id, this.name});
+  final String name;
+  const StockItemTag({required this.id, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
+    map['name'] = Variable<String>(name);
     return map;
   }
 
   StockItemTagsCompanion toCompanion(bool nullToAbsent) {
     return StockItemTagsCompanion(
       id: Value(id),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      name: Value(name),
     );
   }
 
@@ -1669,7 +1669,7 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return StockItemTag(
       id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String?>(json['name']),
+      name: serializer.fromJson<String>(json['name']),
     );
   }
   @override
@@ -1677,15 +1677,13 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String?>(name),
+      'name': serializer.toJson<String>(name),
     };
   }
 
-  StockItemTag copyWith(
-          {int? id, Value<String?> name = const Value.absent()}) =>
-      StockItemTag(
+  StockItemTag copyWith({int? id, String? name}) => StockItemTag(
         id: id ?? this.id,
-        name: name.present ? name.value : this.name,
+        name: name ?? this.name,
       );
   StockItemTag copyWithCompanion(StockItemTagsCompanion data) {
     return StockItemTag(
@@ -1713,15 +1711,15 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
 
 class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
   final Value<int> id;
-  final Value<String?> name;
+  final Value<String> name;
   const StockItemTagsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
   });
   StockItemTagsCompanion.insert({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
-  });
+    required String name,
+  }) : name = Value(name);
   static Insertable<StockItemTag> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -1732,7 +1730,7 @@ class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
     });
   }
 
-  StockItemTagsCompanion copyWith({Value<int>? id, Value<String?>? name}) {
+  StockItemTagsCompanion copyWith({Value<int>? id, Value<String>? name}) {
     return StockItemTagsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -2738,12 +2736,12 @@ typedef $$NoteItemsTableProcessedTableManager = ProcessedTableManager<
 typedef $$StockItemTagsTableCreateCompanionBuilder = StockItemTagsCompanion
     Function({
   Value<int> id,
-  Value<String?> name,
+  required String name,
 });
 typedef $$StockItemTagsTableUpdateCompanionBuilder = StockItemTagsCompanion
     Function({
   Value<int> id,
-  Value<String?> name,
+  Value<String> name,
 });
 
 final class $$StockItemTagsTableReferences
@@ -2881,7 +2879,7 @@ class $$StockItemTagsTableTableManager extends RootTableManager<
               $$StockItemTagsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            Value<String> name = const Value.absent(),
           }) =>
               StockItemTagsCompanion(
             id: id,
@@ -2889,7 +2887,7 @@ class $$StockItemTagsTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            Value<String?> name = const Value.absent(),
+            required String name,
           }) =>
               StockItemTagsCompanion.insert(
             id: id,

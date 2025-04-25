@@ -46,7 +46,7 @@ mixin TableMixin on Table {
 
 class StockItemTags extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text().nullable()();
+  TextColumn get name => text()();
 }
 
 class StockTags extends Table {

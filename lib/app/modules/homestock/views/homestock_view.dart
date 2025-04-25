@@ -37,7 +37,15 @@ class HomestockView extends GetView<HomestockController> {
                   icon: Icon(
                     Icons.replay_circle_filled_rounded,
                     size: 28,
-                  ))
+                  )),
+              // IconButton(
+              //     onPressed: () {
+              //       controller.clickPushTag();
+              //     },
+              //     icon: Icon(
+              //       Icons.tag,
+              //       size: 28,
+              //     )),
             ],
             bottom: buildSectionTop(),
           ),
@@ -156,6 +164,7 @@ class HomestockView extends GetView<HomestockController> {
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
         isExpanded: true,
+        // openWithLongPress: true,
         hint: FittedBox(
           fit: BoxFit.scaleDown,
           child: Row(
@@ -171,6 +180,11 @@ class HomestockView extends GetView<HomestockController> {
             ],
           ),
         ),
+        // customButton: TextButton(
+        //     onPressed: () {
+        //       QsHud.showToast("message");
+        //     },
+        //     child: Text("data")),
         items: controller.order
             .map((String item) => DropdownItem<String>(
                   value: item,
@@ -446,7 +460,7 @@ class HomeStockCell extends StatelessWidget {
                 color: Colors.orange,
                 icon: Icons.tab,
                 onPressed: () {
-                  // controller.clickOpCategory(item);
+                  controller.clickPushTag(item);
                 },
               ),
               SlideAction(

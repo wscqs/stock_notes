@@ -13,7 +13,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   //改表要处理合并migration
   @override
@@ -21,6 +21,10 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (migrator, from, to) async {
           if (from == 1) {
             await migrator.createTable(noteItems);
+          }
+          if (from == 2) {
+            await migrator.createTable(stockItemTags);
+            await migrator.createTable(stockTags);
           }
         },
         onCreate: (migrator) async {
@@ -76,9 +80,9 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<StockItem> getStockItem(String code) {
+  Future<StockItem?> getStockItem(String code) {
     return (select(stockItems)..where((tbl) => tbl.code.equals(code)))
-        .getSingle();
+        .getSingleOrNull();
   }
 
   //排除掉删除的，时间倒叙，置顶排序。
@@ -118,6 +122,60 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
+  //tags
+  Future<void> addStockItemTag(StockItemTagsCompanion item) =>
+      stockItemTags.insertOne(item);
+  Future<void> addStockItemTagOnConflictUpdate(StockItemTagsCompanion item) {
+    return stockItemTags.insertOnConflictUpdate(item);
+  }
+
+  Future<void> deleteStockItemTag(StockItemTag itemDelete) {
+    return (delete(stockItemTags)..where((tbl) => tbl.id.equals(itemDelete.id)))
+        .go();
+  }
+
+  Future<void> updateStockItemTagWithOp(StockItemTag itemUpdate) {
+    return update(stockItemTags).replace(itemUpdate);
+  }
+
+  Future<void> updateStockItemTag(
+    StockItemTagsCompanion updatedItem,
+    int id,
+  ) {
+    return (update(stockItemTags)..where((tbl) => tbl.id.equals(id)))
+        .write(updatedItem);
+  }
+
+  Future<List<StockItemTag>> getStockItemTags() {
+    return (select(stockItemTags)).get();
+  }
+
+  Future<StockItemTag?> getStockItemTag(String name) {
+    return (select(stockItemTags)..where((tbl) => tbl.name.equals(name)))
+        .getSingleOrNull();
+  }
+
+  // stock_tags
+  Future<List<StockTag>> getStockTagsByStockItemId(int stockId) {
+    return (select(stockTags)..where((tbl) => tbl.stockId.equals(stockId)))
+        .get();
+  }
+
+  Future<void> updateStockTagsByStockItemId(
+      int stockId, List<StockItemTag> selTags) {
+    return batch((batch) {
+      batch.deleteWhere(stockTags, (tbl) => tbl.stockId.equals(stockId));
+      for (var item in selTags) {
+        batch.insert(
+            stockTags,
+            StockTagsCompanion.insert(
+              stockId: stockId,
+              tagId: item.id,
+            ));
+      }
+    });
+  }
+
   //note
   Future<void> addNote(NoteItemsCompanion item) => noteItems.insertOne(item);
   Future<void> addNoteOnConflictUpdate(NoteItemsCompanion item) {
@@ -146,8 +204,9 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<NoteItem> getNoteItem(int id) {
-    return (select(noteItems)..where((tbl) => tbl.id.equals(id))).getSingle();
+  Future<NoteItem?> getNoteItem(int id) {
+    return (select(noteItems)..where((tbl) => tbl.id.equals(id)))
+        .getSingleOrNull();
   }
 
   Future<List<NoteItem>> getNoteItemsOnHome() {
