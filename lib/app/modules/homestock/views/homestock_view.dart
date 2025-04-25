@@ -396,7 +396,7 @@ class HomeStockCell extends StatelessWidget {
                 Expanded(
                   child: Text(
                     item.homeCellShowTagNames() ?? "",
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 10),
                   ),
                 ),
                 SizedBox(

@@ -63,14 +63,14 @@ class HomestockController extends BaseController
     } else if (selectedOrderIndex.value == 2) {
       dbItems = await db.getStockItemsOnHomeWithDelete();
     }
-    _updateDbItemsWithSetTags();
+    await _updateDbItemsWithSetTags();
     _updateDbItemsWithSetCondition();
     String query = searchController.text;
     filterItems(query);
   }
 
   _updateDbItemsWithSetTags() async {
-    db.getStockItemsWithTagsByStockItems(dbItems);
+    dbItems = await db.getStockItemsWithTagsByStockItems(dbItems);
   }
 
   void refreshAppui() {}
