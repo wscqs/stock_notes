@@ -171,7 +171,7 @@ const Map<String, String> en = {
       'The current network is not available, please check the network settings',
   TextKey.sererror: 'The server is down, please try again later',
   TextKey.jiazai: 'loading...',
-  TextKey.shurugupiaotishi: 'Please enter the stock code',
+  TextKey.shurugupiaotishi: 'Enter the stock code',
   TextKey.shurugupiaotishinumerror: 'Incorrect stock code',
   TextKey.no: 'No',
   TextKey.search: 'Search',

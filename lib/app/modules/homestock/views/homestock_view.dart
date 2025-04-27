@@ -88,13 +88,13 @@ class HomestockView extends GetView<HomestockController> {
                   ),
                   if (controller.selCondition.value.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(right: 0),
+                      padding: const EdgeInsets.only(left: 0, right: 0),
                       child: buildConditionSegmentedControl(),
                     ),
                   if (controller.selCondition.value.isNotEmpty ||
                       controller.selTags.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(right: 0),
+                      padding: const EdgeInsets.only(left: 8, right: 0),
                       child: buildFilterCloseBtn(controller: controller),
                     ),
                   buildFilterBtn(),
@@ -135,10 +135,11 @@ class HomestockView extends GetView<HomestockController> {
       onValueChanged: (String value) {
         controller.onTapSelConditionSegment(value);
       },
+      padding: EdgeInsets.zero,
       children: {
         for (var entry in controller.segments.entries)
           entry.key: Padding(
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
             child: Text(
               entry.value,
               style: TextStyle(
