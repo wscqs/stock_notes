@@ -13,7 +13,7 @@ class HomenoteController extends BaseController
   final TextEditingController searchController = TextEditingController();
   final query = "".obs;
 
-  late var slidableContexts = <BuildContext>[];
+  SlidableController? slidableController;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final FocusNode searchFocusNode = FocusNode();
 
@@ -82,13 +82,7 @@ class HomenoteController extends BaseController
 
   //取消一些 UI 页面操作
   void cancelUIoP() {
-    // Slidable.of(Get.context!)
-    //     ?.close(); //跳到别的页面关闭。无效。就是 context获取的不对，别的方法尝试，无解决。
-    // FocusScope.of(get.currentContext!).unfocus();//有一些异常
-    //关闭左滑
-    for (var slidableContexts in slidableContexts) {
-      Slidable.of(slidableContexts)?.close(duration: 0.milliseconds);
-    }
+    slidableController?.close(duration: 0.milliseconds);
     searchFocusNode.unfocus(); // 关闭键盘
   }
 
@@ -109,9 +103,6 @@ class HomenoteController extends BaseController
           .where((item) => item.title.contains(query)) // 搜索逻辑
           .toList();
     }
-    // Get.context 不对，页面初始化后赋值
-    slidableContexts =
-        List.generate(filterItems.length, (index) => Get.context!);
     items.value = filterItems;
   }
 

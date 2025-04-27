@@ -343,10 +343,9 @@ class buildFilterCloseBtn extends StatelessWidget {
   }
 }
 
-class HomeStockCell extends StatelessWidget {
+class HomeStockCell extends StatefulWidget {
   final int index;
   final StockItem item;
-  final controller = Get.find<HomestockController>();
 
   HomeStockCell({
     super.key,
@@ -355,41 +354,72 @@ class HomeStockCell extends StatelessWidget {
   });
 
   @override
+  State<HomeStockCell> createState() => _HomeStockCellState();
+}
+
+class _HomeStockCellState extends State<HomeStockCell>
+    with TickerProviderStateMixin {
+  final controller = Get.find<HomestockController>();
+  // 将控制器声明在 State 中
+  late final SlidableController slidableController;
+
+  @override
+  void initState() {
+    super.initState();
+    // 在 initState 中初始化控制器（仅一次）
+    slidableController = SlidableController(this);
+  }
+
+  @override
+  void dispose() {
+    // 释放控制器资源
+    slidableController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Slidable(
-      key: ValueKey(item.id),
-      endActionPane: buildActionPane(),
-      child: Builder(builder: (context) {
-        controller.slidableContexts[index] = context;
-        return GestureDetector(
-          onLongPress: () {
-            controller.longPressCell(item);
-          },
-          child: Card(
-            child: InkWell(
-              onTap: () {
-                controller.clickCell(item);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Obx(() {
-                  return Row(
-                    children: [
-                      Expanded(child: buildContents()),
-                      if (controller.isOperate.value) ...[
-                        kSpaceW(16),
-                        Icon(controller.selItems.contains(item)
-                            ? Icons.check_box_rounded
-                            : Icons.check_box_outline_blank_rounded)
+    return Listener(
+      behavior: HitTestBehavior.opaque, // 一定要 opaque，全区域都接收
+      onPointerDown: (event) {
+        controller.slidableController = slidableController;
+      },
+      child: Slidable(
+        key: ValueKey(widget.item.id),
+        controller: slidableController,
+        endActionPane: buildActionPane(),
+        child: Builder(builder: (context) {
+          // controller.slidableContexts[index] = context;
+          return GestureDetector(
+            onLongPress: () {
+              controller.longPressCell(widget.item);
+            },
+            child: Card(
+              child: InkWell(
+                onTap: () {
+                  controller.clickCell(widget.item);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Obx(() {
+                    return Row(
+                      children: [
+                        Expanded(child: buildContents()),
+                        if (controller.isOperate.value) ...[
+                          kSpaceW(16),
+                          Icon(controller.selItems.contains(widget.item)
+                              ? Icons.check_box_rounded
+                              : Icons.check_box_outline_blank_rounded)
+                        ],
                       ],
-                    ],
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
@@ -401,22 +431,22 @@ class HomeStockCell extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  item.name,
+                  widget.item.name,
                   style: TextStyle(fontSize: 16),
                 ),
                 kSpaceW(8),
                 Text(
-                  item.currentPrice ?? "",
+                  widget.item.currentPrice ?? "",
                   style: TextStyle(fontSize: 16),
                 ),
                 kSpaceW(8),
-                if (item.opTop)
+                if (widget.item.opTop)
                   Icon(
                     Icons.push_pin,
                     size: 15,
                     color: Colors.blue.shade700,
                   ),
-                if (item.opCollect)
+                if (widget.item.opCollect)
                   Icon(
                     Icons.star,
                     size: 15,
@@ -430,11 +460,11 @@ class HomeStockCell extends StatelessWidget {
               spacing: 4,
               children: [
                 Text(
-                  item.code ?? "",
+                  widget.item.code ?? "",
                   style: TextStyle(fontSize: 14),
                 ),
                 Text(
-                  (item.marketType ?? "") == "51" ? "· 深" : "· 沪",
+                  (widget.item.marketType ?? "") == "51" ? "· 深" : "· 沪",
                   style: TextStyle(
                     fontSize: 11,
                     color: Colors.white.withValues(alpha: 0.8),
@@ -448,14 +478,14 @@ class HomeStockCell extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    item.homeCellShowTagNames() ?? "",
+                    widget.item.homeCellShowTagNames() ?? "",
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
                 SizedBox(
                   width: 72,
                   child: Text(
-                    item.createdAt.toDateString(),
+                    widget.item.createdAt.toDateString(),
                     style: TextStyle(fontSize: 12),
                   ),
                 ),
@@ -469,7 +499,7 @@ class HomeStockCell extends StatelessWidget {
           child: SizedBox(
             width: 72,
             child: Text(
-              item.showCellConditionInfo() ?? "",
+              widget.item.showCellConditionInfo() ?? "",
               style: TextStyle(fontSize: 10),
             ),
           ),
@@ -490,44 +520,48 @@ class HomeStockCell extends StatelessWidget {
                 color: Colors.green,
                 icon: Icons.restore,
                 onPressed: () {
-                  controller.clickOpRestore(item);
+                  controller.clickOpRestore(widget.item);
                 },
               ),
               SlideAction(
                 color: Colors.red,
                 icon: Icons.delete_forever,
                 onPressed: () {
-                  controller.clickOpDelete(item);
+                  controller.clickOpDelete(widget.item);
                 },
               ),
             ]
           : [
               SlideAction(
                 color: Colors.blue,
-                icon: item.opTop ? Icons.push_pin : Icons.push_pin_outlined,
+                icon: widget.item.opTop
+                    ? Icons.push_pin
+                    : Icons.push_pin_outlined,
                 onPressed: () {
-                  controller.clickOpTop(item);
+                  controller.clickOpTop(widget.item);
                 },
               ),
               SlideAction(
                 color: Colors.orange,
                 icon: Icons.tab,
                 onPressed: () {
-                  controller.clickPushTag(item);
+                  controller.clickPushTag(widget.item);
                 },
               ),
               SlideAction(
                 color: Colors.yellow,
-                icon: item.opCollect ? Icons.star : Icons.star_border_outlined,
+                icon: widget.item.opCollect
+                    ? Icons.star
+                    : Icons.star_border_outlined,
                 onPressed: () {
-                  controller.clickOpCollect(item);
+                  controller.clickOpCollect(widget.item);
                 },
               ),
               SlideAction(
                 color: Colors.red,
                 icon: Icons.delete_forever,
                 onPressed: () {
-                  controller.clickOpDelete(item);
+                  controller.clickOpDelete(widget.item);
                 },
               ),
             ],
@@ -555,6 +589,7 @@ class SlideAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomSlidableAction(
       flex: flex,
+      // autoClose: true,
       backgroundColor: color,
       foregroundColor: Colors.white,
       borderRadius: BorderRadius.circular(20),

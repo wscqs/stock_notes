@@ -194,10 +194,9 @@ class HomenoteView extends GetView<HomenoteController> {
   }
 }
 
-class HomeNoteCell extends StatelessWidget {
+class HomeNoteCell extends StatefulWidget {
   final int index;
   final NoteItem item;
-  final controller = Get.find<HomenoteController>();
 
   HomeNoteCell({
     super.key,
@@ -206,41 +205,72 @@ class HomeNoteCell extends StatelessWidget {
   });
 
   @override
+  State<HomeNoteCell> createState() => _HomeNoteCellState();
+}
+
+class _HomeNoteCellState extends State<HomeNoteCell>
+    with TickerProviderStateMixin {
+  final controller = Get.find<HomenoteController>();
+  // 将控制器声明在 State 中
+  late final SlidableController slidableController;
+
+  @override
+  void initState() {
+    super.initState();
+    // 在 initState 中初始化控制器（仅一次）
+    slidableController = SlidableController(this);
+  }
+
+  @override
+  void dispose() {
+    // 释放控制器资源
+    slidableController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Slidable(
-      key: ValueKey(item.id),
-      endActionPane: buildActionPane(),
-      child: Builder(builder: (context) {
-        controller.slidableContexts[index] = context;
-        return GestureDetector(
-          onLongPress: () {
-            controller.longPressCell(item);
-          },
-          child: Card(
-            child: InkWell(
-              onTap: () {
-                controller.clickCell(item);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Obx(() {
-                  return Row(
-                    children: [
-                      Expanded(child: buildContents()),
-                      if (controller.isOperate.value) ...[
-                        kSpaceW(16),
-                        Icon(controller.selItems.contains(item)
-                            ? Icons.check_box_rounded
-                            : Icons.check_box_outline_blank_rounded)
+    return Listener(
+      behavior: HitTestBehavior.opaque, // 一定要 opaque，全区域都接收
+      onPointerDown: (event) {
+        controller.slidableController = slidableController;
+      },
+      child: Slidable(
+        key: ValueKey(widget.item.id),
+        endActionPane: buildActionPane(),
+        controller: slidableController,
+        child: Builder(builder: (context) {
+          // controller.slidableContexts[index] = context;
+          return GestureDetector(
+            onLongPress: () {
+              controller.longPressCell(widget.item);
+            },
+            child: Card(
+              child: InkWell(
+                onTap: () {
+                  controller.clickCell(widget.item);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Obx(() {
+                    return Row(
+                      children: [
+                        Expanded(child: buildContents()),
+                        if (controller.isOperate.value) ...[
+                          kSpaceW(16),
+                          Icon(controller.selItems.contains(widget.item)
+                              ? Icons.check_box_rounded
+                              : Icons.check_box_outline_blank_rounded)
+                        ],
                       ],
-                    ],
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
@@ -250,7 +280,7 @@ class HomeNoteCell extends StatelessWidget {
         Row(
           children: [
             Text(
-              item.title,
+              widget.item.title,
               style: TextStyle(fontSize: 16),
             ),
           ],
@@ -259,17 +289,17 @@ class HomeNoteCell extends StatelessWidget {
         Row(
           children: [
             Text(
-              item.createdAt.toDateString() ?? "",
+              widget.item.createdAt.toDateString() ?? "",
               style: TextStyle(fontSize: 12),
             ),
             kSpaceW(8),
-            if (item.opTop)
+            if (widget.item.opTop)
               Icon(
                 Icons.push_pin,
                 size: 15,
                 color: Colors.blue.shade700,
               ),
-            if (item.opCollect)
+            if (widget.item.opCollect)
               Icon(
                 Icons.star,
                 size: 15,
@@ -293,37 +323,41 @@ class HomeNoteCell extends StatelessWidget {
                 color: Colors.green,
                 icon: Icons.restore,
                 onPressed: () {
-                  controller.clickOpRestore(item);
+                  controller.clickOpRestore(widget.item);
                 },
               ),
               SlideAction(
                 color: Colors.red,
                 icon: Icons.delete_forever,
                 onPressed: () {
-                  controller.clickOpDelete(item);
+                  controller.clickOpDelete(widget.item);
                 },
               ),
             ]
           : [
               SlideAction(
                 color: Colors.blue,
-                icon: item.opTop ? Icons.push_pin : Icons.push_pin_outlined,
+                icon: widget.item.opTop
+                    ? Icons.push_pin
+                    : Icons.push_pin_outlined,
                 onPressed: () {
-                  controller.clickOpTop(item);
+                  controller.clickOpTop(widget.item);
                 },
               ),
               SlideAction(
                 color: Colors.yellow,
-                icon: item.opCollect ? Icons.star : Icons.star_border_outlined,
+                icon: widget.item.opCollect
+                    ? Icons.star
+                    : Icons.star_border_outlined,
                 onPressed: () {
-                  controller.clickOpCollect(item);
+                  controller.clickOpCollect(widget.item);
                 },
               ),
               SlideAction(
                 color: Colors.red,
                 icon: Icons.delete_forever,
                 onPressed: () {
-                  controller.clickOpDelete(item);
+                  controller.clickOpDelete(widget.item);
                 },
               ),
             ],

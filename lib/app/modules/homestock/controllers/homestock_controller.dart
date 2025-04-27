@@ -19,7 +19,7 @@ class HomestockController extends BaseController
   final TextEditingController searchController = TextEditingController();
   final query = "".obs;
 
-  late var slidableContexts = <BuildContext>[];
+  SlidableController? slidableController;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final FocusNode searchFocusNode = FocusNode();
 
@@ -106,13 +106,7 @@ class HomestockController extends BaseController
 
   //取消一些 UI 页面操作
   void cancelUIoP() {
-    // Slidable.of(Get.context!)
-    //     ?.close(); //跳到别的页面关闭。无效。就是 context获取的不对，别的方法尝试，无解决。
-    // FocusScope.of(get.currentContext!).unfocus();//有一些异常
-    //关闭左滑
-    for (var slidableContext in slidableContexts) {
-      Slidable.of(slidableContext)?.close(duration: 0.milliseconds);
-    }
+    slidableController?.close(duration: 0.milliseconds);
     searchFocusNode.unfocus(); // 关闭键盘
   }
 
@@ -187,10 +181,6 @@ class HomestockController extends BaseController
     if (selTags.isNotEmpty) {
       filterItems = _updateFilterItemsWithSelTags(filterItems);
     }
-
-    // Get.context 不对，页面初始化后赋值
-    slidableContexts =
-        List.generate(filterItems.length, (index) => Get.context!);
     items.value = filterItems;
   }
 
