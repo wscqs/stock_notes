@@ -13,6 +13,7 @@ class StockeditController extends GetxController {
   final db = Get.find<AppDatabase>();
   final stockNum = "".obs;
   final stockNumController = TextEditingController();
+  final stockNumFocusNode = FocusNode();
 
   final pPriceBuyController = TextEditingController();
   final pPriceSaleController = TextEditingController();
@@ -58,6 +59,8 @@ class StockeditController extends GetxController {
       isLocalData.value = true;
       _dealHasLocalDataRefreshUI();
       // search();
+    } else {
+      stockNumFocusNode.requestFocus();
     }
   }
 

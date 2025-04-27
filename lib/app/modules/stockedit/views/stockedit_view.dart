@@ -68,6 +68,7 @@ class StockeditView extends GetView<StockeditController> {
         child: StockSearchField(
           controller: controller.stockNumController,
           onClear: controller.clearStockNum,
+          focusNode: controller.stockNumFocusNode,
           onSubmit: () {
             // 提交逻辑
             controller.search();
@@ -125,8 +126,9 @@ class StockeditView extends GetView<StockeditController> {
           children: [
             _rowjiage(type: "price"), //市价
             _rowjiage(type: "market_value"), //市值
-            if (double.parse(controller.serStockData.value.peRatioTtm ?? "0") >
-                0)
+            if ((controller.serStockData.value.code ?? "").isEmpty ||
+                double.parse(controller.serStockData.value.peRatioTtm ?? "0") >
+                    0)
               _rowjiage(type: "p_e_ratio"), //市盈率
           ],
         )
@@ -189,7 +191,7 @@ class StockeditView extends GetView<StockeditController> {
           baseline: 50, // 设置基线偏移
           baselineType: TextBaseline.alphabetic,
           child: SizedBox(
-            width: 52,
+            width: 56,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

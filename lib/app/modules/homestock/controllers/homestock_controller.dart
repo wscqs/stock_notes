@@ -129,6 +129,7 @@ class HomestockController extends BaseController
     //db里面数据拿到所有的 code 数据数组
     var stockCodes = dbItems.map((item) => item.code).toList();
     if (stockCodes.isEmpty) {
+      QsHud.showToast(TextKey.noData.tr);
       return;
     }
     if (isShowLoading) {

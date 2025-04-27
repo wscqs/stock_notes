@@ -8,6 +8,7 @@ class StockSearchField extends StatelessWidget {
   final VoidCallback onSubmit;
   final String hintText;
   final RxString stockValue;
+  final FocusNode? focusNode;
 
   const StockSearchField({
     super.key,
@@ -16,6 +17,7 @@ class StockSearchField extends StatelessWidget {
     required this.onSubmit,
     required this.hintText,
     required this.stockValue,
+    this.focusNode,
   });
 
   @override
@@ -25,6 +27,7 @@ class StockSearchField extends StatelessWidget {
         height: 44,
         child: TextField(
           controller: controller,
+          focusNode: focusNode,
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: const Icon(Icons.search),

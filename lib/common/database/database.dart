@@ -32,6 +32,7 @@ class AppDatabase extends _$AppDatabase {
         },
       );
 
+  //Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'stock_database',
