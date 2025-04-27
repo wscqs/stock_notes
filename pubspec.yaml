@@ -100,18 +100,22 @@ flutter_launcher_icons:
     image_path: "assets/images/icon.png"
 
 # dart run flutter_native_splash:create
-#flutter_native_splash:
-#  color: "#ffffff"
-#  image: assets/images/icon.png
-#  ##  branding: assets/images/icon.png
-#  #  color_dark: "#ffffff"
-#  #  image_dark: assets/images/icon.png
-#  android_12: #我鸿蒙走了这逻辑，image不设置自动拿icon
-#    color: "#ffffff"
-#  #    image: assets/images/icon.png
-#  #    color_dark: "#ffffff"
-#  #    image_dark: assets/images/icon.png
-#  web: false
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#000000"
+  image: assets/images/icon.png
+  image_dark: assets/images/icon.png
+  android: true
+  ios: true
+  ##  branding: assets/images/icon.png
+  #  color_dark: "#ffffff"
+  #  image_dark: assets/images/icon.png
+  android_12: #我鸿蒙走了这逻辑，image不设置自动拿icon
+    color: "#ffffff"
+    color_dark: "#000000"
+    image: assets/images/icon.png
+    image_dark: assets/images/icon.png
+  web: true
 
 # dart run package_rename
 package_rename_config:
