@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/common/database/tables.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 
 part 'database.g.dart';
 
@@ -296,17 +298,17 @@ extension ConditionStatusLabel on ConditionStatus {
   String get label {
     switch (this) {
       case ConditionStatus.targetBuy:
-        return '满足买';
+        return TextKey.mangzuB.tr;
       case ConditionStatus.targetSell:
-        return '满足卖';
+        return TextKey.mangzuS.tr;
       case ConditionStatus.targetBoth:
-        return '满足买卖';
+        return TextKey.mangzumaimai.tr;
       case ConditionStatus.nearBuy:
-        return '临近买';
+        return TextKey.lingjinB.tr;
       case ConditionStatus.nearSell:
-        return '临近卖';
+        return TextKey.lingjinS.tr;
       case ConditionStatus.nearBoth:
-        return '临近买卖';
+        return TextKey.lingjinmaimai.tr;
       default:
         return '';
     }
@@ -460,15 +462,22 @@ extension StockItemExt on StockItem {
   String showCellConditionInfo() {
     String showCellConditionInfo = "";
     if (priceCondition.label.isNotEmpty) {
-      showCellConditionInfo = "价格:${priceCondition.label}";
+      showCellConditionInfo =
+          TextKey.stockCellP.tr + ":" + priceCondition.label;
     }
     if (marketCapCondition.label.isNotEmpty) {
-      showCellConditionInfo =
-          "$showCellConditionInfo\n市值:${marketCapCondition.label}";
+      showCellConditionInfo = showCellConditionInfo +
+          "\n" +
+          TextKey.stockCellM.tr +
+          ":" +
+          marketCapCondition.label;
     }
     if (peTtmCondition.label.isNotEmpty) {
-      showCellConditionInfo =
-          "$showCellConditionInfo\nPe:${peTtmCondition.label}";
+      showCellConditionInfo = showCellConditionInfo +
+          "\n" +
+          TextKey.stockCellPe.tr +
+          ":" +
+          peTtmCondition.label;
     }
     return showCellConditionInfo;
   }

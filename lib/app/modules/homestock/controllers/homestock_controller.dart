@@ -37,7 +37,11 @@ class HomestockController extends BaseController
   final selItems = <StockItem>[].obs; //选择的items
 
   final selCondition = ''.obs;
-  List<String> selConditions = ['满足买卖', '临近买卖'];
+  int selConditionIndex = -1; //只判断赋值selCondition
+  List<String> selConditions = [
+    TextKey.mangzumaimai.tr,
+    TextKey.lingjinmaimai.tr
+  ];
 
   final selectedSegment = "all".obs;
   Map<String, String> segments = <String, String>{
@@ -94,6 +98,12 @@ class HomestockController extends BaseController
       "sale": TextKey.sale.tr,
     };
     selectedSegment.refresh();
+    selConditions = [TextKey.mangzumaimai.tr, TextKey.lingjinmaimai.tr];
+    if (selConditionIndex >= 0) {
+      selCondition.value = selConditions[selConditionIndex];
+      selCondition.refresh();
+    }
+
     super.onResume();
     getDatas();
   }
@@ -192,7 +202,7 @@ class HomestockController extends BaseController
   }
 
   List<StockItem> _updateFilterItemsWithSelCondition(List<StockItem> list) {
-    if (selCondition.value == '满足买卖') {
+    if (selCondition.value == TextKey.mangzumaimai.tr) {
       ConditionStatus status = ConditionStatus.targetBoth;
       if (selectedSegment.value == 'bug') {
         status = ConditionStatus.targetBuy;
@@ -200,7 +210,7 @@ class HomestockController extends BaseController
         status = ConditionStatus.targetSell;
       }
       list = list.where((item) => item.homeConditionTarget(status)).toList();
-    } else if (selCondition.value == '临近买卖') {
+    } else if (selCondition.value == TextKey.lingjinmaimai.tr) {
       ConditionStatus status = ConditionStatus.nearBoth;
       if (selectedSegment.value == 'bug') {
         status = ConditionStatus.nearBuy;
@@ -308,8 +318,10 @@ class HomestockController extends BaseController
   void onTapSelCondition(String name) {
     if (selCondition.value == name) {
       selCondition.value = '';
+      selConditionIndex = -1;
     } else {
       selCondition.value = name;
+      selConditionIndex = selConditions.indexOf(name);
     }
     selectedSegment.value = "all";
     getDatas();

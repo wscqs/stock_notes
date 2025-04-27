@@ -55,6 +55,17 @@ class TextKey {
   static const biaoqianmingyicunzai = 'biaoqianmingyicunzai';
   static const querengdelete = 'querengdelete';
   static const gupiaozuiduo500shuliang = 'gupiaozuiduo500shuliang';
+  static const mangzumaimai = 'mangzumaimai';
+  static const mangzuBS = 'mangzuBS';
+  static const mangzuB = 'mangzuB';
+  static const mangzuS = 'mangzuS';
+  static const lingjinmaimai = 'lingjinmaimai';
+  static const lingjinBS = 'lingjinBS';
+  static const lingjinB = 'lingjinB';
+  static const lingjinS = 'lingjinS';
+  static const stockCellP = 'stockCellP';
+  static const stockCellM = 'stockCellM';
+  static const stockCellPe = 'stockCellPe';
 }
 
 const Map<String, String> zh = {
@@ -114,6 +125,17 @@ const Map<String, String> zh = {
   TextKey.biaoqianmingyicunzai: '标签名已存在！',
   TextKey.querengdelete: '确定删除?',
   TextKey.gupiaozuiduo500shuliang: '股票代码不能超过500个',
+  TextKey.mangzumaimai: '满足买卖',
+  TextKey.lingjinmaimai: '临近买卖',
+  TextKey.mangzuBS: '满足买卖',
+  TextKey.lingjinBS: '临近买卖',
+  TextKey.mangzuB: '满足买',
+  TextKey.mangzuS: '满足卖',
+  TextKey.lingjinS: '临近卖',
+  TextKey.lingjinB: '临近买',
+  TextKey.stockCellP: '价格',
+  TextKey.stockCellM: '市值',
+  TextKey.stockCellPe: '市盈',
 };
 
 const Map<String, String> en = {
@@ -174,4 +196,15 @@ const Map<String, String> en = {
   TextKey.biaoqianmingyicunzai: 'The tag name already exists!',
   TextKey.querengdelete: 'Are you sure to delete?',
   TextKey.gupiaozuiduo500shuliang: 'The number of stocks cannot exceed 500',
+  TextKey.mangzumaimai: 'Meet BS',
+  TextKey.lingjinmaimai: 'Near BS',
+  TextKey.mangzuBS: 'MeetBS',
+  TextKey.lingjinBS: 'NearBS',
+  TextKey.mangzuB: 'MeetB',
+  TextKey.mangzuS: 'MeetS',
+  TextKey.lingjinS: 'NearS',
+  TextKey.lingjinB: 'NearB',
+  TextKey.stockCellP: 'P',
+  TextKey.stockCellM: 'M',
+  TextKey.stockCellPe: 'P/E',
 };
