@@ -40,10 +40,10 @@ class HomestockController extends BaseController
   List<String> selConditions = ['满足买卖', '临近买卖'];
 
   final selectedSegment = "all".obs;
-  final Map<String, String> segments = <String, String>{
-    "all": '所有',
-    "bug": '买',
-    "sale": '卖',
+  Map<String, String> segments = <String, String>{
+    "all": TextKey.all.tr,
+    "bug": TextKey.buy.tr,
+    "sale": TextKey.sale.tr,
   };
 
   final selTags = <StockItemTag>[].obs;
@@ -88,6 +88,12 @@ class HomestockController extends BaseController
       TextKey.delete.tr,
     ];
     selectedOrderIndex.refresh();
+    segments = <String, String>{
+      "all": TextKey.all.tr,
+      "bug": TextKey.buy.tr,
+      "sale": TextKey.sale.tr,
+    };
+    selectedSegment.refresh();
     super.onResume();
     getDatas();
   }
