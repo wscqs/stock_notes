@@ -38,14 +38,6 @@ class HomestockView extends GetView<HomestockController> {
                     Icons.replay_circle_filled_rounded,
                     size: 28,
                   )),
-              // IconButton(
-              //     onPressed: () {
-              //       controller.clickPushTag();
-              //     },
-              //     icon: Icon(
-              //       Icons.tag,
-              //       size: 28,
-              //     )),
             ],
             bottom: buildSectionTop(),
           ),

@@ -44,9 +44,16 @@ class AppDatabase extends _$AppDatabase {
 
   //stock
   Future<void> addStock(StockItemsCompanion item) => stockItems.insertOne(item);
+  //有改动更新时间
   Future<void> addStockOnConflictUpdate(StockItemsCompanion item) {
     //item updateAt 设置为当前时间
     item = item.copyWith(updateAt: Value(DateTime.now()));
+    return stockItems.insertOnConflictUpdate(item);
+  }
+
+  //没改动更新时间
+  Future<void> addStockOnConflictUpdateWithNoUpdateTime(
+      StockItemsCompanion item) {
     return stockItems.insertOnConflictUpdate(item);
   }
 
@@ -108,24 +115,6 @@ class AppDatabase extends _$AppDatabase {
     }
     return items;
   }
-
-  // //列表赋值标签
-  // Future<List<StockItem>> getStockItemsWithTagsByStockItems(
-  //     List<StockItem> items) async {
-  //   List<StockItem> results = [];
-  //   for (final item in items) {
-  //     final tagQuery = select(stockItemTags).join([
-  //       innerJoin(stockTags, stockTags.tagId.equalsExp(stockItemTags.id)),
-  //     ])
-  //       ..where(stockTags.stockId.equals(item.id));
-  //     final tagRows = await tagQuery.get();
-  //     final tagList =
-  //         tagRows.map((row) => row.readTable(stockItemTags)).toList();
-  //     item.tagList = tagList;
-  //     results.add(item);
-  //   }
-  //   return results;
-  // }
 
   //排除掉删除的，时间倒叙，置顶排序。
   Future<List<StockItem>> getStockItemsOnHome() {
@@ -253,7 +242,10 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<NoteItem>> getNoteItemsOnHome() {
     return (select(noteItems)
+          ..where((tbl) => tbl.opDelete.equals(false))
           ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
             (tbl) =>
                 OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
           ]))
@@ -265,6 +257,8 @@ class AppDatabase extends _$AppDatabase {
           ..where((tbl) => tbl.opDelete.equals(true))
           ..orderBy([
             (tbl) =>
+                OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
+            (tbl) =>
                 OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
           ]))
         .get();
@@ -274,6 +268,8 @@ class AppDatabase extends _$AppDatabase {
     return (select(noteItems)
           ..where((tbl) => tbl.opCollect.equals(true))
           ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
             (tbl) =>
                 OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
           ]))

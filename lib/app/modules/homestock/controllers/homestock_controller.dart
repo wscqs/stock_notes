@@ -52,7 +52,7 @@ class HomestockController extends BaseController
   @override
   Future<void> onInit() async {
     super.onInit();
-    getDatas();
+    await getDatas();
     dbSyncSerData(isShowLoading: false);
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {

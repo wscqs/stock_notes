@@ -40,7 +40,7 @@ class QsApi {
   //       completionHandler: completionHandler);
   // }
 
-  //数据
+  //数据 stockCodes 上限 899 。 所有同步这边先限制500个吧，就数据库列表非删除最多存500个
   Future<List<StockTxModel>?> requestStockData(
       {required List<String> stockCodes}) async {
     final url = buildStockUrl(stockCodes);

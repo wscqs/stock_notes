@@ -28,16 +28,6 @@ class HomenoteView extends GetView<HomenoteController> {
           appBar: AppBar(
             title: Text(TextKey.biji.tr),
             centerTitle: true,
-            // actions: [
-            //   IconButton(
-            //       onPressed: () {
-            //         controller.clickMore();
-            //       },
-            //       icon: Icon(
-            //         Icons.more_horiz,
-            //         size: 28,
-            //       ))
-            // ],
             bottom: buildSectionTop(),
           ),
           body: _obx(),
@@ -96,7 +86,7 @@ class HomenoteView extends GetView<HomenoteController> {
                   child: Text(
                     item,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                   ),
                 ))
@@ -118,6 +108,7 @@ class HomenoteView extends GetView<HomenoteController> {
           // decoration: BoxDecoration(
           //   borderRadius: BorderRadius.circular(8),
           // ),
+          width: 80,
           offset: const Offset(-8, 0),
         ),
       ),

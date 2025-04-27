@@ -4,6 +4,8 @@ import 'package:stock_notes/app/modules/homenote/controllers/homenote_controller
 import 'package:stock_notes/app/modules/homenote/views/homenote_view.dart';
 import 'package:stock_notes/app/modules/homestock/controllers/homestock_controller.dart';
 import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:stock_notes/utils/qs_hud.dart';
 
 import '../../../../common/event_bus.dart';
 import '../../../routes/app_pages.dart';
@@ -27,9 +29,6 @@ class TabsController extends GetxController {
   //是否操作状态
   final isOperate = false.obs;
 
-
-
-
   void pushCreatePage() {
     closeDrawer();
 
@@ -41,6 +40,10 @@ class TabsController extends GetxController {
       }
     } else {
       if (currentIndex.value == 0) {
+        if (Get.find<HomestockController>().items.length >= 500) {
+          QsHud.showToast(TextKey.gupiaozuiduo500shuliang.tr);
+          return;
+        }
         Get.toNamed(Routes.STOCKEDIT);
       } else {
         Get.toNamed(Routes.NOTEEDIT);

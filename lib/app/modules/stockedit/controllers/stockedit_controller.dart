@@ -239,7 +239,7 @@ class StockeditController extends GetxController {
       totalMarketCap: Value(serStockData.value.totalMarketCap),
       peRatioTtm: Value(serStockData.value.peRatioTtm),
     );
-    db.addStockOnConflictUpdate(itemUpdate);
+    db.addStockOnConflictUpdateWithNoUpdateTime(itemUpdate);
   }
 
   Future<void> save() async {

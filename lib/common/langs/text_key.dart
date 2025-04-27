@@ -54,6 +54,7 @@ class TextKey {
   static const xugaibiaoqian = 'xugaibiaoqian';
   static const biaoqianmingyicunzai = 'biaoqianmingyicunzai';
   static const querengdelete = 'querengdelete';
+  static const gupiaozuiduo500shuliang = 'gupiaozuiduo500shuliang';
 }
 
 const Map<String, String> zh = {
@@ -112,6 +113,7 @@ const Map<String, String> zh = {
   TextKey.xugaibiaoqian: '修改标签',
   TextKey.biaoqianmingyicunzai: '标签名已存在！',
   TextKey.querengdelete: '确定删除?',
+  TextKey.gupiaozuiduo500shuliang: '股票代码不能超过500个',
 };
 
 const Map<String, String> en = {
@@ -171,4 +173,5 @@ const Map<String, String> en = {
   TextKey.xugaibiaoqian: 'Edit Tag',
   TextKey.biaoqianmingyicunzai: 'The tag name already exists!',
   TextKey.querengdelete: 'Are you sure to delete?',
+  TextKey.gupiaozuiduo500shuliang: 'The number of stocks cannot exceed 500',
 };
