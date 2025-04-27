@@ -10,6 +10,7 @@ import '../../../../common/database/database.dart';
 import '../../../../common/web/webview_page.dart';
 
 class StockeditController extends GetxController {
+  final db = Get.find<AppDatabase>();
   final stockNum = "".obs;
   final stockNumController = TextEditingController();
 
@@ -56,7 +57,7 @@ class StockeditController extends GetxController {
     if (localStockData.value != null) {
       isLocalData.value = true;
       _dealHasLocalDataRefreshUI();
-      search();
+      // search();
     }
   }
 
@@ -77,6 +78,18 @@ class StockeditController extends GetxController {
       pPeTtmRemarkController.text = localStockData.value?.pPeTtmRemark ?? "";
       pAllRemarkController.text = localStockData.value?.pAllRemark ?? "";
       pEventRemarkController.text = localStockData.value?.pEventRemark ?? "";
+
+      if ((serStockData.value.code ?? "").isEmpty) {
+        serStockData.value = StockTxModel(
+          marketType: localStockData.value?.marketType ?? "",
+          name: localStockData.value?.name ?? "",
+          code: localStockData.value?.code ?? "",
+          currentPrice: localStockData.value?.currentPrice ?? "",
+          peRatioTtm: localStockData.value?.peRatioTtm ?? "",
+          totalMarketCap: localStockData.value?.totalMarketCap ?? "",
+          pbRatio: localStockData.value?.pbRatio ?? "",
+        );
+      }
       _updateBuySalePoints();
     } else {
       // isLocalData.value = false;
@@ -182,7 +195,6 @@ class StockeditController extends GetxController {
     }
   }
 
-
   Future<void> search() async {
     if (stockNum.isEmpty) {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
@@ -209,11 +221,25 @@ class StockeditController extends GetxController {
         localStockData.value = stockItem;
         _dealHasLocalDataRefreshUI();
       } else {
+        //本地数据有值
         _updateBuySalePoints(); //更新买卖点数
+        //数据库更新基本信息
+        _updateDbStockBasicInfo();
       }
     }
+  }
 
-    // print(testQTRequest.toString());
+  void _updateDbStockBasicInfo() {
+    StockItemsCompanion itemUpdate = StockItemsCompanion.insert(
+      id: Value(localStockData.value!.id),
+      marketType: serStockData.value.marketType!,
+      code: serStockData.value.code!,
+      name: serStockData.value.name!,
+      currentPrice: Value(serStockData.value.currentPrice),
+      totalMarketCap: Value(serStockData.value.totalMarketCap),
+      peRatioTtm: Value(serStockData.value.peRatioTtm),
+    );
+    db.addStockOnConflictUpdate(itemUpdate);
   }
 
   Future<void> save() async {
@@ -223,7 +249,6 @@ class StockeditController extends GetxController {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;
     }
-    final db = Get.find<AppDatabase>();
     StockItemsCompanion itemCompanion = StockItemsCompanion.insert(
       marketType: serStockData.value.marketType!,
       code: serStockData.value.code!,

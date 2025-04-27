@@ -340,7 +340,16 @@ class HomestockController extends BaseController
       targetContext: context,
       maskColor: Colors.transparent,
       alignment: Alignment.bottomCenter,
-      animationType: SmartAnimationType.centerScale_otherSlide,
+      // highlightBuilder: (Offset targetOffset, Size targetSize) {
+      //   return Positioned(
+      //     child: Container(
+      //       height: targetOffset.dy + targetSize.height,
+      //       width: double.infinity,
+      //       color: Colors.white,
+      //     ),
+      //   );
+      // },
+      // animationType: SmartAnimationType.centerScale_otherSlide,
       builder: (_) {
         return getTagsPopWidget();
       },
@@ -397,7 +406,7 @@ class HomestockController extends BaseController
             color: selTags.value.contains(item)
                 ? Colors.red
                 : Get.theme.colorScheme.onSurface.withValues(alpha: 0.5),
-            fontSize: 15,
+            fontSize: 13,
           ),
         ),
       ),
@@ -408,7 +417,8 @@ class HomestockController extends BaseController
     selTags.value.contains(item)
         ? selTags.value.remove(item)
         : selTags.value.add(item);
-    tags.refresh();
+    // tags.refresh();
+    selTags.refresh();
     getDatas();
     SmartDialog.dismiss(status: SmartStatus.attach);
   }
@@ -417,6 +427,8 @@ class HomestockController extends BaseController
     selCondition.value = '';
     selectedSegment.value = "all";
     selTags.value.clear();
+    selTags.refresh();
+    selCondition.refresh();
     getDatas();
     SmartDialog.dismiss(status: SmartStatus.attach);
   }

@@ -84,52 +84,28 @@ class HomestockView extends GetView<HomestockController> {
               padding: EdgeInsets.only(left: 20, right: 0, bottom: 12),
               child: Row(
                 children: [
-                  Wrap(
-                    spacing: 12, // 主轴(水平)方向间距
-                    runSpacing: 8, // 纵轴（垂直）方向间距
-                    alignment: WrapAlignment.start, //沿主轴方向居中
-                    children: controller.selConditions
-                        .map((name) => getSelConditionItemView(name))
-                        .toList(),
-                  ),
-                  kSpaceMax(),
-                  if (controller.selCondition.value.isNotEmpty)
-                    buildConditionSegmentedControl(),
-                  if (controller.selCondition.value.isNotEmpty ||
-                      controller.selTags.value.length > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 4),
-                      child: InkWell(
-                          onTap: () {
-                            controller.clickFilterClose();
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 4),
-                            child: Icon(
-                              Icons.filter_list_off_outlined,
-                              size: 18,
-                              color: Colors.blueAccent,
-                            ),
-                          )),
+                  Expanded(
+                    child: Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.start,
+                      children: controller.selConditions
+                          .map((name) => getSelConditionItemView(name))
+                          .toList(),
                     ),
-                  Builder(builder: (context) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: InkWell(
-                          onTap: () {
-                            controller.clickFilterPop(context);
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 4),
-                            child: Icon(
-                              Icons.filter_list_outlined,
-                              size: 18,
-                            ),
-                          )),
-                    );
-                  }),
+                  ),
+                  if (controller.selCondition.value.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 0),
+                      child: buildConditionSegmentedControl(),
+                    ),
+                  if (controller.selCondition.value.isNotEmpty ||
+                      controller.selTags.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 0),
+                      child: buildFilterCloseBtn(controller: controller),
+                    ),
+                  buildFilterBtn(),
                 ],
               ),
             ),
@@ -137,6 +113,25 @@ class HomestockView extends GetView<HomestockController> {
         );
       }),
     );
+  }
+
+  Builder buildFilterBtn() {
+    return Builder(builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 8),
+        child: InkWell(
+            onTap: () {
+              controller.clickFilterPop(context);
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+              child: Icon(
+                Icons.filter_list_outlined,
+                size: 18,
+              ),
+            )),
+      );
+    });
   }
 
   CupertinoSegmentedControl<String> buildConditionSegmentedControl() {
@@ -176,20 +171,14 @@ class HomestockView extends GetView<HomestockController> {
         decoration: BoxDecoration(
             color: Colors.grey.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(4)),
-        child: Row(
-          mainAxisSize: MainAxisSize.min, // 宽度自适应,
-          children: [
-            kSpaceW(2),
-            Text(
-              name,
-              style: TextStyle(
-                  color: name == controller.selCondition.value
-                      ? Colors.red
-                      : Get.theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
+        child: Text(
+          name,
+          style: TextStyle(
+              color: name == controller.selCondition.value
+                  ? Colors.red
+                  : Get.theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              fontSize: 13,
+              fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -227,7 +216,7 @@ class HomestockView extends GetView<HomestockController> {
                   child: Text(
                     item,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                   ),
                 ))
@@ -249,6 +238,7 @@ class HomestockView extends GetView<HomestockController> {
           // decoration: BoxDecoration(
           //   borderRadius: BorderRadius.circular(8),
           // ),
+          width: 80,
           offset: const Offset(-8, 0),
         ),
       ),
@@ -322,6 +312,34 @@ class HomestockView extends GetView<HomestockController> {
           }
         },
         child: _contentView());
+  }
+}
+
+class buildFilterCloseBtn extends StatelessWidget {
+  const buildFilterCloseBtn({
+    super.key,
+    required this.controller,
+  });
+
+  final HomestockController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: InkWell(
+          onTap: () {
+            controller.clickFilterClose();
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: Icon(
+              Icons.filter_list_off_outlined,
+              size: 18,
+              color: Colors.blueAccent,
+            ),
+          )),
+    );
   }
 }
 

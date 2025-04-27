@@ -262,21 +262,33 @@ class StockeditView extends GetView<StockeditController> {
         Row(
           children: [
             Text(TextKey.gupiao.tr, style: Get.textTheme.titleLarge),
-            if (controller.serStockData.value.code != null &&
-                (controller.stockNum.isNotEmpty ?? false))
-              SizedBox(
-                height: 32,
-                child: TextButton(
-                  onPressed: controller.serStockData.value.code != null
-                      ? controller.clickLookStock
-                      : controller.search,
-                  child: Text(
-                    controller.serStockData.value.code != null
-                        ? TextKey.look.tr
-                        : TextKey.refresh.tr,
-                  ),
-                ),
-              ),
+            if (controller.serStockData.value.code != null ||
+                controller.isLocalData.value) ...[
+              InkWell(
+                  onTap: () {
+                    controller.search();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 12, right: 8, top: 12, bottom: 12),
+                    child: Icon(
+                      Icons.refresh,
+                      size: 20,
+                    ),
+                  )),
+              InkWell(
+                  onTap: () {
+                    controller.clickLookStock();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 8, right: 12, top: 12, bottom: 12),
+                    child: Icon(
+                      Icons.web,
+                      size: 20,
+                    ),
+                  )),
+            ],
           ],
         ),
         kSpaceH(8),
