@@ -434,6 +434,7 @@ class HomestockController extends BaseController
 
   void clickFilterClose() {
     selCondition.value = '';
+    selConditionIndex = -1;
     selectedSegment.value = "all";
     selTags.value.clear();
     selTags.refresh();
