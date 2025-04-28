@@ -114,6 +114,10 @@ class HomestockController extends BaseController
     super.onPause();
   }
 
+  void clickScrollToTop() {
+    // QsHud.showToast("clickScrollToTop");
+  }
+
   void closeDrawer() {
     if (scaffoldKey.currentState?.isDrawerOpen ?? false) {
       Navigator.of(scaffoldKey.currentContext!).pop();

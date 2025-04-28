@@ -95,8 +95,16 @@ class TabsController extends GetxController {
   void clickTab(int index) {
     closeDrawer();
 
-    currentIndex.value = index;
-    setCurrentIndex(currentIndex.value);
-    pageController.jumpToPage(currentIndex.value);
+    if (currentIndex.value != index) {
+      currentIndex.value = index;
+      setCurrentIndex(currentIndex.value);
+      pageController.jumpToPage(currentIndex.value);
+    } else {
+      if (currentIndex.value == 0) {
+        Get.find<HomestockController>().clickScrollToTop();
+      } else {
+        Get.find<HomenoteController>().clickScrollToTop();
+      }
+    }
   }
 }

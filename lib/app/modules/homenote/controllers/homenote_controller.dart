@@ -74,6 +74,8 @@ class HomenoteController extends BaseController
     super.onPause();
   }
 
+  void clickScrollToTop() {}
+
   void closeDrawer() {
     if (scaffoldKey.currentState?.isDrawerOpen ?? false) {
       Navigator.of(scaffoldKey.currentContext!).pop();
