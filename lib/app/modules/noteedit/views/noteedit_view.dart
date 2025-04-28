@@ -35,58 +35,9 @@ class NoteeditView extends GetView<NoteeditController> {
           body: SafeArea(
             child: Column(
               children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  child: TextField(
-                    controller: controller.titleController,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                    decoration: InputDecoration(
-                      hintText: TextKey.biaoti.tr,
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
+                buildTitleTextField(),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      // if (!controller.isEditing.value) {
-                      //   FocusScope.of(context).requestFocus(FocusNode());
-                      // }
-                    },
-                    child: QuillEditor(
-                      focusNode: controller.editorFocusNode,
-                      scrollController: controller.editorScrollController,
-                      controller: controller.quillController,
-                      config: QuillEditorConfig(
-                        placeholder: '',
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 16),
-                        // embedBuilders: [
-                        // ...FlutterQuillEmbeds.editorBuilders(
-                        //   imageEmbedConfig: QuillEditorImageEmbedConfig(
-                        //     imageProviderBuilder: (context, imageUrl) {
-                        //       // https://pub.dev/packages/flutter_quill_extensions#-image-assets
-                        //       if (imageUrl.startsWith('assets/')) {
-                        //         return AssetImage(imageUrl);
-                        //       }
-                        //       return null;
-                        //     },
-                        //   ),
-                        // videoEmbedConfig: QuillEditorVideoEmbedConfig(
-                        //   customVideoBuilder: (videoUrl, readOnly) {
-                        //     // To load YouTube videos https://github.com/singerdmx/flutter-quill/releases/tag/v10.8.0
-                        //     return null;
-                        //   },
-                        // ),
-                        // ),
-                        // TimeStampEmbedBuilder(),
-                        // ],
-                      ),
-                    ),
-                  ),
+                  child: buildQuillEditor(),
                 ),
                 if (controller.isEditing.value) buildQuillSimpleToolbar(),
               ],
@@ -95,6 +46,54 @@ class NoteeditView extends GetView<NoteeditController> {
         ),
       );
     });
+  }
+
+  Padding buildTitleTextField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      child: TextField(
+        controller: controller.titleController,
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        decoration: InputDecoration(
+          hintText: TextKey.biaoti.tr,
+          border: InputBorder.none,
+          hintStyle: TextStyle(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  QuillEditor buildQuillEditor() {
+    return QuillEditor(
+      focusNode: controller.editorFocusNode,
+      scrollController: controller.editorScrollController,
+      controller: controller.quillController,
+      config: QuillEditorConfig(
+        // scrollable: false,
+        placeholder: '',
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+        // embedBuilders: [
+        // ...FlutterQuillEmbeds.editorBuilders(
+        //   imageEmbedConfig: QuillEditorImageEmbedConfig(
+        //     imageProviderBuilder: (context, imageUrl) {
+        //       // https://pub.dev/packages/flutter_quill_extensions#-image-assets
+        //       if (imageUrl.startsWith('assets/')) {
+        //         return AssetImage(imageUrl);
+        //       }
+        //       return null;
+        //     },
+        //   ),
+        // videoEmbedConfig: QuillEditorVideoEmbedConfig(
+        //   customVideoBuilder: (videoUrl, readOnly) {
+        //     // To load YouTube videos https://github.com/singerdmx/flutter-quill/releases/tag/v10.8.0
+        //     return null;
+        //   },
+        // ),
+        // ),
+        // TimeStampEmbedBuilder(),
+        // ],
+      ),
+    );
   }
 
   QuillSimpleToolbar buildQuillSimpleToolbar() {
