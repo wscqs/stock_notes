@@ -126,7 +126,8 @@ class HomestockController extends BaseController
 
   //取消一些 UI 页面操作
   void cancelUIoP() {
-    slidableController?.close(duration: 0.milliseconds);
+    slidableController?.close(
+        duration: 0.milliseconds); //还有点细节，里面动画控制器已经自己销毁了，不出问题就这样
     searchFocusNode.unfocus(); // 关闭键盘
   }
 

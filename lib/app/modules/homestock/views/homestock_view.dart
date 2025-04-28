@@ -269,7 +269,13 @@ class HomestockView extends GetView<HomestockController> {
       controller: controller.searchController,
       onChanged: controller.filterItems, // 监听输入内容
       decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search),
+        contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 2),
+        prefixIconConstraints:
+            BoxConstraints(minWidth: 40, minHeight: 40), // 限制Icon尺寸
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(left: 12, right: 8), // 控制Icon和文本的距离
+          child: Icon(Icons.search, size: 20),
+        ),
         hintText: "${TextKey.search.tr} ...",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
