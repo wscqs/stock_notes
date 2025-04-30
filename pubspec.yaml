@@ -29,7 +29,7 @@ dependencies:
   flutter_slidable: ^4.0.0 #cell滑动事件
   photo_view: ^0.15.0 #图片预览
   dropdown_button2: ^3.0.0-beta.22
-  flutter_quill: ^11.4.0  #研究好一会，标题一起滚动还没支持（无方案）
+  flutter_quill: ^11.4.0
   #图片预览与保存 https://juejin.cn/post/7295654213618073615?searchId=2024092915095437248644A536B2AA155A
   #readmore: ^3.0.0
   #linkfy_text: ^1.1.6 文本链接化
