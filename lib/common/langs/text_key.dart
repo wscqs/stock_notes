@@ -66,6 +66,7 @@ class TextKey {
   static const stockCellP = 'stockCellP';
   static const stockCellM = 'stockCellM';
   static const stockCellPe = 'stockCellPe';
+  static const zhufuhuayu = 'zhufuhuayu';
 }
 
 const Map<String, String> zh = {
@@ -136,6 +137,7 @@ const Map<String, String> zh = {
   TextKey.stockCellP: '价格',
   TextKey.stockCellM: '市值',
   TextKey.stockCellPe: '市盈',
+  TextKey.zhufuhuayu: '祝大佬们股票天天红',
 };
 
 const Map<String, String> en = {
@@ -207,4 +209,5 @@ const Map<String, String> en = {
   TextKey.stockCellP: 'P',
   TextKey.stockCellM: 'M',
   TextKey.stockCellPe: 'P/E',
+  TextKey.zhufuhuayu: 'Wish the big shots stocks are red every day',
 };

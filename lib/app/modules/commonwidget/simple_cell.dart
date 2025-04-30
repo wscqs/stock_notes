@@ -27,8 +27,7 @@ class SimpleCell extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius!),
-          // color: kColorCellBg,
-          // color: Colors.black.withValues(alpha: 0.8),
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
         ),
         child: Row(
           children: [

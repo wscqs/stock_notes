@@ -27,7 +27,7 @@ class HomedrawerPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "祝大佬们股票天天红",
+                  TextKey.zhufuhuayu.tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -36,11 +36,8 @@ class HomedrawerPage extends StatelessWidget {
               ],
             ),
           ),
-          // ListTile(
-          //   leading: Icon(Icons.score),
-          //   title: Text('我的积分'),
-          // ),
           ListTile(
+            tileColor: Theme.of(context).colorScheme.surfaceContainer,
             // leading: Icon(Icons.settings),
             title: Text(TextKey.shezhi.tr),
             onTap: () {
@@ -52,6 +49,7 @@ class HomedrawerPage extends StatelessWidget {
             ),
           ),
           ListTile(
+            tileColor: Theme.of(context).colorScheme.surfaceContainer,
             title: Text(TextKey.guanyu.tr),
             onTap: () {
               Get.toNamed(Routes.ABOUT);

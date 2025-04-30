@@ -33,8 +33,6 @@ class SimpleselController extends GetxController {
     }
   }
 
-
-
   void sel(int index) {
     selKey.value = datas[index]["value"];
     if (type == "theme") {
