@@ -34,13 +34,13 @@ class AppDatabase extends _$AppDatabase {
         },
       );
 
-  //Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
+  //网页需后端Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'stock_database',
       web: DriftWebOptions(
         sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-        driftWorker: Uri.parse('drift_worker.dart.js'),
+        driftWorker: Uri.parse('drift_worker.js'),
       ),
     );
   }
