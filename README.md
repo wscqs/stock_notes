@@ -1,16 +1,26 @@
-# stock_notes
+股票笔记说明
+对股票进行记录及复盘的 App （无服务端的App）
+支持：中英语切换，日夜模式切换。
 
-Stock Notes
+增加：
+股票的增加，计划，备注
+笔记的增加
 
-## Getting Started
+删：
+列表长按可以进行批量删除功能
+非删除列表删除-数据放进删除列表（非真实删除）
+删除列表-恢复：恢复回去
+删除：永久删除
 
-This project is a starting point for a Flutter application.
+改：
+进去修改保存后，更新时间改变。
 
-A few resources to get you started if this is your first Flutter project:
+查：
+股票支持列表：全部，收藏，删除
+条件搜索：满足买卖与临近买卖（程序设定）
+标签
+搜索栏
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+一些说明：
+新加股票时非删除数据限制500（接口有限制，交互体验好点）
+临近买卖（默认设置3个点内，可改）
