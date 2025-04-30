@@ -53,6 +53,8 @@ class HomestockController extends BaseController
   final selTags = <StockItemTag>[].obs;
   final tags = <StockItemTag>[].obs;
 
+  final customScrollController = ScrollController();
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -115,7 +117,11 @@ class HomestockController extends BaseController
   }
 
   void clickScrollToTop() {
-    // QsHud.showToast("clickScrollToTop");
+    customScrollController.animateTo(
+      0.0,
+      duration: 500.milliseconds,
+      curve: Curves.easeInOut,
+    );
   }
 
   void closeDrawer() {

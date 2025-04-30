@@ -28,9 +28,9 @@ class HomenoteView extends GetView<HomenoteController> {
           appBar: AppBar(
             title: Text(TextKey.biji.tr),
             centerTitle: true,
-            bottom: buildSectionTop(),
+            // bottom: buildSectionTop(),
           ),
-          body: _obx(),
+          body: _visibilityDetectorWithCustomScrollView(context),
         ),
       ),
     );
@@ -115,28 +115,39 @@ class HomenoteView extends GetView<HomenoteController> {
     );
   }
 
-  Widget _contentView() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-      child: controller.items.isEmpty
-          ? QsEmptyView(
-              message: TextKey.noData.tr,
-            )
-          : listView(),
+  Widget listViewAsSliver() {
+    return SlidableAutoCloseBehavior(
+      child: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => HomeNoteCell(
+            item: controller.items[index],
+            index: index,
+          ),
+          childCount: controller.items.length,
+        ),
+      ),
     );
   }
 
-  Widget listView() {
-    return SlidableAutoCloseBehavior(
-      child: ListView.builder(
-        itemCount: controller.items.length,
-        itemBuilder: (context, index) {
-          return HomeNoteCell(
-            item: controller.items[index],
-            index: index,
-          );
-        },
-      ),
+  CustomScrollView buildCustomScrollView(BuildContext context) {
+    return CustomScrollView(
+      controller: controller.customScrollController,
+      slivers: [
+        SliverFloatingHeader(child: buildSectionTop()),
+        SliverPadding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          sliver: Obx(() {
+            return controller.items.isEmpty
+                ? SliverFillRemaining(
+                    child: QsEmptyView(message: TextKey.noData.tr),
+                  )
+                : listViewAsSliver(); // 你需要把 listView() 改成返回 SliverList
+          }),
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
+        ),
+      ],
     );
   }
 
@@ -171,9 +182,7 @@ class HomenoteView extends GetView<HomenoteController> {
     );
   }
 
-  Widget _obx() => Obx(() => _visibilityDetector());
-
-  Widget _visibilityDetector() {
+  Widget _visibilityDetectorWithCustomScrollView(BuildContext context) {
     return VisibilityDetector(
         key: Key("value"),
         onVisibilityChanged: (VisibilityInfo info) {
@@ -187,7 +196,7 @@ class HomenoteView extends GetView<HomenoteController> {
             // print('Widget is partially visible');
           }
         },
-        child: _contentView());
+        child: buildCustomScrollView(context));
   }
 }
 

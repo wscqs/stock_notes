@@ -39,12 +39,34 @@ class HomestockView extends GetView<HomestockController> {
                     size: 28,
                   )),
             ],
-            bottom: buildSectionTop(),
+            // bottom: buildSectionTop(),
           ),
+          body: _visibilityDetectorWithCustomScrollView(context),
           drawer: HomedrawerPage(),
-          body: _obx(),
         ),
       ),
+    );
+  }
+
+  CustomScrollView buildCustomScrollView(BuildContext context) {
+    return CustomScrollView(
+      controller: controller.customScrollController,
+      slivers: [
+        SliverFloatingHeader(child: buildSectionTop()),
+        SliverPadding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          sliver: Obx(() {
+            return controller.items.isEmpty
+                ? SliverFillRemaining(
+                    child: QsEmptyView(message: TextKey.noData.tr),
+                  )
+                : listViewAsSliver(); // 你需要把 listView() 改成返回 SliverList
+          }),
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
+        ),
+      ],
     );
   }
 
@@ -56,6 +78,7 @@ class HomestockView extends GetView<HomestockController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              color: Get.theme.colorScheme.surface,
               padding:
                   EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
               child: Row(
@@ -73,6 +96,7 @@ class HomestockView extends GetView<HomestockController> {
               ),
             ),
             Container(
+              color: Get.theme.colorScheme.surface,
               padding: EdgeInsets.only(left: 20, right: 0, bottom: 12),
               child: Row(
                 children: [
@@ -238,27 +262,16 @@ class HomestockView extends GetView<HomestockController> {
     );
   }
 
-  Widget _contentView() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-      child: controller.items.isEmpty
-          ? QsEmptyView(
-              message: TextKey.noData.tr,
-            )
-          : listView(),
-    );
-  }
-
-  Widget listView() {
+  Widget listViewAsSliver() {
     return SlidableAutoCloseBehavior(
-      child: ListView.builder(
-        itemCount: controller.items.length,
-        itemBuilder: (context, index) {
-          return HomeStockCell(
+      child: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => HomeStockCell(
             item: controller.items[index],
             index: index,
-          );
-        },
+          ),
+          childCount: controller.items.length,
+        ),
       ),
     );
   }
@@ -294,9 +307,9 @@ class HomestockView extends GetView<HomestockController> {
     );
   }
 
-  Widget _obx() => Obx(() => _visibilityDetector());
+  // Widget _obx() => Obx(() => _visibilityDetector());
 
-  Widget _visibilityDetector() {
+  Widget _visibilityDetectorWithCustomScrollView(BuildContext context) {
     return VisibilityDetector(
         key: Key("value"),
         onVisibilityChanged: (VisibilityInfo info) {
@@ -310,7 +323,7 @@ class HomestockView extends GetView<HomestockController> {
             // print('Widget is partially visible');
           }
         },
-        child: _contentView());
+        child: buildCustomScrollView(context));
   }
 }
 
@@ -482,7 +495,7 @@ class _HomeStockCellState extends State<HomeStockCell>
                   ),
                 ),
                 SizedBox(
-                  width: 72,
+                  width: 76,
                   child: Text(
                     widget.item.createdAt.toDateString(),
                     style: TextStyle(fontSize: 12),
@@ -496,7 +509,7 @@ class _HomeStockCellState extends State<HomeStockCell>
           right: 0,
           top: 0,
           child: SizedBox(
-            width: 72,
+            width: 76,
             child: Text(
               widget.item.showCellConditionInfo() ?? "",
               style: TextStyle(fontSize: 10),

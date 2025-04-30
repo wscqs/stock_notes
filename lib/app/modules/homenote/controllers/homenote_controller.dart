@@ -31,6 +31,7 @@ class HomenoteController extends BaseController
   final tabsController = Get.find<TabsController>();
   final isOperate = false.obs;
   final selItems = <NoteItem>[].obs; //选择的items
+  final customScrollController = ScrollController();
 
   @override
   Future<void> onInit() async {
@@ -74,7 +75,13 @@ class HomenoteController extends BaseController
     super.onPause();
   }
 
-  void clickScrollToTop() {}
+  void clickScrollToTop() {
+    customScrollController.animateTo(
+      0.0,
+      duration: 500.milliseconds,
+      curve: Curves.easeInOut,
+    );
+  }
 
   void closeDrawer() {
     if (scaffoldKey.currentState?.isDrawerOpen ?? false) {
