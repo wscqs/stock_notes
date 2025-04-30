@@ -52,7 +52,7 @@ dependencies:
   #  image_picker: ^1.1.2
   #  share_plus: ^9.0.0
   #  permission_handler: ^11.3.1
-  package_info_plus: ^8.2.1
+  package_info_plus: ^8.3.0
   device_info_plus: ^11.3.3
   # flutter_udid: ^4.0.0 #设备唯一标识
   url_launcher: ^6.3.1

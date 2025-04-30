@@ -41,6 +41,15 @@ class NoteeditView extends GetView<NoteeditController> {
                     SliverToBoxAdapter(
                       child: buildTitleTextField(),
                     ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 16, top: 4, bottom: 12),
+                        child: Divider(
+                            thickness: 0.5,
+                            color: Colors.grey.withValues(alpha: 0.5)),
+                      ),
+                    ),
                     SliverFillRemaining(
                       hasScrollBody: false,
                       child: Padding(
@@ -80,7 +89,7 @@ class NoteeditView extends GetView<NoteeditController> {
 
   Padding buildTitleTextField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 12),
       child: TextField(
         controller: controller.titleController,
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
