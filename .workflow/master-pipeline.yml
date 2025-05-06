@@ -22,7 +22,7 @@ jobs:
         run: |
           curl -X POST "https://gitee.com/api/v5/repos/wscqs/stock_notes/releases" \
             -H "Content-Type: application/json" \
-            -H "Authorization: token $GITEE_TOKEN" \
+            -H "Authorization: token 5f3aeeece53cd20e902f2b2c83603a97" \
             -d '{
               "tag_name": "${CI_COMMIT_TAG}",
               "name": "${CI_COMMIT_TAG}",
