@@ -30,14 +30,21 @@ class StockSearchField extends StatelessWidget {
           focusNode: focusNode,
           decoration: InputDecoration(
             hintText: hintText,
-            prefixIcon: const Icon(Icons.search),
+            contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+            prefixIconConstraints:
+                BoxConstraints(minWidth: 40, minHeight: 40), // 限制Icon尺寸
+            prefixIcon: Padding(
+              padding:
+                  const EdgeInsets.only(left: 12, right: 8), // 控制Icon和文本的距离
+              child: Icon(Icons.search, size: 20),
+            ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(23.0),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 12.0,
-            ),
+            // contentPadding: const EdgeInsets.symmetric(
+            //   horizontal: 16.0,
+            //   vertical: 12.0,
+            // ),
             suffixIcon: stockValue.isNotEmpty
                 ? Row(
                     mainAxisSize: MainAxisSize.min,

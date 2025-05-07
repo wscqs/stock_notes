@@ -60,7 +60,9 @@ class StockeditController extends GetxController {
       _dealHasLocalDataRefreshUI();
       // search();
     } else {
-      stockNumFocusNode.requestFocus();
+      Future.delayed(500.milliseconds, () {
+        stockNumFocusNode.requestFocus();
+      });
     }
   }
 
