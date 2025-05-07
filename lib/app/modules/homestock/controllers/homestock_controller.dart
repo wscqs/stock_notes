@@ -362,16 +362,6 @@ class HomestockController extends BaseController
       targetContext: context,
       maskColor: Colors.transparent,
       alignment: Alignment.bottomCenter,
-      // highlightBuilder: (Offset targetOffset, Size targetSize) {
-      //   return Positioned(
-      //     child: Container(
-      //       height: targetOffset.dy + targetSize.height,
-      //       width: double.infinity,
-      //       color: Colors.white,
-      //     ),
-      //   );
-      // },
-      // animationType: SmartAnimationType.centerScale_otherSlide,
       builder: (_) {
         return getTagsPopWidget();
       },

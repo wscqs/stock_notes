@@ -4,6 +4,8 @@ import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/common/database/tables.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
+import '../globle_service.dart';
+
 part 'database.g.dart';
 
 //  await Get.putAsync(() async => AppDatabase());
@@ -282,7 +284,7 @@ class AppDatabase extends _$AppDatabase {
 
 //Stock
 
-const kNearPoints = 0.03;
+// const kNearPoints = 0.03;
 
 enum ConditionStatus {
   none, // 未符合
@@ -437,6 +439,7 @@ extension StockItemExt on StockItem {
     double? buyPoint,
     double? salePoint,
   }) {
+    double kNearPoints = GlobalService.to.rxNearBSPoint.value;
     bool isTargetBuy = buyPoint != null && buyPoint >= 0.0;
     bool isNearBuy = buyPoint != null && buyPoint >= -kNearPoints;
     bool isTargetSell = salePoint != null && salePoint <= 0.0;

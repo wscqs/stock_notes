@@ -43,6 +43,24 @@ class SettingView extends GetView<SettingController> {
                       arguments: {"type": "language"});
                 },
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: ListTile(
+                  title: Text(
+                    TextKey.gupiao.tr,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ),
+              ),
+              SimpleCell(
+                title: TextKey.lingjinBSD.tr,
+                subTitle:
+                    "${(GlobalService.to.rxNearBSPoint.value * 100).toStringAsFixed(0)}%",
+                onPressed: () {
+                  Get.toNamed(Routes.SIMPLESEL,
+                      arguments: {"type": "near points"});
+                },
+              ),
             ],
           );
         }));

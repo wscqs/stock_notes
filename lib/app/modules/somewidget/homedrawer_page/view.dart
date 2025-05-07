@@ -50,6 +50,18 @@ class HomedrawerPage extends StatelessWidget {
           ),
           ListTile(
             tileColor: Theme.of(context).colorScheme.surfaceContainer,
+            // leading: Icon(Icons.settings),
+            title: Text(TextKey.shiyong.tr),
+            onTap: () {
+              Get.toNamed(Routes.USE);
+            },
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
+          ListTile(
+            tileColor: Theme.of(context).colorScheme.surfaceContainer,
             title: Text(TextKey.guanyu.tr),
             onTap: () {
               Get.toNamed(Routes.ABOUT);

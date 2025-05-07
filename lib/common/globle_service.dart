@@ -22,10 +22,17 @@ class GlobalService extends GetxService {
 
   var rxThemeMode = Rx<ThemeMode>(ThemeMode.system);
   Rx<Locale> rxLocale = Rx<Locale>(PlatformDispatcher.instance.locale);
+  Rx<double> rxNearBSPoint = 0.03.obs;
 
   //语言
   Locale locale = PlatformDispatcher.instance.locale;
   LocaleChangeCallback? localeChangeCallback;
+
+  // double _nearBSPoint = 0.0;
+  // double get nearBSPoint => _nearBSPoint;
+  // set nearBSPoint(double value) {
+  //   _nearBSPoint = value;
+  // }
 
   Future<GlobalService> init({
     List<Locale>? supportedLocales,
@@ -38,6 +45,7 @@ class GlobalService extends GetxService {
     _initLocale(supportedLocales);
     //初始化主题配置
     _initTheme();
+    _initNearBSPoint();
     return this;
   }
 
@@ -111,6 +119,16 @@ class GlobalService extends GetxService {
     await sharedPreferences.setString(languageCodeKey, value.languageCode);
     Get.updateLocale(value);
     // refreshAppui();
+  }
+
+  void _initNearBSPoint() {
+    rxNearBSPoint.value = sharedPreferences.getDouble("nearBSPoint") ?? 0.03;
+  }
+
+  // 更改语言
+  Future<void> changeNearBSPoint(double value) async {
+    rxNearBSPoint.value = value;
+    await sharedPreferences.setDouble("nearBSPoint", value);
   }
 
   void refreshAppui() {

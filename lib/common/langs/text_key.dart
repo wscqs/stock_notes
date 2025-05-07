@@ -67,6 +67,9 @@ class TextKey {
   static const stockCellM = 'stockCellM';
   static const stockCellPe = 'stockCellPe';
   static const zhufuhuayu = 'zhufuhuayu';
+  static const lingjinBSD = 'lingjinBSD';
+  static const shiyong = 'shiyong';
+  static const shiyongshuomingall = 'shiyongshuomingall';
 }
 
 const Map<String, String> zh = {
@@ -138,6 +141,37 @@ const Map<String, String> zh = {
   TextKey.stockCellM: '市值',
   TextKey.stockCellPe: '市盈',
   TextKey.zhufuhuayu: '祝大佬们股票天天涨',
+  TextKey.lingjinBSD: '临近买卖点',
+  TextKey.shiyong: '使用',
+  TextKey.shiyongshuomingall: '''
+股票笔记说明
+对股票进行记录及复盘的 App （无服务端的App）
+支持：中英语切换，日夜模式切换。
+
+增加：
+股票的增加，计划，备注
+笔记的增加
+
+删：
+列表长按可以进行批量删除功能
+非删除列表删除-数据放进删除列表（非真实删除）
+删除列表-恢复：恢复回去
+		删除：永久删除
+
+改：
+进去修改保存后，更新时间改变。
+
+查：
+股票支持列表：全部，收藏，删除
+条件搜索：满足买卖与临近买卖（程序设定）
+标签
+搜索栏
+
+一些说明：
+新加股票时非删除数据限制500（接口有限制，交互体验好点）
+临近买卖（默认设置3个点内) 修改：设置-股票 临近买卖点
+
+''',
 };
 
 const Map<String, String> en = {
@@ -210,4 +244,44 @@ const Map<String, String> en = {
   TextKey.stockCellM: 'M',
   TextKey.stockCellPe: 'P/E',
   TextKey.zhufuhuayu: 'Wishing the big shots stocks to rise every day',
+  TextKey.lingjinBSD: 'Near BS point',
+  TextKey.shiyong: 'Use',
+  TextKey.shiyongshuomingall: '''
+Stock Notes Explanation
+
+An app for recording and reviewing stocks (an app without a server)
+
+Supports: Switch between Chinese and English, switch between day and night modes.
+
+Add:
+
+- Adding stocks, plans, and notes
+- Adding notes
+
+Delete:
+
+- Long press on the list to perform batch deletion functions
+- Deleting from non-deletion list - data goes into the deletion list (not real deletion)
+- Deletion list - recovery: return to the original list
+- Deletion: permanent deletion
+
+Modify:
+
+- After entering to modify and save, the update time changes.
+
+Search:
+
+- Stock support list: all, favorites, deleted
+- Condition search: meets buy/sell and near buy/sell (program settings)
+
+Tags
+
+Search bar
+
+Some notes:
+
+- When adding new stocks, non-deletion data is limited to 500 (API limitations, for better user experience)
+- Near buy/sell (default set to 3 points) modification: settings - stocks - near buy/sell points
+
+''',
 };

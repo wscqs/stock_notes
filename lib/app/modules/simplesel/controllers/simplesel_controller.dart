@@ -30,6 +30,24 @@ class SimpleselController extends GetxController {
         {"name": "English", "value": "en"},
       ];
       selKey.value = GlobalService.to.locale.languageCode;
+    } else if (type == "near points") {
+      title.value = TextKey.lingjinBSD.tr;
+      datas.value = [
+        // {"name": "跟随系统", "value": "system"},
+        {"name": "1%", "value": "0.01"},
+        {"name": "2%", "value": "0.02"},
+        {"name": "3%", "value": "0.03"},
+        {"name": "4%", "value": "0.04"},
+        {"name": "5%", "value": "0.05"},
+        {"name": "6%", "value": "0.06"},
+        {"name": "7%", "value": "0.07"},
+        {"name": "8%", "value": "0.08"},
+        {"name": "9%", "value": "0.09"},
+        {"name": "10%", "value": "0.1"},
+        {"name": "15%", "value": "0.15"},
+        {"name": "20%", "value": "0.2"},
+      ];
+      selKey.value = GlobalService.to.rxNearBSPoint.value.toString();
     }
   }
 
@@ -48,6 +66,8 @@ class SimpleselController extends GetxController {
       } else {
         GlobalService.to.changeLocale(const Locale("en"));
       }
+    } else if (type == "near points") {
+      GlobalService.to.changeNearBSPoint(double.parse(selKey.value));
     }
     // datas.refresh();
     Get.back();

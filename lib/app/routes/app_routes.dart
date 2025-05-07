@@ -15,6 +15,7 @@ abstract class Routes {
   static const STOCKEDIT = _Paths.STOCKEDIT;
   static const NOTEEDIT = _Paths.NOTEEDIT;
   static const TAGSEDIT = _Paths.TAGSEDIT;
+  static const USE = _Paths.USE;
 }
 
 abstract class _Paths {
@@ -31,4 +32,5 @@ abstract class _Paths {
   static const STOCKEDIT = '/stockedit';
   static const NOTEEDIT = '/noteedit';
   static const TAGSEDIT = '/tagsedit';
+  static const USE = '/use';
 }
