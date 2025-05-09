@@ -54,5 +54,18 @@
 		</dict>
 		<key>UIStatusBarHidden</key>
 		<false/>
+        <key>CFBundleURLTypes</key>
+        <array>
+          <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>stocknote</string> <!-- 你自定义的 Scheme -->
+            </array>
+          </dict>
+        </array>
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>stocknote</string>
+        </array>
 	</dict>
 </plist>

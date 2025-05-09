@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,6 +22,19 @@ main() async {
     Get.putAsync(() => GlobalService().init()),
     Get.putAsync(() async => AppDatabase()),
   ]);
+
+  Future.microtask(() async {
+    final AppLinks appLinks = AppLinks();
+    // 处理冷启动链接
+    Uri? initialUri = await appLinks.getInitialLink();
+    if (initialUri != null) {
+      AppPages.handleDeepLink(initialUri);
+    }
+    // 监听应用运行时的链接
+    appLinks.uriLinkStream.listen((Uri? uri) {
+      if (uri != null) AppPages.handleDeepLink(uri);
+    });
+  });
 
   // QsRequest.initDio();
   runApp(ScreenUtilInit(

@@ -32,6 +32,27 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
+  static void handleDeepLink(Uri uri) {
+    final fragment = uri.fragment;
+    Uri trueUri = Uri.parse(fragment);
+    String path = trueUri.path;
+    Map<String, String> params = trueUri.queryParameters;
+    if (fragment == '/stockedit') {
+      Get.toNamed(Routes.STOCKEDIT);
+    } else if (fragment == '/noteedit') {
+      Get.toNamed(Routes.NOTEEDIT);
+    } else if (fragment.startsWith('/tabs')) {
+      // Get.offAllNamed(fragment);//后面研究下 parameters 为啥无法取到值
+      Get.offAllNamed(Routes.TABS, arguments: params);
+    } else if (fragment == '/use') {
+      Get.toNamed(Routes.USE);
+    } else if (fragment == '/splash') {
+      Get.toNamed(Routes.SPLASH);
+    } else if (fragment == '/setting') {
+      Get.toNamed(Routes.SETTING);
+    } else if (fragment == '/about') {}
+  }
+
   static const INITIAL = Routes.TABS;
 
   static final routes = [

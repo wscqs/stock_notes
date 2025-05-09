@@ -42,3 +42,7 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation 'androidx.glance:glance-appwidget:1.0.0'
+}

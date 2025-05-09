@@ -58,6 +58,7 @@ class HomestockController extends BaseController
   @override
   Future<void> onInit() async {
     super.onInit();
+
     await getDatas();
     dbSyncSerData(isShowLoading: false);
     // 初始化回调，在这里绑定 refreshAppui 方法
@@ -127,6 +128,39 @@ class HomestockController extends BaseController
   void closeDrawer() {
     if (scaffoldKey.currentState?.isDrawerOpen ?? false) {
       Navigator.of(scaffoldKey.currentContext!).pop();
+    }
+  }
+
+  void openDrawer() {
+    if (scaffoldKey.currentState?.isDrawerOpen ?? false) {
+    } else {
+      //打开抽屉
+      scaffoldKey.currentState?.openDrawer();
+    }
+  }
+
+  void deeplinkSearch() {
+    cancelUIoP();
+    searchFocusNode.requestFocus();
+  }
+
+  void deeplinkMeetBS() {
+    cancelUIoP();
+    selConditions = [TextKey.mangzumaimai.tr, TextKey.lingjinmaimai.tr];
+    selConditionIndex = 0;
+    if (selConditionIndex >= 0) {
+      selCondition.value = selConditions[selConditionIndex];
+      selCondition.refresh();
+    }
+  }
+
+  void deeplinkNearBS() {
+    cancelUIoP();
+    selConditions = [TextKey.mangzumaimai.tr, TextKey.lingjinmaimai.tr];
+    selConditionIndex = 1;
+    if (selConditionIndex >= 0) {
+      selCondition.value = selConditions[selConditionIndex];
+      selCondition.refresh();
     }
   }
 

@@ -26,6 +26,16 @@ class TabsController extends GetxController {
     print(arg);
   };
 
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
   //是否操作状态
   final isOperate = false.obs;
 
@@ -54,6 +64,10 @@ class TabsController extends GetxController {
   //特殊处理closeDrawer
   void closeDrawer() {
     Get.find<HomestockController>().closeDrawer();
+  }
+
+  void openDrawer() {
+    Get.find<HomestockController>().openDrawer();
   }
 
   void setCurrentIndex(index) {
@@ -106,5 +120,21 @@ class TabsController extends GetxController {
         Get.find<HomenoteController>().clickScrollToTop();
       }
     }
+  }
+
+  void dealWithDeepLink(Map<String, String?>? parameters) {
+    parameters?.forEach((key, value) {
+      if (key == 'op') {
+        if (value == "saying") {
+          openDrawer();
+        } else if (value == "meetbs") {
+          Get.find<HomestockController>().deeplinkMeetBS();
+        } else if (value == "nearbs") {
+          Get.find<HomestockController>().deeplinkNearBS();
+        } else if (value == "search") {
+          Get.find<HomestockController>().deeplinkSearch();
+        }
+      }
+    });
   }
 }

@@ -9,6 +9,10 @@ class TabsView extends GetView<TabsController> {
   const TabsView({super.key});
   @override
   Widget build(BuildContext context) {
+    // 只执行一次的初始化跳转逻辑
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.dealWithDeepLink(Get.arguments);
+    });
     return Obx(() => _scaffold(context));
   }
 
