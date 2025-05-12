@@ -311,7 +311,7 @@ class HomestockView extends GetView<HomestockController> {
 
   Widget _visibilityDetectorWithCustomScrollView(BuildContext context) {
     return VisibilityDetector(
-        key: Key("value"),
+        key: Key("HomestockViewVisibilityKey"),
         onVisibilityChanged: (VisibilityInfo info) {
           if (info.visibleFraction == 0) {
             // print('Widget is not visible');
