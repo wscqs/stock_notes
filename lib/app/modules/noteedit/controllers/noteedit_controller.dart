@@ -118,7 +118,9 @@ class NoteeditController extends GetxController {
       _dealHasLocalDataRefreshUI();
     } else {
       //新建
-      editorFocusNode.requestFocus();
+      Future.delayed(500.milliseconds, () {
+        editorFocusNode.requestFocus();
+      });
     }
   }
 

@@ -34,7 +34,7 @@
         <!-- 每日名言 -->
         <TextView
             android:id="@+id/btn_quote"
-            android:layout_height="52dp"
+            android:layout_height="62dp"
             style="@style/WidgetCircleButton"
             android:text="每日\n名言"
             android:backgroundTint="#FF3B30" />
@@ -42,8 +42,7 @@
         <!-- 满足买卖 -->
         <TextView
             android:id="@+id/btn_satisfy"
-            android:layout_height="52dp"
-
+            android:layout_height="62dp"
             style="@style/WidgetCircleButton"
             android:text="满足\n买卖"
             android:backgroundTint="#007AFF" />
@@ -51,8 +50,7 @@
         <!-- 临近买卖 -->
         <TextView
             android:id="@+id/btn_near"
-            android:layout_height="52dp"
-
+            android:layout_height="62dp"
             style="@style/WidgetCircleButton"
             android:text="临近\n买卖"
             android:backgroundTint="#FF9500" />
@@ -60,8 +58,7 @@
         <!-- 新建股票 -->
         <TextView
             android:id="@+id/btn_new_stock"
-            android:layout_height="52dp"
-
+            android:layout_height="62dp"
             style="@style/WidgetCircleButton"
             android:text="新建\n股票"
             android:backgroundTint="#FFCC00" />
@@ -69,8 +66,7 @@
         <!-- 新建笔记 -->
         <TextView
             android:id="@+id/btn_new_note"
-            android:layout_height="52dp"
-
+            android:layout_height="62dp"
             style="@style/WidgetCircleButton"
             android:text="新建\n笔记"
             android:backgroundTint="#FF2D55" />
