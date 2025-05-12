@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/widget_background"
+    android:padding="12dp">
+
+    <!-- 搜索框 -->
+    <TextView
+        android:id="@+id/widget_search"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/widget_search_bg"
+        android:gravity="center_vertical"
+        android:text="搜索"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp" />
+
+    <!-- 圆形按钮组 -->
+    <LinearLayout
+        android:id="@+id/widget_button_group"
+        android:layout_below="@id/widget_search"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="5">
+
+        <!-- 每日名言 -->
+        <TextView
+            android:id="@+id/btn_quote"
+            android:layout_height="52dp"
+            style="@style/WidgetCircleButton"
+            android:text="每日\n名言"
+            android:backgroundTint="#FF3B30" />
+
+        <!-- 满足买卖 -->
+        <TextView
+            android:id="@+id/btn_satisfy"
+            android:layout_height="52dp"
+
+            style="@style/WidgetCircleButton"
+            android:text="满足\n买卖"
+            android:backgroundTint="#007AFF" />
+
+        <!-- 临近买卖 -->
+        <TextView
+            android:id="@+id/btn_near"
+            android:layout_height="52dp"
+
+            style="@style/WidgetCircleButton"
+            android:text="临近\n买卖"
+            android:backgroundTint="#FF9500" />
+
+        <!-- 新建股票 -->
+        <TextView
+            android:id="@+id/btn_new_stock"
+            android:layout_height="52dp"
+
+            style="@style/WidgetCircleButton"
+            android:text="新建\n股票"
+            android:backgroundTint="#FFCC00" />
+
+        <!-- 新建笔记 -->
+        <TextView
+            android:id="@+id/btn_new_note"
+            android:layout_height="52dp"
+
+            style="@style/WidgetCircleButton"
+            android:text="新建\n笔记"
+            android:backgroundTint="#FF2D55" />
+    </LinearLayout>
+
+
+</RelativeLayout>
