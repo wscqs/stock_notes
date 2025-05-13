@@ -10,10 +10,6 @@ class TabsView extends GetView<TabsController> {
 
   @override
   Widget build(BuildContext context) {
-    // 只执行一次的初始化跳转逻辑(键盘起来就有问题）
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.dealWithDeepLink(Get.arguments);
-    });
     return Obx(() => _scaffold(context));
   }
 

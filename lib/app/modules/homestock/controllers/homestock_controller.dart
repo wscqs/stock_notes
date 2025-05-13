@@ -141,7 +141,10 @@ class HomestockController extends BaseController
 
   void deeplinkSearch() {
     cancelUIoP();
-    searchFocusNode.requestFocus();
+    //延迟 1 秒
+    Future.delayed(500.milliseconds, () {
+      searchFocusNode.requestFocus();
+    });
   }
 
   void deeplinkMeetBS() {

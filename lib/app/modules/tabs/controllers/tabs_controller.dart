@@ -34,6 +34,7 @@ class TabsController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    dealWithDeepLink(Get.arguments);
   }
 
   //是否操作状态
