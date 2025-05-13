@@ -123,7 +123,6 @@ class TabsController extends GetxController {
   }
 
   void dealWithDeepLink(Map<String, String?>? parameters) {
-    print(parameters);
     parameters?.forEach((key, value) {
       if (key == 'op') {
         if (value == "saying") {

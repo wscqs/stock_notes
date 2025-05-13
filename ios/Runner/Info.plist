@@ -67,5 +67,7 @@
         <array>
             <string>stocknote</string>
         </array>
+        <key>FlutterDeepLinkingEnabled</key>
+        <false/>
 	</dict>
 </plist>

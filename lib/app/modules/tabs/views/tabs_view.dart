@@ -7,9 +7,10 @@ import '../controllers/tabs_controller.dart';
 
 class TabsView extends GetView<TabsController> {
   const TabsView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    // 只执行一次的初始化跳转逻辑
+    // 只执行一次的初始化跳转逻辑(键盘起来就有问题）
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.dealWithDeepLink(Get.arguments);
     });

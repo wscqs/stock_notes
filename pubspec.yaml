@@ -20,7 +20,7 @@ dependencies:
   crypto: ^3.0.6  # 生成 MD5
   encrypt: ^5.0.3
   connectivity_plus: ^6.1.3
-  app_links: ^6.4.0
+  app_links: ^6.4.0 #记住要看文档，深链接需手动关闭
 
   #UI
   flex_color_scheme: ^8.2.0 # 主题
