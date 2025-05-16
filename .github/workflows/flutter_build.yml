@@ -1,0 +1,48 @@
+name: Flutter Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'  # 根据你的项目版本来设置
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      # 安卓构建 APK
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      # 构建 iOS（你需要签名配置，这里只是构建）
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+
+      # 构建 macOS
+      - name: Build macOS
+        run: flutter build macos --release
+
+      # 上传构建产物（可选）
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload macOS App
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-app
+          path: build/macos/Build/Products/Release/*.app
