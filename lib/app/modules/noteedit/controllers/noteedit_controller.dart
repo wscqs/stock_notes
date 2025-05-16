@@ -103,15 +103,20 @@ class NoteeditController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    editorFocusNode.addListener(() {
-      if (editorFocusNode.hasFocus) {
-        print("Editor is focused (editing).");
-        isEditing.value = true;
-      } else {
-        print("Editor is not focused.");
-        isEditing.value = false;
-      }
-    });
+    //判断是否在 macOS
+    if (defaultTargetPlatform == TargetPlatform.macOS) {
+      isEditing.value = true;
+    } else {
+      editorFocusNode.addListener(() {
+        if (editorFocusNode.hasFocus) {
+          print("Editor is focused (editing).");
+          isEditing.value = true;
+        } else {
+          print("Editor is not focused.");
+          isEditing.value = false;
+        }
+      });
+    }
     localData.value = Get.arguments;
     if (localData.value != null) {
       isLocalData.value = true;

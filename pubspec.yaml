@@ -70,7 +70,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.6
   package_rename: ^1.9.0
-  drift_dev: ^2.26.0
+  drift_dev: ^2.26.1
   build_runner: ^2.4.15 #dart run build_runner build
 
 flutter:
