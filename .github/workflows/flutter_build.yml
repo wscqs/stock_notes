@@ -1,64 +1,66 @@
-name: Flutter Build
+name: Flutter Multi-Platform Release
 
 on:
   release:
-    types: [published]  # 只在发布 Release 时运行
+    types: [published]
 
 jobs:
-  build:
+  build_macos_android:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.29.2'
 
       - name: Flutter pub get
         run: flutter pub get
 
-      # Build Android APK
       - name: Build Android APK
         run: flutter build apk --release
 
-      # Build macOS App
       - name: Build macOS App
         run: flutter build macos --release
 
-      # Zip macOS .app for GitHub Release
       - name: Zip macOS App
         run: |
           cd build/macos/Build/Products/Release
           ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
 
-      # Upload artifacts to GitHub Actions (可选)
-      - name: Upload Android APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Upload macOS App
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-app
-          path: build/macos/Build/Products/Release/*.app
-
-      - name: Upload macOS Zip
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-app-zip
-          path: build/macos/Build/Products/Release/macos-app.zip
-
-      # ✅ Upload .apk and .zip to GitHub Release Assets
-      - name: Upload .apk & .zip to GitHub Release
+      - name: Upload APK & macOS zip to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             build/app/outputs/flutter-apk/app-release.apk
             build/macos/Build/Products/Release/macos-app.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Build Windows App
+        run: flutter build windows --release
+
+      - name: Zip Windows App
+        run: |
+          powershell Compress-Archive -Path build\windows\runner\Release\* -DestinationPath windows-app.zip
+
+      - name: Upload Windows zip to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: windows-app.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
