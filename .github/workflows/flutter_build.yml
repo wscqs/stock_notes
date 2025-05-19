@@ -30,7 +30,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
 
       - name: Upload APK & macOS zip to GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             build/app/outputs/flutter-apk/app-release.apk
