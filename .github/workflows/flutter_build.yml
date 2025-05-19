@@ -1,13 +1,13 @@
-name: Flutter Release Build (iOS Only)
+name: Flutter Release Build (macOS with ZIP)
 
 on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]# 仅在发布 Release 时触发
+    branches: [ main ]
 
 jobs:
-  build_ios:
+  build_macos:
     runs-on: macos-latest
 
     steps:
@@ -22,16 +22,22 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Install CocoaPods
+      - name: Build macOS App
+        run: flutter build macos --release
+
+      - name: Zip .app into macos-app.zip
         run: |
-          cd ios
-          pod install
+          cd build/macos/Build/Products/Release
+          ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
 
-      - name: Build iOS (no codesign)
-        run: flutter build ios --release --no-codesign
-
-      - name: Upload iOS App (Runner.app)
+      - name: Upload .app (for inspection or manual use)
         uses: actions/upload-artifact@v4
         with:
-          name: ios-app
-          path: build/ios/iphoneos/Runner.app
+          name: macos-app
+          path: build/macos/Build/Products/Release/*.app
+
+      - name: Upload .zip (for distribution)
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app-zip
+          path: build/macos/Build/Products/Release/macos-app.zip
