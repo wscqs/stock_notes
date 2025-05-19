@@ -31,3 +31,11 @@
 
 后续考虑：
 多账号数据上传导入。
+
+### 应用截图
+
+| | | |
+|--|--|--|
+| ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_181521.png?raw=true) | ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_181659.png?raw=true) | ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_182046.png?raw=true) |
+| ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_182116.png?raw=true) | ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_182132.png?raw=true) | ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_182158.png?raw=true) |
+| ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_182344.png?raw=true) | ![](https://github.com/wscqs/stock_notes/blob/main/pho/Screenshot_20250519_182537.png?raw=true) | ![](https://github.com/wscqs/stock_notes/blob/main/pho/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-05-19%20at%2018.16.17.png?raw=true) |
