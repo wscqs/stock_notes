@@ -83,6 +83,12 @@ https://juejin.cn/post/7390341683619381282
 全平台分发（后面研究）
 https://github.com/leanflutter/flutter_distributor
 
+github 自动打包研究
+https://github.com/wscqs/stock_notes/actions/runs/15065843479/job/42350382968
+https://github.com/localsend/localsend/tree/main/.github/workflows
+https://github.com/flutter/flutter/issues/156304
+https://developer.android.com/studio/releases?hl=zh-cn
+
 导航返回拦截
 WillPopScope(
 onWillPop: () async {

@@ -38,29 +38,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build_windows:
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.29.2'
-
-      - name: Flutter pub get
-        run: flutter pub get
-
-      - name: Build Windows App
-        run: flutter build windows --release
-
-      - name: Zip Windows App
-        run: |
-          powershell Compress-Archive -Path build\windows\runner\Release\* -DestinationPath windows-app.zip
-
-      - name: Upload Windows zip to GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: windows-app.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#  build_windows:
+#    runs-on: windows-latest
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.29.2'
+#
+#      - name: Flutter pub get
+#        run: flutter pub get
+#
+#      - name: Build Windows App
+#        run: flutter build windows --release
+#
+#      - name: Zip Windows App
+#        run: |
+#          powershell Compress-Archive -Path build\windows\runner\Release\* -DestinationPath windows-app.zip
+#
+#      - name: Upload Windows zip to GitHub Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: windows-app.zip
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
