@@ -9,7 +9,6 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: write
-      releases: write  # 关键权限
 
     steps:
       - uses: actions/checkout@v3
