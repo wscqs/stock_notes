@@ -18,8 +18,8 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Build Android APK
-        run: flutter build apk --release
+#      - name: Build Android APK
+#        run: flutter build apk --release
 
       - name: Build macOS App
         run: flutter build macos --release
@@ -31,12 +31,12 @@ jobs:
 
       - name: Upload APK & macOS zip to GitHub Release
         uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/macos/Build/Products/Release/macos-app.zip
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          files: |
+#            build/app/outputs/flutter-apk/app-release.apk
+            build/macos/Build/Products/Release/macos-app.zip
 
 #  build_windows:
 #    runs-on: windows-latest
