@@ -24,33 +24,41 @@ jobs:
       - name: Build Android APK
         run: flutter build apk --release
 
-      # Build macOS app
+      # Build macOS App
       - name: Build macOS App
         run: flutter build macos --release
 
-      # Zip macOS .app for distribution
+      # Zip macOS .app for GitHub Release
       - name: Zip macOS App
         run: |
           cd build/macos/Build/Products/Release
           ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
 
-      # Upload Android APK
+      # Upload artifacts to GitHub Actions (可选)
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-      # Upload macOS .app
-      - name: Upload macOS App (.app)
+      - name: Upload macOS App
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
           path: build/macos/Build/Products/Release/*.app
 
-      # Upload macOS zip
-      - name: Upload macOS Zip (.zip)
+      - name: Upload macOS Zip
         uses: actions/upload-artifact@v4
         with:
           name: macos-app-zip
           path: build/macos/Build/Products/Release/macos-app.zip
+
+      # ✅ Upload .apk and .zip to GitHub Release Assets
+      - name: Upload .apk & .zip to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/macos/Build/Products/Release/macos-app.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
