@@ -32,7 +32,7 @@ jobs:
       - name: Upload APK & macOS zip to GitHub Release
         uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: build/macos/Build/Products/Release/macos-app.zip
 #          files: |
