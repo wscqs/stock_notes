@@ -1,13 +1,13 @@
-name: Flutter Build
+name: Flutter Release Build (iOS Only)
 
 on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main ]# 仅在发布 Release 时触发
 
 jobs:
-  build:
+  build_ios:
     runs-on: macos-latest
 
     steps:
@@ -22,23 +22,16 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Build Android APK
-        run: flutter build apk --release
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install
 
-      - name: Build iOS
+      - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
-      - name: Build macOS
-        run: flutter build macos --release
-
-      - name: Upload Android APK
+      - name: Upload iOS App (Runner.app)
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Upload macOS App
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-app
-          path: build/macos/Build/Products/Release/*.app
+          name: ios-app
+          path: build/ios/iphoneos/Runner.app
