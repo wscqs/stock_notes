@@ -1,13 +1,11 @@
-name: Flutter Release Build (macOS with ZIP)
+name: Flutter Build
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  release:
+    types: [published]  # 只在发布 Release 时运行
 
 jobs:
-  build_macos:
+  build:
     runs-on: macos-latest
 
     steps:
@@ -22,21 +20,36 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
+      # Build Android APK
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      # Build macOS app
       - name: Build macOS App
         run: flutter build macos --release
 
-      - name: Zip .app into macos-app.zip
+      # Zip macOS .app for distribution
+      - name: Zip macOS App
         run: |
           cd build/macos/Build/Products/Release
           ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
 
-      - name: Upload .app (for inspection or manual use)
+      # Upload Android APK
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Upload macOS .app
+      - name: Upload macOS App (.app)
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
           path: build/macos/Build/Products/Release/*.app
 
-      - name: Upload .zip (for distribution)
+      # Upload macOS zip
+      - name: Upload macOS Zip (.zip)
         uses: actions/upload-artifact@v4
         with:
           name: macos-app-zip
