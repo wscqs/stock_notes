@@ -7,6 +7,9 @@ on:
 jobs:
   build_macos_android:
     runs-on: macos-latest
+    permissions:
+      contents: write
+      releases: write  # 关键权限
 
     steps:
       - uses: actions/checkout@v3
@@ -18,8 +21,8 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-#      - name: Build Android APK
-#        run: flutter build apk --release
+      - name: Build Android APK
+        run: flutter build apk --release
 
       - name: Build macOS App
         run: flutter build macos --release
@@ -28,13 +31,18 @@ jobs:
         run: |
           cd build/macos/Build/Products/Release
           ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
+          mv macos-app.zip ${{ github.workspace }}
 
       - name: Upload APK & macOS zip to GitHub Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: build/macos/Build/Products/Release/macos-app.zip
+          files: ${{ github.workspace }}/macos-app.zip
+#          with:
+#            files: |
+#              ${{ github.workspace }}/build/app/outputs/apk/release/app-release.apk
+#              ${{ github.workspace }}/macos-app.zip
 #          files: |
 #            build/app/outputs/flutter-apk/app-release.apk
 #            build/macos/Build/Products/Release/macos-app.zip
