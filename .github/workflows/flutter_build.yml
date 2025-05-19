@@ -36,7 +36,7 @@ jobs:
             build/app/outputs/flutter-apk/app-release.apk
             build/macos/Build/Products/Release/macos-app.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 #  build_windows:
 #    runs-on: windows-latest
