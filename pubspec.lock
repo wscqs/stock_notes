@@ -623,10 +623,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_quill
-      sha256: de019f6160023d36ad3e89343da6d740ab66ae7839875c89871fbeabcb9e8f9b
+      sha256: "7e60963632bbc8615627f0bae8e178515f69ecb378ad49fa68c43c2aabf33e21"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "11.4.0"
+    version: "11.4.1"
   flutter_quill_delta_from_html:
     dependency: transitive
     description:
@@ -921,10 +921,10 @@ packages:
     dependency: "direct dev"
     description:
       name: package_rename
-      sha256: c34bdf8cd341209c216c495b97b110b3b8eccd9c7c5f1023c37b2ab310722636
+      sha256: "5dbef9f2f0849a7b5d237733a898bcdab917e5b7e16d662e91e095b6278d9af9"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.9.0"
+    version: "1.10.0"
   path:
     dependency: transitive
     description:
@@ -934,7 +934,7 @@ packages:
     source: hosted
     version: "1.9.1"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
