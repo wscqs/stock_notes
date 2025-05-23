@@ -15,6 +15,16 @@ part 'database.g.dart';
 class AppDatabase extends _$AppDatabase {
   // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
   AppDatabase() : super(_openConnection());
+  //网页需后端Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
+  static QueryExecutor _openConnection() {
+    return driftDatabase(
+      name: 'stock_database',
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+        driftWorker: Uri.parse('drift_worker.js'),
+      ),
+    );
+  }
 
   @override
   int get schemaVersion => 3;
@@ -35,17 +45,6 @@ class AppDatabase extends _$AppDatabase {
           await migrator.createAll();
         },
       );
-
-  //网页需后端Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
-  static QueryExecutor _openConnection() {
-    return driftDatabase(
-      name: 'stock_database',
-      web: DriftWebOptions(
-        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-        driftWorker: Uri.parse('drift_worker.js'),
-      ),
-    );
-  }
 
   //stock
   Future<void> addStock(StockItemsCompanion item) => stockItems.insertOne(item);

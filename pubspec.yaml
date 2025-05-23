@@ -58,6 +58,8 @@ dependencies:
   device_info_plus: ^11.3.3
   # flutter_udid: ^4.0.0 #设备唯一标识
   url_launcher: ^6.3.1
+  file_picker: ^10.1.9
+  share_plus: ^11.0.0
 
   # 如果需要使用国际化，请添加以下依赖
   flutter_localizations:

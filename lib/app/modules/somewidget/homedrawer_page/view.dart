@@ -71,6 +71,17 @@ class HomedrawerPage extends StatelessWidget {
               size: 18,
             ),
           ),
+          ListTile(
+            tileColor: Theme.of(context).colorScheme.surfaceContainer,
+            title: Text(TextKey.daorudaochu.tr),
+            onTap: () {
+              vc.clickDaorudaochu();
+            },
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
         ],
       ),
     );

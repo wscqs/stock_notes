@@ -70,6 +70,9 @@ class TextKey {
   static const lingjinBSD = 'lingjinBSD';
   static const shiyong = 'shiyong';
   static const shiyongshuomingall = 'shiyongshuomingall';
+  static const daorudaochu = 'daorudaochu';
+  static const daoru = 'daoru';
+  static const daochu = 'daochu';
 }
 
 const Map<String, String> zh = {
@@ -143,6 +146,9 @@ const Map<String, String> zh = {
   TextKey.zhufuhuayu: '祝大佬们股票天天涨',
   TextKey.lingjinBSD: '临近买卖点',
   TextKey.shiyong: '使用',
+  TextKey.daorudaochu: '导入导出',
+  TextKey.daoru: '导入',
+  TextKey.daochu: '导出',
   TextKey.shiyongshuomingall: '''
 股票笔记说明
 对股票进行记录及复盘的 App （无服务端的App）
@@ -250,6 +256,9 @@ const Map<String, String> en = {
   TextKey.zhufuhuayu: 'Wishing the big shots stocks to rise every day',
   TextKey.lingjinBSD: 'Near BS point',
   TextKey.shiyong: 'Use',
+  TextKey.daorudaochu: 'Import/Export',
+  TextKey.daoru: 'Import',
+  TextKey.daochu: 'Export',
   TextKey.shiyongshuomingall: '''
 Stock Notes Explanation
 
