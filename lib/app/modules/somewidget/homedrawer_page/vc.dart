@@ -9,11 +9,11 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
-import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/connection/native.dart';
+import '../../../../common/database/database.dart';
 
 class HomedrawerVC extends GetxController {
-  final db = Get.find<DatabaseManager>().db;
+  final db = Get.find<AppDatabase>();
   File? lastBackupFile;
 
   void clickDaorudaochu() {

@@ -10,7 +10,6 @@ import 'package:path/path.dart' as path;
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
-import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 
 class NoteeditController extends GetxController {
@@ -150,7 +149,7 @@ class NoteeditController extends GetxController {
   Future<void> save() async {
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
-    final db = Get.find<DatabaseManager>().db;
+    final db = Get.find<AppDatabase>();
     String title = titleController.text;
     if (title.isEmpty) {
       String content = quillController.document.toPlainText();

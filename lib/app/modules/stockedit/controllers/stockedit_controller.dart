@@ -6,12 +6,11 @@ import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
-import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../common/web/webview_page.dart';
 
 class StockeditController extends GetxController {
-  final db = Get.find<DatabaseManager>().db;
+  final db = Get.find<AppDatabase>();
   final stockNum = "".obs;
   final stockNumController = TextEditingController();
   final stockNumFocusNode = FocusNode();
@@ -222,7 +221,7 @@ class StockeditController extends GetxController {
     if (serStockData.value.code != null) {
       //本地看看有没有，有就直接变修改本地数据
       if (!isLocalData.value) {
-        final db = Get.find<DatabaseManager>().db;
+        final db = Get.find<AppDatabase>();
         var stockItem = await db.getStockItem(serStockData.value.code!);
         localStockData.value = stockItem;
         _dealHasLocalDataRefreshUI();

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:stock_notes/app/modules/base/base_Controller.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
-import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../routes/app_pages.dart';
 import '../../tabs/controllers/tabs_controller.dart';
@@ -21,7 +20,7 @@ class HomenoteController extends BaseController
   final dbItems = <NoteItem>[].obs;
   // List<NoteItem>
   final items = <NoteItem>[].obs; //显示的
-  final db = Get.find<DatabaseManager>().db;
+  final db = Get.find<AppDatabase>();
   List<String> order = [
     TextKey.all.tr,
     TextKey.collect.tr,
