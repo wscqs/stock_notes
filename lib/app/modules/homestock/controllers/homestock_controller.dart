@@ -7,6 +7,7 @@ import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
+import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
@@ -15,7 +16,7 @@ import '../../tabs/controllers/tabs_controller.dart';
 
 class HomestockController extends BaseController
     with GetTickerProviderStateMixin {
-  final db = Get.find<AppDatabase>();
+  final db = Get.find<DatabaseManager>().db;
   final TextEditingController searchController = TextEditingController();
   final query = "".obs;
 

@@ -14,7 +14,7 @@ part 'database.g.dart';
 @DriftDatabase(tables: [StockItems, NoteItems, StockItemTags, StockTags])
 class AppDatabase extends _$AppDatabase {
   // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
-  AppDatabase() : super(_openConnection());
+  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
   //网页需后端Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
   static QueryExecutor _openConnection() {
     return driftDatabase(

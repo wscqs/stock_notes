@@ -6,7 +6,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 import 'app/routes/app_pages.dart';
-import 'common/database/database.dart';
+import 'common/database/DatabaseManager.dart';
 import 'common/globle_service.dart';
 import 'common/langs/translation_library.dart';
 import 'common/styles/theme_data.dart';
@@ -20,8 +20,9 @@ main() async {
   await Future.wait([
     QsCache.preInit(),
     Get.putAsync(() => GlobalService().init()),
-    Get.putAsync(() async => AppDatabase()),
+    // Get.putAsync(() async => AppDatabase()),
   ]);
+  Get.put(DatabaseManager());
 
   Future.microtask(() async {
     final AppLinks appLinks = AppLinks();

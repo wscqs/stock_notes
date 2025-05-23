@@ -9,11 +9,11 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
+import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/connection/native.dart';
-import '../../../../common/database/database.dart';
 
 class HomedrawerVC extends GetxController {
-  final db = Get.find<AppDatabase>();
+  final db = Get.find<DatabaseManager>().db;
   File? lastBackupFile;
 
   void clickDaorudaochu() {
@@ -44,7 +44,17 @@ class HomedrawerVC extends GetxController {
     // 关键：清除旧数据库实例并重新创建
     // Get.delete<AppDatabase>();
     // Get.put(AppDatabase());
-    update();
+    // final dbManager = Get.find<DatabaseManager>();
+    // // await dbManager.db.close(); // optional
+    // await dbManager.resetDb(); // 关键：重建数据库
+
+    // QsHud.showKnowDialog(
+    //     title: "导入成功",
+    //     content: "",
+    //     confirmText: "关闭重启",
+    //     onConfirm: () {
+    //       SystemNavigator.pop();
+    //     });
   }
 
   Future<void> createBackup() async {
@@ -79,7 +89,7 @@ class HomedrawerVC extends GetxController {
   }
 
   Future<void> restoreBackup() async {
-    await closeDb();
+    // await closeDb();
 
     final picked = await FilePicker.platform.pickFiles();
     if (picked == null) return;
@@ -99,7 +109,7 @@ class HomedrawerVC extends GetxController {
 
     await reopenDb();
 
-    Get.snackbar('Restore Complete', 'Database restored successfully',
-        snackPosition: SnackPosition.BOTTOM);
+    // Get.snackbar('Restore Complete', 'Database restored successfully',
+    //     snackPosition: SnackPosition.BOTTOM);
   }
 }
