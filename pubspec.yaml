@@ -43,7 +43,7 @@ dependencies:
   #存储
   shared_preferences: ^2.5.2
   get_storage: ^2.1.1
-  drift: ^2.26.0 #数据库 github自动打包 cocopods 没最新
+  drift: ^2.26.1 #数据库 github自动打包 cocopods 没最新
   drift_flutter: ^0.2.4
   drift_db_viewer: ^2.1.0 #测试看数据
   path_provider: ^2.1.5
