@@ -5,33 +5,37 @@ on:
     types: [published]
 
 jobs:
-  build_macos_android:
-    runs-on: macos-latest
-    permissions:
+ build_windows:
+   runs-on: windows-latest
+   permissions:
       contents: write
 
-    steps:
-      - uses: actions/checkout@v3
+   steps:
+     - uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.29.2'
+     - uses: subosito/flutter-action@v2
+       with:
+         flutter-version: '3.29.2'
 
-      - name: Flutter pub get
-        run: flutter pub get
+     - name: Flutter pub get
+       run: flutter pub get
 
-      - name: Build macOS App
-        run: flutter build macos --release
+     - name: Build Windows App
+       run: flutter build windows --release
 
-      - name: Zip macOS App
-        run: |
-          cd build/macos/Build/Products/Release
-          ditto -c -k --sequesterRsrc --keepParent *.app macos-app.zip
-          mv macos-app.zip ${{ github.workspace }}
+     - name: Zip Windows App
+       run: |
+          cd build/windows/x64/runner/Release
+          powershell -Command "Compress-Archive -Path * -DestinationPath windows-app.zip"
+          mv windows-app.zip ${{ github.workspace }}
+         
 
-      - name: Upload APK & macOS zip to GitHub Release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: ${{ github.workspace }}/macos-app.zip            
+     - name: Upload Windows zip to GitHub Release
+       uses: softprops/action-gh-release@v2
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         files: ${{ github.workspace }}/windows-app.zip
+       
+
+
