@@ -8,6 +8,7 @@ import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/database.dart';
+import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_Controller.dart';
@@ -55,10 +56,13 @@ class HomestockController extends BaseController
 
   final customScrollController = ScrollController();
 
+  final selectedDateSource = "".obs; //name
+
   @override
   Future<void> onInit() async {
     super.onInit();
-
+    selectedDateSource.value =
+        QsCache.get<String>("selectedDateSourceKey") ?? "";
     await getDatas();
     dbSyncSerData(isShowLoading: false);
     // 初始化回调，在这里绑定 refreshAppui 方法
@@ -89,6 +93,8 @@ class HomestockController extends BaseController
 
   @override
   void onResume() {
+    selectedDateSource.value =
+        QsCache.get<String>("selectedDateSourceKey") ?? "";
     order = [
       TextKey.all.tr,
       TextKey.collect.tr,

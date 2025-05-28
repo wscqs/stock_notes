@@ -73,6 +73,21 @@ class TextKey {
   static const daorudaochu = 'daorudaochu';
   static const daoru = 'daoru';
   static const daochu = 'daochu';
+  static const shujuyuan = 'shujuyuan';
+  static const qingshuru = 'qingshuru';
+  static const shurumingzisouziszm = 'shurumingzisouziszm';
+  static const shoucichuangjianshujuyuan = 'shoucichuangjianshujuyuan';
+  static const jindaoru = 'jindaoru';
+  static const daorubingxuanzhe = 'daorubingxuanzhe';
+  static const noFile = 'noFile';
+  static const fileShare = 'fileShare';
+  static const gengaimingzi = 'gengaimingzi';
+  static const danqianxuanzhongsjybnsc = 'danqianxuanzhongsjybnsc';
+  static const qiehuanshujuzhong = 'qiehuanshujuzhong';
+  static const errorFile = 'errorFile';
+  static const tihuan = 'tihuan';
+  static const xinzen = 'xinzen';
+  static const tongming = 'tongming';
 }
 
 const Map<String, String> zh = {
@@ -149,6 +164,21 @@ const Map<String, String> zh = {
   TextKey.daorudaochu: '导入导出',
   TextKey.daoru: '导入',
   TextKey.daochu: '导出',
+  TextKey.shujuyuan: '数据源',
+  TextKey.qingshuru: '请输入',
+  TextKey.shurumingzisouziszm: '建议名字首字母，如ttz',
+  TextKey.shoucichuangjianshujuyuan: '首次创建数据源',
+  TextKey.jindaoru: '仅导入',
+  TextKey.daorubingxuanzhe: '导入并选择',
+  TextKey.noFile: '文件为空',
+  TextKey.fileShare: '文件分享',
+  TextKey.gengaimingzi: '修改名称',
+  TextKey.danqianxuanzhongsjybnsc: '当前选中的数据源不能删除',
+  TextKey.qiehuanshujuzhong: '切换数据源中',
+  TextKey.errorFile: '文件错误',
+  TextKey.tihuan: '替换',
+  TextKey.xinzen: '新增',
+  TextKey.tongming: '同名',
   TextKey.shiyongshuomingall: '''
 股票笔记说明
 对股票进行记录及复盘的 App （无服务端的App）
@@ -259,6 +289,23 @@ const Map<String, String> en = {
   TextKey.daorudaochu: 'Import/Export',
   TextKey.daoru: 'Import',
   TextKey.daochu: 'Export',
+  TextKey.shujuyuan: 'Data Source',
+  TextKey.qingshuru: 'Please enter',
+  TextKey.shurumingzisouziszm:
+      'Suggest the first letter of the name, such as ttz',
+  TextKey.shoucichuangjianshujuyuan: 'First create data source',
+  TextKey.jindaoru: 'Only import',
+  TextKey.daorubingxuanzhe: 'Import and select',
+  TextKey.noFile: 'File is empty',
+  TextKey.fileShare: 'File Share',
+  TextKey.gengaimingzi: 'Edit Name',
+  TextKey.danqianxuanzhongsjybnsc:
+      'The current selected data source cannot be deleted',
+  TextKey.qiehuanshujuzhong: 'Switching data sources',
+  TextKey.errorFile: 'File error',
+  TextKey.tihuan: 'Replace',
+  TextKey.xinzen: 'Add',
+  TextKey.tongming: 'Same name',
   TextKey.shiyongshuomingall: '''
 Stock Notes Explanation
 

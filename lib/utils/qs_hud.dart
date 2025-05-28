@@ -138,4 +138,44 @@ class QsHud {
   }
 
 // 其他自定义对话框的封装可以根据需要添加
+  static void showThreeBtnDialog({
+    required String title,
+    required String content,
+    required VoidCallback onFirst,
+    VoidCallback? onSecond,
+    VoidCallback? onThree,
+    String firstText = '',
+    String secondText = '',
+    String threeText = '',
+  }) {
+    SmartDialog.show(builder: (_) {
+      return AlertDialog(
+        title: title.isNotEmpty ? Text(title) : null,
+        content: content.isNotEmpty ? Text(content) : null,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              if (onFirst != null) onFirst();
+              dismiss();
+            },
+            child: Text(firstText),
+          ),
+          TextButton(
+            onPressed: () {
+              if (onSecond != null) onSecond();
+              dismiss();
+            },
+            child: Text(secondText),
+          ),
+          TextButton(
+            onPressed: () {
+              if (onThree != null) onThree();
+              dismiss();
+            },
+            child: Text(threeText),
+          ),
+        ],
+      );
+    });
+  }
 }

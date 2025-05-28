@@ -73,13 +73,29 @@ class HomedrawerPage extends StatelessWidget {
           ),
           ListTile(
             tileColor: Theme.of(context).colorScheme.surfaceContainer,
-            title: Text(TextKey.daorudaochu.tr),
+            title: Text(TextKey.shujuyuan.tr),
+            subtitle: Text(TextKey.daorudaochu.tr),
+            subtitleTextStyle: TextStyle(
+              fontSize: 11,
+            ),
             onTap: () {
-              vc.clickDaorudaochu();
+              parentVC.closeDrawer();
+              vc.clickShujuyuan();
+              // vc.clickDaorudaochu();
             },
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 18,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  parentVC.selectedDateSource.value,
+                  style: TextStyle(fontSize: 15),
+                ),
+                SizedBox(width: 4),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 18,
+                ),
+              ],
             ),
           ),
         ],

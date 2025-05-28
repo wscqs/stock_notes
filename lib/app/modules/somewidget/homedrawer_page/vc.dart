@@ -1,115 +1,120 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:sqlite3/sqlite3.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
-import '../../../../common/database/connection/native.dart';
 import '../../../../common/database/database.dart';
+import '../../../../utils/qs_cache.dart';
+import '../../../../utils/qs_utils.dart' as QsView;
+import '../../../routes/app_pages.dart';
 
 class HomedrawerVC extends GetxController {
   final db = Get.find<AppDatabase>();
   File? lastBackupFile;
-
-  void clickDaorudaochu() {
-    QsHud.showConfirmDialog(
-        title: TextKey.daorudaochu.tr,
-        content: "",
-        cancelText: TextKey.daoru.tr,
-        confirmText: TextKey.daochu.tr,
-        onCancel: () {
-          restoreBackup();
-        },
-        onConfirm: () {
-          createBackup();
-        });
-  }
 
   @override
   void onInit() {
     super.onInit();
   }
 
-  Future<void> closeDb() async {
-    await db.close();
+  void clickShujuyuan() {
+    String selectedDateSourceKey = QsCache.get("selectedDateSourceKey") ?? "";
+    if (selectedDateSourceKey.isEmpty) {
+      showFirstShujuyuanDialog();
+    } else {
+      Get.toNamed(Routes.DATESOURCE);
+    }
   }
 
-  //todo 看下怎么调整
-  Future<void> reopenDb() async {
-    // 关键：清除旧数据库实例并重新创建
-    // Get.delete<AppDatabase>();
-    // Get.put(AppDatabase());
-    // final dbManager = Get.find<DatabaseManager>();
-    // // await dbManager.db.close(); // optional
-    // await dbManager.resetDb(); // 关键：重建数据库
+  void showFirstShujuyuanDialog() {
+    TextEditingController textController = TextEditingController();
 
-    // QsHud.showKnowDialog(
-    //     title: "导入成功",
-    //     content: "",
-    //     confirmText: "关闭重启",
-    //     onConfirm: () {
-    //       SystemNavigator.pop();
-    //     });
+    QsHud.showDialog(
+      AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                TextKey.shoucichuangjianshujuyuan.tr,
+                style: TextStyle(fontSize: 18), // 可选：设置文本样式
+              ),
+            ),
+            SizedBox(height: 10), // 间距
+            TextField(
+              controller: textController,
+              decoration: InputDecoration(
+                hintText: TextKey.shurumingzisouziszm.tr,
+                border: OutlineInputBorder(),
+                counterText: '', // 隐藏计数器
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              ),
+              maxLength: 10,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              QsHud.dismiss();
+            },
+            child: Text(TextKey.quxiao.tr),
+          ),
+          TextButton(
+            onPressed: () {
+              if (textController.text.isEmpty) {
+                QsHud.showToast(TextKey.qingshuru.tr);
+                return;
+              } else {
+                QsHud.dismiss();
+                initSaveDataSource(textController.text);
+              }
+            },
+            child: Text(TextKey.queding.tr),
+          ),
+        ],
+      ),
+    );
   }
 
-  Future<void> createBackup() async {
+  Future<void> initSaveDataSource(String nameText) async {
+    var name = nameText;
+    if (name.isEmpty) {
+      QsHud.showToast(TextKey.qingshuru.tr + TextKey.shurumingzisouziszm.tr);
+      return;
+    }
+    QsView.hideKeyboard();
     final backupDir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(backupDir.path, 'drift_example_backup.db'));
-
+    final file = File(p.join(backupDir.path, 'stocknotes_${name}.db'));
     if (await file.exists()) {
       await file.delete();
     }
-
     await db.customStatement('VACUUM INTO ?', [file.path]);
-
     lastBackupFile = file;
-    shareBackup();
+    saveToDateSourceList(nameText);
   }
 
-  Future<void> shareBackup() async {
+  Future<void> saveToDateSourceList(String nameText) async {
     if (lastBackupFile == null || !(await lastBackupFile!.exists())) {
-      Get.snackbar('Error', 'No backup available to share',
-          snackPosition: SnackPosition.BOTTOM);
+      QsHud.showToast(TextKey.noData.tr);
       return;
     }
+    final tempDateSourceList = <Map<String, dynamic>>[].obs;
+    tempDateSourceList.add({
+      'name': nameText,
+      'path': lastBackupFile!.path,
+    });
+    QsCache.set("dateSourceListKey", tempDateSourceList);
+    QsCache.set("selectedDateSourceKey", nameText);
 
-    final params = ShareParams(
-      text: 'Database Backup File',
-      files: [XFile(lastBackupFile!.path)],
-    );
-
-    final result = await SharePlus.instance.share(params);
-    // if (result.status == ShareResultStatus.success) {
-    // }
-  }
-
-  Future<void> restoreBackup() async {
-    // await closeDb();
-
-    final picked = await FilePicker.platform.pickFiles();
-    if (picked == null) return;
-
-    final backupDb = sqlite3.open(picked.files.single.path!);
-
-    final tempPath = await getTemporaryDirectory();
-    final tempDb = p.join(tempPath.path, 'import.db');
-
-    backupDb
-      ..execute('VACUUM INTO ?', [tempDb])
-      ..dispose();
-
-    final tempDbFile = File(tempDb);
-    await tempDbFile.copy((await databaseFile).path);
-    await tempDbFile.delete();
-
-    await reopenDb();
-
-    // Get.snackbar('Restore Complete', 'Database restored successfully',
-    //     snackPosition: SnackPosition.BOTTOM);
+    Get.toNamed(Routes.DATESOURCE);
   }
 }

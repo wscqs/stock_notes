@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/about/bindings/about_binding.dart';
 import '../modules/about/views/about_view.dart';
+import '../modules/datesource/bindings/datesource_binding.dart';
+import '../modules/datesource/views/datesource_view.dart';
 import '../modules/homenote/bindings/homenote_binding.dart';
 import '../modules/homenote/views/homenote_view.dart';
 import '../modules/homestock/bindings/homestock_binding.dart';
@@ -120,6 +122,11 @@ class AppPages {
       name: _Paths.USE,
       page: () => const UseView(),
       binding: UseBinding(),
+    ),
+    GetPage(
+      name: _Paths.DATESOURCE,
+      page: () => const DatesourceView(),
+      binding: DatesourceBinding(),
     ),
   ];
 }
