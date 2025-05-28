@@ -23,7 +23,7 @@ jobs:
 
      - name: Zip Windows App
        run: |
-         powershell Compress-Archive -Path build\windows\runner\Release\* -DestinationPath windows-app.zip
+         powershell Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath windows-app.zip
 
      - name: Upload Windows zip to GitHub Release
        uses: softprops/action-gh-release@v2
