@@ -27,9 +27,10 @@ jobs:
 
      - name: Upload Windows zip to GitHub Release
        uses: softprops/action-gh-release@v2
-       with:
-         files: windows-app.zip
        env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         files: windows-app.zip
+       
 
 
