@@ -23,14 +23,17 @@ jobs:
 
      - name: Zip Windows App
        run: |
-         powershell Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath windows-app.zip
+          cd build/windows/x64/runner/Release
+          powershell -Command "Compress-Archive -Path * -DestinationPath windows-app.zip"
+          mv windows-app.zip ${{ github.workspace }}
+         
 
      - name: Upload Windows zip to GitHub Release
        uses: softprops/action-gh-release@v2
        env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
        with:
-         files: windows-app.zip
+         files: ${{ github.workspace }}/windows-app.zip
        
 
 
