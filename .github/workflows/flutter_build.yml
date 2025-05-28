@@ -20,9 +20,6 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Build Android APK
-        run: flutter build apk --release
-
       - name: Build macOS App
         run: flutter build macos --release
 
@@ -37,6 +34,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            ${{ github.workspace }}/build/app/outputs/apk/release/app-release.apk
-            ${{ github.workspace }}/macos-app.zip
+          files: ${{ github.workspace }}/macos-app.zip            
