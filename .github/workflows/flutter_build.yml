@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  build_multi_platform:
+  build_android_macOS:
     runs-on: macos-latest
     permissions:
       contents: write
@@ -32,6 +32,30 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent *.app macos-stocknote.zip
           mv macos-stocknote.zip ${{ github.workspace }}
 
+      - name: Upload APK & macOS zip to GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            ${{ github.workspace }}/build/app/outputs/apk/release/app-release.apk
+            ${{ github.workspace }}/macos-stocknote.zip
+
+  build_windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+
+      - name: Flutter pub get
+        run: flutter pub get
+
       - name: Build Windows App
         run: flutter build windows --release
 
@@ -41,12 +65,9 @@ jobs:
           powershell -Command "Compress-Archive -Path * -DestinationPath windows-stocknote.zip"
           mv windows-stocknote.zip ${{ github.workspace }}
 
-      - name: Upload APK & macOS zip to GitHub Release
+      - name: Upload Windows zip to GitHub Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            ${{ github.workspace }}/build/app/outputs/apk/release/app-release.apk
-            ${{ github.workspace }}/macos-stocknote.zip
-            ${{ github.workspace }}/windows-stocknote.zip
+          files: ${{ github.workspace }}/windows-stocknote.zip
