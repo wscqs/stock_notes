@@ -126,12 +126,12 @@ class DatesourceView extends GetView<DatesourceController> {
       children: [
         InkWell(
           onTap: () {
-            controller.selectedOption.value = 'doSel';
+            controller.selectedOption.value = 'doInputSel';
           },
           child: Row(
             children: [
               Radio<String>(
-                value: 'doSel',
+                value: 'doInputSel',
                 groupValue: controller.selectedOption.value,
                 onChanged: null,
               ),
@@ -141,12 +141,12 @@ class DatesourceView extends GetView<DatesourceController> {
         ),
         InkWell(
           onTap: () {
-            controller.selectedOption.value = 'doNoSel';
+            controller.selectedOption.value = 'doInput';
           },
           child: Row(
             children: [
               Radio<String>(
-                value: 'doNoSel',
+                value: 'doInput',
                 groupValue: controller.selectedOption.value,
                 onChanged: null,
               ),

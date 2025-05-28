@@ -7,13 +7,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
-import '../../../../common/database/database.dart';
+import '../../../../common/database/DatabaseManager.dart';
 import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_utils.dart' as QsView;
 import '../../../routes/app_pages.dart';
 
 class HomedrawerVC extends GetxController {
-  final db = Get.find<AppDatabase>();
+  final db = Get.find<DatabaseManager>().db;
   File? lastBackupFile;
 
   @override

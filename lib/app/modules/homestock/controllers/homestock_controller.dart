@@ -7,6 +7,7 @@ import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
+import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_hud.dart';
@@ -16,7 +17,7 @@ import '../../tabs/controllers/tabs_controller.dart';
 
 class HomestockController extends BaseController
     with GetTickerProviderStateMixin {
-  final db = Get.find<AppDatabase>();
+  late var db = Get.find<DatabaseManager>().db;
   final TextEditingController searchController = TextEditingController();
   final query = "".obs;
 
@@ -93,6 +94,7 @@ class HomestockController extends BaseController
 
   @override
   void onResume() {
+    db = Get.find<DatabaseManager>().db;
     selectedDateSource.value =
         QsCache.get<String>("selectedDateSourceKey") ?? "";
     order = [

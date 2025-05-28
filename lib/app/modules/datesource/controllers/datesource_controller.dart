@@ -6,20 +6,18 @@ import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:sqlite3/sqlite3.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_cache.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_view.dart';
 
-import '../../../../common/database/connection/native.dart';
-import '../../../../common/database/database.dart';
+import '../../../../common/database/DatabaseManager.dart';
 
 class DatesourceController extends GetxController {
   final nameText = TextEditingController();
-  final selectedOption = "doSel".obs;
+  final selectedOption = "doInputSel".obs;
 
-  final db = Get.find<AppDatabase>();
+  final db = Get.find<DatabaseManager>().db;
   File? lastBackupFile;
   final dateSourceList = <Map<String, dynamic>>[].obs;
   final selectedDateSource = "".obs; //name
@@ -111,7 +109,10 @@ class DatesourceController extends GetxController {
     final baseName = p.basenameWithoutExtension(filename);
     final nameText = baseName.replaceFirst('stocknotes_', '');
     saveToDateSourceList(nameText);
-    await setDbDateSource(copiedFile.path);
+    //切换数据源
+    if (selectedOption.value == "doInputSel") {
+      await setDbDateSource(copiedFile.path);
+    }
   }
 
   Future<void> saveToDateSourceList(String nameText,
@@ -163,8 +164,10 @@ class DatesourceController extends GetxController {
       });
     }
     QsCache.set("dateSourceListKey", tempDateSourceList);
-    QsCache.set("selectedDateSourceKey", nameText);
-    loadSelDateSource();
+    if (selectedOption.value == "doInputSel") {
+      QsCache.set("selectedDateSourceKey", nameText);
+      loadSelDateSource();
+    }
     dateSourceList.value = tempDateSourceList;
   }
 
@@ -281,20 +284,22 @@ class DatesourceController extends GetxController {
     );
   }
 
-  //todo:切换数据库还要研究下
   Future<void> setDbDateSource(String filename) async {
-    print(filename);
-    await db.close();
-    QsHud.showLoading(message: TextKey.qiehuanshujuzhong.tr); //速度太快，没出现加载
-    final backupDb = sqlite3.open(filename);
-    final tempPath = await getTemporaryDirectory();
-    final tempDb = p.join(tempPath.path, 'import.db');
-    backupDb
-      ..execute('VACUUM INTO ?', [tempDb])
-      ..dispose();
-    final tempDbFile = File(tempDb);
-    await tempDbFile.copy((await databaseFile).path);
-    await tempDbFile.delete();
+    // print(filename);
+    // final newPath = '/your/path/stocknotes_B.db';
+    await Get.find<DatabaseManager>().switchDatabase(filename);
+
+    // await db.close();
+    // QsHud.showLoading(message: TextKey.qiehuanshujuzhong.tr); //速度太快，没出现加载
+    // final backupDb = sqlite3.open(filename);
+    // final tempPath = await getTemporaryDirectory();
+    // final tempDb = p.join(tempPath.path, 'import.db');
+    // backupDb
+    //   ..execute('VACUUM INTO ?', [tempDb])
+    //   ..dispose();
+    // final tempDbFile = File(tempDb);
+    // await tempDbFile.copy((await databaseFile).path);
+    // await tempDbFile.delete();
     QsHud.showToast(TextKey.qiehuanshujuzhong.tr +
         selectedDateSource.value +
         TextKey.success.tr);

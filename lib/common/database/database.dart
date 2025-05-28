@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
-import 'package:drift_flutter/drift_flutter.dart';
+import 'package:drift/native.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/common/database/tables.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
@@ -13,16 +15,24 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [StockItems, NoteItems, StockItemTags, StockTags])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+  AppDatabase(String path) : super(_openConnection(path));
   //网页需后端Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
-  static QueryExecutor _openConnection() {
-    return driftDatabase(
-      name: 'stock_database',
-      web: DriftWebOptions(
-        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-        driftWorker: Uri.parse('drift_worker.js'),
-      ),
-    );
+  // static QueryExecutor _openConnection(String path) {
+  //   return driftDatabase(
+  //     name: 'stock_database',
+  //     web: DriftWebOptions(
+  //       sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+  //       driftWorker: Uri.parse('drift_worker.js'),
+  //     ),
+  //   );
+  // }
+
+  static LazyDatabase _openConnection(String path) {
+    print(path);
+    return LazyDatabase(() async {
+      final file = File(path);
+      return NativeDatabase(file);
+    });
   }
 
   @override

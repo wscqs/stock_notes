@@ -4,10 +4,11 @@ import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
+import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/langs/text_key.dart';
 
 class TagseditController extends GetxController {
-  final db = Get.find<AppDatabase>();
+  final db = Get.find<DatabaseManager>().db;
   late StockItem stockItem;
 
   final selTags = <StockItemTag>[].obs;
