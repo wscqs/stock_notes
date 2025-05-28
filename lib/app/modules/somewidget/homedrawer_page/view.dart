@@ -74,7 +74,12 @@ class HomedrawerPage extends StatelessWidget {
           ListTile(
             tileColor: Theme.of(context).colorScheme.surfaceContainer,
             title: Text(TextKey.shujuyuan.tr),
-            subtitle: Text(TextKey.daorudaochu.tr),
+            subtitle: Text(
+              TextKey.daorudaochu.tr,
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
             subtitleTextStyle: TextStyle(
               fontSize: 11,
             ),

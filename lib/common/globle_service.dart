@@ -62,7 +62,7 @@ class GlobalService extends GetxService {
 
   /// 初始 theme
   void _initTheme() {
-    var themeCode = sharedPreferences.getString(themeCodeKey) ?? 'system';
+    var themeCode = sharedPreferences.getString(themeCodeKey) ?? 'dark';
     switch (themeCode) {
       case 'system':
         _themeMode = ThemeMode.system;

@@ -479,7 +479,6 @@ class _HomeStockCellState extends State<HomeStockCell>
                   (widget.item.marketType ?? "") == "51" ? "· 深" : "· 沪",
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
