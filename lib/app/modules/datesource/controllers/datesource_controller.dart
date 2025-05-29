@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -23,12 +24,33 @@ class DatesourceController extends GetxController {
   final selectedDateSource = "".obs; //name
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     loadDateSourceList();
     loadSelDateSource();
     //当前选中的数据源文件更新
     currentLocalBackup();
+
+    //延迟 1 秒
+    Future.delayed(Duration(seconds: 1), () async {
+      await dealHasOtherAppInputDb();
+    });
+  }
+
+  Future<void> dealHasOtherAppInputDb() async {
+    var arguments = Get.arguments;
+    if (arguments != null) {
+      Uri uri = arguments;
+      var filename = uri.pathSegments.last;
+      var originalPath = uri.path;
+      final file = await copyContentUriToCacheFile(uri);
+      if (file != null) {
+        filename = filename = file!.uri.pathSegments.last;
+        originalPath = file!.uri.path;
+      }
+      selectedOption.value = "doInput";
+      File copiedFile = await inputDBSaveLocalList(filename, originalPath);
+    }
   }
 
   void loadSelDateSource() {
@@ -93,12 +115,22 @@ class DatesourceController extends GetxController {
   Future<void> inputBackup() async {
     final picked = await FilePicker.platform.pickFiles();
     if (picked == null) return;
+
     String filename = picked.files.single.name!;
     final originalPath = picked.files.single.path!;
     if (!filename.endsWith('.db')) {
       QsHud.showToast(TextKey.errorFile.tr);
       return;
     }
+    File copiedFile = await inputDBSaveLocalList(filename, originalPath);
+    //切换数据源
+    if (selectedOption.value == "doInputSel") {
+      await setDbDateSource(copiedFile.path);
+    }
+  }
+
+  Future<File> inputDBSaveLocalList(
+      String filename, String originalPath) async {
     //lastBackupFile 要拷贝到本地
     final backupDir = await getApplicationDocumentsDirectory();
     final localPath = p.join(backupDir.path, filename);
@@ -109,10 +141,8 @@ class DatesourceController extends GetxController {
     final baseName = p.basenameWithoutExtension(filename);
     final nameText = baseName.replaceFirst('stocknotes_', '');
     saveToDateSourceList(nameText);
-    //切换数据源
-    if (selectedOption.value == "doInputSel") {
-      await setDbDateSource(copiedFile.path);
-    }
+    QsHud.showToast(TextKey.success.tr);
+    return copiedFile;
   }
 
   Future<void> saveToDateSourceList(String nameText,
@@ -311,5 +341,25 @@ class DatesourceController extends GetxController {
         await setDbDateSource(item['path']);
       }
     }
+  }
+}
+
+const platform = MethodChannel('com.stocknotes.channel/open_file');
+Future<File?> copyContentUriToCacheFile(Uri uri) async {
+  if (!Platform.isAndroid) return null;
+  try {
+    final Uint8List? bytes =
+        await platform.invokeMethod<Uint8List>('readContentUri', {
+      'uri': uri.toString(),
+    });
+    if (bytes == null) return null;
+
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/${uri.pathSegments.last}');
+    await file.writeAsBytes(bytes);
+    return file;
+  } catch (e) {
+    print('读取 content uri 失败: $e');
+    return null;
   }
 }

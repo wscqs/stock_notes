@@ -28,7 +28,7 @@ class AppDatabase extends _$AppDatabase {
   // }
 
   static LazyDatabase _openConnection(String path) {
-    print(path);
+    // print(path);
     return LazyDatabase(() async {
       final file = File(path);
       return NativeDatabase(file);

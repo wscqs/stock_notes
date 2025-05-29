@@ -88,6 +88,8 @@ class TextKey {
   static const tihuan = 'tihuan';
   static const xinzen = 'xinzen';
   static const tongming = 'tongming';
+  static const errortishixianchushihuasjy = 'errortishixianchushihuasjy';
+  static const errorwjmbhsn = 'errorwjmbhsn';
 }
 
 const Map<String, String> zh = {
@@ -179,6 +181,8 @@ const Map<String, String> zh = {
   TextKey.tihuan: '替换',
   TextKey.xinzen: '新增',
   TextKey.tongming: '同名',
+  TextKey.errortishixianchushihuasjy: "请先初始化本地数据源，左边抽屉点击数据源初始化后,再重试导入数据源",
+  TextKey.errorwjmbhsn: '请确保文件名包含stocknotes',
   TextKey.shiyongshuomingall: '''
 股票笔记说明
 对股票进行记录及复盘的 App （无服务端的App）
@@ -306,6 +310,9 @@ const Map<String, String> en = {
   TextKey.tihuan: 'Replace',
   TextKey.xinzen: 'Add',
   TextKey.tongming: 'Same name',
+  TextKey.errortishixianchushihuasjy:
+      "Please first initialize the local data source, click the data source initialization on the left drawer, and then retry importing the data source",
+  TextKey.errorwjmbhsn: 'Please ensure the file name contains stocknotes',
   TextKey.shiyongshuomingall: '''
 Stock Notes Explanation
 

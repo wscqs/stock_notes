@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:stock_notes/utils/qs_hud.dart';
 
+import '../../utils/qs_cache.dart';
 import '../modules/about/bindings/about_binding.dart';
 import '../modules/about/views/about_view.dart';
 import '../modules/datesource/bindings/datesource_binding.dart';
@@ -35,6 +38,28 @@ class AppPages {
   AppPages._();
 
   static void handleDeepLink(Uri uri) {
+    // content://com.tencent.mm.external.fileprovider/attachment/stocknotes_abc.db
+    if (uri.scheme == 'content' && uri.path.endsWith('db')) {
+      //文件
+      if (!uri.path.contains("stocknotes")) {
+        QsHud.showToast(TextKey.errorwjmbhsn.tr);
+        return;
+      }
+      //打开数据源页面，并导入数据库
+      var selectedDateSource =
+          QsCache.get<String>("selectedDateSourceKey") ?? "";
+      if (selectedDateSource.isEmpty) {
+        QsHud.showToast(TextKey.errortishixianchushihuasjy.tr,
+            displaySeconds: 4);
+      } else {
+        // Get.offAllNamed(
+        //   Routes.TABS,
+        //   arguments: null,
+        // );
+        Get.toNamed(Routes.DATESOURCE, arguments: uri);
+      }
+      return;
+    }
     final fragment = uri.fragment;
     Uri trueUri = Uri.parse(fragment);
     String path = trueUri.path;
