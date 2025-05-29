@@ -69,5 +69,22 @@
         </array>
         <key>FlutterDeepLinkingEnabled</key>
         <false/>
+        <key>CFBundleDocumentTypes</key>
+        <array>
+          <dict>
+            <key>CFBundleTypeName</key>
+            <string>SQLite Database</string>
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
+            <key>LSItemContentTypes</key>
+            <array>
+              <string>public.database</string>
+              <string>public.item</string>
+              <string>public.data</string>
+              <string>public.content</string>
+              <string>com.sqlite.sqlite3</string>
+            </array>
+          </dict>
+        </array>
 	</dict>
 </plist>

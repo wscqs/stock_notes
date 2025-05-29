@@ -39,9 +39,10 @@ class AppPages {
 
   static void handleDeepLink(Uri uri) {
     // content://com.tencent.mm.external.fileprovider/attachment/stocknotes_abc.db
-    if (uri.scheme == 'content' && uri.path.endsWith('db')) {
+    if ((uri.scheme == 'content' || uri.scheme == 'file') &&
+        uri.path.endsWith('db')) {
       //文件
-      if (!uri.path.contains("stocknotes")) {
+      if (!uri.path.contains("stocknotes_")) {
         QsHud.showToast(TextKey.errorwjmbhsn.tr);
         return;
       }
@@ -52,11 +53,11 @@ class AppPages {
         QsHud.showToast(TextKey.errortishixianchushihuasjy.tr,
             displaySeconds: 4);
       } else {
-        // Get.offAllNamed(
-        //   Routes.TABS,
-        //   arguments: null,
-        // );
-        Get.toNamed(Routes.DATESOURCE, arguments: uri);
+        Get.offAllNamed(Routes.TABS, arguments: null);
+        //延迟 1 秒
+        Future.delayed(const Duration(seconds: 1), () {
+          Get.toNamed(Routes.DATESOURCE, arguments: uri);
+        });
       }
       return;
     }
