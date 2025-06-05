@@ -71,17 +71,6 @@ class NoteeditView extends GetView<NoteeditController> {
               ],
             ),
           ),
-          // body: SafeArea(
-          //   child: Column(
-          //     children: [
-          //       buildTitleTextField(),
-          //       Expanded(
-          //         child: buildQuillEditor(),
-          //       ),
-          //       if (controller.isEditing.value) buildQuillSimpleToolbar(),
-          //     ],
-          //   ),
-          // ),
         ),
       );
     });
@@ -97,7 +86,9 @@ class NoteeditView extends GetView<NoteeditController> {
           hintText: TextKey.biaoti.tr,
           border: InputBorder.none,
           hintStyle: TextStyle(color: Colors.grey),
+          // counterText: '',
         ),
+        // maxLength: 50,
       ),
     );
   }
@@ -148,12 +139,12 @@ class NoteeditView extends GetView<NoteeditController> {
           showFontFamily: false,
           showFontSize: false,
           // showBoldButton: false,
-          showItalicButton: false,
+          // showItalicButton: false,
           showSmallButton: false,
           showUnderLineButton: false,
           showStrikeThrough: false,
           showInlineCode: false,
-          // showColorButton: false,
+          showColorButton: false,
           showBackgroundColorButton: false,
           // showClearFormat: false,
           showCodeBlock: false,
@@ -167,27 +158,37 @@ class NoteeditView extends GetView<NoteeditController> {
           showHeaderStyle: false,
           showLineHeightButton: false,
           showListCheck: false,
-          // showDividers: false,
-          // customButtons: [
-          //   QuillToolbarCustomButtonOptions(
-          //     icon: const Icon(Icons.add_alarm_rounded),
-          //     onPressed: () {
-          //       _controller.document.insert(
-          //         _controller.selection.extentOffset,
-          //         TimeStampEmbed(
-          //           DateTime.now().toString(),
-          //         ),
-          //       );
-          //
-          //       _controller.updateSelection(
-          //         TextSelection.collapsed(
-          //           offset: _controller.selection.extentOffset + 1,
-          //         ),
-          //         ChangeSource.local,
-          //       );
-          //     },
-          //   ),
-          // ],
+          showDividers: false,
+          showLink: false,
+          customButtons: [
+            //颜色选择
+            QuillToolbarCustomButtonOptions(
+                icon: Icon(
+                  Icons.color_lens_rounded,
+                  color: controller.currentTextColor.value,
+                ),
+                onPressed: () {
+                  controller.showColorPicker();
+                }),
+            // QuillToolbarCustomButtonOptions(
+            //   icon: const Icon(Icons.add_alarm_rounded),
+            //   onPressed: () {
+            //     _controller.document.insert(
+            //       _controller.selection.extentOffset,
+            //       TimeStampEmbed(
+            //         DateTime.now().toString(),
+            //       ),
+            //     );
+            //
+            //     _controller.updateSelection(
+            //       TextSelection.collapsed(
+            //         offset: _controller.selection.extentOffset + 1,
+            //       ),
+            //       ChangeSource.local,
+            //     );
+            //   },
+            // ),
+          ],
           buttonOptions: QuillSimpleToolbarButtonOptions(
             base: QuillToolbarBaseButtonOptions(
               afterButtonPressed: () {

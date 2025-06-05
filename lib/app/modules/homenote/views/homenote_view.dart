@@ -285,9 +285,11 @@ class _HomeNoteCellState extends State<HomeNoteCell>
       children: [
         Row(
           children: [
-            Text(
-              widget.item.title,
-              style: TextStyle(fontSize: 16),
+            Expanded(
+              child: Text(
+                widget.item.title,
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ],
         ),
