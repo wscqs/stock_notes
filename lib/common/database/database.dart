@@ -52,6 +52,16 @@ class AppDatabase extends _$AppDatabase {
         },
         onCreate: (migrator) async {
           await migrator.createAll();
+          //标签默认加五个。 短期，中期，长期，买，卖
+          await batch((batch) {
+            batch.insertAll(stockItemTags, [
+              StockItemTagsCompanion.insert(name: '短期'),
+              StockItemTagsCompanion.insert(name: '中期'),
+              StockItemTagsCompanion.insert(name: '长期'),
+              StockItemTagsCompanion.insert(name: '买'),
+              StockItemTagsCompanion.insert(name: '卖'),
+            ]);
+          });
         },
       );
 
