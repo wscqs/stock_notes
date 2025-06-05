@@ -109,6 +109,15 @@ class $StockItemsTable extends StockItems
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("op_delete" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _opBuyMeta = const VerificationMeta('opBuy');
+  @override
+  late final GeneratedColumn<bool> opBuy = GeneratedColumn<bool>(
+      'op_buy', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("op_buy" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _pPriceBuyMeta =
       const VerificationMeta('pPriceBuy');
   @override
@@ -191,6 +200,7 @@ class $StockItemsTable extends StockItems
         opTop,
         opCollect,
         opDelete,
+        opBuy,
         pPriceBuy,
         pPriceSale,
         pPriceRemark,
@@ -283,6 +293,10 @@ class $StockItemsTable extends StockItems
     if (data.containsKey('op_delete')) {
       context.handle(_opDeleteMeta,
           opDelete.isAcceptableOrUnknown(data['op_delete']!, _opDeleteMeta));
+    }
+    if (data.containsKey('op_buy')) {
+      context.handle(
+          _opBuyMeta, opBuy.isAcceptableOrUnknown(data['op_buy']!, _opBuyMeta));
     }
     if (data.containsKey('p_price_buy')) {
       context.handle(
@@ -387,6 +401,8 @@ class $StockItemsTable extends StockItems
           .read(DriftSqlType.bool, data['${effectivePrefix}op_collect'])!,
       opDelete: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}op_delete'])!,
+      opBuy: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}op_buy'])!,
       pPriceBuy: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}p_price_buy']),
       pPriceSale: attachedDatabase.typeMapping
@@ -433,6 +449,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
   final bool opTop;
   final bool opCollect;
   final bool opDelete;
+  final bool opBuy;
   final String? pPriceBuy;
   final String? pPriceSale;
   final String? pPriceRemark;
@@ -459,6 +476,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       required this.opTop,
       required this.opCollect,
       required this.opDelete,
+      required this.opBuy,
       this.pPriceBuy,
       this.pPriceSale,
       this.pPriceRemark,
@@ -497,6 +515,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
     map['op_top'] = Variable<bool>(opTop);
     map['op_collect'] = Variable<bool>(opCollect);
     map['op_delete'] = Variable<bool>(opDelete);
+    map['op_buy'] = Variable<bool>(opBuy);
     if (!nullToAbsent || pPriceBuy != null) {
       map['p_price_buy'] = Variable<String>(pPriceBuy);
     }
@@ -559,6 +578,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       opTop: Value(opTop),
       opCollect: Value(opCollect),
       opDelete: Value(opDelete),
+      opBuy: Value(opBuy),
       pPriceBuy: pPriceBuy == null && nullToAbsent
           ? const Value.absent()
           : Value(pPriceBuy),
@@ -613,6 +633,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       opTop: serializer.fromJson<bool>(json['opTop']),
       opCollect: serializer.fromJson<bool>(json['opCollect']),
       opDelete: serializer.fromJson<bool>(json['opDelete']),
+      opBuy: serializer.fromJson<bool>(json['opBuy']),
       pPriceBuy: serializer.fromJson<String?>(json['pPriceBuy']),
       pPriceSale: serializer.fromJson<String?>(json['pPriceSale']),
       pPriceRemark: serializer.fromJson<String?>(json['pPriceRemark']),
@@ -644,6 +665,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       'opTop': serializer.toJson<bool>(opTop),
       'opCollect': serializer.toJson<bool>(opCollect),
       'opDelete': serializer.toJson<bool>(opDelete),
+      'opBuy': serializer.toJson<bool>(opBuy),
       'pPriceBuy': serializer.toJson<String?>(pPriceBuy),
       'pPriceSale': serializer.toJson<String?>(pPriceSale),
       'pPriceRemark': serializer.toJson<String?>(pPriceRemark),
@@ -673,6 +695,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           bool? opTop,
           bool? opCollect,
           bool? opDelete,
+          bool? opBuy,
           Value<String?> pPriceBuy = const Value.absent(),
           Value<String?> pPriceSale = const Value.absent(),
           Value<String?> pPriceRemark = const Value.absent(),
@@ -702,6 +725,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         opTop: opTop ?? this.opTop,
         opCollect: opCollect ?? this.opCollect,
         opDelete: opDelete ?? this.opDelete,
+        opBuy: opBuy ?? this.opBuy,
         pPriceBuy: pPriceBuy.present ? pPriceBuy.value : this.pPriceBuy,
         pPriceSale: pPriceSale.present ? pPriceSale.value : this.pPriceSale,
         pPriceRemark:
@@ -744,6 +768,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       opTop: data.opTop.present ? data.opTop.value : this.opTop,
       opCollect: data.opCollect.present ? data.opCollect.value : this.opCollect,
       opDelete: data.opDelete.present ? data.opDelete.value : this.opDelete,
+      opBuy: data.opBuy.present ? data.opBuy.value : this.opBuy,
       pPriceBuy: data.pPriceBuy.present ? data.pPriceBuy.value : this.pPriceBuy,
       pPriceSale:
           data.pPriceSale.present ? data.pPriceSale.value : this.pPriceSale,
@@ -790,6 +815,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           ..write('opTop: $opTop, ')
           ..write('opCollect: $opCollect, ')
           ..write('opDelete: $opDelete, ')
+          ..write('opBuy: $opBuy, ')
           ..write('pPriceBuy: $pPriceBuy, ')
           ..write('pPriceSale: $pPriceSale, ')
           ..write('pPriceRemark: $pPriceRemark, ')
@@ -821,6 +847,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         opTop,
         opCollect,
         opDelete,
+        opBuy,
         pPriceBuy,
         pPriceSale,
         pPriceRemark,
@@ -851,6 +878,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           other.opTop == this.opTop &&
           other.opCollect == this.opCollect &&
           other.opDelete == this.opDelete &&
+          other.opBuy == this.opBuy &&
           other.pPriceBuy == this.pPriceBuy &&
           other.pPriceSale == this.pPriceSale &&
           other.pPriceRemark == this.pPriceRemark &&
@@ -879,6 +907,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
   final Value<bool> opTop;
   final Value<bool> opCollect;
   final Value<bool> opDelete;
+  final Value<bool> opBuy;
   final Value<String?> pPriceBuy;
   final Value<String?> pPriceSale;
   final Value<String?> pPriceRemark;
@@ -905,6 +934,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.opTop = const Value.absent(),
     this.opCollect = const Value.absent(),
     this.opDelete = const Value.absent(),
+    this.opBuy = const Value.absent(),
     this.pPriceBuy = const Value.absent(),
     this.pPriceSale = const Value.absent(),
     this.pPriceRemark = const Value.absent(),
@@ -932,6 +962,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.opTop = const Value.absent(),
     this.opCollect = const Value.absent(),
     this.opDelete = const Value.absent(),
+    this.opBuy = const Value.absent(),
     this.pPriceBuy = const Value.absent(),
     this.pPriceSale = const Value.absent(),
     this.pPriceRemark = const Value.absent(),
@@ -961,6 +992,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     Expression<bool>? opTop,
     Expression<bool>? opCollect,
     Expression<bool>? opDelete,
+    Expression<bool>? opBuy,
     Expression<String>? pPriceBuy,
     Expression<String>? pPriceSale,
     Expression<String>? pPriceRemark,
@@ -988,6 +1020,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       if (opTop != null) 'op_top': opTop,
       if (opCollect != null) 'op_collect': opCollect,
       if (opDelete != null) 'op_delete': opDelete,
+      if (opBuy != null) 'op_buy': opBuy,
       if (pPriceBuy != null) 'p_price_buy': pPriceBuy,
       if (pPriceSale != null) 'p_price_sale': pPriceSale,
       if (pPriceRemark != null) 'p_price_remark': pPriceRemark,
@@ -1017,6 +1050,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       Value<bool>? opTop,
       Value<bool>? opCollect,
       Value<bool>? opDelete,
+      Value<bool>? opBuy,
       Value<String?>? pPriceBuy,
       Value<String?>? pPriceSale,
       Value<String?>? pPriceRemark,
@@ -1043,6 +1077,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       opTop: opTop ?? this.opTop,
       opCollect: opCollect ?? this.opCollect,
       opDelete: opDelete ?? this.opDelete,
+      opBuy: opBuy ?? this.opBuy,
       pPriceBuy: pPriceBuy ?? this.pPriceBuy,
       pPriceSale: pPriceSale ?? this.pPriceSale,
       pPriceRemark: pPriceRemark ?? this.pPriceRemark,
@@ -1102,6 +1137,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     if (opDelete.present) {
       map['op_delete'] = Variable<bool>(opDelete.value);
     }
+    if (opBuy.present) {
+      map['op_buy'] = Variable<bool>(opBuy.value);
+    }
     if (pPriceBuy.present) {
       map['p_price_buy'] = Variable<String>(pPriceBuy.value);
     }
@@ -1155,6 +1193,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
           ..write('opTop: $opTop, ')
           ..write('opCollect: $opCollect, ')
           ..write('opDelete: $opDelete, ')
+          ..write('opBuy: $opBuy, ')
           ..write('pPriceBuy: $pPriceBuy, ')
           ..write('pPriceSale: $pPriceSale, ')
           ..write('pPriceRemark: $pPriceRemark, ')
@@ -1986,6 +2025,7 @@ typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
   Value<bool> opTop,
   Value<bool> opCollect,
   Value<bool> opDelete,
+  Value<bool> opBuy,
   Value<String?> pPriceBuy,
   Value<String?> pPriceSale,
   Value<String?> pPriceRemark,
@@ -2013,6 +2053,7 @@ typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<bool> opTop,
   Value<bool> opCollect,
   Value<bool> opDelete,
+  Value<bool> opBuy,
   Value<String?> pPriceBuy,
   Value<String?> pPriceSale,
   Value<String?> pPriceRemark,
@@ -2097,6 +2138,9 @@ class $$StockItemsTableFilterComposer
 
   ColumnFilters<bool> get opDelete => $composableBuilder(
       column: $table.opDelete, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get opBuy => $composableBuilder(
+      column: $table.opBuy, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get pPriceBuy => $composableBuilder(
       column: $table.pPriceBuy, builder: (column) => ColumnFilters(column));
@@ -2208,6 +2252,9 @@ class $$StockItemsTableOrderingComposer
   ColumnOrderings<bool> get opDelete => $composableBuilder(
       column: $table.opDelete, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get opBuy => $composableBuilder(
+      column: $table.opBuy, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get pPriceBuy => $composableBuilder(
       column: $table.pPriceBuy, builder: (column) => ColumnOrderings(column));
 
@@ -2298,6 +2345,9 @@ class $$StockItemsTableAnnotationComposer
 
   GeneratedColumn<bool> get opDelete =>
       $composableBuilder(column: $table.opDelete, builder: (column) => column);
+
+  GeneratedColumn<bool> get opBuy =>
+      $composableBuilder(column: $table.opBuy, builder: (column) => column);
 
   GeneratedColumn<String> get pPriceBuy =>
       $composableBuilder(column: $table.pPriceBuy, builder: (column) => column);
@@ -2391,6 +2441,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<bool> opTop = const Value.absent(),
             Value<bool> opCollect = const Value.absent(),
             Value<bool> opDelete = const Value.absent(),
+            Value<bool> opBuy = const Value.absent(),
             Value<String?> pPriceBuy = const Value.absent(),
             Value<String?> pPriceSale = const Value.absent(),
             Value<String?> pPriceRemark = const Value.absent(),
@@ -2418,6 +2469,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             opTop: opTop,
             opCollect: opCollect,
             opDelete: opDelete,
+            opBuy: opBuy,
             pPriceBuy: pPriceBuy,
             pPriceSale: pPriceSale,
             pPriceRemark: pPriceRemark,
@@ -2445,6 +2497,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<bool> opTop = const Value.absent(),
             Value<bool> opCollect = const Value.absent(),
             Value<bool> opDelete = const Value.absent(),
+            Value<bool> opBuy = const Value.absent(),
             Value<String?> pPriceBuy = const Value.absent(),
             Value<String?> pPriceSale = const Value.absent(),
             Value<String?> pPriceRemark = const Value.absent(),
@@ -2472,6 +2525,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             opTop: opTop,
             opCollect: opCollect,
             opDelete: opDelete,
+            opBuy: opBuy,
             pPriceBuy: pPriceBuy,
             pPriceSale: pPriceSale,
             pPriceRemark: pPriceRemark,

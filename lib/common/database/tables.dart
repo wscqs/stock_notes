@@ -15,6 +15,7 @@ class StockItems extends Table with TableMixin {
   BoolColumn get opTop => boolean().withDefault(const Constant(false))();
   BoolColumn get opCollect => boolean().withDefault(const Constant(false))();
   BoolColumn get opDelete => boolean().withDefault(const Constant(false))();
+  BoolColumn get opBuy => boolean().withDefault(const Constant(false))();
 
   //p 计划
   TextColumn get pPriceBuy => text().nullable()();

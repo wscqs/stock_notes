@@ -29,6 +29,7 @@ class HomestockController extends BaseController
   final items = <StockItem>[].obs; //显示的
   List<String> order = [
     TextKey.all.tr,
+    TextKey.chiyou.tr,
     TextKey.collect.tr,
     TextKey.delete.tr,
   ];
@@ -76,8 +77,10 @@ class HomestockController extends BaseController
     if (selectedOrderIndex.value == 0) {
       dbItems = await db.getStockItemsOnHome();
     } else if (selectedOrderIndex.value == 1) {
-      dbItems = await db.getStockItemsOnHomeWithCollect();
+      dbItems = await db.getStockItemsOnHomeWithBuy();
     } else if (selectedOrderIndex.value == 2) {
+      dbItems = await db.getStockItemsOnHomeWithCollect();
+    } else if (selectedOrderIndex.value == 3) {
       dbItems = await db.getStockItemsOnHomeWithDelete();
     }
     await _updateDbItemsWithSetTags();
@@ -99,6 +102,7 @@ class HomestockController extends BaseController
         QsCache.get<String>("selectedDateSourceKey") ?? "";
     order = [
       TextKey.all.tr,
+      TextKey.chiyou.tr,
       TextKey.collect.tr,
       TextKey.delete.tr,
     ];
@@ -365,6 +369,11 @@ class HomestockController extends BaseController
 
   void clickOpCollect(StockItem item) {
     db.updateStockWithOp(item.copyWith(opCollect: !item.opCollect));
+    getDatas();
+  }
+
+  void clickOpBuy(StockItem item) {
+    db.updateStockWithOp(item.copyWith(opBuy: !item.opBuy));
     getDatas();
   }
 

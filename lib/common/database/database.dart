@@ -36,7 +36,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   //改表要处理合并migration
   @override
@@ -48,6 +48,9 @@ class AppDatabase extends _$AppDatabase {
           if (from == 2) {
             await migrator.createTable(stockItemTags);
             await migrator.createTable(stockTags);
+          }
+          if (from == 3) {
+            await migrator.addColumn(stockItems, stockItems.opBuy);
           }
         },
         onCreate: (migrator) async {
@@ -167,6 +170,18 @@ class AppDatabase extends _$AppDatabase {
   Future<List<StockItem>> getStockItemsOnHomeWithCollect() {
     return (select(stockItems)
           ..where((tbl) => tbl.opCollect.equals(true))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
+            (tbl) =>
+                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  Future<List<StockItem>> getStockItemsOnHomeWithBuy() {
+    return (select(stockItems)
+          ..where((tbl) => tbl.opBuy.equals(true))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),

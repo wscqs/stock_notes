@@ -464,6 +464,12 @@ class _HomeStockCellState extends State<HomeStockCell>
                     size: 15,
                     color: Colors.yellow.shade700,
                   ),
+                if (widget.item.opBuy)
+                  Icon(
+                    Icons.trending_up,
+                    size: 15,
+                    color: Colors.red.shade700,
+                  ),
                 kSpaceMax(),
               ],
             ),
@@ -523,7 +529,7 @@ class _HomeStockCellState extends State<HomeStockCell>
     final isRestoreMode = controller.selectedOrderIndex == 2;
 
     return ActionPane(
-      extentRatio: isRestoreMode ? 0.35 : 0.7,
+      extentRatio: isRestoreMode ? 0.35 : 0.8,
       motion: const BehindMotion(),
       children: isRestoreMode
           ? [
@@ -543,6 +549,14 @@ class _HomeStockCellState extends State<HomeStockCell>
               ),
             ]
           : [
+              SlideAction(
+                color: Colors.redAccent,
+                icon:
+                    widget.item.opBuy ? Icons.trending_flat : Icons.trending_up,
+                onPressed: () {
+                  controller.clickOpBuy(widget.item);
+                },
+              ),
               SlideAction(
                 color: Colors.blue,
                 icon: widget.item.opTop
