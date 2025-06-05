@@ -54,7 +54,6 @@ class TextKey {
   static const xugaibiaoqian = 'xugaibiaoqian';
   static const biaoqianmingyicunzai = 'biaoqianmingyicunzai';
   static const querengdelete = 'querengdelete';
-  static const gupiaozuiduo500shuliang = 'gupiaozuiduo500shuliang';
   static const mangzumaimai = 'mangzumaimai';
   static const mangzuBS = 'mangzuBS';
   static const mangzuB = 'mangzuB';
@@ -148,7 +147,6 @@ const Map<String, String> zh = {
   TextKey.xugaibiaoqian: '修改标签',
   TextKey.biaoqianmingyicunzai: '标签名已存在！',
   TextKey.querengdelete: '确定删除?',
-  TextKey.gupiaozuiduo500shuliang: '股票代码不能超过500个',
   TextKey.mangzumaimai: '满足买卖',
   TextKey.lingjinmaimai: '临近买卖',
   TextKey.mangzuBS: '满足买卖',
@@ -212,7 +210,6 @@ const Map<String, String> zh = {
 搜索栏
 
 一些说明：
-新加股票时非删除数据限制500（接口有限制，交互体验好点）
 临近买卖（默认设置3个点内) 修改：设置-股票 临近买卖点
 
 ''',
@@ -275,7 +272,6 @@ const Map<String, String> en = {
   TextKey.xugaibiaoqian: 'Edit Tag',
   TextKey.biaoqianmingyicunzai: 'The tag name already exists!',
   TextKey.querengdelete: 'Are you sure to delete?',
-  TextKey.gupiaozuiduo500shuliang: 'The number of stocks cannot exceed 500',
   TextKey.mangzumaimai: 'Meet BS',
   TextKey.lingjinmaimai: 'Near BS',
   TextKey.mangzuBS: 'MeetBS',
@@ -347,7 +343,6 @@ Search bar
 
 Some notes:
 
-- When adding new stocks, non-deletion data is limited to 500 (API limitations, for better user experience)
 - Near buy/sell (default set to 3 points) modification: settings - stocks - near buy/sell points
 
 ''',
