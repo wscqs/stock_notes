@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
@@ -221,11 +222,6 @@ class HomestockView extends GetView<HomestockController> {
             ],
           ),
         ),
-        // customButton: TextButton(
-        //     onPressed: () {
-        //       QsHud.showToast("message");
-        //     },
-        //     child: Text("data")),
         items: controller.order
             .map((String item) => DropdownItem<String>(
                   value: item,
@@ -568,7 +564,7 @@ class _HomeStockCellState extends State<HomeStockCell>
               ),
               SlideAction(
                 color: Colors.orange,
-                icon: Icons.tab,
+                icon: Remix.price_tag_3_line,
                 onPressed: () {
                   controller.clickPushTag(widget.item);
                 },
