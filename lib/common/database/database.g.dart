@@ -172,17 +172,23 @@ class $StockItemsTable extends StockItems
   late final GeneratedColumn<String> pPeTtmRemark = GeneratedColumn<String>(
       'p_pe_ttm_remark', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _pAllRemarkMeta =
-      const VerificationMeta('pAllRemark');
+  static const VerificationMeta _rAllRemarkMeta =
+      const VerificationMeta('rAllRemark');
   @override
-  late final GeneratedColumn<String> pAllRemark = GeneratedColumn<String>(
-      'p_all_remark', aliasedName, true,
+  late final GeneratedColumn<String> rAllRemark = GeneratedColumn<String>(
+      'r_all_remark', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _pEventRemarkMeta =
-      const VerificationMeta('pEventRemark');
+  static const VerificationMeta _rEventRemarkMeta =
+      const VerificationMeta('rEventRemark');
   @override
-  late final GeneratedColumn<String> pEventRemark = GeneratedColumn<String>(
-      'p_event_remark', aliasedName, true,
+  late final GeneratedColumn<String> rEventRemark = GeneratedColumn<String>(
+      'r_event_remark', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _rBuyPriceMeta =
+      const VerificationMeta('rBuyPrice');
+  @override
+  late final GeneratedColumn<String> rBuyPrice = GeneratedColumn<String>(
+      'r_buy_price', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
@@ -210,8 +216,9 @@ class $StockItemsTable extends StockItems
         pPeTtmBuy,
         pPeTtmSale,
         pPeTtmRemark,
-        pAllRemark,
-        pEventRemark
+        rAllRemark,
+        rEventRemark,
+        rBuyPrice
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -352,17 +359,23 @@ class $StockItemsTable extends StockItems
           pPeTtmRemark.isAcceptableOrUnknown(
               data['p_pe_ttm_remark']!, _pPeTtmRemarkMeta));
     }
-    if (data.containsKey('p_all_remark')) {
+    if (data.containsKey('r_all_remark')) {
       context.handle(
-          _pAllRemarkMeta,
-          pAllRemark.isAcceptableOrUnknown(
-              data['p_all_remark']!, _pAllRemarkMeta));
+          _rAllRemarkMeta,
+          rAllRemark.isAcceptableOrUnknown(
+              data['r_all_remark']!, _rAllRemarkMeta));
     }
-    if (data.containsKey('p_event_remark')) {
+    if (data.containsKey('r_event_remark')) {
       context.handle(
-          _pEventRemarkMeta,
-          pEventRemark.isAcceptableOrUnknown(
-              data['p_event_remark']!, _pEventRemarkMeta));
+          _rEventRemarkMeta,
+          rEventRemark.isAcceptableOrUnknown(
+              data['r_event_remark']!, _rEventRemarkMeta));
+    }
+    if (data.containsKey('r_buy_price')) {
+      context.handle(
+          _rBuyPriceMeta,
+          rBuyPrice.isAcceptableOrUnknown(
+              data['r_buy_price']!, _rBuyPriceMeta));
     }
     return context;
   }
@@ -421,10 +434,12 @@ class $StockItemsTable extends StockItems
           .read(DriftSqlType.string, data['${effectivePrefix}p_pe_ttm_sale']),
       pPeTtmRemark: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}p_pe_ttm_remark']),
-      pAllRemark: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}p_all_remark']),
-      pEventRemark: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}p_event_remark']),
+      rAllRemark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}r_all_remark']),
+      rEventRemark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}r_event_remark']),
+      rBuyPrice: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}r_buy_price']),
     );
   }
 
@@ -459,8 +474,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
   final String? pPeTtmBuy;
   final String? pPeTtmSale;
   final String? pPeTtmRemark;
-  final String? pAllRemark;
-  final String? pEventRemark;
+  final String? rAllRemark;
+  final String? rEventRemark;
+  final String? rBuyPrice;
   const StockItem(
       {required this.id,
       required this.createdAt,
@@ -486,8 +502,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       this.pPeTtmBuy,
       this.pPeTtmSale,
       this.pPeTtmRemark,
-      this.pAllRemark,
-      this.pEventRemark});
+      this.rAllRemark,
+      this.rEventRemark,
+      this.rBuyPrice});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -543,11 +560,14 @@ class StockItem extends DataClass implements Insertable<StockItem> {
     if (!nullToAbsent || pPeTtmRemark != null) {
       map['p_pe_ttm_remark'] = Variable<String>(pPeTtmRemark);
     }
-    if (!nullToAbsent || pAllRemark != null) {
-      map['p_all_remark'] = Variable<String>(pAllRemark);
+    if (!nullToAbsent || rAllRemark != null) {
+      map['r_all_remark'] = Variable<String>(rAllRemark);
     }
-    if (!nullToAbsent || pEventRemark != null) {
-      map['p_event_remark'] = Variable<String>(pEventRemark);
+    if (!nullToAbsent || rEventRemark != null) {
+      map['r_event_remark'] = Variable<String>(rEventRemark);
+    }
+    if (!nullToAbsent || rBuyPrice != null) {
+      map['r_buy_price'] = Variable<String>(rBuyPrice);
     }
     return map;
   }
@@ -606,12 +626,15 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       pPeTtmRemark: pPeTtmRemark == null && nullToAbsent
           ? const Value.absent()
           : Value(pPeTtmRemark),
-      pAllRemark: pAllRemark == null && nullToAbsent
+      rAllRemark: rAllRemark == null && nullToAbsent
           ? const Value.absent()
-          : Value(pAllRemark),
-      pEventRemark: pEventRemark == null && nullToAbsent
+          : Value(rAllRemark),
+      rEventRemark: rEventRemark == null && nullToAbsent
           ? const Value.absent()
-          : Value(pEventRemark),
+          : Value(rEventRemark),
+      rBuyPrice: rBuyPrice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rBuyPrice),
     );
   }
 
@@ -643,8 +666,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       pPeTtmBuy: serializer.fromJson<String?>(json['pPeTtmBuy']),
       pPeTtmSale: serializer.fromJson<String?>(json['pPeTtmSale']),
       pPeTtmRemark: serializer.fromJson<String?>(json['pPeTtmRemark']),
-      pAllRemark: serializer.fromJson<String?>(json['pAllRemark']),
-      pEventRemark: serializer.fromJson<String?>(json['pEventRemark']),
+      rAllRemark: serializer.fromJson<String?>(json['rAllRemark']),
+      rEventRemark: serializer.fromJson<String?>(json['rEventRemark']),
+      rBuyPrice: serializer.fromJson<String?>(json['rBuyPrice']),
     );
   }
   @override
@@ -675,8 +699,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       'pPeTtmBuy': serializer.toJson<String?>(pPeTtmBuy),
       'pPeTtmSale': serializer.toJson<String?>(pPeTtmSale),
       'pPeTtmRemark': serializer.toJson<String?>(pPeTtmRemark),
-      'pAllRemark': serializer.toJson<String?>(pAllRemark),
-      'pEventRemark': serializer.toJson<String?>(pEventRemark),
+      'rAllRemark': serializer.toJson<String?>(rAllRemark),
+      'rEventRemark': serializer.toJson<String?>(rEventRemark),
+      'rBuyPrice': serializer.toJson<String?>(rBuyPrice),
     };
   }
 
@@ -705,8 +730,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           Value<String?> pPeTtmBuy = const Value.absent(),
           Value<String?> pPeTtmSale = const Value.absent(),
           Value<String?> pPeTtmRemark = const Value.absent(),
-          Value<String?> pAllRemark = const Value.absent(),
-          Value<String?> pEventRemark = const Value.absent()}) =>
+          Value<String?> rAllRemark = const Value.absent(),
+          Value<String?> rEventRemark = const Value.absent(),
+          Value<String?> rBuyPrice = const Value.absent()}) =>
       StockItem(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -740,9 +766,10 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         pPeTtmSale: pPeTtmSale.present ? pPeTtmSale.value : this.pPeTtmSale,
         pPeTtmRemark:
             pPeTtmRemark.present ? pPeTtmRemark.value : this.pPeTtmRemark,
-        pAllRemark: pAllRemark.present ? pAllRemark.value : this.pAllRemark,
-        pEventRemark:
-            pEventRemark.present ? pEventRemark.value : this.pEventRemark,
+        rAllRemark: rAllRemark.present ? rAllRemark.value : this.rAllRemark,
+        rEventRemark:
+            rEventRemark.present ? rEventRemark.value : this.rEventRemark,
+        rBuyPrice: rBuyPrice.present ? rBuyPrice.value : this.rBuyPrice,
       );
   StockItem copyWithCompanion(StockItemsCompanion data) {
     return StockItem(
@@ -790,11 +817,12 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       pPeTtmRemark: data.pPeTtmRemark.present
           ? data.pPeTtmRemark.value
           : this.pPeTtmRemark,
-      pAllRemark:
-          data.pAllRemark.present ? data.pAllRemark.value : this.pAllRemark,
-      pEventRemark: data.pEventRemark.present
-          ? data.pEventRemark.value
-          : this.pEventRemark,
+      rAllRemark:
+          data.rAllRemark.present ? data.rAllRemark.value : this.rAllRemark,
+      rEventRemark: data.rEventRemark.present
+          ? data.rEventRemark.value
+          : this.rEventRemark,
+      rBuyPrice: data.rBuyPrice.present ? data.rBuyPrice.value : this.rBuyPrice,
     );
   }
 
@@ -825,8 +853,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           ..write('pPeTtmBuy: $pPeTtmBuy, ')
           ..write('pPeTtmSale: $pPeTtmSale, ')
           ..write('pPeTtmRemark: $pPeTtmRemark, ')
-          ..write('pAllRemark: $pAllRemark, ')
-          ..write('pEventRemark: $pEventRemark')
+          ..write('rAllRemark: $rAllRemark, ')
+          ..write('rEventRemark: $rEventRemark, ')
+          ..write('rBuyPrice: $rBuyPrice')
           ..write(')'))
         .toString();
   }
@@ -857,8 +886,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         pPeTtmBuy,
         pPeTtmSale,
         pPeTtmRemark,
-        pAllRemark,
-        pEventRemark
+        rAllRemark,
+        rEventRemark,
+        rBuyPrice
       ]);
   @override
   bool operator ==(Object other) =>
@@ -888,8 +918,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           other.pPeTtmBuy == this.pPeTtmBuy &&
           other.pPeTtmSale == this.pPeTtmSale &&
           other.pPeTtmRemark == this.pPeTtmRemark &&
-          other.pAllRemark == this.pAllRemark &&
-          other.pEventRemark == this.pEventRemark);
+          other.rAllRemark == this.rAllRemark &&
+          other.rEventRemark == this.rEventRemark &&
+          other.rBuyPrice == this.rBuyPrice);
 }
 
 class StockItemsCompanion extends UpdateCompanion<StockItem> {
@@ -917,8 +948,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
   final Value<String?> pPeTtmBuy;
   final Value<String?> pPeTtmSale;
   final Value<String?> pPeTtmRemark;
-  final Value<String?> pAllRemark;
-  final Value<String?> pEventRemark;
+  final Value<String?> rAllRemark;
+  final Value<String?> rEventRemark;
+  final Value<String?> rBuyPrice;
   const StockItemsCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -944,8 +976,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.pPeTtmBuy = const Value.absent(),
     this.pPeTtmSale = const Value.absent(),
     this.pPeTtmRemark = const Value.absent(),
-    this.pAllRemark = const Value.absent(),
-    this.pEventRemark = const Value.absent(),
+    this.rAllRemark = const Value.absent(),
+    this.rEventRemark = const Value.absent(),
+    this.rBuyPrice = const Value.absent(),
   });
   StockItemsCompanion.insert({
     this.id = const Value.absent(),
@@ -972,8 +1005,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.pPeTtmBuy = const Value.absent(),
     this.pPeTtmSale = const Value.absent(),
     this.pPeTtmRemark = const Value.absent(),
-    this.pAllRemark = const Value.absent(),
-    this.pEventRemark = const Value.absent(),
+    this.rAllRemark = const Value.absent(),
+    this.rEventRemark = const Value.absent(),
+    this.rBuyPrice = const Value.absent(),
   })  : marketType = Value(marketType),
         name = Value(name),
         code = Value(code);
@@ -1002,8 +1036,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     Expression<String>? pPeTtmBuy,
     Expression<String>? pPeTtmSale,
     Expression<String>? pPeTtmRemark,
-    Expression<String>? pAllRemark,
-    Expression<String>? pEventRemark,
+    Expression<String>? rAllRemark,
+    Expression<String>? rEventRemark,
+    Expression<String>? rBuyPrice,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1030,8 +1065,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       if (pPeTtmBuy != null) 'p_pe_ttm_buy': pPeTtmBuy,
       if (pPeTtmSale != null) 'p_pe_ttm_sale': pPeTtmSale,
       if (pPeTtmRemark != null) 'p_pe_ttm_remark': pPeTtmRemark,
-      if (pAllRemark != null) 'p_all_remark': pAllRemark,
-      if (pEventRemark != null) 'p_event_remark': pEventRemark,
+      if (rAllRemark != null) 'r_all_remark': rAllRemark,
+      if (rEventRemark != null) 'r_event_remark': rEventRemark,
+      if (rBuyPrice != null) 'r_buy_price': rBuyPrice,
     });
   }
 
@@ -1060,8 +1096,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       Value<String?>? pPeTtmBuy,
       Value<String?>? pPeTtmSale,
       Value<String?>? pPeTtmRemark,
-      Value<String?>? pAllRemark,
-      Value<String?>? pEventRemark}) {
+      Value<String?>? rAllRemark,
+      Value<String?>? rEventRemark,
+      Value<String?>? rBuyPrice}) {
     return StockItemsCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
@@ -1087,8 +1124,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       pPeTtmBuy: pPeTtmBuy ?? this.pPeTtmBuy,
       pPeTtmSale: pPeTtmSale ?? this.pPeTtmSale,
       pPeTtmRemark: pPeTtmRemark ?? this.pPeTtmRemark,
-      pAllRemark: pAllRemark ?? this.pAllRemark,
-      pEventRemark: pEventRemark ?? this.pEventRemark,
+      rAllRemark: rAllRemark ?? this.rAllRemark,
+      rEventRemark: rEventRemark ?? this.rEventRemark,
+      rBuyPrice: rBuyPrice ?? this.rBuyPrice,
     );
   }
 
@@ -1167,11 +1205,14 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     if (pPeTtmRemark.present) {
       map['p_pe_ttm_remark'] = Variable<String>(pPeTtmRemark.value);
     }
-    if (pAllRemark.present) {
-      map['p_all_remark'] = Variable<String>(pAllRemark.value);
+    if (rAllRemark.present) {
+      map['r_all_remark'] = Variable<String>(rAllRemark.value);
     }
-    if (pEventRemark.present) {
-      map['p_event_remark'] = Variable<String>(pEventRemark.value);
+    if (rEventRemark.present) {
+      map['r_event_remark'] = Variable<String>(rEventRemark.value);
+    }
+    if (rBuyPrice.present) {
+      map['r_buy_price'] = Variable<String>(rBuyPrice.value);
     }
     return map;
   }
@@ -1203,8 +1244,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
           ..write('pPeTtmBuy: $pPeTtmBuy, ')
           ..write('pPeTtmSale: $pPeTtmSale, ')
           ..write('pPeTtmRemark: $pPeTtmRemark, ')
-          ..write('pAllRemark: $pAllRemark, ')
-          ..write('pEventRemark: $pEventRemark')
+          ..write('rAllRemark: $rAllRemark, ')
+          ..write('rEventRemark: $rEventRemark, ')
+          ..write('rBuyPrice: $rBuyPrice')
           ..write(')'))
         .toString();
   }
@@ -2035,8 +2077,9 @@ typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
   Value<String?> pPeTtmBuy,
   Value<String?> pPeTtmSale,
   Value<String?> pPeTtmRemark,
-  Value<String?> pAllRemark,
-  Value<String?> pEventRemark,
+  Value<String?> rAllRemark,
+  Value<String?> rEventRemark,
+  Value<String?> rBuyPrice,
 });
 typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<int> id,
@@ -2063,8 +2106,9 @@ typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<String?> pPeTtmBuy,
   Value<String?> pPeTtmSale,
   Value<String?> pPeTtmRemark,
-  Value<String?> pAllRemark,
-  Value<String?> pEventRemark,
+  Value<String?> rAllRemark,
+  Value<String?> rEventRemark,
+  Value<String?> rBuyPrice,
 });
 
 final class $$StockItemsTableReferences
@@ -2170,11 +2214,14 @@ class $$StockItemsTableFilterComposer
   ColumnFilters<String> get pPeTtmRemark => $composableBuilder(
       column: $table.pPeTtmRemark, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get pAllRemark => $composableBuilder(
-      column: $table.pAllRemark, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get rAllRemark => $composableBuilder(
+      column: $table.rAllRemark, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get pEventRemark => $composableBuilder(
-      column: $table.pEventRemark, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get rEventRemark => $composableBuilder(
+      column: $table.rEventRemark, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get rBuyPrice => $composableBuilder(
+      column: $table.rBuyPrice, builder: (column) => ColumnFilters(column));
 
   Expression<bool> stockTagsRefs(
       Expression<bool> Function($$StockTagsTableFilterComposer f) f) {
@@ -2287,12 +2334,15 @@ class $$StockItemsTableOrderingComposer
       column: $table.pPeTtmRemark,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get pAllRemark => $composableBuilder(
-      column: $table.pAllRemark, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get rAllRemark => $composableBuilder(
+      column: $table.rAllRemark, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get pEventRemark => $composableBuilder(
-      column: $table.pEventRemark,
+  ColumnOrderings<String> get rEventRemark => $composableBuilder(
+      column: $table.rEventRemark,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get rBuyPrice => $composableBuilder(
+      column: $table.rBuyPrice, builder: (column) => ColumnOrderings(column));
 }
 
 class $$StockItemsTableAnnotationComposer
@@ -2376,11 +2426,14 @@ class $$StockItemsTableAnnotationComposer
   GeneratedColumn<String> get pPeTtmRemark => $composableBuilder(
       column: $table.pPeTtmRemark, builder: (column) => column);
 
-  GeneratedColumn<String> get pAllRemark => $composableBuilder(
-      column: $table.pAllRemark, builder: (column) => column);
+  GeneratedColumn<String> get rAllRemark => $composableBuilder(
+      column: $table.rAllRemark, builder: (column) => column);
 
-  GeneratedColumn<String> get pEventRemark => $composableBuilder(
-      column: $table.pEventRemark, builder: (column) => column);
+  GeneratedColumn<String> get rEventRemark => $composableBuilder(
+      column: $table.rEventRemark, builder: (column) => column);
+
+  GeneratedColumn<String> get rBuyPrice =>
+      $composableBuilder(column: $table.rBuyPrice, builder: (column) => column);
 
   Expression<T> stockTagsRefs<T extends Object>(
       Expression<T> Function($$StockTagsTableAnnotationComposer a) f) {
@@ -2451,8 +2504,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<String?> pPeTtmBuy = const Value.absent(),
             Value<String?> pPeTtmSale = const Value.absent(),
             Value<String?> pPeTtmRemark = const Value.absent(),
-            Value<String?> pAllRemark = const Value.absent(),
-            Value<String?> pEventRemark = const Value.absent(),
+            Value<String?> rAllRemark = const Value.absent(),
+            Value<String?> rEventRemark = const Value.absent(),
+            Value<String?> rBuyPrice = const Value.absent(),
           }) =>
               StockItemsCompanion(
             id: id,
@@ -2479,8 +2533,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             pPeTtmBuy: pPeTtmBuy,
             pPeTtmSale: pPeTtmSale,
             pPeTtmRemark: pPeTtmRemark,
-            pAllRemark: pAllRemark,
-            pEventRemark: pEventRemark,
+            rAllRemark: rAllRemark,
+            rEventRemark: rEventRemark,
+            rBuyPrice: rBuyPrice,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -2507,8 +2562,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<String?> pPeTtmBuy = const Value.absent(),
             Value<String?> pPeTtmSale = const Value.absent(),
             Value<String?> pPeTtmRemark = const Value.absent(),
-            Value<String?> pAllRemark = const Value.absent(),
-            Value<String?> pEventRemark = const Value.absent(),
+            Value<String?> rAllRemark = const Value.absent(),
+            Value<String?> rEventRemark = const Value.absent(),
+            Value<String?> rBuyPrice = const Value.absent(),
           }) =>
               StockItemsCompanion.insert(
             id: id,
@@ -2535,8 +2591,9 @@ class $$StockItemsTableTableManager extends RootTableManager<
             pPeTtmBuy: pPeTtmBuy,
             pPeTtmSale: pPeTtmSale,
             pPeTtmRemark: pPeTtmRemark,
-            pAllRemark: pAllRemark,
-            pEventRemark: pEventRemark,
+            rAllRemark: rAllRemark,
+            rEventRemark: rEventRemark,
+            rBuyPrice: rBuyPrice,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (

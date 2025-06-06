@@ -86,9 +86,30 @@ class StockeditView extends GetView<StockeditController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(TextKey.jilu.tr, style: Get.textTheme.titleLarge),
-          kSpaceH(12),
+          kSpaceH(16),
+          Row(
+            children: [
+              SizedBox(
+                width: 120,
+                child: TextField(
+                  controller: controller.rBuyPriceController,
+                  decoration:
+                      InputDecoration(labelText: TextKey.chiyouchengbenjia.tr),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              if (controller.rBuyPriceYieldRate.value != 0.00001)
+                Text(
+                  "${TextKey.shouyilv.tr}: ${(controller.rBuyPriceYieldRate.value * 100).toStringAsFixed(1)}%",
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+            ],
+          ),
+          kSpaceH(16),
           TextField(
-            controller: controller.pAllRemarkController,
+            controller: controller.rAllRemarkController,
             maxLines: null, // 允许多行输入
             decoration: InputDecoration(
               labelText: TextKey.beizui.tr,
@@ -99,7 +120,7 @@ class StockeditView extends GetView<StockeditController> {
           ),
           kSpaceH(16),
           TextField(
-            controller: controller.pEventRemarkController,
+            controller: controller.rEventRemarkController,
             maxLines: null, // 允许多行输入
             decoration: InputDecoration(
               labelText: TextKey.shijian.tr + TextKey.jilu.tr,
@@ -232,10 +253,11 @@ class StockeditView extends GetView<StockeditController> {
                   kSpaceW(12),
                   if (yieldRate > 0)
                     Text(
-                        "${TextKey.shouyilv.tr}: ${(yieldRate * 100).toStringAsFixed(1)}%",
-                        style: TextStyle(
-                          color: Colors.grey,
-                        )),
+                      "${TextKey.shouyilv.tr}: ${(yieldRate * 100).toStringAsFixed(1)}%",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
                 ],
               ),
               kSpaceH(16),

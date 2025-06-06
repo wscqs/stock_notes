@@ -36,23 +36,23 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 1;
 
   //改表要处理合并migration
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (migrator, from, to) async {
-          if (from == 1) {
-            await migrator.createTable(noteItems);
-          }
-          if (from == 2) {
-            await migrator.createTable(stockItemTags);
-            await migrator.createTable(stockTags);
-          }
-          if (from == 3) {
-            await migrator.addColumn(stockItems, stockItems.opBuy);
-          }
-        },
+        // onUpgrade: (migrator, from, to) async {
+        //   if (from == 1) {
+        //     await migrator.createTable(noteItems);
+        //   }
+        //   if (from == 2) {
+        //     await migrator.createTable(stockItemTags);
+        //     await migrator.createTable(stockTags);
+        //   }
+        //   if (from == 3) {
+        //     await migrator.addColumn(stockItems, stockItems.opBuy);
+        //   }
+        // },
         onCreate: (migrator) async {
           await migrator.createAll();
           //标签默认加五个。 短期，中期，长期，买，卖

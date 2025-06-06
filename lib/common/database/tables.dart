@@ -27,8 +27,11 @@ class StockItems extends Table with TableMixin {
   TextColumn get pPeTtmBuy => text().nullable()();
   TextColumn get pPeTtmSale => text().nullable()();
   TextColumn get pPeTtmRemark => text().nullable()();
-  TextColumn get pAllRemark => text().nullable()();
-  TextColumn get pEventRemark => text().nullable()();
+
+  //记录
+  TextColumn get rAllRemark => text().nullable()();
+  TextColumn get rEventRemark => text().nullable()();
+  TextColumn get rBuyPrice => text().nullable()(); //买入成本
 }
 
 class NoteItems extends Table with TableMixin {

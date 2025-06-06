@@ -25,8 +25,9 @@ class StockeditController extends GetxController {
   final pPeTtmBuyController = TextEditingController();
   final pPeTtmSaleController = TextEditingController();
   final pPeTtmRemarkController = TextEditingController();
-  final pAllRemarkController = TextEditingController();
-  final pEventRemarkController = TextEditingController();
+  final rAllRemarkController = TextEditingController();
+  final rEventRemarkController = TextEditingController();
+  final rBuyPriceController = TextEditingController();
 
   final serStockData = StockTxModel().obs;
   final localStockData = Rxn<StockItem>();
@@ -43,6 +44,7 @@ class StockeditController extends GetxController {
   final pPriceSalePoints = 0.0.obs;
   final pMarketCapSalePoints = 0.0.obs;
   final pPeTtmSalePoints = 0.0.obs;
+  final rBuyPriceYieldRate = 0.00001.obs;
 
   @override
   void onInit() {
@@ -54,6 +56,7 @@ class StockeditController extends GetxController {
     pMarketCapSaleController.addListener(_updateYieldRate);
     pPeTtmBuyController.addListener(_updateYieldRate);
     pPeTtmSaleController.addListener(_updateYieldRate);
+    rBuyPriceController.addListener(_updateBuyPriceYieldRate);
 
     localStockData.value = Get.arguments;
     if (localStockData.value != null) {
@@ -82,8 +85,9 @@ class StockeditController extends GetxController {
       pPeTtmBuyController.text = localStockData.value?.pPeTtmBuy ?? "";
       pPeTtmSaleController.text = localStockData.value?.pPeTtmSale ?? "";
       pPeTtmRemarkController.text = localStockData.value?.pPeTtmRemark ?? "";
-      pAllRemarkController.text = localStockData.value?.pAllRemark ?? "";
-      pEventRemarkController.text = localStockData.value?.pEventRemark ?? "";
+      rBuyPriceController.text = localStockData.value?.rBuyPrice ?? "";
+      rAllRemarkController.text = localStockData.value?.rAllRemark ?? "";
+      rEventRemarkController.text = localStockData.value?.rEventRemark ?? "";
 
       if ((serStockData.value.code ?? "").isEmpty) {
         serStockData.value = StockTxModel(
@@ -110,8 +114,8 @@ class StockeditController extends GetxController {
       pPeTtmBuyController.text = "";
       pPeTtmSaleController.text = "";
       pPeTtmRemarkController.text = "";
-      pAllRemarkController.text = "";
-      pEventRemarkController.text = "";
+      rAllRemarkController.text = "";
+      rEventRemarkController.text = "";
     }
   }
 
@@ -141,11 +145,29 @@ class StockeditController extends GetxController {
               double.parse(pPeTtmBuyController.text)) /
           double.parse(pPeTtmBuyController.text);
     }
+
     _updateBuySalePoints();
+  }
+
+  void _updateBuyPriceYieldRate() {
+    if ((serStockData.value.code ?? "").isNotEmpty) {
+      final buyPriceText = rBuyPriceController.text;
+      final currentPriceText = serStockData.value.currentPrice;
+
+      final buyPrice = double.tryParse(buyPriceText);
+      final currentPrice = double.tryParse(currentPriceText ?? "");
+
+      if (buyPrice != null && buyPrice != 0 && currentPrice != null) {
+        rBuyPriceYieldRate.value = (currentPrice - buyPrice) / buyPrice;
+      } else {
+        rBuyPriceYieldRate.value = 0.00001;
+      }
+    }
   }
 
   void _updateBuySalePoints() {
     if ((serStockData.value.code ?? "").isNotEmpty) {
+      _updateBuyPriceYieldRate();
       if (pPriceBuyController.text.isNotEmpty &&
           serStockData.value.currentPrice!.isNotEmpty) {
         pPriceBuyPoints.value = (double.parse(pPriceBuyController.text) -
@@ -271,8 +293,9 @@ class StockeditController extends GetxController {
       pPeTtmBuy: Value(pPeTtmBuyController.text),
       pPeTtmSale: Value(pPeTtmSaleController.text),
       pPeTtmRemark: Value(pPeTtmRemarkController.text),
-      pAllRemark: Value(pAllRemarkController.text),
-      pEventRemark: Value(pEventRemarkController.text),
+      rBuyPrice: Value(rBuyPriceController.text),
+      rAllRemark: Value(rAllRemarkController.text),
+      rEventRemark: Value(rEventRemarkController.text),
     );
     if (localStockData.value != null) {
       //localStockData 更新
@@ -317,6 +340,8 @@ class StockeditController extends GetxController {
     pPeTtmBuyController.dispose();
     pPeTtmSaleController.removeListener(_updateYieldRate);
     pPeTtmSaleController.dispose();
+    rBuyPriceController.removeListener(_updateBuyPriceYieldRate);
+    rBuyPriceController.dispose();
     super.onClose();
   }
 }
