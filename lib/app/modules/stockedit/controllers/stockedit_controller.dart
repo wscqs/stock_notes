@@ -9,8 +9,10 @@ import 'package:stock_notes/utils/qs_hud.dart';
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../common/web/webview_page.dart';
+import '../../../routes/app_pages.dart';
+import '../../base/base_Controller.dart';
 
-class StockeditController extends GetxController {
+class StockeditController extends BaseController {
   final db = Get.find<DatabaseManager>().db;
   final stockNum = "".obs;
   final stockNumController = TextEditingController();
@@ -45,6 +47,8 @@ class StockeditController extends GetxController {
   final pMarketCapSalePoints = 0.0.obs;
   final pPeTtmSalePoints = 0.0.obs;
   final rBuyPriceYieldRate = 0.00001.obs;
+
+  var isFirstCome = true;
 
   @override
   void onInit() {
@@ -257,6 +261,32 @@ class StockeditController extends GetxController {
     }
   }
 
+  Future<void> firstSaveDbAndRefreshUI() async {
+    //键盘隐藏
+    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    if (serStockData.value.code != null) {
+      //本地看看有没有，有就直接变修改本地数据
+      if (!isLocalData.value) {
+        final db = Get.find<DatabaseManager>().db;
+        var stockItem = await db.getStockItem(serStockData.value.code!);
+        localStockData.value = stockItem;
+        isLocalData.value = true;
+        _dealHasLocalDataRefreshUI();
+      }
+    }
+  }
+
+  //进入别的页面后后退刷新UI(现在只改变了标签）
+  Future<void> _dbSomeDataRefreshUI() async {
+    if (isLocalData.value) {
+      final db = Get.find<DatabaseManager>().db;
+      var stockItem =
+          await db.getStockItemWithTagsByCode(localStockData.value!.code!);
+      localStockData.value!.tagList = stockItem!.tagList;
+      localStockData.refresh();
+    }
+  }
+
   void _updateDbStockBasicInfo() {
     StockItemsCompanion itemUpdate = StockItemsCompanion.insert(
       id: Value(localStockData.value!.id),
@@ -307,7 +337,11 @@ class StockeditController extends GetxController {
       db.addStock(itemCompanion);
     }
     QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
-    Get.back();
+    if (!isLocalData.value) {
+      firstSaveDbAndRefreshUI();
+    } else {
+      Get.back();
+    }
   }
 
   void clearStockNum() {
@@ -343,5 +377,59 @@ class StockeditController extends GetxController {
     rBuyPriceController.removeListener(_updateBuyPriceYieldRate);
     rBuyPriceController.dispose();
     super.onClose();
+  }
+
+  void clickOpCollect() {
+    // db.updateStockWithOp(item.copyWith(opCollect: !item.opCollect));
+    // getDatas();
+  }
+
+  void clickOpBuy() {
+    // db.updateStockWithOp(item.copyWith(opBuy: !item.opBuy));
+    // getDatas();
+  }
+
+  void clickOpRestore() {
+    // db.updateStockWithOp(item.copyWith(opDelete: false));
+    // getDatas();
+  }
+
+  void clickOpDelete() {
+    // if (isCurrentDeleteList()) {
+    //   //删除列表真正删除
+    //   db.deleteStock(item);
+    // } else {
+    //   db.updateStockWithOp(item.copyWith(opDelete: true));
+    // }
+    // getDatas();
+  }
+
+  //本地删除
+  void clickDbDelete() {
+    // db.deleteStock(item);
+    // getDatas();
+  }
+
+  void clickPushTag() {
+    if (!isLocalData.value) {
+      QsHud.showToast("请先保存到数据库");
+      return;
+    }
+    Get.toNamed(Routes.TAGSEDIT, arguments: localStockData.value);
+  }
+
+  @override
+  void onResume() {
+    super.onResume();
+    if (isFirstCome) {
+      isFirstCome = false;
+    } else {
+      _dbSomeDataRefreshUI(); //后退才刷新UI
+    }
+  }
+
+  @override
+  void onPause() {
+    super.onPause();
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
+import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../commonwidget/stock_searchfield.dart';
 import '../controllers/stockedit_controller.dart';
@@ -32,9 +35,26 @@ class StockeditView extends GetView<StockeditController> {
             ],
           ),
           body: Obx(() {
-            return buildContentView(context);
+            return _visibilityDetectorWithCustomScrollView(context);
           })),
     );
+  }
+
+  Widget _visibilityDetectorWithCustomScrollView(BuildContext context) {
+    return VisibilityDetector(
+        key: Key("StockeditViewVisibilityKey"),
+        onVisibilityChanged: (VisibilityInfo info) {
+          if (info.visibleFraction == 0) {
+            // print('Widget is not visible');
+            // controller.onPause();
+          } else if (info.visibleFraction == 1) {
+            // print('Widget is fully visible');
+            controller.onResume();
+          } else {
+            // print('Widget is partially visible');
+          }
+        },
+        child: buildContentView(context));
   }
 
   Widget buildContentView(BuildContext context) {
@@ -301,17 +321,20 @@ class StockeditView extends GetView<StockeditController> {
                     ),
                   )),
               InkWell(
-                  onTap: () {
-                    controller.clickLookStock();
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        left: 8, right: 12, top: 12, bottom: 12),
-                    child: Icon(
-                      Icons.web,
-                      size: 20,
-                    ),
-                  )),
+                onTap: () {
+                  controller.clickLookStock();
+                },
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+                  child: Icon(
+                    Icons.web,
+                    size: 20,
+                  ),
+                ),
+              ),
+              kSpaceMax(),
+              buildEditRowBtns(),
             ],
           ],
         ),
@@ -319,31 +342,82 @@ class StockeditView extends GetView<StockeditController> {
         (controller.serStockData.value.code != null)
             ? Text(controller.serStockData.value.showAllInfo())
             : Text(TextKey.no.tr, style: TextStyle(color: Colors.grey)),
-
-        // RichText(
-        //   text: TextSpan(
-        //     text: controller.stockData.value.name ?? "",
-        //     // style: DefaultTextStyle.of(context).style,
-        //     children: <TextSpan>[
-        //       TextSpan(
-        //         text: controller.stockData.value.code ?? "",
-        //       ),
-        //       TextSpan(
-        //         text: '股价：16.00',
-        //       ),
-        //       TextSpan(
-        //         text: '市值：16.00',
-        //       ),
-        //       TextSpan(
-        //         text: '市盈（TTM）：16.00',
-        //       ),
-        //       TextSpan(
-        //         text: '市净：16.00',
-        //       ),
-        //     ],
-        //   ),
-        // ),
+        if ((controller.localStockData.value?.tagList.length ?? 0) > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 4, top: 2),
+                  child: Icon(
+                    RemixIcons.price_tag_3_line,
+                    size: 12,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    controller.localStockData.value?.homeCellShowTagNames() ??
+                        "",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     );
+  }
+
+  Widget buildEditRowBtns() {
+    return Row(children: [
+      InkWell(
+        onTap: () {
+          controller.clickOpBuy();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+          child: Icon(
+            Icons.trending_up,
+            size: 20,
+          ),
+        ),
+      ),
+      InkWell(
+        onTap: () {
+          controller.clickPushTag();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+          child: Icon(
+            Remix.price_tag_3_line,
+            size: 20,
+          ),
+        ),
+      ),
+      InkWell(
+        onTap: () {
+          controller.clickOpDelete();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+          child: Icon(
+            Icons.star_border,
+            size: 20,
+          ),
+        ),
+      ),
+      InkWell(
+        onTap: () {
+          controller.clickOpDelete();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+          child: Icon(
+            Icons.delete_forever,
+            size: 20,
+          ),
+        ),
+      ),
+    ]);
   }
 }

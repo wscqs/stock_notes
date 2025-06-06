@@ -487,14 +487,22 @@ class _HomeStockCellState extends State<HomeStockCell>
             ),
             kSpaceH(4),
             Row(
-              spacing: 8,
               children: [
+                if (widget.item.tagList.length > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Icon(
+                      RemixIcons.price_tag_3_line,
+                      size: 10,
+                    ),
+                  ),
                 Expanded(
                   child: Text(
                     widget.item.homeCellShowTagNames() ?? "",
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
+                kSpaceW(8),
                 SizedBox(
                   width: 76,
                   child: Text(

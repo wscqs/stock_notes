@@ -142,6 +142,25 @@ class AppDatabase extends _$AppDatabase {
     return items;
   }
 
+  Future<StockItem?> getStockItemWithTagsByCode(String code) async {
+    // 查询主对象
+    final item = await (select(stockItems)
+          ..where((tbl) => tbl.code.equals(code)))
+        .getSingleOrNull();
+    if (item == null) return null;
+    // 查询关联的标签
+    final tagJoinQuery = select(stockItemTags).join([
+      innerJoin(stockTags, stockTags.tagId.equalsExp(stockItemTags.id)),
+    ])
+      ..where(stockTags.stockId.equals(item.id));
+    final joinedRows = await tagJoinQuery.get();
+    // 提取标签
+    final tagList =
+        joinedRows.map((row) => row.readTable(stockItemTags)).toList();
+    item.tagList = tagList;
+    return item;
+  }
+
   //排除掉删除的，时间倒叙，置顶排序。
   Future<List<StockItem>> getStockItemsOnHome() {
     return (select(stockItems)
