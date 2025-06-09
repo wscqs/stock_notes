@@ -530,7 +530,7 @@ class _HomeStockCellState extends State<HomeStockCell>
   }
 
   ActionPane buildActionPane() {
-    final isRestoreMode = controller.selectedOrderIndex == 2;
+    final isRestoreMode = controller.selectedOrderIndex == 3;
 
     return ActionPane(
       extentRatio: isRestoreMode ? 0.35 : 0.8,

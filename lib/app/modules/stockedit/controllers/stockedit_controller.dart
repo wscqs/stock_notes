@@ -287,6 +287,17 @@ class StockeditController extends BaseController {
     }
   }
 
+  //恢复功能现在有用这
+  Future<void> _dbAllDataRefreshUI() async {
+    if (isLocalData.value) {
+      final db = Get.find<DatabaseManager>().db;
+      var stockItem =
+          await db.getStockItemWithTagsByCode(localStockData.value!.code!);
+      localStockData.value = stockItem;
+      localStockData.refresh();
+    }
+  }
+
   void _updateDbStockBasicInfo() {
     StockItemsCompanion itemUpdate = StockItemsCompanion.insert(
       id: Value(localStockData.value!.id),
@@ -380,39 +391,49 @@ class StockeditController extends BaseController {
   }
 
   void clickOpCollect() {
-    // db.updateStockWithOp(item.copyWith(opCollect: !item.opCollect));
-    // getDatas();
+    if (!isLocalData.value) {
+      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
+      return;
+    }
+    db.updateStockWithOp(localStockData.value!
+        .copyWith(opCollect: !localStockData.value!.opCollect));
+    _dbAllDataRefreshUI();
   }
 
   void clickOpBuy() {
-    // db.updateStockWithOp(item.copyWith(opBuy: !item.opBuy));
-    // getDatas();
+    if (!isLocalData.value) {
+      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
+      return;
+    }
+    db.updateStockWithOp(
+        localStockData.value!.copyWith(opBuy: !localStockData.value!.opBuy));
+    _dbAllDataRefreshUI();
   }
 
   void clickOpRestore() {
-    // db.updateStockWithOp(item.copyWith(opDelete: false));
-    // getDatas();
+    db.updateStockWithOp(localStockData.value!.copyWith(opDelete: false));
+    _dbAllDataRefreshUI();
   }
 
   void clickOpDelete() {
-    // if (isCurrentDeleteList()) {
-    //   //删除列表真正删除
-    //   db.deleteStock(item);
-    // } else {
-    //   db.updateStockWithOp(item.copyWith(opDelete: true));
-    // }
-    // getDatas();
-  }
-
-  //本地删除
-  void clickDbDelete() {
-    // db.deleteStock(item);
-    // getDatas();
+    if (!isLocalData.value) {
+      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
+      return;
+    }
+    if (localStockData.value?.opDelete ?? false) {
+      db.deleteStock(localStockData.value!);
+      QsHud.showToast(TextKey.delete.tr + TextKey.success.tr);
+      Get.back();
+    } else {
+      db.updateStockWithOp(localStockData.value!.copyWith(opDelete: true));
+      QsHud.showToast(TextKey.yidaoshanchuliebiao.tr);
+      Get.back();
+    }
   }
 
   void clickPushTag() {
     if (!isLocalData.value) {
-      QsHud.showToast("请先保存到数据库");
+      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
       return;
     }
     Get.toNamed(Routes.TAGSEDIT, arguments: localStockData.value);

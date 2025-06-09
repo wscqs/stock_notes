@@ -21,9 +21,30 @@ class StockeditView extends GetView<StockeditController> {
       child: Scaffold(
           appBar: AppBar(
             title: Obx(() {
-              return Text(controller.isLocalData.value
-                  ? controller.localStockData.value!.name
-                  : TextKey.gupiao.tr);
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(controller.isLocalData.value
+                            ? controller.localStockData.value!.name
+                            : TextKey.gupiao.tr),
+                        if (controller.localStockData?.value?.opDelete ?? false)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Icon(
+                              Icons.delete,
+                              size: 16,
+                              color: Colors.red,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
             }),
             centerTitle: true,
             actions: [
@@ -334,7 +355,7 @@ class StockeditView extends GetView<StockeditController> {
                 ),
               ),
               kSpaceMax(),
-              buildEditRowBtns(),
+              buildActionButtons(),
             ],
           ],
         ),
@@ -368,40 +389,84 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
+  Widget buildActionButtons() {
+    if (controller.localStockData.value?.opDelete == true) {
+      return buildEditRestoreRowBtns();
+    } else {
+      return buildEditRowBtns();
+    }
+  }
+
   Widget buildEditRowBtns() {
+    return Opacity(
+      opacity: (controller.isLocalData.value ? 1.0 : 0.3),
+      child: Row(children: [
+        InkWell(
+          onTap: () {
+            controller.clickOpBuy();
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+            child: Icon(
+              (controller.localStockData.value?.opBuy ?? false)
+                  ? Icons.trending_flat
+                  : Icons.trending_up,
+              size: 20,
+            ),
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            controller.clickPushTag();
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+            child: Icon(
+              Remix.price_tag_3_line,
+              size: 20,
+            ),
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            controller.clickOpCollect();
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+            child: Icon(
+              (controller.localStockData.value?.opCollect ?? false)
+                  ? Icons.star
+                  : Icons.star_border_outlined,
+              size: 20,
+            ),
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            controller.clickOpDelete();
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+            child: Icon(
+              Icons.delete_forever,
+              size: 20,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget buildEditRestoreRowBtns() {
     return Row(children: [
       InkWell(
         onTap: () {
-          controller.clickOpBuy();
+          controller.clickOpRestore();
         },
         child: Padding(
           padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
           child: Icon(
-            Icons.trending_up,
-            size: 20,
-          ),
-        ),
-      ),
-      InkWell(
-        onTap: () {
-          controller.clickPushTag();
-        },
-        child: Padding(
-          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-          child: Icon(
-            Remix.price_tag_3_line,
-            size: 20,
-          ),
-        ),
-      ),
-      InkWell(
-        onTap: () {
-          controller.clickOpDelete();
-        },
-        child: Padding(
-          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-          child: Icon(
-            Icons.star_border,
+            Icons.restore,
             size: 20,
           ),
         ),
