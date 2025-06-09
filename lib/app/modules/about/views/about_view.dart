@@ -30,10 +30,11 @@ class AboutView extends GetView<AboutController> {
           Container(
             padding: EdgeInsets.all(16.r),
             child: SimpleCell(
-              title: TextKey.lianxi.tr,
+              title: TextKey.guanyu.tr,
               radius: 8,
               onPressed: () {
-                controller.toCustomerService();
+                controller.toGithub();
+                // controller.toCustomerService();
               },
             ),
           )

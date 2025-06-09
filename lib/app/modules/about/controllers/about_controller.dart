@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../common/langs/text_key.dart';
 
 class AboutController extends GetxController {
-
-
-
   void toCustomerService() {
     Get.dialog(AlertDialog(
       title: Text(TextKey.lianxi.tr),
@@ -18,5 +17,11 @@ class AboutController extends GetxController {
             child: Text(TextKey.queding.tr))
       ],
     ));
+  }
+
+  final Uri _url = Uri.parse('https://github.com/wscqs/stock_notes');
+
+  void toGithub() {
+    launchUrl(_url);
   }
 }
