@@ -248,9 +248,6 @@ class HomestockView extends GetView<HomestockController> {
           width: 72,
         ),
         dropdownStyleData: DropdownStyleData(
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.circular(8),
-          // ),
           width: 80,
           offset: const Offset(-8, 0),
         ),
@@ -519,9 +516,25 @@ class _HomeStockCellState extends State<HomeStockCell>
           top: 0,
           child: SizedBox(
             width: 76,
-            child: Text(
-              widget.item.showCellConditionInfo() ?? "",
-              style: TextStyle(fontSize: 10),
+            child: Text.rich(
+              TextSpan(
+                style: TextStyle(fontSize: 10), // 默认样式
+                children: (widget.item.showCellConditionInfo() ?? "")
+                    .split('')
+                    .map((char) {
+                  if (char == 'B') {
+                    return TextSpan(
+                        text: char,
+                        style: TextStyle(color: Colors.red, fontSize: 11));
+                  } else if (char == 'S') {
+                    return TextSpan(
+                        text: char,
+                        style: TextStyle(color: Colors.blue, fontSize: 11));
+                  } else {
+                    return TextSpan(text: char); // 默认样式
+                  }
+                }).toList(),
+              ),
             ),
           ),
         )

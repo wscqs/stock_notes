@@ -534,6 +534,9 @@ extension StockItemExt on StockItem {
           ":" +
           peTtmCondition.label;
     }
+    //把showCellConditionInfo 里面的所有买替换成 B，卖替换成 S
+    showCellConditionInfo =
+        showCellConditionInfo.replaceAll('买', 'B').replaceAll('卖', 'S');
     return showCellConditionInfo;
   }
 
