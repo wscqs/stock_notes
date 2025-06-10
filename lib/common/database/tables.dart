@@ -32,6 +32,16 @@ class StockItems extends Table with TableMixin {
   TextColumn get rAllRemark => text().nullable()();
   TextColumn get rEventRemark => text().nullable()();
   TextColumn get rBuyPrice => text().nullable()(); //买入成本
+
+  //条件
+  DateTimeColumn get cMeetUpdateAt =>
+      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get cNearUpdateAt =>
+      dateTime().withDefault(currentDateAndTime)();
+  IntColumn get cPriceCondition => integer().withDefault(const Constant(0))();
+  IntColumn get cMarketCapCondition =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get cPeTtmCondition => integer().withDefault(const Constant(0))();
 }
 
 class NoteItems extends Table with TableMixin {

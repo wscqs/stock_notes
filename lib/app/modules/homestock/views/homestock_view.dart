@@ -5,7 +5,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
-import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/widget/keep_alive_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -503,7 +502,9 @@ class _HomeStockCellState extends State<HomeStockCell>
                 SizedBox(
                   width: 76,
                   child: Text(
-                    widget.item.createdAt.toDateString(),
+                    widget.item.homeCellShowTime(
+                        isMeet: controller.selConditionIndex == 0,
+                        isNear: controller.selConditionIndex == 1),
                     style: TextStyle(fontSize: 12),
                   ),
                 ),

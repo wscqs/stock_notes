@@ -75,13 +75,17 @@ class HomestockController extends BaseController
 
   Future<void> getDatas() async {
     if (selectedOrderIndex.value == 0) {
-      dbItems = await db.getStockItemsOnHome();
+      dbItems = await db.getStockItemsOnHome(
+          isMeet: selConditionIndex == 0, isNear: selConditionIndex == 1);
     } else if (selectedOrderIndex.value == 1) {
-      dbItems = await db.getStockItemsOnHomeWithBuy();
+      dbItems = await db.getStockItemsOnHomeWithBuy(
+          isMeet: selConditionIndex == 0, isNear: selConditionIndex == 1);
     } else if (selectedOrderIndex.value == 2) {
-      dbItems = await db.getStockItemsOnHomeWithCollect();
+      dbItems = await db.getStockItemsOnHomeWithCollect(
+          isMeet: selConditionIndex == 0, isNear: selConditionIndex == 1);
     } else if (selectedOrderIndex.value == 3) {
-      dbItems = await db.getStockItemsOnHomeWithDelete();
+      dbItems = await db.getStockItemsOnHomeWithDelete(
+          isMeet: selConditionIndex == 0, isNear: selConditionIndex == 1);
     }
     await _updateDbItemsWithSetTags();
     _updateDbItemsWithSetCondition();
@@ -188,7 +192,7 @@ class HomestockController extends BaseController
 
   //是否在删除列表(删除列表有些特殊处理）
   bool isCurrentDeleteList() {
-    return selectedOrderIndex.value == 2;
+    return selectedOrderIndex.value == 3;
   }
 
   // void clickMore() {
@@ -220,6 +224,31 @@ class HomestockController extends BaseController
       for (var item in dbItems) {
         for (var serItem in qTRequest) {
           if (item.code == serItem.code) {
+            //主要更新cMeetUpdateAt与cNearUpdateAt,其实也可以做提醒（就时间排序就好）
+            StockItem tempItem = item.copyWith(
+                currentPrice: Value(serItem.currentPrice),
+                pbRatio: Value(serItem.pbRatio),
+                totalMarketCap: Value(serItem.totalMarketCap),
+                peRatioTtm: Value(serItem.peRatioTtm));
+            tempItem.setConditions();
+            DateTime cMeetUpdateAt = tempItem.cMeetUpdateAt;
+            DateTime cNearUpdateAt = tempItem.cNearUpdateAt;
+            if (tempItem.priceCondition.isNear &&
+                    !item.cPriceCondition.isNear ||
+                tempItem.marketCapCondition.isNear &&
+                    !item.cMarketCapCondition.isNear ||
+                tempItem.peTtmCondition.isNear &&
+                    !item.cPeTtmCondition.isNear) {
+              cNearUpdateAt = DateTime.now();
+            }
+            if (tempItem.priceCondition.isTarget &&
+                    !item.cPriceCondition.isTarget ||
+                tempItem.marketCapCondition.isTarget &&
+                    !item.cMarketCapCondition.isTarget ||
+                tempItem.peTtmCondition.isTarget &&
+                    !item.cPeTtmCondition.isTarget) {
+              cMeetUpdateAt = DateTime.now();
+            }
             final updatedItem = StockItemsCompanion(
               code: Value(item.code),
               // where 条件用
@@ -229,6 +258,11 @@ class HomestockController extends BaseController
               pbRatio: Value(serItem.pbRatio),
               totalMarketCap: Value(serItem.totalMarketCap),
               peRatioTtm: Value(serItem.peRatioTtm),
+              cMeetUpdateAt: Value(cMeetUpdateAt),
+              cNearUpdateAt: Value(cNearUpdateAt),
+              cMarketCapCondition: Value(tempItem.marketCapCondition),
+              cPriceCondition: Value(tempItem.priceCondition),
+              cPeTtmCondition: Value(tempItem.peTtmCondition),
             );
             db.updateStock(updatedItem, item.code);
           }
@@ -265,7 +299,7 @@ class HomestockController extends BaseController
 
   List<StockItem> _updateFilterItemsWithSelCondition(List<StockItem> list) {
     if (selCondition.value == TextKey.mangzumaimai.tr) {
-      ConditionStatus status = ConditionStatus.targetBoth;
+      int status = ConditionStatus.targetBoth;
       if (selectedSegment.value == 'bug') {
         status = ConditionStatus.targetBuy;
       } else if (selectedSegment.value == 'sale') {
@@ -273,7 +307,7 @@ class HomestockController extends BaseController
       }
       list = list.where((item) => item.homeConditionTarget(status)).toList();
     } else if (selCondition.value == TextKey.lingjinmaimai.tr) {
-      ConditionStatus status = ConditionStatus.nearBoth;
+      int status = ConditionStatus.nearBoth;
       if (selectedSegment.value == 'bug') {
         status = ConditionStatus.nearBuy;
       } else if (selectedSegment.value == 'sale') {
@@ -394,10 +428,11 @@ class HomestockController extends BaseController
     getDatas();
   }
 
+  //是否满足或临近买卖，已存数据库，无需赋值
   void _updateDbItemsWithSetCondition() {
-    for (final item in dbItems) {
-      item.setConditions();
-    }
+    // for (final item in dbItems) {
+    //   item.setConditions();
+    // }
   }
 
   void onTapSelConditionSegment(String value) {

@@ -225,6 +225,15 @@ class StockeditController extends BaseController {
         pPeTtmSalePoints.value = 0.0;
       }
     }
+    //更新满足或临近买卖
+    serStockData.value.setConditions(
+      pPriceBuy: pPriceBuyController.text,
+      pPriceSale: pPriceSaleController.text,
+      pMarketCapBuy: pMarketCapBuyController.text,
+      pMarketCapSale: pMarketCapSaleController.text,
+      pPeTtmBuy: pPeTtmBuyController.text,
+      pPeTtmSale: pPeTtmSaleController.text,
+    );
   }
 
   Future<void> search() async {
@@ -318,6 +327,29 @@ class StockeditController extends BaseController {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;
     }
+
+    // 主要更新cMeetUpdateAt与cNearUpdateAt,其实也可以做提醒（就时间排序就好）
+    StockTxModel tempItem = serStockData.value!;
+    DateTime cMeetUpdateAt = DateTime.now();
+    DateTime cNearUpdateAt = DateTime.now();
+    if (isLocalData.value) {
+      cMeetUpdateAt = localStockData.value!.cMeetUpdateAt;
+      cNearUpdateAt = localStockData.value!.cNearUpdateAt;
+      StockItem item = localStockData.value!;
+      if (tempItem.priceCondition.isNear && !item.cPriceCondition.isNear ||
+          tempItem.marketCapCondition.isNear &&
+              !item.cMarketCapCondition.isNear ||
+          tempItem.peTtmCondition.isNear && !item.cPeTtmCondition.isNear) {
+        cNearUpdateAt = DateTime.now();
+      }
+      if (tempItem.priceCondition.isTarget && !item.cPriceCondition.isTarget ||
+          tempItem.marketCapCondition.isTarget &&
+              !item.cMarketCapCondition.isTarget ||
+          tempItem.peTtmCondition.isTarget && !item.cPeTtmCondition.isTarget) {
+        cMeetUpdateAt = DateTime.now();
+      }
+    }
+
     StockItemsCompanion itemCompanion = StockItemsCompanion.insert(
       marketType: serStockData.value.marketType!,
       code: serStockData.value.code!,
@@ -337,6 +369,11 @@ class StockeditController extends BaseController {
       rBuyPrice: Value(rBuyPriceController.text),
       rAllRemark: Value(rAllRemarkController.text),
       rEventRemark: Value(rEventRemarkController.text),
+      cMeetUpdateAt: Value(cMeetUpdateAt),
+      cNearUpdateAt: Value(cNearUpdateAt),
+      cMarketCapCondition: Value(tempItem.marketCapCondition),
+      cPriceCondition: Value(tempItem.priceCondition),
+      cPeTtmCondition: Value(tempItem.peTtmCondition),
     );
     if (localStockData.value != null) {
       //localStockData 更新

@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/common/database/tables.dart';
+import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../globle_service.dart';
@@ -36,7 +37,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   //改表要处理合并migration
   @override
@@ -53,6 +54,14 @@ class AppDatabase extends _$AppDatabase {
         //     await migrator.addColumn(stockItems, stockItems.opBuy);
         //   }
         // },
+        onUpgrade: (migrator, from, to) async {
+          if (from == 1) {
+            await migrator.addColumn(
+                stockItems, stockItems.cMarketCapCondition);
+            await migrator.addColumn(stockItems, stockItems.cPriceCondition);
+            await migrator.addColumn(stockItems, stockItems.cPeTtmCondition);
+          }
+        },
         onCreate: (migrator) async {
           await migrator.createAll();
           //标签默认加五个。 短期，中期，长期，买，卖
@@ -162,50 +171,74 @@ class AppDatabase extends _$AppDatabase {
   }
 
   //排除掉删除的，时间倒叙，置顶排序。
-  Future<List<StockItem>> getStockItemsOnHome() {
+  Future<List<StockItem>> getStockItemsOnHome(
+      {bool isMeet = false, bool isNear = false}) {
     return (select(stockItems)
           ..where((tbl) => tbl.opDelete.equals(false))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
-            (tbl) =>
-                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+            (tbl) => OrderingTerm(
+                expression: isMeet
+                    ? tbl.cMeetUpdateAt
+                    : isNear
+                        ? tbl.cNearUpdateAt
+                        : tbl.updateAt,
+                mode: OrderingMode.desc),
           ]))
         .get();
   }
 
-  Future<List<StockItem>> getStockItemsOnHomeWithDelete() {
+  Future<List<StockItem>> getStockItemsOnHomeWithDelete(
+      {bool isMeet = false, bool isNear = false}) {
     return (select(stockItems)
           ..where((tbl) => tbl.opDelete.equals(true))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
-            (tbl) =>
-                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+            (tbl) => OrderingTerm(
+                expression: isMeet
+                    ? tbl.cMeetUpdateAt
+                    : isNear
+                        ? tbl.cNearUpdateAt
+                        : tbl.updateAt,
+                mode: OrderingMode.desc),
           ]))
         .get();
   }
 
-  Future<List<StockItem>> getStockItemsOnHomeWithCollect() {
+  Future<List<StockItem>> getStockItemsOnHomeWithCollect(
+      {bool isMeet = false, bool isNear = false}) {
     return (select(stockItems)
           ..where((tbl) => tbl.opCollect.equals(true))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
-            (tbl) =>
-                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+            (tbl) => OrderingTerm(
+                expression: isMeet
+                    ? tbl.cMeetUpdateAt
+                    : isNear
+                        ? tbl.cNearUpdateAt
+                        : tbl.updateAt,
+                mode: OrderingMode.desc),
           ]))
         .get();
   }
 
-  Future<List<StockItem>> getStockItemsOnHomeWithBuy() {
+  Future<List<StockItem>> getStockItemsOnHomeWithBuy(
+      {bool isMeet = false, bool isNear = false}) {
     return (select(stockItems)
           ..where((tbl) => tbl.opBuy.equals(true))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
-            (tbl) =>
-                OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+            (tbl) => OrderingTerm(
+                expression: isMeet
+                    ? tbl.cMeetUpdateAt
+                    : isNear
+                        ? tbl.cNearUpdateAt
+                        : tbl.updateAt,
+                mode: OrderingMode.desc),
           ]))
         .get();
   }
@@ -337,48 +370,61 @@ class AppDatabase extends _$AppDatabase {
 //Stock
 
 // const kNearPoints = 0.03;
+class ConditionStatus {
+  static const int none = 0;
 
-enum ConditionStatus {
-  none, // 未符合
-  nearBuy, // 临近买
-  nearSell, // 临近卖
-  nearBoth, // 临近买卖
-  targetBuy, // 满足买
-  targetSell, // 满足卖
-  targetBoth, // 满足买卖
+  static const int nearBuy = 1 << 0; // 0001
+  static const int nearSell = 1 << 1; // 0010
+  static const int nearBoth = nearBuy | nearSell;
+
+  static const int targetBuy = 1 << 2; // 0100
+  static const int targetSell = 1 << 3; // 1000
+  static const int targetBoth = targetBuy | targetSell;
 }
 
-extension ConditionStatusLabel on ConditionStatus {
+extension ConditionStatusExt on int {
+  bool get hasNearBuy => (this & ConditionStatus.nearBuy) != 0;
+  bool get hasNearSell => (this & ConditionStatus.nearSell) != 0;
+  bool get hasTargetBuy => (this & ConditionStatus.targetBuy) != 0;
+  bool get hasTargetSell => (this & ConditionStatus.targetSell) != 0;
+
+  bool get isNearBoth =>
+      (this & ConditionStatus.nearBoth) == ConditionStatus.nearBoth;
+  bool get isTargetBoth =>
+      (this & ConditionStatus.targetBoth) == ConditionStatus.targetBoth;
+
+  // bool get isNearSingle =>
+  //     (this & ConditionStatus.nearBoth) != 0 &&
+  //     (this & ConditionStatus.nearBoth) != ConditionStatus.nearBoth;
+
+  // bool get isTargetSingle =>
+  //     (this & ConditionStatus.targetBoth) != 0 &&
+  //     (this & ConditionStatus.targetBoth) != ConditionStatus.targetBoth;
+
+  bool get isNear => hasNearBuy || hasNearSell || isNearBoth;
+  bool get isTarget => hasTargetBuy || hasTargetSell || isTargetBoth;
+
   String get label {
-    switch (this) {
-      case ConditionStatus.targetBuy:
-        return TextKey.mangzuB.tr;
-      case ConditionStatus.targetSell:
-        return TextKey.mangzuS.tr;
-      case ConditionStatus.targetBoth:
-        return TextKey.mangzumaimai.tr;
-      case ConditionStatus.nearBuy:
-        return TextKey.lingjinB.tr;
-      case ConditionStatus.nearSell:
-        return TextKey.lingjinS.tr;
-      case ConditionStatus.nearBoth:
-        return TextKey.lingjinmaimai.tr;
-      default:
-        return '';
-    }
+    if (hasTargetBuy && hasTargetSell) return TextKey.mangzuBS.tr;
+    if (hasTargetBuy) return TextKey.mangzuB.tr;
+    if (hasTargetSell) return TextKey.mangzuS.tr;
+    if (hasNearBuy && hasNearSell) return TextKey.lingjinBS.tr;
+    if (hasNearBuy) return TextKey.lingjinB.tr;
+    if (hasNearSell) return TextKey.lingjinS.tr;
+    return '';
   }
 }
 
 class StockItemExtraState {
-  ConditionStatus priceCondition;
-  ConditionStatus marketCapCondition;
-  ConditionStatus peTtmCondition;
+  int priceCondition;
+  int marketCapCondition;
+  int peTtmCondition;
   List<StockItemTag> tagList;
 
   StockItemExtraState({
-    ConditionStatus? priceCondition,
-    ConditionStatus? marketCapCondition,
-    ConditionStatus? peTtmCondition,
+    int? priceCondition,
+    int? marketCapCondition,
+    int? peTtmCondition,
     List<StockItemTag>? tagList,
   })  : priceCondition = priceCondition ?? ConditionStatus.none,
         marketCapCondition = marketCapCondition ?? ConditionStatus.none,
@@ -387,6 +433,7 @@ class StockItemExtraState {
 }
 
 final Map<int, StockItemExtraState> _stockItemExtras = {};
+
 StockItemExtraState _getExtra(int id) {
   return _stockItemExtras.putIfAbsent(id, () => StockItemExtraState());
 }
@@ -394,15 +441,14 @@ StockItemExtraState _getExtra(int id) {
 extension StockItemExt on StockItem {
   StockItemExtraState get extra => _getExtra(id);
 
-  ConditionStatus get priceCondition => extra.priceCondition;
-  set priceCondition(ConditionStatus value) => extra.priceCondition = value;
+  int get priceCondition => extra.priceCondition;
+  set priceCondition(int value) => extra.priceCondition = value;
 
-  ConditionStatus get marketCapCondition => extra.marketCapCondition;
-  set marketCapCondition(ConditionStatus value) =>
-      extra.marketCapCondition = value;
+  int get marketCapCondition => extra.marketCapCondition;
+  set marketCapCondition(int value) => extra.marketCapCondition = value;
 
-  ConditionStatus get peTtmCondition => extra.peTtmCondition;
-  set peTtmCondition(ConditionStatus value) => extra.peTtmCondition = value;
+  int get peTtmCondition => extra.peTtmCondition;
+  set peTtmCondition(int value) => extra.peTtmCondition = value;
 
   List<StockItemTag> get tagList => extra.tagList;
   set tagList(List<StockItemTag> value) => extra.tagList = value;
@@ -411,169 +457,114 @@ extension StockItemExt on StockItem {
     return tagList.map((e) => e.name).join(" · ");
   }
 
-  double? pPriceBuyPoints() {
-    double? pPriceBuyPoints;
-    if ((pPriceBuy ?? "").isNotEmpty && (currentPrice ?? "").isNotEmpty) {
-      pPriceBuyPoints =
-          (double.parse(pPriceBuy!) - double.parse(currentPrice!)) /
-              double.parse(currentPrice!);
-    }
-    return pPriceBuyPoints;
+  String homeCellShowTime({isMeet = false, isNear = false}) {
+    return isMeet
+        ? ("m" + cMeetUpdateAt.toDateString())
+        : isNear
+            ? ("n" + cNearUpdateAt.toDateString())
+            : updateAt.toDateString();
   }
 
-  double? pMarketCapBuyPoints() {
-    double? pMarketCapBuyPoints;
-    if ((pMarketCapBuy ?? "").isNotEmpty && (totalMarketCap ?? "").isNotEmpty) {
-      pMarketCapBuyPoints =
-          (double.parse(pMarketCapBuy!) - double.parse(totalMarketCap!)) /
-              double.parse(totalMarketCap!);
+  double? _calcPoint(String? target, String? current) {
+    if ((target ?? "").isNotEmpty && (current ?? "").isNotEmpty) {
+      return (double.parse(target!) - double.parse(current!)) /
+          double.parse(current);
     }
-    return pMarketCapBuyPoints;
+    return null;
   }
 
-  double? pPeTtmBuyPoints() {
-    double? pPeTtmBuyPoints;
-    if ((pPeTtmBuy ?? "").isNotEmpty && (peRatioTtm ?? "").isNotEmpty) {
-      pPeTtmBuyPoints = (double.parse(pPeTtmBuy!) - double.parse(peRatioTtm!)) /
-          double.parse(peRatioTtm!);
-    }
-    return pPeTtmBuyPoints;
-  }
+  double? pPriceBuyPoints() => _calcPoint(pPriceBuy, currentPrice);
+  double? pMarketCapBuyPoints() => _calcPoint(pMarketCapBuy, totalMarketCap);
+  double? pPeTtmBuyPoints() => _calcPoint(pPeTtmBuy, peRatioTtm);
 
-  double? pPriceSalePoints() {
-    double? pPriceSalePoints;
-    if ((pPriceSale ?? "").isNotEmpty && (currentPrice ?? "").isNotEmpty) {
-      pPriceSalePoints =
-          (double.parse(pPriceSale!) - double.parse(currentPrice!)) /
-              double.parse(currentPrice!);
-    }
-    return pPriceSalePoints;
-  }
+  double? pPriceSalePoints() => _calcPoint(pPriceSale, currentPrice);
+  double? pMarketCapSalePoints() => _calcPoint(pMarketCapSale, totalMarketCap);
+  double? pPeTtmSalePoints() => _calcPoint(pPeTtmSale, peRatioTtm);
 
-  double? pMarketCapSalePoints() {
-    double? pMarketCapSalePoints;
-    if ((pMarketCapSale ?? "").isNotEmpty &&
-        (totalMarketCap ?? "").isNotEmpty) {
-      pMarketCapSalePoints =
-          (double.parse(pMarketCapSale!) - double.parse(totalMarketCap!)) /
-              double.parse(totalMarketCap!);
-    }
-    return pMarketCapSalePoints;
-  }
-
-  double? pPeTtmSalePoints() {
-    double? pPeTtmSalePoints;
-    if ((pPeTtmSale ?? "").isNotEmpty && (peRatioTtm ?? "").isNotEmpty) {
-      pPeTtmSalePoints =
-          (double.parse(pPeTtmSale!) - double.parse(peRatioTtm!)) /
-              double.parse(peRatioTtm!);
-    }
-    return pPeTtmSalePoints;
-  }
-
-  //自己设置一些条件
   void setConditions() {
-    priceCondition = setVarCondition(
+    extra.priceCondition = _setVarCondition(
       buyPoint: pPriceBuyPoints(),
       salePoint: pPriceSalePoints(),
     );
-    marketCapCondition = setVarCondition(
+    extra.marketCapCondition = _setVarCondition(
       buyPoint: pMarketCapBuyPoints(),
       salePoint: pMarketCapSalePoints(),
     );
-    peTtmCondition = setVarCondition(
+    extra.peTtmCondition = _setVarCondition(
       buyPoint: pPeTtmBuyPoints(),
       salePoint: pPeTtmSalePoints(),
     );
   }
 
-  ConditionStatus setVarCondition({
+  int _setVarCondition({
     double? buyPoint,
     double? salePoint,
   }) {
     double kNearPoints = GlobalService.to.rxNearBSPoint.value;
-    bool isTargetBuy = buyPoint != null && buyPoint >= 0.0;
-    bool isNearBuy = buyPoint != null && buyPoint >= -kNearPoints;
-    bool isTargetSell = salePoint != null && salePoint <= 0.0;
-    bool isNearSell = salePoint != null && salePoint <= kNearPoints;
-    ConditionStatus tempCondition = ConditionStatus.none;
-    if (isTargetBuy && isTargetSell) {
-      tempCondition = ConditionStatus.targetBoth;
-    } else if (isTargetBuy) {
-      tempCondition = ConditionStatus.targetBuy;
-    } else if (isTargetSell) {
-      tempCondition = ConditionStatus.targetSell;
-    } else if (isNearBuy && isNearSell) {
-      tempCondition = ConditionStatus.nearBoth;
-    } else if (isNearBuy) {
-      tempCondition = ConditionStatus.nearBuy;
-    } else if (isNearSell) {
-      tempCondition = ConditionStatus.nearSell;
+    int status = ConditionStatus.none;
+
+    if (buyPoint != null && buyPoint >= 0.0) {
+      status |= ConditionStatus.targetBuy;
+    } else if (buyPoint != null && buyPoint >= -kNearPoints) {
+      status |= ConditionStatus.nearBuy;
     }
-    return tempCondition;
+
+    if (salePoint != null && salePoint <= 0.0) {
+      status |= ConditionStatus.targetSell;
+    } else if (salePoint != null && salePoint <= kNearPoints) {
+      status |= ConditionStatus.nearSell;
+    }
+
+    return status;
   }
 
-  //股票页面使用
   String showCellConditionInfo() {
-    String showCellConditionInfo = "";
-    if (priceCondition.label.isNotEmpty) {
-      showCellConditionInfo =
-          TextKey.stockCellP.tr + ":" + priceCondition.label;
+    String result = "";
+
+    void append(int condition, String prefix) {
+      final label = condition.label;
+      if (label.isNotEmpty) {
+        if (result.isNotEmpty) result += "\n";
+        result += "$prefix:$label";
+      }
     }
-    if (marketCapCondition.label.isNotEmpty) {
-      showCellConditionInfo = showCellConditionInfo +
-          "\n" +
-          TextKey.stockCellM.tr +
-          ":" +
-          marketCapCondition.label;
-    }
-    if (peTtmCondition.label.isNotEmpty) {
-      showCellConditionInfo = showCellConditionInfo +
-          "\n" +
-          TextKey.stockCellPe.tr +
-          ":" +
-          peTtmCondition.label;
-    }
-    //把showCellConditionInfo 里面的所有买替换成 B，卖替换成 S
-    showCellConditionInfo =
-        showCellConditionInfo.replaceAll('买', 'B').replaceAll('卖', 'S');
-    return showCellConditionInfo;
+
+    // append(extra.priceCondition, TextKey.stockCellP.tr);
+    // append(extra.marketCapCondition, TextKey.stockCellM.tr);
+    // append(extra.peTtmCondition, TextKey.stockCellPe.tr);
+
+    append(cPriceCondition, TextKey.stockCellP.tr);
+    append(cMarketCapCondition, TextKey.stockCellM.tr);
+    append(cPeTtmCondition, TextKey.stockCellPe.tr);
+
+    return result.replaceAll('买', 'B').replaceAll('卖', 'S');
   }
 
-  //首页条件筛选
-  bool homeConditionTarget(ConditionStatus status) {
-    if (status == ConditionStatus.targetBoth) {
-      return priceCondition == ConditionStatus.targetBoth ||
-          priceCondition == ConditionStatus.targetBuy ||
-          priceCondition == ConditionStatus.targetSell ||
-          peTtmCondition == ConditionStatus.targetBoth ||
-          peTtmCondition == ConditionStatus.targetSell ||
-          peTtmCondition == ConditionStatus.targetBuy ||
-          marketCapCondition == ConditionStatus.targetBoth ||
-          marketCapCondition == ConditionStatus.targetBuy ||
-          marketCapCondition == ConditionStatus.targetSell;
-    } else {
-      return status == priceCondition ||
-          status == marketCapCondition ||
-          status == peTtmCondition;
+  bool _matchCondition(int field, int target) {
+    if (target == ConditionStatus.targetBoth) {
+      return field.hasTargetBuy || field.hasTargetSell;
     }
+    if (target == ConditionStatus.nearBoth) {
+      return field.hasNearBuy || field.hasNearSell;
+    }
+    return (field & target) != 0;
   }
 
-  bool homeConditionNear(ConditionStatus status) {
-    if (status == ConditionStatus.nearBoth) {
-      return priceCondition == ConditionStatus.nearBoth ||
-          priceCondition == ConditionStatus.nearBuy ||
-          priceCondition == ConditionStatus.nearSell ||
-          peTtmCondition == ConditionStatus.nearBoth ||
-          peTtmCondition == ConditionStatus.nearSell ||
-          peTtmCondition == ConditionStatus.nearBuy ||
-          marketCapCondition == ConditionStatus.nearBoth ||
-          marketCapCondition == ConditionStatus.nearBuy ||
-          marketCapCondition == ConditionStatus.nearSell;
-    } else {
-      return status == priceCondition ||
-          status == marketCapCondition ||
-          status == peTtmCondition;
-    }
+  bool homeConditionTarget(int status) {
+    // return _matchCondition(extra.priceCondition, status) ||
+    //     _matchCondition(extra.marketCapCondition, status) ||
+    //     _matchCondition(extra.peTtmCondition, status);
+    return _matchCondition(cPriceCondition, status) ||
+        _matchCondition(cMarketCapCondition, status) ||
+        _matchCondition(cPeTtmCondition, status);
+  }
+
+  bool homeConditionNear(int status) {
+    // return _matchCondition(extra.priceCondition, status) ||
+    //     _matchCondition(extra.marketCapCondition, status) ||
+    //     _matchCondition(extra.peTtmCondition, status);
+    return _matchCondition(cPriceCondition, status) ||
+        _matchCondition(cMarketCapCondition, status) ||
+        _matchCondition(cPeTtmCondition, status);
   }
 }

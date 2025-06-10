@@ -59,10 +59,12 @@ class TextKey {
   static const mangzuBS = 'mangzuBS';
   static const mangzuB = 'mangzuB';
   static const mangzuS = 'mangzuS';
+  static const mangzu = 'mangzu';
   static const lingjinmaimai = 'lingjinmaimai';
   static const lingjinBS = 'lingjinBS';
   static const lingjinB = 'lingjinB';
   static const lingjinS = 'lingjinS';
+  static const lingjin = 'lingjin';
   static const stockCellP = 'stockCellP';
   static const stockCellM = 'stockCellM';
   static const stockCellPe = 'stockCellPe';
@@ -189,6 +191,8 @@ const Map<String, String> zh = {
   TextKey.chiyouchengbenjia: '持有成本价',
   TextKey.chicaozuoxuxiangdianbaocun: '此操作需先点保存',
   TextKey.yidaoshanchuliebiao: '移动到删除列表',
+  TextKey.mangzu: '满足',
+  TextKey.lingjin: '临近',
   TextKey.shiyongshuomingall: '''
 股票笔记说明
 对股票进行记录及复盘的 App （无服务端的App）
@@ -320,6 +324,8 @@ const Map<String, String> en = {
   TextKey.chiyouchengbenjia: 'Holding cost price',
   TextKey.chicaozuoxuxiangdianbaocun: 'This operation needs to be saved first',
   TextKey.yidaoshanchuliebiao: 'Move to the delete list',
+  TextKey.mangzu: 'Meet',
+  TextKey.lingjin: 'Near',
   TextKey.shiyongshuomingall: '''
 Stock Notes Explanation
 

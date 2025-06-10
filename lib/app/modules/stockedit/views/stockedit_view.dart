@@ -4,6 +4,7 @@ import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../commonwidget/stock_searchfield.dart';
@@ -126,7 +127,11 @@ class StockeditView extends GetView<StockeditController> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(TextKey.jilu.tr, style: Get.textTheme.titleLarge),
+          Row(
+            children: [
+              Text(TextKey.jilu.tr, style: Get.textTheme.titleLarge),
+            ],
+          ),
           kSpaceH(16),
           Row(
             children: [
@@ -181,6 +186,32 @@ class StockeditView extends GetView<StockeditController> {
         Row(
           children: [
             Text(TextKey.jihua.tr, style: Get.textTheme.titleLarge),
+            kSpaceMax(),
+            SizedBox(
+              width: 76,
+              child: Text.rich(
+                TextSpan(
+                  style: TextStyle(fontSize: 10), // 默认样式
+                  children:
+                      (controller.serStockData.value?.showCellConditionInfo() ??
+                              "")
+                          .split('')
+                          .map((char) {
+                    if (char == 'B') {
+                      return TextSpan(
+                          text: char,
+                          style: TextStyle(color: Colors.red, fontSize: 11));
+                    } else if (char == 'S') {
+                      return TextSpan(
+                          text: char,
+                          style: TextStyle(color: Colors.blue, fontSize: 11));
+                    } else {
+                      return TextSpan(text: char); // 默认样式
+                    }
+                  }).toList(),
+                ),
+              ),
+            ),
           ],
         ),
         kSpaceH(8),
