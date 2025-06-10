@@ -82,13 +82,15 @@ class NoteeditView extends GetView<NoteeditController> {
       child: TextField(
         controller: controller.titleController,
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        minLines: 1,
+        maxLines: null,
         decoration: InputDecoration(
           hintText: TextKey.biaoti.tr,
           border: InputBorder.none,
           hintStyle: TextStyle(color: Colors.grey),
-          // counterText: '',
+          counterText: '',
         ),
-        // maxLength: 50,
+        maxLength: 50,
       ),
     );
   }

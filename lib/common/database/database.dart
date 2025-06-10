@@ -37,7 +37,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   //改表要处理合并migration
   @override
@@ -54,14 +54,6 @@ class AppDatabase extends _$AppDatabase {
         //     await migrator.addColumn(stockItems, stockItems.opBuy);
         //   }
         // },
-        onUpgrade: (migrator, from, to) async {
-          if (from == 1) {
-            await migrator.addColumn(
-                stockItems, stockItems.cMarketCapCondition);
-            await migrator.addColumn(stockItems, stockItems.cPriceCondition);
-            await migrator.addColumn(stockItems, stockItems.cPeTtmCondition);
-          }
-        },
         onCreate: (migrator) async {
           await migrator.createAll();
           //标签默认加五个。 短期，中期，长期，买，卖

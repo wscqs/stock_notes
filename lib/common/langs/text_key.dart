@@ -93,7 +93,8 @@ class TextKey {
   static const errortishixianchushihuasjy = 'errortishixianchushihuasjy';
   static const errorwjmbhsn = 'errorwjmbhsn';
   static const chiyouchengbenjia = 'chiyouchengbenjia';
-  static const chicaozuoxuxiangdianbaocun = 'chicaozuoxuxiangdianbaocun';
+  static const baocunbingcaozu = 'baocunbingcaozu';
+  static const cicaozuoxubaocun = 'cicaozuoxubaocun';
   static const yidaoshanchuliebiao = 'yidaoshanchuliebiao';
 }
 
@@ -189,10 +190,11 @@ const Map<String, String> zh = {
   TextKey.errorwjmbhsn: '文件名需要：stocknotes_xxx',
   TextKey.chiyou: '持有',
   TextKey.chiyouchengbenjia: '持有成本价',
-  TextKey.chicaozuoxuxiangdianbaocun: '此操作需先点保存',
+  TextKey.baocunbingcaozu: '保存并操作',
   TextKey.yidaoshanchuliebiao: '移动到删除列表',
   TextKey.mangzu: '满足',
   TextKey.lingjin: '临近',
+  TextKey.cicaozuoxubaocun: '此操作需保存数据库',
   TextKey.shiyongshuomingall: '''
 股票笔记说明
 对股票进行记录及复盘的 App （无服务端的App）
@@ -322,10 +324,11 @@ const Map<String, String> en = {
   TextKey.errorwjmbhsn: 'File name needs: stocknotes_xxx',
   TextKey.chiyou: 'Holding',
   TextKey.chiyouchengbenjia: 'Holding cost price',
-  TextKey.chicaozuoxuxiangdianbaocun: 'This operation needs to be saved first',
+  TextKey.baocunbingcaozu: 'Save and operate',
   TextKey.yidaoshanchuliebiao: 'Move to the delete list',
   TextKey.mangzu: 'Meet',
   TextKey.lingjin: 'Near',
+  TextKey.cicaozuoxubaocun: 'This operation requires saving the database',
   TextKey.shiyongshuomingall: '''
 Stock Notes Explanation
 

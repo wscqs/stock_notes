@@ -320,7 +320,7 @@ class StockeditController extends BaseController {
     db.addStockOnConflictUpdateWithNoUpdateTime(itemUpdate);
   }
 
-  Future<void> save() async {
+  Future<void> save({bool isBack = true}) async {
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
     if (serStockData.value.code == null || serStockData.value.code!.isEmpty) {
@@ -385,11 +385,23 @@ class StockeditController extends BaseController {
       db.addStock(itemCompanion);
     }
     QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
-    if (!isLocalData.value) {
-      firstSaveDbAndRefreshUI();
-    } else {
+    if (isBack) {
       Get.back();
     }
+  }
+
+  void _popSaveAlert({String title = "", VoidCallback? onConfirm}) {
+    QsHud.showConfirmDialog(
+        title: title,
+        content: TextKey.cicaozuoxubaocun.tr,
+        confirmText: TextKey.baocunbingcaozu.tr,
+        onConfirm: () async {
+          if (!isLocalData.value) {
+            save(isBack: false);
+            await firstSaveDbAndRefreshUI();
+          }
+          onConfirm?.call();
+        });
   }
 
   void clearStockNum() {
@@ -429,7 +441,11 @@ class StockeditController extends BaseController {
 
   void clickOpCollect() {
     if (!isLocalData.value) {
-      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
+      _popSaveAlert(
+          title: TextKey.collect.tr,
+          onConfirm: () {
+            clickOpCollect();
+          });
       return;
     }
     db.updateStockWithOp(localStockData.value!
@@ -439,7 +455,11 @@ class StockeditController extends BaseController {
 
   void clickOpBuy() {
     if (!isLocalData.value) {
-      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
+      _popSaveAlert(
+          title: TextKey.chiyou.tr,
+          onConfirm: () {
+            clickOpBuy();
+          });
       return;
     }
     db.updateStockWithOp(
@@ -454,7 +474,9 @@ class StockeditController extends BaseController {
 
   void clickOpDelete() {
     if (!isLocalData.value) {
-      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
+      // _popSaveAlert(() {
+      //   clickOpDelete();
+      // });
       return;
     }
     if (localStockData.value?.opDelete ?? false) {
@@ -470,7 +492,11 @@ class StockeditController extends BaseController {
 
   void clickPushTag() {
     if (!isLocalData.value) {
-      QsHud.showToast(TextKey.chicaozuoxuxiangdianbaocun.tr);
+      _popSaveAlert(
+          title: TextKey.biaoqian.tr,
+          onConfirm: () {
+            clickPushTag();
+          });
       return;
     }
     Get.toNamed(Routes.TAGSEDIT, arguments: localStockData.value);
