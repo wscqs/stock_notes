@@ -1,10 +1,11 @@
-# 股票笔记 - 本地化股票复盘助手 \[Flutter多平台开源]
+xx# 股票笔记 - 本地化股票复盘助手 \[Flutter多平台开源]
 
-📱 ​**​纯本地应用 | 隐私安全 | 多平台支持 | 数据导入导出支持 | 中英双语 | 日夜间模式​**
-​
-**Android也可以从蒲公英地址下载<https://www.pgyer.com/QBbOMfya>
+📱 ​**​纯本地应用 | 隐私安全 | 多平台支持 | 数据导入导出支持 | 中英双语 | 日夜间模式​**​
+
+
 ​**​GitHub开源地址<https://github.com/wscqs/stock_notes> ​**​ | Releases下载体验<https://github.com/wscqs/stock_notes/releases>
 
+Android也可以从蒲公英地址下载<https://www.pgyer.com/QBbOMfya>
 ***
 
 ## 🌟 核心价值
@@ -66,3 +67,4 @@
 
 | ![](https://cdn4.winhlb.com/2025/06/11/68493e31dce0a.png) | ![](https://cdn4.winhlb.com/2025/06/11/68493efd312f4.png) | ![](https://cdn4.winhlb.com/2025/06/11/68493efd4a3b2.png) |
 | :--: | :--: | :--: |
+
