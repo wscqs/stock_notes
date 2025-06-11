@@ -1,7 +1,8 @@
 # 股票笔记 - 本地化股票复盘助手 \[Flutter多平台开源]
 
-📱 ​**​纯本地应用 | 隐私安全 | 多平台支持 | 数据导入导出支持 | 中英双语 | 日夜间模式​**​
-
+📱 ​**​纯本地应用 | 隐私安全 | 多平台支持 | 数据导入导出支持 | 中英双语 | 日夜间模式​**
+​
+**Android也可以从蒲公英地址下载<https://www.pgyer.com/QBbOMfya>
 ​**​GitHub开源地址<https://github.com/wscqs/stock_notes> ​**​ | Releases下载体验<https://github.com/wscqs/stock_notes/releases>
 
 ***
