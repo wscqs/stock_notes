@@ -23,6 +23,14 @@ jobs:
       - name: Build Android APK
         run: flutter build apk --release
 
+      - name: Clean macOS CocoaPods
+        run: |
+          cd macos
+          rm -rf Pods Podfile.lock
+          pod repo update
+          pod install
+          cd ..
+
       - name: Build macOS App
         run: flutter build macos --release
 
