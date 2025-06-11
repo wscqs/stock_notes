@@ -13,11 +13,12 @@ class SettingView extends GetView<SettingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(TextKey.shezhi.tr),
-          centerTitle: true,
-        ),
-        body: Obx(() {
+      appBar: AppBar(
+        title: Text(TextKey.shezhi.tr),
+        centerTitle: true,
+      ),
+      body: Obx(
+        () {
           final themeMode = GlobalService.to.rxThemeMode.value;
           final local = GlobalService.to.rxLocale.value;
           return Column(
@@ -43,6 +44,12 @@ class SettingView extends GetView<SettingController> {
                       arguments: {"type": "language"});
                 },
               ),
+              SimpleCell(
+                title: TextKey.mingyanjinju.tr,
+                onPressed: () {
+                  Get.toNamed(Routes.FAMOUS);
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: ListTile(
@@ -63,6 +70,8 @@ class SettingView extends GetView<SettingController> {
               ),
             ],
           );
-        }));
+        },
+      ),
+    );
   }
 }

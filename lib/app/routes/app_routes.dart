@@ -17,6 +17,7 @@ abstract class Routes {
   static const TAGSEDIT = _Paths.TAGSEDIT;
   static const USE = _Paths.USE;
   static const DATESOURCE = _Paths.DATESOURCE;
+  static const FAMOUS = _Paths.FAMOUS;
 }
 
 abstract class _Paths {
@@ -35,4 +36,5 @@ abstract class _Paths {
   static const TAGSEDIT = '/tagsedit';
   static const USE = '/use';
   static const DATESOURCE = '/datesource';
+  static const FAMOUS = '/famous';
 }

@@ -96,6 +96,9 @@ class TextKey {
   static const baocunbingcaozu = 'baocunbingcaozu';
   static const cicaozuoxubaocun = 'cicaozuoxubaocun';
   static const yidaoshanchuliebiao = 'yidaoshanchuliebiao';
+  static const mingyanjinju = 'mingyanjinju';
+  static const xuanzhongdejingjuwufashancu = 'xuanzhongdejingjuwufashancu';
+  static const morenmingyangwufabianji = 'morenmingyangwufabianji';
 }
 
 const Map<String, String> zh = {
@@ -165,7 +168,7 @@ const Map<String, String> zh = {
   TextKey.stockCellP: '价格',
   TextKey.stockCellM: '市值',
   TextKey.stockCellPe: '市盈',
-  TextKey.zhufuhuayu: '祝大佬们股票天天涨',
+  TextKey.zhufuhuayu: '股票天天涨',
   TextKey.lingjinBSD: '临近买卖点',
   TextKey.shiyong: '使用',
   TextKey.daorudaochu: '导入导出',
@@ -195,6 +198,9 @@ const Map<String, String> zh = {
   TextKey.mangzu: '满足',
   TextKey.lingjin: '临近',
   TextKey.cicaozuoxubaocun: '此操作需保存数据库',
+  TextKey.mingyanjinju: '名言警句',
+  TextKey.xuanzhongdejingjuwufashancu: '选中的名言不支持删除',
+  TextKey.morenmingyangwufabianji: '默认名言无法修改',
   TextKey.shiyongshuomingall: '''
 股票笔记说明
 对股票进行记录及复盘的 App （无服务端的App）
@@ -296,7 +302,7 @@ const Map<String, String> en = {
   TextKey.stockCellP: 'P',
   TextKey.stockCellM: 'M',
   TextKey.stockCellPe: 'P/E',
-  TextKey.zhufuhuayu: 'Wishing the big shots stocks to rise every day',
+  TextKey.zhufuhuayu: 'stocks to rise every day',
   TextKey.lingjinBSD: 'Near BS point',
   TextKey.shiyong: 'Use',
   TextKey.daorudaochu: 'Import/Export',
@@ -329,6 +335,10 @@ const Map<String, String> en = {
   TextKey.mangzu: 'Meet',
   TextKey.lingjin: 'Near',
   TextKey.cicaozuoxubaocun: 'This operation requires saving the database',
+  TextKey.mingyanjinju: 'Words of wisdom',
+  TextKey.xuanzhongdejingjuwufashancu:
+      'The selected words are not supported for deletion',
+  TextKey.morenmingyangwufabianji: 'Default words cannot be modified',
   TextKey.shiyongshuomingall: '''
 Stock Notes Explanation
 

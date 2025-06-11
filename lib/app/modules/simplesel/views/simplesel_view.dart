@@ -11,13 +11,14 @@ class SimpleselView extends GetView<SimpleselController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Obx(() {
-            return Text(controller.title.value);
-          }),
-          centerTitle: true,
-        ),
-        body: Obx(() {
+      appBar: AppBar(
+        title: Obx(() {
+          return Text(controller.title.value);
+        }),
+        centerTitle: true,
+      ),
+      body: Obx(
+        () {
           return ListView.builder(
             itemCount: controller.datas.length,
             itemBuilder: (context, index) {
@@ -32,6 +33,8 @@ class SimpleselView extends GetView<SimpleselController> {
               );
             },
           );
-        }));
+        },
+      ),
+    );
   }
 }

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value;
+import 'package:stock_notes/app/modules/famous/controllers/famous_data_help.dart';
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
+import '../../../../common/event_bus.dart';
 import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
@@ -59,14 +61,22 @@ class HomestockController extends BaseController
   final customScrollController = ScrollController();
 
   final selectedDateSource = "".obs; //name
+  final selectedFamous = "".obs;
 
+  //drawer不关闭，所以用监听
+  late final EventBusCallback eventBusFamouscallback = (arg) {
+    selectedFamous.value = FamousDataHelp().getSelectedValue();
+    selectedFamous.refresh();
+  };
   @override
   Future<void> onInit() async {
     super.onInit();
     selectedDateSource.value =
         QsCache.get<String>("selectedDateSourceKey") ?? "";
+    selectedFamous.value = FamousDataHelp().getSelectedValue();
     await getDatas();
     dbSyncSerData(isShowLoading: false);
+    eventBus.on("eventBusFamous", eventBusFamouscallback);
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {
     //   refreshAppui();
@@ -545,5 +555,9 @@ class HomestockController extends BaseController
         });
       }).toList();
     }
+  }
+
+  void pushFamousPage() {
+    Get.toNamed(Routes.FAMOUS);
   }
 }

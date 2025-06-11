@@ -31,13 +31,13 @@
         android:gravity="center"
         android:weightSum="5">
 
-        <!-- 每日名言 -->
+        <!-- 名言警句 -->
         <TextView
             android:id="@+id/btn_quote"
             android:layout_width="60dp"
             android:layout_height="60dp"
             style="@style/WidgetCircleButton"
-            android:text="每日\n名言"
+            android:text="名言\n警句"
             android:backgroundTint="#FF3B30" />
 
         <!-- 满足买卖 -->

@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
-import 'package:stock_notes/common/langs/text_key.dart';
-import 'package:stock_notes/utils/qs_hud.dart';
 
+import '../../common/langs/text_key.dart';
 import '../../utils/qs_cache.dart';
+import '../../utils/qs_hud.dart';
 import '../modules/about/bindings/about_binding.dart';
 import '../modules/about/views/about_view.dart';
 import '../modules/datesource/bindings/datesource_binding.dart';
 import '../modules/datesource/views/datesource_view.dart';
+import '../modules/famous/bindings/famous_binding.dart';
+import '../modules/famous/views/famous_view.dart';
 import '../modules/homenote/bindings/homenote_binding.dart';
 import '../modules/homenote/views/homenote_view.dart';
 import '../modules/homestock/bindings/homestock_binding.dart';
@@ -153,6 +155,11 @@ class AppPages {
       name: _Paths.DATESOURCE,
       page: () => const DatesourceView(),
       binding: DatesourceBinding(),
+    ),
+    GetPage(
+      name: _Paths.FAMOUS,
+      page: () => const FamousView(),
+      binding: FamousBinding(),
     ),
   ];
 }

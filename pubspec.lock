@@ -486,6 +486,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_auto_size_text:
+    dependency: "direct main"
+    description:
+      name: flutter_auto_size_text
+      sha256: eba9a0053ab13703eca8468754940f1567cfd364b5aa7225420ea5ec3c02b83e
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.1.0"
   flutter_colorpicker:
     dependency: transitive
     description:

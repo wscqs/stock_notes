@@ -69,7 +69,7 @@ struct MBALibWidgetEntryView : View {
                 HStack(alignment:.center,spacing: 0){
                     
                     Link(destination: URL(string: self.prefixUrl+"tabs?tab=stock&op=saying")!) {
-                        TImageBTitleView(title: "每日名言",backgroundColor: .red)
+                        TImageBTitleView(title: "名言警句",backgroundColor: .red)
                             .frame(width: (geo.size.width-16*2)/5)
                     }
                     Link(destination: URL(string: self.prefixUrl+"tabs?tab=stock&op=meetbs")!) {

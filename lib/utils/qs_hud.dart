@@ -127,7 +127,12 @@ class QsHud {
   }) {
     SmartDialog.show(builder: (_) {
       return AlertDialog(
-        title: title.isNotEmpty ? Text(title) : null,
+        title: title.isNotEmpty
+            ? Text(
+                title,
+                style: TextStyle(fontSize: 20),
+              )
+            : null,
         content: content.isNotEmpty ? Text(content) : null,
         actions: <Widget>[
           TextButton(

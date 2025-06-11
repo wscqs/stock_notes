@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auto_size_text/flutter_auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
@@ -20,20 +21,26 @@ class HomedrawerPage extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.red,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  TextKey.zhufuhuayu.tr,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ],
+            decoration: BoxDecoration(color: Colors.red),
+            child: GestureDetector(
+              onTap: () {
+                parentVC.pushFamousPage();
+              },
+              child: Center(
+                child: Obx(() {
+                  return AutoSizeText(
+                    parentVC.selectedFamous.value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                    maxLines: 4, // 支持最多显示3行
+                    minFontSize: 18, // 最小字体
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  );
+                }),
+              ),
             ),
           ),
           ListTile(
