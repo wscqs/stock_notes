@@ -89,6 +89,7 @@ class FamousController extends GetxController {
           }
           QsHud.dismiss();
           updateList(datas[index!]["key"], value!);
+          eventBus.emit("eventBusFamous", "");
         },
         text: datas[index!]["value"]);
   }
