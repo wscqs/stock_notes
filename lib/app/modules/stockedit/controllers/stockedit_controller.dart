@@ -413,8 +413,24 @@ class StockeditController extends BaseController {
     String prefix = code.substring(0, 2); // hs / sh / sz
     String number = code.substring(2); // 000506
     String stockCode = '${prefix}_$number';
+    String loadResource = "https://m.10jqka.com.cn/stockpage/$stockCode"; //同花顺
+    loadResource =
+        "https://pqa9p2.smartapps.baidu.com/pages/quote/quote?market=ab&type=stock&code=$number"; //百度
+    // loadResource = "https://xueqiu.com/S/sh601126/";
     Get.to(() => WebViewPage(
-          loadResource: "https://m.10jqka.com.cn/stockpage/$stockCode",
+          loadResource: loadResource,
+        ));
+  }
+
+  //扫雷宝
+  void clickLookMinesweeper() {
+    String code = serStockData.value.code ?? ""; // 也可能是 sh000001、sz002415 等
+    String prefix = code.substring(0, 2); // hs / sh / sz
+    String number = code.substring(2); // 000506
+    String stockCode = '${prefix}_$number';
+    Get.to(() => WebViewPage(
+          loadResource:
+              "https://bowerbird.10jqka.com.cn/thslc/editor/view/433f6d9Ac0?code=$number",
         ));
   }
 

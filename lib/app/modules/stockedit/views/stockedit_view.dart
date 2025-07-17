@@ -385,6 +385,19 @@ class StockeditView extends GetView<StockeditController> {
                   ),
                 ),
               ),
+              InkWell(
+                onTap: () {
+                  controller.clickLookMinesweeper();
+                },
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+                  child: Icon(
+                    RemixIcons.alarm_warning_line,
+                    size: 20,
+                  ),
+                ),
+              ),
               kSpaceMax(),
               buildActionButtons(),
             ],
