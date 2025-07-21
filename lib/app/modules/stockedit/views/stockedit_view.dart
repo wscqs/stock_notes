@@ -220,8 +220,12 @@ class StockeditView extends GetView<StockeditController> {
             _rowjiage(type: "price"), //市价
             _rowjiage(type: "market_value"), //市值
             if ((controller.serStockData.value.code ?? "").isEmpty ||
-                double.parse(controller.serStockData.value.peRatioTtm ?? "0") >
-                    0)
+                (controller.serStockData.value.peRatioTtm != null &&
+                    double.tryParse(
+                            controller.serStockData.value.peRatioTtm!) !=
+                        null &&
+                    double.parse(controller.serStockData.value.peRatioTtm!) >
+                        0))
               _rowjiage(type: "p_e_ratio"), //市盈率
           ],
         )

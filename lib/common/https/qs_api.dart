@@ -78,7 +78,14 @@ class QsApi {
         return 'sh$code'; // 兼容 688 科创板
       } else if (code.startsWith('0') || code.startsWith('3')) {
         return 'sz$code';
+      } else if (code.startsWith('5')) {
+        //5和 1 是基金
+        return 'sh$code';
+      } else if (code.startsWith('1')) {
+        return 'sz$code';
       } else {
+        //SH或SZ转小写
+        code = code.toLowerCase();
         return code;
       }
     }).toList();
