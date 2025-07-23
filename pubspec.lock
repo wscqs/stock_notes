@@ -5,18 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: dc27559385e905ad30838356c5f5d574014ba39872d732111cd07ac0beff4c57
+      sha256: da0d9209ca76bde579f2da330aeb9df62b6319c834fa7baae052021b0462401f
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "80.0.0"
+    version: "85.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "192d1c5b944e7e53b24b5586db760db934b177d4147c42fbca8c8c5f1eb8d11e"
+      sha256: "974859dc0ff5f37bc4313244b3218c791810d03ab3470a579580279ba971a48d"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.3.0"
+    version: "7.7.1"
   ansicolor:
     dependency: transitive
     description:
@@ -61,10 +61,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: "7dcbd0f87fe5f61cb28da39a1a8b70dbc106e2fe0516f7836eb7bb2948481a12"
+      sha256: "2fde1607386ab523f7a36bb3e7edb43bd58e6edaf2ffb29d8a6d578b297fdbbd"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.5"
+    version: "4.0.7"
   args:
     dependency: transitive
     description:
@@ -77,18 +77,18 @@ packages:
     dependency: transitive
     description:
       name: asn1lib
-      sha256: "4bae5ae63e6d6dd17c4aac8086f3dec26c0236f6a0f03416c6c19d830c367cf5"
+      sha256: "9a8f69025044eb466b9b60ef3bc3ac99b4dc6c158ae9c56d25eeccf5bc56d024"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.5.8"
+    version: "1.6.5"
   async:
     dependency: transitive
     description:
       name: async
-      sha256: d2872f9c19731c2e5f10444b14686eb7cc85c76274bd6c16e1816bff9a3bab63
+      sha256: "758e6d74e971c3e5aceb4110bfd6698efc7f501675bcfe0c775459a8140750eb"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.12.0"
+    version: "2.13.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: build
-      sha256: cef23f1eda9b57566c81e2133d196f8e3df48f244b317368d65c5943d91148f0
+      sha256: "51dc711996cbf609b90cbe5b335bbce83143875a9d58e4b5c6d3c4f684d3dda7"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.2"
+    version: "2.5.4"
   build_config:
     dependency: transitive
     description:
@@ -117,34 +117,34 @@ packages:
     dependency: transitive
     description:
       name: build_daemon
-      sha256: "294a2edaf4814a378725bfe6358210196f5ea37af89ecd81bfa32960113d4948"
+      sha256: "8e928697a82be082206edb0b9c99c5a4ad6bc31c9e9b8b2f291ae65cd4a25daa"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.3"
+    version: "4.0.4"
   build_resolvers:
     dependency: transitive
     description:
       name: build_resolvers
-      sha256: b9e4fda21d846e192628e7a4f6deda6888c36b5b69ba02ff291a01fd529140f0
+      sha256: ee4257b3f20c0c90e72ed2b57ad637f694ccba48839a821e87db762548c22a62
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.4"
+    version: "2.5.4"
   build_runner:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "058fe9dce1de7d69c4b84fada934df3e0153dd000758c4d65964d0166779aa99"
+      sha256: "382a4d649addbfb7ba71a3631df0ec6a45d5ab9b098638144faf27f02778eb53"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.15"
+    version: "2.5.4"
   build_runner_core:
     dependency: transitive
     description:
       name: build_runner_core
-      sha256: "22e3aa1c80e0ada3722fe5b63fd43d9c8990759d0a2cf489c8c5d7b2bdebc021"
+      sha256: "85fbbb1036d576d966332a3f5ce83f2ce66a40bea1a94ad2d5fc29a19a0d3792"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.0.0"
+    version: "9.1.2"
   built_collection:
     dependency: transitive
     description:
@@ -157,10 +157,10 @@ packages:
     dependency: transitive
     description:
       name: built_value
-      sha256: "28a712df2576b63c6c005c465989a348604960c0958d28be5303ba9baa841ac2"
+      sha256: "0b1b12a0a549605e5f04476031cd0bc91ead1d7c8e830773a18ee54179b3cb62"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.9.3"
+    version: "8.11.0"
   characters:
     dependency: transitive
     description:
@@ -181,10 +181,10 @@ packages:
     dependency: transitive
     description:
       name: checked_yaml
-      sha256: feb6bed21949061731a7a75fc5d2aa727cf160b91af9a3e464c5e3a32e28b5ff
+      sha256: "959525d3162f249993882720d52b7e0c833978df229be20702b33d48d91de70f"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   cli_util:
     dependency: transitive
     description:
@@ -221,10 +221,10 @@ packages:
     dependency: "direct main"
     description:
       name: connectivity_plus
-      sha256: "04bf81bb0b77de31557b58d052b24b3eee33f09a6e7a8c68a3e247c7df19ec27"
+      sha256: "051849e2bd7c7b3bc5844ea0d096609ddc3a859890ec3a9ac4a65a2620cc1f99"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.1.3"
+    version: "6.1.4"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -285,10 +285,10 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "27eb0ae77836989a3bc541ce55595e8ceee0992807f14511552a898ddd0d88ac"
+      sha256: "8a0e5fba27e8ee025d2ffb4ee820b4e6e2cf5e4246a6b1a477eb66866947e0bb"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.1"
+    version: "3.1.1"
   db_viewer:
     dependency: transitive
     description:
@@ -301,26 +301,26 @@ packages:
     dependency: transitive
     description:
       name: dbus
-      sha256: "365c771ac3b0e58845f39ec6deebc76e3276aa9922b0cc60840712094d9047ac"
+      sha256: "79e0c23480ff85dc68de79e2cd6334add97e48f7f4865d17686dd6ea81a47e8c"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.7.10"
+    version: "0.7.11"
   device_info_plus:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "306b78788d1bb569edb7c55d622953c2414ca12445b41c9117963e03afc5c513"
+      sha256: "98f28b42168cc509abc92f88518882fd58061ea372d7999aecc424345c7bff6a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "11.3.3"
+    version: "11.5.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
       name: device_info_plus_platform_interface
-      sha256: "0b04e02b30791224b31969eb1b50d723498f402971bff3630bca2ba839bd1ed2"
+      sha256: e1ea89119e34903dca74b883d0dd78eb762814f97fb6c76f35e9ff74d261a18f
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.0.2"
+    version: "7.0.3"
   diff_match_patch:
     dependency: transitive
     description:
@@ -349,10 +349,10 @@ packages:
     dependency: "direct main"
     description:
       name: drift
-      sha256: b584ddeb2b74436735dd2cf746d2d021e19a9a6770f409212fd5cbc2814ada85
+      sha256: dce2723fb0dd03563af21f305f8f96514c27f870efba934b4fe84d4fedb4eff7
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.26.1"
+    version: "2.28.0"
   drift_db_viewer:
     dependency: "direct main"
     description:
@@ -365,18 +365,18 @@ packages:
     dependency: "direct dev"
     description:
       name: drift_dev
-      sha256: "54dc207c6e4662741f60e5752678df183957ab907754ffab0372a7082f6d2816"
+      sha256: "68c138e884527d2bd61df2ade276c3a144df84d1adeb0ab8f3196b5afe021bd4"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.26.1"
+    version: "2.28.0"
   drift_flutter:
     dependency: "direct main"
     description:
       name: drift_flutter
-      sha256: "0cadbf3b8733409a6cf61d18ba2e94e149df81df7de26f48ae0695b48fd71922"
+      sha256: ccfb42bc942e59f81500b16228df59cf8eb40d2fbd96637ff677df923350af7b
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.4"
+    version: "0.2.5"
   dropdown_button2:
     dependency: "direct main"
     description:
@@ -397,10 +397,10 @@ packages:
     dependency: transitive
     description:
       name: fake_async
-      sha256: "6a95e56b2449df2273fd8c45a662d6947ce1ebb7aafe80e550a3f68297f3cacc"
+      sha256: "5368f224a74523e8d2e7399ea1638b37aecfca824a3cc4dfdf77bf1fa905ac44"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.3.2"
+    version: "1.3.3"
   ffi:
     dependency: transitive
     description:
@@ -421,10 +421,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "77f8e81d22d2a07d0dee2c62e1dda71dc1da73bf43bb2d45af09727406167964"
+      sha256: ef9908739bdd9c476353d6adff72e88fd00c625f5b959ae23f7567bd5137db0a
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "10.1.9"
+    version: "10.2.0"
   file_selector_linux:
     dependency: transitive
     description:
@@ -610,10 +610,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_launcher_icons
-      sha256: bfa04787c85d80ecb3f8777bde5fc10c3de809240c48fa061a2c2bf15ea5211c
+      sha256: "10f13781741a2e3972126fae08393d3c4e01fa4cd7473326b94b72cf594195e7"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.14.3"
+    version: "0.14.4"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -647,10 +647,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_quill
-      sha256: "7e60963632bbc8615627f0bae8e178515f69ecb378ad49fa68c43c2aabf33e21"
+      sha256: "8e33ef670abad16405582a37ce63ac82b7531998682e8bd8348d0f3da998b8ce"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "11.4.1"
+    version: "11.4.2"
   flutter_quill_delta_from_html:
     dependency: transitive
     description:
@@ -679,10 +679,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_smart_dialog
-      sha256: a3aaf690b2737ee6b2c7e7a983bc685e5f118e5de7e2042d2e0b7db26eb074f2
+      sha256: "0852df132cb03fd8fc5144eb404c31eb7eb50c22aecb1cc2504f2f598090d756"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.9.8+7"
+    version: "4.9.8+9"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -745,18 +745,18 @@ packages:
     dependency: transitive
     description:
       name: html
-      sha256: "1fc58edeaec4307368c60d59b7e15b9d658b57d7f3125098b6294153c75337ec"
+      sha256: "6d1264f2dffa1b1101c25a91dff0dc2daee4c18e87cd8538729773c073dbf602"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.15.5"
+    version: "0.15.6"
   http:
     dependency: transitive
     description:
       name: http
-      sha256: fe7ab022b76f3034adc518fb6ea04a82387620e19977665ea18d30a1cf43442f
+      sha256: "2c11f3f94c687ee9bad77c171151672986360b2b001d109814ee7140b2cf261b"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.3.0"
+    version: "1.4.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -769,10 +769,10 @@ packages:
     dependency: transitive
     description:
       name: http_parser
-      sha256: "76d306a1c3afb33fe82e2bbacad62a61f409b5634c915fceb0d799de1a913360"
+      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2"
   image:
     dependency: transitive
     description:
@@ -785,10 +785,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl
-      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.19.0"
+    version: "0.20.2"
   io:
     dependency: transitive
     description:
@@ -801,10 +801,10 @@ packages:
     dependency: transitive
     description:
       name: js
-      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      sha256: "53385261521cc4a0c4658fd0ad07a7d14591cf8fc33abbceae306ddb974888dc"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.7.1"
+    version: "0.7.2"
   json_annotation:
     dependency: transitive
     description:
@@ -817,10 +817,10 @@ packages:
     dependency: transitive
     description:
       name: leak_tracker
-      sha256: c35baad643ba394b40aac41080300150a4f08fd0fd6a10378f8f7c6bc161acec
+      sha256: "6bb818ecbdffe216e81182c2f0714a2e62b593f4a4f13098713ff1685dfb6ab0"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "10.0.8"
+    version: "10.0.9"
   leak_tracker_flutter_testing:
     dependency: transitive
     description:
@@ -841,18 +841,18 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "4a16b3f03741e1252fda5de3ce712666d010ba2122f8e912c94f9f7b90e1a4c3"
+      sha256: c35bb79562d980e9a453fc715854e1ed39e24e7d0297a880ef54e17f9874a9d7
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.1"
   logger:
     dependency: transitive
     description:
       name: logger
-      sha256: be4b23575aac7ebf01f225a241eb7f6b5641eeaf43c6a8613510fc2f8cf187d1
+      sha256: "55d6c23a6c15db14920e037fe7e0dc32e7cdaf3b64b4b25df2d541b5b6b81c0c"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   logging:
     dependency: transitive
     description:
@@ -921,10 +921,10 @@ packages:
     dependency: transitive
     description:
       name: package_config
-      sha256: "92d4488434b520a62570293fbd33bb556c7d49230791c1b4bbd973baf6d2dc67"
+      sha256: f096c55ebb7deb7e384101542bfba8c52696c1b56fca2eb62827989ef2353bbc
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.1"
+    version: "2.2.0"
   package_info_plus:
     dependency: "direct main"
     description:
@@ -969,10 +969,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "4adf4fd5423ec60a29506c76581bc05854c55e3a0b72d35bb28d661c9686edf2"
+      sha256: d0d310befe2c8ab9e7f393288ccbb11b60c019c6b5afc21973eeee4dda2b35e9
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.15"
+    version: "2.2.17"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -1009,10 +1009,10 @@ packages:
     dependency: transitive
     description:
       name: petitparser
-      sha256: c15605cd28af66339f8eb6fbe0e541bfe2d1b72d5825efc6598f3e0a31b9ad27
+      sha256: "07c8f0b1913bcde1ff0d26e57ace2f3012ccbf2b204e070290dad3bb22797646"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.2"
+    version: "6.1.0"
   photo_view:
     dependency: "direct main"
     description:
@@ -1057,26 +1057,26 @@ packages:
     dependency: transitive
     description:
       name: posix
-      sha256: a0117dc2167805aa9125b82eee515cc891819bac2f538c83646d355b16f58b9a
+      sha256: "6323a5b0fa688b6a010df4905a56b00181479e6d10534cecfecede2aa55add61"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.1"
+    version: "6.0.3"
   provider:
     dependency: transitive
     description:
       name: provider
-      sha256: "489024f942069c2920c844ee18bb3d467c69e48955a4f32d1677f71be103e310"
+      sha256: "4abbd070a04e9ddc287673bf5a030c7ca8b685ff70218720abab8b092f53dd84"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.1.4"
+    version: "6.1.5"
   pub_semver:
     dependency: transitive
     description:
       name: pub_semver
-      sha256: "7b3cfbf654f3edd0c6298ecd5be782ce997ddf0e00531b9464b55245185bbbbd"
+      sha256: "5bfcf68ca79ef689f8990d1160781b4bad40a3bd5e5218ad4076ddb7f4081585"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.5"
+    version: "2.2.0"
   pubspec_parse:
     dependency: transitive
     description:
@@ -1113,10 +1113,10 @@ packages:
     dependency: transitive
     description:
       name: quill_native_bridge_linux
-      sha256: "5fcc60cab2ab9079e0746941f05c5ca5fec85cc050b738c8c8b9da7c09da17eb"
+      sha256: "388aaa62017dbd746742ce0bfae99f4ffe1dda2462e8a866df630c67b63c54fe"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   quill_native_bridge_macos:
     dependency: transitive
     description:
@@ -1145,10 +1145,10 @@ packages:
     dependency: transitive
     description:
       name: quill_native_bridge_windows
-      sha256: "60e50d74238f22ceb43113d9a42b6627451dab9fc27f527b979a32051cf1da45"
+      sha256: "3f96ced19e3206ddf4f6f7dde3eb16bdd05e10294964009ea3a806d995aa7caa"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   quiver:
     dependency: transitive
     description:
@@ -1193,18 +1193,18 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: "846849e3e9b68f3ef4b60c60cf4b3e02e9321bc7f4d8c4692cf87ffa82fc8a3a"
+      sha256: "6e8bf70b7fef813df4e9a36f658ac46d107db4b4cfe1048b477d4e453a8159f5"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.2"
+    version: "2.5.3"
   shared_preferences_android:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "02a7d8a9ef346c9af715811b01fbd8e27845ad2c41148eefd31321471b41863d"
+      sha256: "20cbd561f743a342c76c151d6ddb93a9ce6005751e7aa458baad3858bfbfb6ac"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.0"
+    version: "2.4.10"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -1233,10 +1233,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_web
-      sha256: d2ca4132d3946fec2184261726b355836a82c33d7d5b67af32692aff18a4684e
+      sha256: c49bd060261c9a3f0ff445892695d6212ff603ef3115edbb448509d407600019
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.3"
   shared_preferences_windows:
     dependency: transitive
     description:
@@ -1257,10 +1257,10 @@ packages:
     dependency: transitive
     description:
       name: shelf_web_socket
-      sha256: cc36c297b52866d203dbf9332263c94becc2fe0ceaa9681d07b6ef9807023b67
+      sha256: "3632775c8e90d6c9712f883e633716432a27758216dfb61bd86a8321c0580925"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1294,26 +1294,26 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: decd58236d7c59e01ae81b34ebd158e6a1b61e0ae5397fc428736eb91ab82808
+      sha256: "608b56d594e4c8498c972c8f1507209f9fd74939971b948ddbbfbfd1c9cb3c15"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.7.3"
+    version: "2.7.7"
   sqlite3_flutter_libs:
     dependency: transitive
     description:
       name: sqlite3_flutter_libs
-      sha256: "57fafacd815c981735406215966ff7caaa8eab984b094f52e692accefcbd9233"
+      sha256: "60464aa06f3f6f6fba9abd7564e315526c1fee6d6a77d6ee52a1f7f48a9107f6"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.5.30"
+    version: "0.5.37"
   sqlparser:
     dependency: transitive
     description:
       name: sqlparser
-      sha256: "27dd0a9f0c02e22ac0eb42a23df9ea079ce69b52bb4a3b478d64e0ef34a263ee"
+      sha256: "7c859c803cf7e9a84d6db918bac824545045692bbe94a6386bd3a45132235d09"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.41.0"
+    version: "0.41.1"
   stack_trace:
     dependency: transitive
     description:
@@ -1390,26 +1390,26 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: "9d06212b1362abc2f0f0d78e6f09f726608c74e3b9462e8368bb03314aa8d603"
+      sha256: f6a7e5c4835bb4e3026a04793a4199ca2d14c739ec378fdfe23fc8075d0439f8
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.3.1"
+    version: "6.3.2"
   url_launcher_android:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "6fc2f56536ee873eeb867ad176ae15f304ccccc357848b351f6f0d8d4a40d193"
+      sha256: "8582d7f6fe14d2652b4c45c9b6c14c0b678c2af2d083a11b604caeba51930d79"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.3.14"
+    version: "6.3.16"
   url_launcher_ios:
     dependency: transitive
     description:
       name: url_launcher_ios
-      sha256: "16a513b6c12bb419304e72ea0ae2ab4fed569920d1c7cb850263fe3acc824626"
+      sha256: "7f2022359d4c099eea7df3fdf739f7d3d3b9faf3166fb1dd390775176e0b76cb"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.3.2"
+    version: "6.3.3"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -1438,18 +1438,18 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_web
-      sha256: "772638d3b34c779ede05ba3d38af34657a05ac55b06279ea6edd409e323dca8e"
+      sha256: "4bd2b7b4dc4d4d0b94e5babfffbca8eac1a126c7f3d6ecbc1a11013faa3abba2"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.3.3"
+    version: "2.4.1"
   url_launcher_windows:
     dependency: transitive
     description:
       name: url_launcher_windows
-      sha256: "44cf3aabcedde30f2dba119a9dea3b0f2672fbe6fa96e85536251d678216b3c4"
+      sha256: "3284b6d2ac454cf34f114e1d3319866fdd1e19cdc329999057e44ffe936cfa77"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.3"
+    version: "3.1.4"
   uuid:
     dependency: transitive
     description:
@@ -1478,50 +1478,50 @@ packages:
     dependency: transitive
     description:
       name: vm_service
-      sha256: "0968250880a6c5fe7edc067ed0a13d4bae1577fe2771dcf3010d52c4a9d3ca14"
+      sha256: ddfa8d30d89985b96407efce8acbdd124701f96741f2d981ca860662f1c0dc02
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "14.3.1"
+    version: "15.0.0"
   watcher:
     dependency: transitive
     description:
       name: watcher
-      sha256: "69da27e49efa56a15f8afe8f4438c4ec02eff0a117df1b22ea4aad194fe1c104"
+      sha256: "0b7fd4a0bbc4b92641dbf20adfd7e3fd1398fe17102d94b674234563e110088a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.2"
   web:
     dependency: transitive
     description:
       name: web
-      sha256: cd3543bd5798f6ad290ea73d210f423502e71900302dde696f8bff84bf89a1cb
+      sha256: "868d88a33d8a87b18ffc05f9f030ba328ffefba92d6c127917a2ba740f9cfe4a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   web_socket:
     dependency: transitive
     description:
       name: web_socket
-      sha256: "3c12d96c0c9a4eec095246debcea7b86c0324f22df69893d538fcc6f1b8cce83"
+      sha256: "34d64019aa8e36bf9842ac014bb5d2f5586ca73df5e4d9bf5c936975cae6982c"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.6"
+    version: "1.0.1"
   web_socket_channel:
     dependency: transitive
     description:
       name: web_socket_channel
-      sha256: "0b8e2457400d8a859b7b2030786835a28a8e80836ef64402abef392ff4f1d0e5"
+      sha256: d645757fb0f4773d602444000a8131ff5d48c9e47adfe9772652dd1a4f2d45c8
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.2"
+    version: "3.0.3"
   win32:
     dependency: transitive
     description:
       name: win32
-      sha256: dc6ecaa00a7c708e5b4d10ee7bec8c270e9276dfcab1783f57e9962d7884305f
+      sha256: "66814138c3562338d05613a6e368ed8cfb237ad6d64a9e9334be3f309acfca03"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.12.0"
+    version: "5.14.0"
   win32_registry:
     dependency: transitive
     description:
@@ -1555,5 +1555,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.7.0 <4.0.0"
+  dart: ">=3.8.0 <4.0.0"
   flutter: ">=3.29.0"
