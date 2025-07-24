@@ -416,6 +416,12 @@ class StockeditController extends BaseController {
     String loadResource = "https://m.10jqka.com.cn/stockpage/$stockCode"; //同花顺
     loadResource =
         "https://pqa9p2.smartapps.baidu.com/pages/quote/quote?market=ab&type=stock&code=$number"; //百度
+    if (prefix == "sh" || prefix == "sz") {
+      if (number.startsWith("5") || number.startsWith("1")) {
+        //基金
+        loadResource = "https://m.10jqka.com.cn/stockpage/hs_$number";
+      }
+    }
     // loadResource = "https://xueqiu.com/S/sh601126/";
     Get.to(() => WebViewPage(
           loadResource: loadResource,

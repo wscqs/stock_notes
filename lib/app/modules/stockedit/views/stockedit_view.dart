@@ -389,19 +389,7 @@ class StockeditView extends GetView<StockeditController> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {
-                  controller.clickLookMinesweeper();
-                },
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-                  child: Icon(
-                    RemixIcons.alarm_warning_line,
-                    size: 20,
-                  ),
-                ),
-              ),
+              buildMinesweeperButton(),
               kSpaceMax(),
               buildActionButtons(),
             ],
@@ -434,6 +422,28 @@ class StockeditView extends GetView<StockeditController> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget buildMinesweeperButton() {
+    final code = controller.serStockData.value.code ?? '';
+    final isAStock = (code.startsWith("sh") || code.startsWith("sz")) &&
+        !code.startsWith("sh5") &&
+        !code.startsWith("sz1");
+
+    if (!isAStock) return SizedBox.shrink(); // 占位不显示
+
+    return InkWell(
+      onTap: () {
+        controller.clickLookMinesweeper();
+      },
+      child: const Padding(
+        padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
+        child: Icon(
+          RemixIcons.alarm_warning_line,
+          size: 20,
+        ),
+      ),
     );
   }
 
