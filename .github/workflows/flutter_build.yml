@@ -17,6 +17,9 @@ jobs:
         with:
           flutter-version: '3.32.7'
 
+      - name: Clean Flutter pub
+        run: flutter clean
+        
       - name: Flutter pub get
         run: flutter pub get
 
@@ -61,6 +64,9 @@ jobs:
         with:
           flutter-version: '3.32.7'
 
+      - name: Clean Flutter pub
+        run: flutter clean
+        
       - name: Flutter pub get
         run: flutter pub get
 
