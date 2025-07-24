@@ -74,23 +74,37 @@ class QsApi {
 
   String buildStockUrl(List<String> stockCodes) {
     List<String> formattedCodes = stockCodes.map((code) {
-      if (code.startsWith('6')) {
-        return 'sh$code'; // 兼容 688 科创板
-      } else if (code.startsWith('0') || code.startsWith('3')) {
-        return 'sz$code';
-      } else if (code.startsWith('5')) {
-        //5和 1 是基金
-        return 'sh$code';
-      } else if (code.startsWith('1')) {
-        return 'sz$code';
-      } else {
-        //SH或SZ转小写
-        code = code.toLowerCase();
-        return code;
+      code = code.trim();
+
+      // A 股逻辑
+      if (RegExp(r'^\d{6}$').hasMatch(code)) {
+        if (code.startsWith('6') || code.startsWith('5')) {
+          return 'sh$code'; // 包括科创板、上证基金
+        } else if (code.startsWith('0') ||
+            code.startsWith('3') ||
+            code.startsWith('1')) {
+          return 'sz$code'; // 深证主板、创业板、深市基金
+        }
       }
+
+      // 港股逻辑：纯数字，不足5位补0
+      if (RegExp(r'^\d{1,5}$').hasMatch(code)) {
+        return 'hk${code.padLeft(5, '0')}';
+      }
+
+      // 美股（字母或带 US 前缀）
+      if (RegExp(r'^[a-zA-Z.]+$').hasMatch(code)) {
+        return 'us${code.toUpperCase()}';
+      }
+      if (code.toLowerCase().startsWith('us')) {
+        return 'us${code.substring(2).toUpperCase()}';
+      }
+
+      // 兜底逻辑（SH/SZ）
+      return code.toLowerCase();
     }).toList();
 
-    return "https://qt.gtimg.cn/q=${formattedCodes.join(',')}";
+    return 'https://qt.gtimg.cn/q=${formattedCodes.join(',')}';
   }
 
 // https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=SZ000001,SZ399001&extend=detail
@@ -101,74 +115,82 @@ class QsApi {
 //https://blog.csdn.net/afgasdg/article/details/84064421
 // 数据解析函数  价格，市值，市盈率 （没股息）
   static List<Map<String, dynamic>> parseTencentStockData(String rawData) {
-    // 按分号分割每个股票的数据
-    final lines = rawData.split(';');
+    final regex = RegExp(r'v_([^=]+)="([^"]+)"');
+    final matches = regex.allMatches(rawData);
+
     final List<Map<String, dynamic>> result = [];
 
-    for (var line in lines) {
-      line = line.trim();
-      // 跳过空行
-      if (line.isEmpty) continue;
-
-      // 提取每条数据的主体部分 (去掉 v_ 和引号)
-      final startIndex = line.indexOf('="');
-      if (startIndex == -1) continue; // 无效数据
-      final key = line.substring(2, startIndex); // 股票代码
-      final rawContent = line.substring(startIndex + 2, line.length - 1);
-
-      // 将主体部分按 ~ 分割
-      final parts = rawContent.split('~');
-
-      result.add({
-        "market_type": parts[0], // 市场类型
-        "name": parts[1], // 股票名称
-        "code": key, // 股票代码
-        "current_price": parts[3], // 当前价格
-        // "previous_close": parts[4], // 昨收价
-        // "open_price": parts[5], // 开盘价
-        // "volume": parts[6], // 成交量（手）
-        // "outer_volume": parts[7], // 外盘
-        // "inner_volume": parts[8], // 内盘
-        // "buy_prices": [
-        //   {"price": parts[9], "volume": parts[10]},
-        //   {"price": parts[11], "volume": parts[12]},
-        //   {"price": parts[13], "volume": parts[14]},
-        //   {"price": parts[15], "volume": parts[16]},
-        //   {"price": parts[17], "volume": parts[18]},
-        // ], // 买五档
-        // "sell_prices": [
-        //   {"price": parts[19], "volume": parts[20]},
-        //   {"price": parts[21], "volume": parts[22]},
-        //   {"price": parts[23], "volume": parts[24]},
-        //   {"price": parts[25], "volume": parts[26]},
-        //   {"price": parts[27], "volume": parts[28]},
-        // ], // 卖五档
-        // "latest_trade": parts[29], // 最近逐笔成交
-        // "date": parts[30], // 日期
-        // "price_change": parts[31], // 涨跌
-        // "price_change_percent": parts[32], // 涨跌幅
-        // "high_price": parts[33], // 最高价
-        // "low_price": parts[34], // 最低价
-        // "price_volume_turnover": parts[35], // 价格/成交量/成交额
-        // "turnover_volume": parts[36], // 成交量（手）
-        // "turnover_amount": parts[37], // 成交额（万）
-        // "turnover_rate": parts[38], // 换手率%
-        "pe_ratio_ttm": parts[39], // 市盈率（TTM）
-        // "amplitude": parts[40], // 振幅
-        // "circulating_market_cap": parts[41], // 流通市值（亿）
-        "total_market_cap": parts[45], // 总市值（亿）
-        "pb_ratio": parts[46], // 市净率
-        // "limit_up_price": parts[44], // 涨停价
-        // "limit_down_price": parts[45], // 跌停价
-        // "volume_ratio": parts[46], // 量比
-        // "order_diff": parts[47], // 委差
-        // "pe_dynamic": parts[48], // 市盈率（动态）
-        // "pe_static": parts[49], // 市盈率（静态）
-        // "unknown_1": parts[50], // 未知字段 1
-        // "unknown_2": parts[51], // 未知字段 2
-        // "unknown_3": parts[52], // 未知字段 3
-      });
+    String? formatNumber(String? value) {
+      if (value == null || value.isEmpty) return null;
+      try {
+        final doubleValue = double.parse(value);
+        return doubleValue.toStringAsFixed(
+            doubleValue.truncateToDouble() == doubleValue ? 0 : 2);
+      } catch (e) {
+        return null;
+      }
     }
+
+    for (final match in matches) {
+      final code = match.group(1)!;
+      final value = match.group(2)!;
+      final parts = value.split('~');
+
+      if (parts.length < 4) continue;
+      // print(parts);
+
+      final name = parts[1];
+      final currentPrice = parts[3];
+      // 从 code 提取 market_type
+      String marketType = '';
+      if (code.startsWith('sh')) {
+        marketType = 'sh';
+      } else if (code.startsWith('sz')) {
+        marketType = 'sz';
+      } else if (code.startsWith('hk')) {
+        marketType = 'hk';
+      } else if (code.startsWith('us')) {
+        marketType = 'us';
+      } else {
+        marketType = 'unknown';
+      }
+
+      Map<String, dynamic> stock = {
+        "market_type": marketType,
+        "name": name,
+        "code": code,
+        "current_price": currentPrice,
+        "pe_ratio_ttm": null,
+        "pb_ratio": null,
+        "total_market_cap": null,
+      };
+
+      if (code.startsWith('us')) {
+        // 美股
+        stock["pe_ratio_ttm"] =
+            formatNumber(parts.length > 39 ? parts[39] : null);
+        stock["total_market_cap"] =
+            formatNumber(parts.length > 45 ? parts[45] : null);
+        stock["pb_ratio"] = formatNumber(parts.length > 51 ? parts[51] : null);
+      } else if (code.startsWith('sh') || code.startsWith('sz')) {
+        // A股
+        stock["pe_ratio_ttm"] =
+            formatNumber(parts.length > 39 ? parts[39] : null);
+        stock["total_market_cap"] =
+            formatNumber(parts.length > 45 ? parts[45] : null);
+        stock["pb_ratio"] = formatNumber(parts.length > 46 ? parts[46] : null);
+      } else if (code.startsWith('hk')) {
+        // 港股
+        stock["pe_ratio_ttm"] =
+            formatNumber(parts.length > 39 ? parts[39] : null);
+        stock["total_market_cap"] =
+            formatNumber(parts.length > 45 ? parts[45] : null);
+        //stock["pb_ratio"] = parts.length > 46 ? parts[46] : null;//没有
+      }
+
+      result.add(stock);
+    }
+
     return result;
   }
 

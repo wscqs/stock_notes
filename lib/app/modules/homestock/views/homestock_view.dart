@@ -473,12 +473,12 @@ class _HomeStockCellState extends State<HomeStockCell>
                   widget.item.code ?? "",
                   style: TextStyle(fontSize: 14),
                 ),
-                Text(
-                  (widget.item.marketType ?? "") == "51" ? "· 深" : "· 沪",
-                  style: TextStyle(
-                    fontSize: 11,
-                  ),
-                ),
+                // Text(
+                //   (widget.item.marketType ?? "") == "51" ? "· 深" : "· 沪",
+                //   style: TextStyle(
+                //     fontSize: 11,
+                //   ),
+                // ),
               ],
             ),
             kSpaceH(4),

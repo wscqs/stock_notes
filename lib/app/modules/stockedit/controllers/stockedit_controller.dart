@@ -241,10 +241,10 @@ class StockeditController extends BaseController {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;
     }
-    if (stockNum.value.length != 6 && stockNum.value.length != 8) {
-      QsHud.showToast(TextKey.shurugupiaotishinumerror.tr);
-      return;
-    }
+    // if (stockNum.value.length != 6 && stockNum.value.length != 8) {
+    //   QsHud.showToast(TextKey.shurugupiaotishinumerror.tr);
+    //   return;
+    // }
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
     QsHud.showLoading();
@@ -485,6 +485,7 @@ class StockeditController extends BaseController {
 
   void clickOpRestore() {
     db.updateStockWithOp(localStockData.value!.copyWith(opDelete: false));
+    isLocalData.value = true;
     _dbAllDataRefreshUI();
   }
 
