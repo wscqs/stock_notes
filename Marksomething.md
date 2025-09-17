@@ -7,6 +7,12 @@ flutter clean
 flutter pub get
 flutter build
 
+cd macos
+rm -rf Pods Podfile.lock
+pod repo update
+pod install
+cd ..
+
 dart run build_runner build
 dart run build_runner watch
 

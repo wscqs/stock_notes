@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
@@ -105,26 +106,20 @@ class NoteeditView extends GetView<NoteeditController> {
         placeholder: '',
         scrollBottomInset: 40,
         // padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-        // embedBuilders: [
-        // ...FlutterQuillEmbeds.editorBuilders(
-        //   imageEmbedConfig: QuillEditorImageEmbedConfig(
-        //     imageProviderBuilder: (context, imageUrl) {
-        //       // https://pub.dev/packages/flutter_quill_extensions#-image-assets
-        //       if (imageUrl.startsWith('assets/')) {
-        //         return AssetImage(imageUrl);
-        //       }
-        //       return null;
-        //     },
-        //   ),
-        // videoEmbedConfig: QuillEditorVideoEmbedConfig(
-        //   customVideoBuilder: (videoUrl, readOnly) {
-        //     // To load YouTube videos https://github.com/singerdmx/flutter-quill/releases/tag/v10.8.0
-        //     return null;
-        //   },
-        // ),
-        // ),
-        // TimeStampEmbedBuilder(),
-        // ],
+        embedBuilders: [
+          ...FlutterQuillEmbeds.editorBuilders(
+            imageEmbedConfig: QuillEditorImageEmbedConfig(
+              imageProviderBuilder: (context, imageUrl) {
+                // https://pub.dev/packages/flutter_quill_extensions#-image-assets
+                if (imageUrl.startsWith('assets/')) {
+                  return AssetImage(imageUrl);
+                }
+                return null;
+              },
+            ),
+          ),
+          TimeStampEmbedBuilder(),
+        ],
       ),
     );
   }
@@ -136,7 +131,8 @@ class NoteeditView extends GetView<NoteeditController> {
       child: QuillSimpleToolbar(
         controller: controller.quillController,
         config: QuillSimpleToolbarConfig(
-          // embedButtons: FlutterQuillEmbeds.toolbarButtons(), //等以后有服务器再添
+          embedButtons: FlutterQuillEmbeds.toolbarButtons(
+              videoButtonOptions: null), //启用图片插入功能
           // multiRowsDisplay: false,
           showFontFamily: false,
           showFontSize: false,

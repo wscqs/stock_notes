@@ -32,6 +32,7 @@ dependencies:
   dropdown_button2: ^3.0.0-beta.22
   flutter_auto_size_text: ^4.1.0
   flutter_quill: ^11.4.2  #https://github.com/fleather-editor/fleather 文字按钮颜色等可以参考
+  flutter_quill_extensions: ^11.0.0  # 用于支持图片等嵌入功能
   #图片预览与保存 https://juejin.cn/post/7295654213618073615?searchId=2024092915095437248644A536B2AA155A
   #readmore: ^3.0.0
   #linkfy_text: ^1.1.6 文本链接化
@@ -53,9 +54,9 @@ dependencies:
 
   #原生相关
   #  image_gallery_saver: ^2.0.3
-  #  image_picker: ^1.1.2
+  image_picker: ^1.1.2  # 用于从相册选择图片
   #  share_plus: ^9.0.0
-  #  permission_handler: ^11.3.1
+  permission_handler: ^11.3.1  # 用于请求权限
   package_info_plus: ^8.3.0
   device_info_plus: ^11.3.3
   # flutter_udid: ^4.0.0 #设备唯一标识
