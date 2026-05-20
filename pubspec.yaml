@@ -8,60 +8,60 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.8
-  get: ^4.7.2 #路由/状态插件
+  get: ^4.7.3 #路由/状态插件
   #get: ^5.0.0-release-candidate-9.3.2 #中间件有点问题（SplashMiddleware正式版再试看看）
   #dio: ^5.8.0+1 //web不能运行
-  dio: ^5.6.0
+  dio: ^5.9.2
   visibility_detector: ^0.4.0+2
   fl_charset: ^1.0.2
 
   convert: ^3.1.2
   intl: ^0.20.2  # 格式化日期
-  crypto: ^3.0.6  # 生成 MD5
+  crypto: ^3.0.7  # 生成 MD5
   encrypt: ^5.0.3
-  connectivity_plus: ^6.1.3
-  app_links: ^6.4.0 #记住要看文档，深链接需手动关闭
+  connectivity_plus: ^7.1.1
+  app_links: ^7.0.0 #记住要看文档，深链接需手动关闭
 
   #UI
-  flex_color_scheme: ^8.2.0 # 主题
+  flex_color_scheme: ^8.4.0 # 主题
   flutter_screenutil: ^5.9.3
-  flutter_smart_dialog: ^4.9.8+9 #https://xdd666t.github.io/flutter_use/web/index.html?dialogType=AttachDialogBusiness#/smartDialog
+  flutter_smart_dialog: ^5.1.0 #https://xdd666t.github.io/flutter_use/web/index.html?dialogType=AttachDialogBusiness#/smartDialog
   flutter_inappwebview: ^6.1.5
-  flutter_slidable: ^4.0.0 #cell滑动事件
+  flutter_slidable: ^4.0.3 #cell滑动事件
   photo_view: ^0.15.0 #图片预览
-  dropdown_button2: ^3.0.0-beta.22
-  flutter_auto_size_text: ^4.1.0
-  flutter_quill: ^11.4.2  #https://github.com/fleather-editor/fleather 文字按钮颜色等可以参考
+  dropdown_button2: ^3.0.0-beta.25
+  flutter_auto_size_text: ^5.0.0
+  flutter_quill: ^11.5.0  #https://github.com/fleather-editor/fleather 文字按钮颜色等可以参考
   flutter_quill_extensions: ^11.0.0  # 用于支持图片等嵌入功能
   #图片预览与保存 https://juejin.cn/post/7295654213618073615?searchId=2024092915095437248644A536B2AA155A
   #readmore: ^3.0.0
   #linkfy_text: ^1.1.6 文本链接化
 
   #icon (remixicon胜出 https://remixicon.com/）
-  remixicon: ^1.4.1
+  remixicon: ^4.9.3
   #font_awesome_flutter: ^10.8.0
   #remixicon: ^1.4.1
   #lucide_icons_flutter: ^2.0.3
 
   #存储
-  shared_preferences: ^2.5.2
+  shared_preferences: ^2.5.5
   get_storage: ^2.1.1
-  drift: ^2.26.1 #数据库 github自动打包 cocopods 没最新
-  drift_flutter: ^0.2.4
+  drift: ^2.33.0 #数据库 github自动打包 cocopods 没最新
+  drift_flutter: ^0.3.0
   drift_db_viewer: ^2.1.0 #测试看数据
   path_provider: ^2.1.5
   #  isar: ^3.1.0+1
 
   #原生相关
   #  image_gallery_saver: ^2.0.3
-  image_picker: ^1.1.2  # 用于从相册选择图片
+  image_picker: ^1.2.2  # 用于从相册选择图片
   #  share_plus: ^9.0.0
-  permission_handler: ^11.3.1  # 用于请求权限
+  permission_handler: ^12.0.1  # 用于请求权限
   package_info_plus: ^8.3.0
   device_info_plus: ^11.3.3
   # flutter_udid: ^4.0.0 #设备唯一标识
   url_launcher: ^6.3.2
-  file_picker: ^10.2.0
+  file_picker: ^10.2.0 #更新最新版 win冲突无法适配（后续更新）
   share_plus: ^11.0.0
 
   # 如果需要使用国际化，请添加以下依赖
