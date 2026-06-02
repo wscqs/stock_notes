@@ -156,24 +156,26 @@ class StockeditView extends GetView<StockeditController> {
           kSpaceH(16),
           TextField(
             controller: controller.rAllRemarkController,
+            minLines: 3,
             maxLines: null, // 允许多行输入
             decoration: InputDecoration(
               labelText: TextKey.beizui.tr,
               border: OutlineInputBorder(),
-              // alignLabelWithHint: true, // 标签文字与多行输入对齐
+              alignLabelWithHint: true, // 标签文字与多行输入对齐
             ),
-            // keyboardType: TextInputType.multiline,
+            keyboardType: TextInputType.multiline,
           ),
           kSpaceH(16),
           TextField(
             controller: controller.rEventRemarkController,
+            minLines: 3,
             maxLines: null, // 允许多行输入
             decoration: InputDecoration(
               labelText: TextKey.shijian.tr + TextKey.jilu.tr,
               border: OutlineInputBorder(),
-              // alignLabelWithHint: true, // 标签文字与多行输入对齐
+              alignLabelWithHint: true, // 标签文字与多行输入对齐
             ),
-            // keyboardType: TextInputType.multiline,
+            keyboardType: TextInputType.multiline,
           ),
         ]);
   }
@@ -339,13 +341,14 @@ class StockeditView extends GetView<StockeditController> {
               kSpaceH(16),
               TextField(
                 controller: remarkTextEditingController,
+                minLines: 1,
                 maxLines: null, // 允许多行输入
                 decoration: InputDecoration(
                   labelText: TextKey.liyou.tr,
                   border: OutlineInputBorder(),
-                  // alignLabelWithHint: true, // 标签文字与多行输入对齐
+                  alignLabelWithHint: true, // 标签文字与多行输入对齐
                 ),
-                // keyboardType: TextInputType.multiline,
+                keyboardType: TextInputType.multiline,
               ),
             ],
           ),
