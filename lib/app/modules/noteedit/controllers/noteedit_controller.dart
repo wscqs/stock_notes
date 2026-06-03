@@ -14,6 +14,8 @@ import 'package:stock_notes/utils/qs_hud.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
+import '../../../../utils/stock_link_utils.dart';
+import '../../../routes/app_pages.dart';
 
 class NoteeditController extends GetxController {
   final TextEditingController titleController = TextEditingController();
@@ -176,8 +178,12 @@ class NoteeditController extends GetxController {
       }
     }
     title = title.trim();
+    // 自动识别股票代码并包装为可点击的 link
     final deltaJson = quillController.document.toDelta().toJson();
-    final encodedContent = jsonEncode(deltaJson);
+    final wrappedDelta = StockLinkUtils.wrapStockCodesInDelta(deltaJson);
+    // 立即更新编辑器，让用户保存后立刻看到 link 效果
+    quillController.document = Document.fromJson(wrappedDelta);
+    final encodedContent = jsonEncode(wrappedDelta);
     NoteItemsCompanion itemsCompanion =
         NoteItemsCompanion.insert(title: title, content: Value(encodedContent));
     if (localData.value != null) {
@@ -238,6 +244,23 @@ class NoteeditController extends GetxController {
       currentTextColor.value = _fromHex(attr.value);
     } else {
       currentTextColor.value = Get.theme.colorScheme.onSurface;
+    }
+  }
+
+  /// 处理笔记中股票链接的点击事件
+  Future<void> handleLinkTap(String link) async {
+    final code = StockLinkUtils.parseStockCodeFromLink(link);
+    if (code == null) return;
+
+    final db = Get.find<DatabaseManager>().db;
+    // 数据库中 code 可能是小写，优先尝试小写查询
+    var stockItem = await db.getStockItemWithTagsByCode(code.toLowerCase());
+    stockItem ??= await db.getStockItemWithTagsByCode(code);
+
+    if (stockItem != null) {
+      Get.toNamed(Routes.STOCKEDIT, arguments: stockItem);
+    } else {
+      QsHud.showToast('未找到该股票记录');
     }
   }
 

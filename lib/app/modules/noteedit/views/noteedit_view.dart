@@ -105,6 +105,31 @@ class NoteeditView extends GetView<NoteeditController> {
         scrollable: false,
         placeholder: '',
         scrollBottomInset: 40,
+        onLaunchUrl: (link) {
+          controller.handleLinkTap(link);
+        },
+        customLinkPrefixes: const ['stocknotes://'],
+        onTapUp: (details, getPositionForOffset) {
+          // 编辑状态下不拦截，允许正常移动光标和编辑文本
+          if (controller.isEditing.value) return false;
+
+          final position = getPositionForOffset(details.globalPosition);
+
+          final result = controller.quillController.document
+              .querySegmentLeafNode(position.offset);
+          final leaf = result.leaf;
+          if (leaf != null) {
+            final linkAttr = leaf.style.attributes[Attribute.link.key];
+            if (linkAttr != null) {
+              final link = linkAttr.value as String;
+              if (link.startsWith('stocknotes://')) {
+                controller.handleLinkTap(link);
+                return true; // 阻止默认行为（包括获取焦点）
+              }
+            }
+          }
+          return false;
+        },
         // padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
         embedBuilders: [
           ...FlutterQuillEmbeds.editorBuilders(
