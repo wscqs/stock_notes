@@ -384,7 +384,7 @@ class _HomeStockCellState extends State<HomeStockCell>
   @override
   Widget build(BuildContext context) {
     return Listener(
-      behavior: HitTestBehavior.opaque, // 一定要 opaque，全区域都接收
+      behavior: HitTestBehavior.opaque,
       onPointerDown: (event) {
         controller.slidableController = slidableController;
       },
@@ -393,24 +393,35 @@ class _HomeStockCellState extends State<HomeStockCell>
         controller: slidableController,
         endActionPane: buildActionPane(),
         child: Builder(builder: (context) {
-          // controller.slidableContexts[index] = context;
           return GestureDetector(
             onLongPress: () {
               controller.longPressCell(widget.item);
             },
-            child: Card(
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Get.theme.colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Get.theme.colorScheme.outlineVariant
+                      .withValues(alpha: 0.2),
+                  width: 0.5,
+                ),
+              ),
               child: InkWell(
                 onTap: () {
                   controller.clickCell(widget.item);
                 },
+                borderRadius: BorderRadius.circular(16),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(14.0),
                   child: Obx(() {
                     return Row(
                       children: [
                         Expanded(child: buildContents()),
                         if (controller.isOperate.value) ...[
-                          kSpaceW(16),
+                          kSpaceW(12),
                           Icon(controller.selItems.contains(widget.item)
                               ? Icons.check_box_rounded
                               : Icons.check_box_outline_blank_rounded)
@@ -428,118 +439,171 @@ class _HomeStockCellState extends State<HomeStockCell>
   }
 
   Widget buildContents() {
-    return Stack(
+    final conditionInfo = widget.item.showCellConditionInfo() ?? "";
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  widget.item.name,
-                  style: TextStyle(fontSize: 16),
-                ),
-                kSpaceW(8),
-                Text(
-                  widget.item.currentPrice ?? "",
-                  style: TextStyle(fontSize: 16),
-                ),
-                kSpaceW(8),
-                if (widget.item.opTop)
-                  Icon(
-                    Icons.push_pin,
-                    size: 15,
-                    color: Colors.blue.shade700,
-                  ),
-                if (widget.item.opCollect)
-                  Icon(
-                    Icons.star,
-                    size: 15,
-                    color: Colors.yellow.shade700,
-                  ),
-                if (widget.item.opBuy)
-                  Icon(
-                    Icons.trending_up,
-                    size: 15,
-                    color: Colors.red.shade700,
-                  ),
-                kSpaceMax(),
-              ],
-            ),
-            kSpaceH(2),
-            Row(
-              spacing: 4,
-              children: [
-                Text(
-                  widget.item.code ?? "",
-                  style: TextStyle(fontSize: 14),
-                ),
-                // Text(
-                //   (widget.item.marketType ?? "") == "51" ? "· 深" : "· 沪",
-                //   style: TextStyle(
-                //     fontSize: 11,
-                //   ),
-                // ),
-              ],
-            ),
-            kSpaceH(4),
-            Row(
-              children: [
-                if (widget.item.tagList.length > 0)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 4),
-                    child: Icon(
-                      RemixIcons.price_tag_3_line,
-                      size: 10,
+        // 左侧信息
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 名称 + 价格 + 状态图标
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      widget.item.name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Get.theme.colorScheme.onSurface,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                Expanded(
-                  child: Text(
-                    widget.item.homeCellShowTagNames() ?? "",
-                    style: TextStyle(fontSize: 10),
-                  ),
+                  if (widget.item.currentPrice?.isNotEmpty == true) ...[
+                    kSpaceW(8),
+                    Text(
+                      widget.item.currentPrice!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Get.theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                  if (widget.item.opTop) ...[
+                    kSpaceW(4),
+                    Icon(
+                      Remix.pushpin_fill,
+                      size: 13,
+                      color: Colors.blue.shade400,
+                    ),
+                  ],
+                  if (widget.item.opCollect) ...[
+                    kSpaceW(4),
+                    Icon(
+                      Remix.star_fill,
+                      size: 13,
+                      color: Colors.amber.shade400,
+                    ),
+                  ],
+                  if (widget.item.opBuy) ...[
+                    kSpaceW(4),
+                    Icon(
+                      // Remix.wallet_3_fill,
+                      Icons.trending_up,
+                      size: 13,
+                      color: Colors.red.shade400,
+                    ),
+                  ],
+                ],
+              ),
+              kSpaceH(6),
+              // 代码行
+              Text(
+                widget.item.code ?? "",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Get.theme.colorScheme.onSurfaceVariant,
                 ),
-                kSpaceW(8),
-                SizedBox(
-                  width: 76,
-                  child: Text(
-                    widget.item.homeCellShowTime(
-                        isMeet: controller.selConditionIndex == 0,
-                        isNear: controller.selConditionIndex == 1),
-                    style: TextStyle(fontSize: 12),
-                  ),
+              ),
+              if (widget.item.tagList.isNotEmpty) ...[
+                kSpaceH(6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: widget.item.tagList.map((tag) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 1.5),
+                      decoration: BoxDecoration(
+                        color: Get.theme.colorScheme.primaryContainer
+                            .withValues(alpha: 0.35),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: Text(
+                        tag.name ?? "",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Get.theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
+            ],
+          ),
+        ),
+        // 右侧信息
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (conditionInfo.isNotEmpty) ...[
+              _buildConditionTags(conditionInfo),
+              kSpaceH(6),
+            ],
+            Text(
+              widget.item.homeCellShowTime(
+                  isMeet: controller.selConditionIndex == 0,
+                  isNear: controller.selConditionIndex == 1),
+              style: TextStyle(
+                fontSize: 11,
+                color: Get.theme.colorScheme.onSurfaceVariant
+                    .withValues(alpha: 0.7),
+              ),
             ),
           ],
         ),
-        Positioned(
-          right: 0,
-          top: 0,
-          child: SizedBox(
-            width: 76,
-            child: Text.rich(
-              TextSpan(
-                style: TextStyle(fontSize: 10), // 默认样式
-                children: (widget.item.showCellConditionInfo() ?? "")
-                    .split('')
-                    .map((char) {
-                  if (char == 'B') {
-                    return TextSpan(
-                        text: char,
-                        style: TextStyle(color: Colors.red, fontSize: 11));
-                  } else if (char == 'S') {
-                    return TextSpan(
-                        text: char,
-                        style: TextStyle(color: Colors.blue, fontSize: 11));
-                  } else {
-                    return TextSpan(text: char); // 默认样式
-                  }
-                }).toList(),
-              ),
-            ),
-          ),
-        )
       ],
+    );
+  }
+
+  Widget _buildConditionTags(String conditionInfo) {
+    final lines = conditionInfo.split('\n').where((l) => l.isNotEmpty).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: lines.asMap().entries.map((entry) {
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: entry.key < lines.length - 1 ? 2 : 0),
+          child: _buildConditionLine(entry.value),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildConditionLine(String line) {
+    return Text.rich(
+      TextSpan(
+        style: TextStyle(
+          fontSize: 11,
+          color: Get.theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
+        ),
+        children: line.split('').map((char) {
+          if (char == 'B') {
+            return TextSpan(
+              text: char,
+              style: TextStyle(
+                color: Colors.red.shade400,
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          } else if (char == 'S') {
+            return TextSpan(
+              text: char,
+              style: TextStyle(
+                color: Colors.blue.shade400,
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          }
+          return TextSpan(text: char);
+        }).toList(),
+      ),
     );
   }
 
@@ -644,6 +708,37 @@ class SlideAction extends StatelessWidget {
       child: Icon(
         icon,
         size: 28,
+      ),
+    );
+  }
+}
+
+class _ConditionTag extends StatelessWidget {
+  final String text;
+  final Color bgColor;
+  final Color textColor;
+
+  const _ConditionTag({
+    required this.text,
+    required this.bgColor,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 9,
+          fontWeight: FontWeight.w600,
+          color: textColor,
+        ),
       ),
     );
   }
