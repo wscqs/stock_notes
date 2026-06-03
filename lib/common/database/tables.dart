@@ -70,6 +70,14 @@ class StockTags extends Table {
   Set<Column> get primaryKey => {stockId, tagId};
 }
 
+class StockTrades extends Table with TableMixin {
+  IntColumn get stockId => integer().references(StockItems, #id)();
+  IntColumn get tradeType => integer()(); // 0=买, 1=卖
+  TextColumn get price => text().nullable()();
+  TextColumn get shares => text().nullable()();
+  TextColumn get remark => text().nullable()();
+}
+
 // class NoteTags extends Table {
 //   IntColumn get noteId =>
 //       integer().customConstraint('REFERENCES note_items(id)')();

@@ -2249,6 +2249,415 @@ class StockTagsCompanion extends UpdateCompanion<StockTag> {
   }
 }
 
+class $StockTradesTable extends StockTrades
+    with TableInfo<$StockTradesTable, StockTrade> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StockTradesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<DateTime> updateAt = GeneratedColumn<DateTime>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _stockIdMeta =
+      const VerificationMeta('stockId');
+  @override
+  late final GeneratedColumn<int> stockId = GeneratedColumn<int>(
+      'stock_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES stock_items (id)'));
+  static const VerificationMeta _tradeTypeMeta =
+      const VerificationMeta('tradeType');
+  @override
+  late final GeneratedColumn<int> tradeType = GeneratedColumn<int>(
+      'trade_type', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _priceMeta = const VerificationMeta('price');
+  @override
+  late final GeneratedColumn<String> price = GeneratedColumn<String>(
+      'price', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _sharesMeta = const VerificationMeta('shares');
+  @override
+  late final GeneratedColumn<String> shares = GeneratedColumn<String>(
+      'shares', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _remarkMeta = const VerificationMeta('remark');
+  @override
+  late final GeneratedColumn<String> remark = GeneratedColumn<String>(
+      'remark', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, createdAt, updateAt, stockId, tradeType, price, shares, remark];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stock_trades';
+  @override
+  VerificationContext validateIntegrity(Insertable<StockTrade> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    if (data.containsKey('stock_id')) {
+      context.handle(_stockIdMeta,
+          stockId.isAcceptableOrUnknown(data['stock_id']!, _stockIdMeta));
+    } else if (isInserting) {
+      context.missing(_stockIdMeta);
+    }
+    if (data.containsKey('trade_type')) {
+      context.handle(_tradeTypeMeta,
+          tradeType.isAcceptableOrUnknown(data['trade_type']!, _tradeTypeMeta));
+    } else if (isInserting) {
+      context.missing(_tradeTypeMeta);
+    }
+    if (data.containsKey('price')) {
+      context.handle(
+          _priceMeta, price.isAcceptableOrUnknown(data['price']!, _priceMeta));
+    }
+    if (data.containsKey('shares')) {
+      context.handle(_sharesMeta,
+          shares.isAcceptableOrUnknown(data['shares']!, _sharesMeta));
+    }
+    if (data.containsKey('remark')) {
+      context.handle(_remarkMeta,
+          remark.isAcceptableOrUnknown(data['remark']!, _remarkMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StockTrade map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StockTrade(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_at'])!,
+      stockId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stock_id'])!,
+      tradeType: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}trade_type'])!,
+      price: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}price']),
+      shares: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}shares']),
+      remark: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}remark']),
+    );
+  }
+
+  @override
+  $StockTradesTable createAlias(String alias) {
+    return $StockTradesTable(attachedDatabase, alias);
+  }
+}
+
+class StockTrade extends DataClass implements Insertable<StockTrade> {
+  final int id;
+  final DateTime createdAt;
+  final DateTime updateAt;
+  final int stockId;
+  final int tradeType;
+  final String? price;
+  final String? shares;
+  final String? remark;
+  const StockTrade(
+      {required this.id,
+      required this.createdAt,
+      required this.updateAt,
+      required this.stockId,
+      required this.tradeType,
+      this.price,
+      this.shares,
+      this.remark});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['update_at'] = Variable<DateTime>(updateAt);
+    map['stock_id'] = Variable<int>(stockId);
+    map['trade_type'] = Variable<int>(tradeType);
+    if (!nullToAbsent || price != null) {
+      map['price'] = Variable<String>(price);
+    }
+    if (!nullToAbsent || shares != null) {
+      map['shares'] = Variable<String>(shares);
+    }
+    if (!nullToAbsent || remark != null) {
+      map['remark'] = Variable<String>(remark);
+    }
+    return map;
+  }
+
+  StockTradesCompanion toCompanion(bool nullToAbsent) {
+    return StockTradesCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updateAt: Value(updateAt),
+      stockId: Value(stockId),
+      tradeType: Value(tradeType),
+      price:
+          price == null && nullToAbsent ? const Value.absent() : Value(price),
+      shares:
+          shares == null && nullToAbsent ? const Value.absent() : Value(shares),
+      remark:
+          remark == null && nullToAbsent ? const Value.absent() : Value(remark),
+    );
+  }
+
+  factory StockTrade.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StockTrade(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updateAt: serializer.fromJson<DateTime>(json['updateAt']),
+      stockId: serializer.fromJson<int>(json['stockId']),
+      tradeType: serializer.fromJson<int>(json['tradeType']),
+      price: serializer.fromJson<String?>(json['price']),
+      shares: serializer.fromJson<String?>(json['shares']),
+      remark: serializer.fromJson<String?>(json['remark']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updateAt': serializer.toJson<DateTime>(updateAt),
+      'stockId': serializer.toJson<int>(stockId),
+      'tradeType': serializer.toJson<int>(tradeType),
+      'price': serializer.toJson<String?>(price),
+      'shares': serializer.toJson<String?>(shares),
+      'remark': serializer.toJson<String?>(remark),
+    };
+  }
+
+  StockTrade copyWith(
+          {int? id,
+          DateTime? createdAt,
+          DateTime? updateAt,
+          int? stockId,
+          int? tradeType,
+          Value<String?> price = const Value.absent(),
+          Value<String?> shares = const Value.absent(),
+          Value<String?> remark = const Value.absent()}) =>
+      StockTrade(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        updateAt: updateAt ?? this.updateAt,
+        stockId: stockId ?? this.stockId,
+        tradeType: tradeType ?? this.tradeType,
+        price: price.present ? price.value : this.price,
+        shares: shares.present ? shares.value : this.shares,
+        remark: remark.present ? remark.value : this.remark,
+      );
+  StockTrade copyWithCompanion(StockTradesCompanion data) {
+    return StockTrade(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updateAt: data.updateAt.present ? data.updateAt.value : this.updateAt,
+      stockId: data.stockId.present ? data.stockId.value : this.stockId,
+      tradeType: data.tradeType.present ? data.tradeType.value : this.tradeType,
+      price: data.price.present ? data.price.value : this.price,
+      shares: data.shares.present ? data.shares.value : this.shares,
+      remark: data.remark.present ? data.remark.value : this.remark,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockTrade(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('stockId: $stockId, ')
+          ..write('tradeType: $tradeType, ')
+          ..write('price: $price, ')
+          ..write('shares: $shares, ')
+          ..write('remark: $remark')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, createdAt, updateAt, stockId, tradeType, price, shares, remark);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StockTrade &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updateAt == this.updateAt &&
+          other.stockId == this.stockId &&
+          other.tradeType == this.tradeType &&
+          other.price == this.price &&
+          other.shares == this.shares &&
+          other.remark == this.remark);
+}
+
+class StockTradesCompanion extends UpdateCompanion<StockTrade> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updateAt;
+  final Value<int> stockId;
+  final Value<int> tradeType;
+  final Value<String?> price;
+  final Value<String?> shares;
+  final Value<String?> remark;
+  const StockTradesCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.stockId = const Value.absent(),
+    this.tradeType = const Value.absent(),
+    this.price = const Value.absent(),
+    this.shares = const Value.absent(),
+    this.remark = const Value.absent(),
+  });
+  StockTradesCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    required int stockId,
+    required int tradeType,
+    this.price = const Value.absent(),
+    this.shares = const Value.absent(),
+    this.remark = const Value.absent(),
+  })  : stockId = Value(stockId),
+        tradeType = Value(tradeType);
+  static Insertable<StockTrade> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updateAt,
+    Expression<int>? stockId,
+    Expression<int>? tradeType,
+    Expression<String>? price,
+    Expression<String>? shares,
+    Expression<String>? remark,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updateAt != null) 'update_at': updateAt,
+      if (stockId != null) 'stock_id': stockId,
+      if (tradeType != null) 'trade_type': tradeType,
+      if (price != null) 'price': price,
+      if (shares != null) 'shares': shares,
+      if (remark != null) 'remark': remark,
+    });
+  }
+
+  StockTradesCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updateAt,
+      Value<int>? stockId,
+      Value<int>? tradeType,
+      Value<String?>? price,
+      Value<String?>? shares,
+      Value<String?>? remark}) {
+    return StockTradesCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updateAt: updateAt ?? this.updateAt,
+      stockId: stockId ?? this.stockId,
+      tradeType: tradeType ?? this.tradeType,
+      price: price ?? this.price,
+      shares: shares ?? this.shares,
+      remark: remark ?? this.remark,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<DateTime>(updateAt.value);
+    }
+    if (stockId.present) {
+      map['stock_id'] = Variable<int>(stockId.value);
+    }
+    if (tradeType.present) {
+      map['trade_type'] = Variable<int>(tradeType.value);
+    }
+    if (price.present) {
+      map['price'] = Variable<String>(price.value);
+    }
+    if (shares.present) {
+      map['shares'] = Variable<String>(shares.value);
+    }
+    if (remark.present) {
+      map['remark'] = Variable<String>(remark.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockTradesCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('stockId: $stockId, ')
+          ..write('tradeType: $tradeType, ')
+          ..write('price: $price, ')
+          ..write('shares: $shares, ')
+          ..write('remark: $remark')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2256,12 +2665,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $NoteItemsTable noteItems = $NoteItemsTable(this);
   late final $StockItemTagsTable stockItemTags = $StockItemTagsTable(this);
   late final $StockTagsTable stockTags = $StockTagsTable(this);
+  late final $StockTradesTable stockTrades = $StockTradesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [stockItems, noteItems, stockItemTags, stockTags];
+      [stockItems, noteItems, stockItemTags, stockTags, stockTrades];
 }
 
 typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
@@ -2348,6 +2758,21 @@ final class $$StockItemsTableReferences
         .filter((f) => f.stockId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_stockTagsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$StockTradesTable, List<StockTrade>>
+      _stockTradesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.stockTrades,
+          aliasName:
+              $_aliasNameGenerator(db.stockItems.id, db.stockTrades.stockId));
+
+  $$StockTradesTableProcessedTableManager get stockTradesRefs {
+    final manager = $$StockTradesTableTableManager($_db, $_db.stockTrades)
+        .filter((f) => f.stockId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_stockTradesRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -2476,6 +2901,27 @@ class $$StockItemsTableFilterComposer
             $$StockTagsTableFilterComposer(
               $db: $db,
               $table: $db.stockTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> stockTradesRefs(
+      Expression<bool> Function($$StockTradesTableFilterComposer f) f) {
+    final $$StockTradesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.stockTrades,
+        getReferencedColumn: (t) => t.stockId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockTradesTableFilterComposer(
+              $db: $db,
+              $table: $db.stockTrades,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2730,6 +3176,27 @@ class $$StockItemsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> stockTradesRefs<T extends Object>(
+      Expression<T> Function($$StockTradesTableAnnotationComposer a) f) {
+    final $$StockTradesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.stockTrades,
+        getReferencedColumn: (t) => t.stockId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockTradesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.stockTrades,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$StockItemsTableTableManager extends RootTableManager<
@@ -2743,7 +3210,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
     $$StockItemsTableUpdateCompanionBuilder,
     (StockItem, $$StockItemsTableReferences),
     StockItem,
-    PrefetchHooks Function({bool stockTagsRefs})> {
+    PrefetchHooks Function({bool stockTagsRefs, bool stockTradesRefs})> {
   $$StockItemsTableTableManager(_$AppDatabase db, $StockItemsTable table)
       : super(TableManagerState(
           db: db,
@@ -2896,10 +3363,14 @@ class $$StockItemsTableTableManager extends RootTableManager<
                     $$StockItemsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({stockTagsRefs = false}) {
+          prefetchHooksCallback: (
+              {stockTagsRefs = false, stockTradesRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (stockTagsRefs) db.stockTags],
+              explicitlyWatchedTables: [
+                if (stockTagsRefs) db.stockTags,
+                if (stockTradesRefs) db.stockTrades
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
@@ -2912,6 +3383,19 @@ class $$StockItemsTableTableManager extends RootTableManager<
                         managerFromTypedResult: (p0) =>
                             $$StockItemsTableReferences(db, table, p0)
                                 .stockTagsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.stockId == item.id),
+                        typedResults: items),
+                  if (stockTradesRefs)
+                    await $_getPrefetchedData<StockItem, $StockItemsTable,
+                            StockTrade>(
+                        currentTable: table,
+                        referencedTable: $$StockItemsTableReferences
+                            ._stockTradesRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$StockItemsTableReferences(db, table, p0)
+                                .stockTradesRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.stockId == item.id),
@@ -2934,7 +3418,7 @@ typedef $$StockItemsTableProcessedTableManager = ProcessedTableManager<
     $$StockItemsTableUpdateCompanionBuilder,
     (StockItem, $$StockItemsTableReferences),
     StockItem,
-    PrefetchHooks Function({bool stockTagsRefs})>;
+    PrefetchHooks Function({bool stockTagsRefs, bool stockTradesRefs})>;
 typedef $$NoteItemsTableCreateCompanionBuilder = NoteItemsCompanion Function({
   Value<int> id,
   Value<DateTime> createdAt,
@@ -3647,6 +4131,320 @@ typedef $$StockTagsTableProcessedTableManager = ProcessedTableManager<
     (StockTag, $$StockTagsTableReferences),
     StockTag,
     PrefetchHooks Function({bool stockId, bool tagId})>;
+typedef $$StockTradesTableCreateCompanionBuilder = StockTradesCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  required int stockId,
+  required int tradeType,
+  Value<String?> price,
+  Value<String?> shares,
+  Value<String?> remark,
+});
+typedef $$StockTradesTableUpdateCompanionBuilder = StockTradesCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  Value<int> stockId,
+  Value<int> tradeType,
+  Value<String?> price,
+  Value<String?> shares,
+  Value<String?> remark,
+});
+
+final class $$StockTradesTableReferences
+    extends BaseReferences<_$AppDatabase, $StockTradesTable, StockTrade> {
+  $$StockTradesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $StockItemsTable _stockIdTable(_$AppDatabase db) =>
+      db.stockItems.createAlias(
+          $_aliasNameGenerator(db.stockTrades.stockId, db.stockItems.id));
+
+  $$StockItemsTableProcessedTableManager get stockId {
+    final $_column = $_itemColumn<int>('stock_id')!;
+
+    final manager = $$StockItemsTableTableManager($_db, $_db.stockItems)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_stockIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$StockTradesTableFilterComposer
+    extends Composer<_$AppDatabase, $StockTradesTable> {
+  $$StockTradesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get tradeType => $composableBuilder(
+      column: $table.tradeType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get price => $composableBuilder(
+      column: $table.price, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get shares => $composableBuilder(
+      column: $table.shares, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get remark => $composableBuilder(
+      column: $table.remark, builder: (column) => ColumnFilters(column));
+
+  $$StockItemsTableFilterComposer get stockId {
+    final $$StockItemsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.stockId,
+        referencedTable: $db.stockItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemsTableFilterComposer(
+              $db: $db,
+              $table: $db.stockItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$StockTradesTableOrderingComposer
+    extends Composer<_$AppDatabase, $StockTradesTable> {
+  $$StockTradesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get tradeType => $composableBuilder(
+      column: $table.tradeType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get price => $composableBuilder(
+      column: $table.price, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get shares => $composableBuilder(
+      column: $table.shares, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get remark => $composableBuilder(
+      column: $table.remark, builder: (column) => ColumnOrderings(column));
+
+  $$StockItemsTableOrderingComposer get stockId {
+    final $$StockItemsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.stockId,
+        referencedTable: $db.stockItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemsTableOrderingComposer(
+              $db: $db,
+              $table: $db.stockItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$StockTradesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StockTradesTable> {
+  $$StockTradesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateAt =>
+      $composableBuilder(column: $table.updateAt, builder: (column) => column);
+
+  GeneratedColumn<int> get tradeType =>
+      $composableBuilder(column: $table.tradeType, builder: (column) => column);
+
+  GeneratedColumn<String> get price =>
+      $composableBuilder(column: $table.price, builder: (column) => column);
+
+  GeneratedColumn<String> get shares =>
+      $composableBuilder(column: $table.shares, builder: (column) => column);
+
+  GeneratedColumn<String> get remark =>
+      $composableBuilder(column: $table.remark, builder: (column) => column);
+
+  $$StockItemsTableAnnotationComposer get stockId {
+    final $$StockItemsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.stockId,
+        referencedTable: $db.stockItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$StockItemsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.stockItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$StockTradesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $StockTradesTable,
+    StockTrade,
+    $$StockTradesTableFilterComposer,
+    $$StockTradesTableOrderingComposer,
+    $$StockTradesTableAnnotationComposer,
+    $$StockTradesTableCreateCompanionBuilder,
+    $$StockTradesTableUpdateCompanionBuilder,
+    (StockTrade, $$StockTradesTableReferences),
+    StockTrade,
+    PrefetchHooks Function({bool stockId})> {
+  $$StockTradesTableTableManager(_$AppDatabase db, $StockTradesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StockTradesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StockTradesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StockTradesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            Value<int> stockId = const Value.absent(),
+            Value<int> tradeType = const Value.absent(),
+            Value<String?> price = const Value.absent(),
+            Value<String?> shares = const Value.absent(),
+            Value<String?> remark = const Value.absent(),
+          }) =>
+              StockTradesCompanion(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            stockId: stockId,
+            tradeType: tradeType,
+            price: price,
+            shares: shares,
+            remark: remark,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            required int stockId,
+            required int tradeType,
+            Value<String?> price = const Value.absent(),
+            Value<String?> shares = const Value.absent(),
+            Value<String?> remark = const Value.absent(),
+          }) =>
+              StockTradesCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            stockId: stockId,
+            tradeType: tradeType,
+            price: price,
+            shares: shares,
+            remark: remark,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$StockTradesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({stockId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (stockId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.stockId,
+                    referencedTable:
+                        $$StockTradesTableReferences._stockIdTable(db),
+                    referencedColumn:
+                        $$StockTradesTableReferences._stockIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$StockTradesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $StockTradesTable,
+    StockTrade,
+    $$StockTradesTableFilterComposer,
+    $$StockTradesTableOrderingComposer,
+    $$StockTradesTableAnnotationComposer,
+    $$StockTradesTableCreateCompanionBuilder,
+    $$StockTradesTableUpdateCompanionBuilder,
+    (StockTrade, $$StockTradesTableReferences),
+    StockTrade,
+    PrefetchHooks Function({bool stockId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3659,4 +4457,6 @@ class $AppDatabaseManager {
       $$StockItemTagsTableTableManager(_db, _db.stockItemTags);
   $$StockTagsTableTableManager get stockTags =>
       $$StockTagsTableTableManager(_db, _db.stockTags);
+  $$StockTradesTableTableManager get stockTrades =>
+      $$StockTradesTableTableManager(_db, _db.stockTrades);
 }

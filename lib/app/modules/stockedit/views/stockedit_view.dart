@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/database/database.dart';
+import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -96,6 +97,8 @@ class StockeditView extends GetView<StockeditController> {
           _gupiaojihua(),
           kSpaceH(24),
           _gupiaojilu(),
+          kSpaceH(24),
+          _jiaoyijilu(),
         ],
       ),
     );
@@ -178,6 +181,120 @@ class StockeditView extends GetView<StockeditController> {
             keyboardType: TextInputType.multiline,
           ),
         ]);
+  }
+
+  Widget _jiaoyijilu() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(TextKey.jiaoyijilu.tr, style: Get.textTheme.titleLarge),
+            TextButton.icon(
+              onPressed: controller.showAddTradeDialog,
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(TextKey.xinzengjiaoyi.tr),
+            ),
+          ],
+        ),
+        kSpaceH(8),
+        Obx(() {
+          if (controller.stockTrades.isEmpty) {
+            return Text(
+              TextKey.noData.tr,
+              style: TextStyle(color: Colors.grey),
+            );
+          }
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: controller.stockTrades.length,
+            itemBuilder: (context, index) {
+              final trade = controller.stockTrades[index];
+              return _buildTradeItem(trade);
+            },
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildTradeItem(StockTrade trade) {
+    final isBuy = trade.tradeType == 0;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: isBuy ? Colors.red.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    isBuy ? TextKey.buy.tr : TextKey.sale.tr,
+                    style: TextStyle(
+                      color: isBuy ? Colors.red : Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  trade.createdAt.toDateString(),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () => controller.deleteTrade(trade),
+                  child: Icon(
+                    Icons.delete_outline,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            kSpaceH(8),
+            Row(
+              children: [
+                Text(
+                  "${TextKey.jiage.tr}: ${trade.price ?? '-'}",
+                  style: TextStyle(fontSize: 14),
+                ),
+                if (trade.shares != null && trade.shares!.isNotEmpty) ...[
+                  const SizedBox(width: 16),
+                  Text(
+                    "${TextKey.gushu.tr}: ${trade.shares}",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ],
+            ),
+            if (trade.remark != null && trade.remark!.isNotEmpty) ...[
+              kSpaceH(4),
+              Text(
+                "${TextKey.beizui.tr}: ${trade.remark}",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _gupiaojihua() {

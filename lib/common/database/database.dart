@@ -14,7 +14,7 @@ part 'database.g.dart';
 //  await Get.putAsync(() async => AppDatabase());
 //  final db = Get.find<AppDatabase>();
 
-@DriftDatabase(tables: [StockItems, NoteItems, StockItemTags, StockTags])
+@DriftDatabase(tables: [StockItems, NoteItems, StockItemTags, StockTags, StockTrades])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String path) : super(_openConnection(path));
   //网页需后端Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
@@ -37,23 +37,16 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   //改表要处理合并migration
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        // onUpgrade: (migrator, from, to) async {
-        //   if (from == 1) {
-        //     await migrator.createTable(noteItems);
-        //   }
-        //   if (from == 2) {
-        //     await migrator.createTable(stockItemTags);
-        //     await migrator.createTable(stockTags);
-        //   }
-        //   if (from == 3) {
-        //     await migrator.addColumn(stockItems, stockItems.opBuy);
-        //   }
-        // },
+        onUpgrade: (migrator, from, to) async {
+          if (from == 1) {
+            await migrator.createTable(stockTrades);
+          }
+        },
         onCreate: (migrator) async {
           await migrator.createAll();
           //标签默认加五个。 短期，中期，长期，买，卖
@@ -354,6 +347,25 @@ class AppDatabase extends _$AppDatabase {
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
             (tbl) =>
                 OrderingTerm(expression: tbl.updateAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  // stock_trades
+  Future<void> addStockTrade(StockTradesCompanion item) =>
+      stockTrades.insertOne(item);
+
+  Future<void> deleteStockTrade(StockTrade itemDelete) {
+    return (delete(stockTrades)..where((tbl) => tbl.id.equals(itemDelete.id)))
+        .go();
+  }
+
+  Future<List<StockTrade>> getStockTradesByStockId(int stockId) {
+    return (select(stockTrades)
+          ..where((tbl) => tbl.stockId.equals(stockId))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.createdAt, mode: OrderingMode.desc),
           ]))
         .get();
   }

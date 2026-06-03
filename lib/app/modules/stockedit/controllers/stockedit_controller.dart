@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:stock_notes/common/https/qs_api.dart';
@@ -48,6 +48,13 @@ class StockeditController extends BaseController {
   final pPeTtmSalePoints = 0.0.obs;
   final rBuyPriceYieldRate = 0.00001.obs;
 
+  //交易记录
+  final stockTrades = <StockTrade>[].obs;
+  final tradePriceController = TextEditingController();
+  final tradeSharesController = TextEditingController();
+  final tradeRemarkController = TextEditingController();
+  final tradeType = 0.obs; // 0=买, 1=卖
+
   var isFirstCome = true;
 
   @override
@@ -66,6 +73,7 @@ class StockeditController extends BaseController {
     if (localStockData.value != null) {
       isLocalData.value = true;
       _dealHasLocalDataRefreshUI();
+      loadTrades();
       // search();
     } else {
       Future.delayed(500.milliseconds, () {
@@ -458,6 +466,9 @@ class StockeditController extends BaseController {
     pPeTtmSaleController.dispose();
     rBuyPriceController.removeListener(_updateBuyPriceYieldRate);
     rBuyPriceController.dispose();
+    tradePriceController.dispose();
+    tradeSharesController.dispose();
+    tradeRemarkController.dispose();
     super.onClose();
   }
 
@@ -538,5 +549,122 @@ class StockeditController extends BaseController {
   @override
   void onPause() {
     super.onPause();
+  }
+
+  // ========== 交易记录 ==========
+
+  Future<void> loadTrades() async {
+    if (localStockData.value != null) {
+      final trades =
+          await db.getStockTradesByStockId(localStockData.value!.id);
+      stockTrades.value = trades;
+    }
+  }
+
+  void showAddTradeDialog() {
+    if (!isLocalData.value) {
+      _popSaveAlert(
+          title: TextKey.jiaoyi.tr,
+          onConfirm: () {
+            showAddTradeDialog();
+          });
+      return;
+    }
+    tradeType.value = 0;
+    tradePriceController.clear();
+    tradeSharesController.clear();
+    tradeRemarkController.clear();
+
+    QsHud.showDialog(AlertDialog(
+      title: Text(TextKey.xinzengjiaoyi.tr),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Obx(() {
+            return Row(
+              children: [
+                ChoiceChip(
+                  label: Text(TextKey.buy.tr),
+                  selected: tradeType.value == 0,
+                  onSelected: (selected) {
+                    if (selected) tradeType.value = 0;
+                  },
+                ),
+                const SizedBox(width: 12),
+                ChoiceChip(
+                  label: Text(TextKey.sale.tr),
+                  selected: tradeType.value == 1,
+                  onSelected: (selected) {
+                    if (selected) tradeType.value = 1;
+                  },
+                ),
+              ],
+            );
+          }),
+          const SizedBox(height: 12),
+          TextField(
+            controller: tradePriceController,
+            decoration: InputDecoration(labelText: TextKey.jiage.tr),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: tradeSharesController,
+            decoration: InputDecoration(labelText: TextKey.gushu.tr),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: tradeRemarkController,
+            maxLines: 2,
+            decoration: InputDecoration(labelText: TextKey.beizui.tr),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            QsHud.dismiss();
+          },
+          child: Text(TextKey.quxiao.tr),
+        ),
+        TextButton(
+          onPressed: () {
+            addTrade();
+          },
+          child: Text(TextKey.queding.tr),
+        ),
+      ],
+    ));
+  }
+
+  Future<void> addTrade() async {
+    if (tradePriceController.text.isEmpty) {
+      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.jiage.tr}");
+      return;
+    }
+    final item = StockTradesCompanion.insert(
+      stockId: localStockData.value!.id,
+      tradeType: tradeType.value,
+      price: Value(tradePriceController.text),
+      shares: Value(tradeSharesController.text),
+      remark: Value(tradeRemarkController.text),
+    );
+    await db.addStockTrade(item);
+    QsHud.dismiss();
+    QsHud.showToast(TextKey.success.tr);
+    loadTrades();
+  }
+
+  void deleteTrade(StockTrade trade) {
+    QsHud.showConfirmDialog(
+      title: TextKey.querengdelete.tr,
+      content: "",
+      onConfirm: () async {
+        await db.deleteStockTrade(trade);
+        loadTrades();
+      },
+    );
   }
 }

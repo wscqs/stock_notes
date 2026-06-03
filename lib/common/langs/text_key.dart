@@ -94,6 +94,12 @@ class TextKey {
   static const errorwjmbhsn = 'errorwjmbhsn';
   static const chiyouchengbenjia = 'chiyouchengbenjia';
   static const baocunbingcaozu = 'baocunbingcaozu';
+  static const jiaoyi = 'jiaoyi';
+  static const jiaoyijilu = 'jiaoyijilu';
+  static const jiaoyileixing = 'jiaoyileixing';
+  static const gushu = 'gushu';
+  static const jiage = 'jiage';
+  static const xinzengjiaoyi = 'xinzengjiaoyi';
   static const cicaozuoxubaocun = 'cicaozuoxubaocun';
   static const yidaoshanchuliebiao = 'yidaoshanchuliebiao';
   static const mingyanjinju = 'mingyanjinju';
@@ -193,6 +199,12 @@ const Map<String, String> zh = {
   TextKey.errorwjmbhsn: '文件名需要：stocknotes_xxx',
   TextKey.chiyou: '持有',
   TextKey.chiyouchengbenjia: '持有成本价',
+  TextKey.jiaoyi: '交易',
+  TextKey.jiaoyijilu: '交易记录',
+  TextKey.jiaoyileixing: '交易类型',
+  TextKey.gushu: '股数',
+  TextKey.jiage: '价格',
+  TextKey.xinzengjiaoyi: '新增交易',
   TextKey.baocunbingcaozu: '保存并操作',
   TextKey.yidaoshanchuliebiao: '移动到删除列表',
   TextKey.mangzu: '满足',
@@ -330,6 +342,12 @@ const Map<String, String> en = {
   TextKey.errorwjmbhsn: 'File name needs: stocknotes_xxx',
   TextKey.chiyou: 'Holding',
   TextKey.chiyouchengbenjia: 'Holding cost price',
+  TextKey.jiaoyi: 'Trade',
+  TextKey.jiaoyijilu: 'Trade Records',
+  TextKey.jiaoyileixing: 'Trade Type',
+  TextKey.gushu: 'Shares',
+  TextKey.jiage: 'Price',
+  TextKey.xinzengjiaoyi: 'New Trade',
   TextKey.baocunbingcaozu: 'Save and operate',
   TextKey.yidaoshanchuliebiao: 'Move to the delete list',
   TextKey.mangzu: 'Meet',
