@@ -178,9 +178,12 @@ class NoteeditController extends GetxController {
       }
     }
     title = title.trim();
-    // 自动识别股票代码并包装为可点击的 link
+    // 获取数据库中已记录的所有股票，用于匹配笔记中的股票名称/代码
+    final allStocks = await db.select(db.stockItems).get();
+    // 自动识别股票代码/名称并包装为可点击的 link
     final deltaJson = quillController.document.toDelta().toJson();
-    final wrappedDelta = StockLinkUtils.wrapStockCodesInDelta(deltaJson);
+    final wrappedDelta =
+        StockLinkUtils.wrapStockCodesInDelta(deltaJson, allStocks);
     // 立即更新编辑器，让用户保存后立刻看到 link 效果
     quillController.document = Document.fromJson(wrappedDelta);
     final encodedContent = jsonEncode(wrappedDelta);
