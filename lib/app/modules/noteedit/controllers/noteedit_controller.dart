@@ -111,20 +111,25 @@ class NoteeditController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    //判断是否在 macOS
+    //判断是否在 macOS/Windows（桌面端默认进入编辑状态）
     if (defaultTargetPlatform == TargetPlatform.macOS ||
         defaultTargetPlatform == TargetPlatform.windows) {
       isEditing.value = true;
+      quillController.readOnly = false;
     } else {
       editorFocusNode.addListener(() {
         if (editorFocusNode.hasFocus) {
           // print("Editor is focused (editing).");
           isEditing.value = true;
+          quillController.readOnly = false;
         } else {
           // print("Editor is not focused.");
           isEditing.value = false;
+          quillController.readOnly = true;
         }
       });
+      // 初始化时根据焦点状态设置 readOnly（已有笔记默认无焦点，进入预览状态）
+      quillController.readOnly = !editorFocusNode.hasFocus;
     }
     localData.value = Get.arguments;
     if (localData.value != null) {
@@ -158,6 +163,28 @@ class NoteeditController extends GetxController {
     super.onClose();
   }
 
+  /// 切换编辑/预览模式
+  Future<void> toggleEditMode() async {
+    if (isEditing.value) {
+      // 从编辑切换到预览：先包装股票链接，再取消焦点
+      await _wrapStockLinks();
+      editorFocusNode.unfocus();
+    } else {
+      // 从预览切换到编辑：请求焦点，由 listener 自动设置 readOnly
+      editorFocusNode.requestFocus();
+    }
+  }
+
+  /// 根据数据库股票列表，自动识别笔记中的股票名称/代码并包装为 link
+  Future<void> _wrapStockLinks() async {
+    final db = Get.find<DatabaseManager>().db;
+    final allStocks = await db.select(db.stockItems).get();
+    final deltaJson = quillController.document.toDelta().toJson();
+    final wrappedDelta =
+        StockLinkUtils.wrapStockCodesInDelta(deltaJson, allStocks);
+    quillController.document = Document.fromJson(wrappedDelta);
+  }
+
   Future<void> save() async {
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
@@ -178,15 +205,9 @@ class NoteeditController extends GetxController {
       }
     }
     title = title.trim();
-    // 获取数据库中已记录的所有股票，用于匹配笔记中的股票名称/代码
-    final allStocks = await db.select(db.stockItems).get();
     // 自动识别股票代码/名称并包装为可点击的 link
-    final deltaJson = quillController.document.toDelta().toJson();
-    final wrappedDelta =
-        StockLinkUtils.wrapStockCodesInDelta(deltaJson, allStocks);
-    // 立即更新编辑器，让用户保存后立刻看到 link 效果
-    quillController.document = Document.fromJson(wrappedDelta);
-    final encodedContent = jsonEncode(wrappedDelta);
+    await _wrapStockLinks();
+    final encodedContent = jsonEncode(quillController.document.toDelta().toJson());
     NoteItemsCompanion itemsCompanion =
         NoteItemsCompanion.insert(title: title, content: Value(encodedContent));
     if (localData.value != null) {

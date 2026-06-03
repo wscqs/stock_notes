@@ -29,6 +29,12 @@ class NoteeditView extends GetView<NoteeditController> {
           appBar: AppBar(
             title: Text(TextKey.biji.tr),
             actions: [
+              if (controller.isEditing.value)
+                IconButton(
+                  onPressed: controller.toggleEditMode,
+                  icon: const Icon(Icons.visibility),
+                  tooltip: '预览',
+                ),
               ElevatedButton(
                   onPressed: controller.save, child: Text(TextKey.baocun.tr))
             ],
