@@ -539,24 +539,27 @@ class _HomeStockCellState extends State<HomeStockCell>
           ),
         ),
         // 右侧信息
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (conditionInfo.isNotEmpty) ...[
-              _buildConditionTags(conditionInfo),
-              kSpaceH(6),
-            ],
-            Text(
-              widget.item.homeCellShowTime(
-                  isMeet: controller.selConditionIndex == 0,
-                  isNear: controller.selConditionIndex == 1),
-              style: TextStyle(
-                fontSize: 11,
-                color: Get.theme.colorScheme.onSurfaceVariant
-                    .withValues(alpha: 0.7),
+        ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 60),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (conditionInfo.isNotEmpty) ...[
+                _buildConditionTags(conditionInfo),
+                kSpaceH(6),
+              ],
+              Text(
+                widget.item.homeCellShowTime(
+                    isMeet: controller.selConditionIndex == 0,
+                    isNear: controller.selConditionIndex == 1),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Get.theme.colorScheme.onSurfaceVariant
+                      .withValues(alpha: 0.7),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
