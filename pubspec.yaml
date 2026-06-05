@@ -45,7 +45,8 @@ dependencies:
 
   #存储
   shared_preferences: ^2.5.5
-  get_storage: ^2.1.1
+  #get_storage: ^2.1.1
+  hive_ce: ^2.19.3
   drift: ^2.33.0 #数据库 github自动打包 cocopods 没最新
   drift_flutter: ^0.3.0
   drift_db_viewer: ^2.1.0 #测试看数据

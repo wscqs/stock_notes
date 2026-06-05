@@ -1,8 +1,11 @@
-import 'package:get_storage/get_storage.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:hive_ce/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///缓存管理类 存sp,要getInstance(). 存内存直接静态方法
 class QsCache {
+  static Box? _box;
   SharedPreferences? prefs;
   //仅app内存
   static Map<String, dynamic> memoryCache = {};
@@ -20,7 +23,11 @@ class QsCache {
   ///预初始化，防止在使用get时，prefs还未完成初始化
   static Future<QsCache> preInit() async {
     if (_instance == null) {
-      await GetStorage.init();
+      if (!kIsWeb) {
+        final dir = await getApplicationDocumentsDirectory();
+        Hive.init(dir.path);
+      }
+      _box = await Hive.openBox('qs_cache');
       var prefs = await SharedPreferences.getInstance();
       _instance = QsCache._pre(prefs);
     }
@@ -28,26 +35,50 @@ class QsCache {
   }
 
   static QsCache getInstance() {
-    _instance ??= QsCache._();
+    if (_instance == null) {
+      _instance = QsCache._();
+    }
     return _instance!;
   }
 
   void init() async {
-    prefs ??= await SharedPreferences.getInstance();
+    if (prefs == null) {
+      prefs = await SharedPreferences.getInstance();
+    }
+    if (_box == null) {
+      if (!kIsWeb) {
+        final dir = await getApplicationDocumentsDirectory();
+        Hive.init(dir.path);
+      }
+      _box = await Hive.openBox('qs_cache');
+    }
   }
 
   ///warn:不支持model,model存进去从本地内存取出是map，所以不要用model
   static set(String key, dynamic value) {
-    GetStorage().write(key, value);
+    _box?.put(key, value);
   }
 
   ///warn:不支持model,model存进去从本地内存取出是map，所以不要用model
   static T? get<T>(String key) {
-    return GetStorage().read(key);
+    final value = _box?.get(key);
+    return _normalizeValue(value) as T?;
+  }
+
+  static dynamic _normalizeValue(dynamic value) {
+    if (value is Map) {
+      return value.map<String, dynamic>(
+        (k, v) => MapEntry(k.toString(), _normalizeValue(v)),
+      );
+    }
+    if (value is List) {
+      return value.map(_normalizeValue).toList();
+    }
+    return value;
   }
 
   static remove(String key) {
-    GetStorage().remove(key);
+    _box?.delete(key);
   }
 
   //mem
@@ -56,7 +87,7 @@ class QsCache {
   }
 
   static T? getMemoryCache<T>(String key) {
-    return memoryCache[key] as T;
+    return memoryCache[key] as T?;
   }
 
   static removeMemoryCache(String key) {
