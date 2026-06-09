@@ -49,6 +49,7 @@ dependencies:
   hive_ce: ^2.19.3
   drift: ^2.33.0 #数据库 github自动打包 cocopods 没最新
   drift_flutter: ^0.3.0
+  sqlite3_flutter_libs: ^0.6.0+eol
   drift_db_viewer: ^2.1.0 #测试看数据
   path_provider: ^2.1.5
   #  isar: ^3.1.0+1
