@@ -27,17 +27,33 @@ git commit -m "Update .gitignore to exclude unpackage except res"
 ## 包名 com.wlsp.carrotcards
 
 ## 打包flutter
+https://mp.weixin.qq.com/s/qYK_MX9BpGd_Wrm-Q04AXw
+Android 分包：flutter build apk --split-per-abi --release
+一般只用arm64-v8a （64位，99%以上机型）
+web打包：flutter build web --release --wasm --tree-shake-icons
 https://docs.flutter.cn/deployment/android
 https://www.jianshu.com/p/f13f4f996e2a
 /Applications/Android\ Studio.app/Contents/jbr/Contents/Home/bin/keytool -genkey -v -keystore ~/carrot-keystore.jks -keyalg RSA \
 -keysize 2048 -validity 10000 -alias carrot
-密钥 carrotcarrot  后面问题1,2,3,4,5,6
+密钥 stocknotesstocknotes  后面问题1,2,3,4,5,6
 
-storePassword=carrotcarrot
-keyPassword=carrotcarrot
-keyAlias=carrot
-storeFile=/Users/cqs/carrot-keystore.jks
+storePassword=stocknotesstocknotes
+keyPassword=stocknotesstocknotes
+keyAlias=stocknotes
+storeFile=/Users/cqs/stocknotes-keystore.jks
 https://blog.csdn.net/wsyx768/article/details/136319899
+
+
+## 错误
+这是 sqlite3 3.3.1 引入的 build.dart 钩子导致的。它在构建时会尝试从 GitHub 下载预编译的 Android SO
+文件，但在国内网络下很容易失败。
+
+你已经有 sqlite3_flutter_libs 依赖（它自带了 SQLite
+原生库），只需设置一个环境变量让它直接使用本地已有的库，跳过下载：
+
+本地打包：
+export SQLITE3_FLUTTER_LIBS_USE_OOT=1
+flutter build apk --release
 
 ## icon与splash
 flutter pub run flutter_launcher_icons
