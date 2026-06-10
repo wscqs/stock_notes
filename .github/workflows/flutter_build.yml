@@ -43,7 +43,7 @@ jobs:
           EOF
 
       - name: Build Android APK
-        run: flutter build apk --release
+        run: flutter build apk --release --target-platform android-arm64
 
       - name: Upload APK to GitHub Release
         uses: softprops/action-gh-release@v2
@@ -51,7 +51,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            ${{ github.workspace }}/build/app/outputs/apk/release/app-arm64-v8a-release.apk
+            ${{ github.workspace }}/build/app/outputs/apk/release/app-release.apk
 
   build_macos:
     runs-on: macos-latest
