@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:stock_notes/app/modules/base/base_Controller.dart';
+import 'package:stock_notes/app/modules/base/base_controller.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/DatabaseManager.dart';

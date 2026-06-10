@@ -10,7 +10,7 @@ import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../common/web/webview_page.dart';
 import '../../../routes/app_pages.dart';
-import '../../base/base_Controller.dart';
+import '../../base/base_controller.dart';
 
 class StockeditController extends BaseController {
   final db = Get.find<DatabaseManager>().db;

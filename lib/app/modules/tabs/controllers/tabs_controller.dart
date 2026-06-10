@@ -7,7 +7,7 @@ import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
 
 import '../../../../common/event_bus.dart';
 import '../../../routes/app_pages.dart';
-import '../../base/base_Controller.dart';
+import '../../base/base_controller.dart';
 
 class TabsController extends GetxController {
   final currentIndex = 0.obs;

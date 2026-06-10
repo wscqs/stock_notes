@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../../../common/web/webview_page.dart';
 import '../../../../utils/qs_cache.dart';
 import '../../../routes/app_pages.dart';
-import '../../base/base_Controller.dart';
+import '../../base/base_controller.dart';
 
 class SplashController extends BaseController {
 

@@ -14,7 +14,7 @@ import '../../../../common/event_bus.dart';
 import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
-import '../../base/base_Controller.dart';
+import '../../base/base_controller.dart';
 import '../../tabs/controllers/tabs_controller.dart';
 
 class HomestockController extends BaseController
