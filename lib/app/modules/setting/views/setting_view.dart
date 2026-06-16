@@ -71,10 +71,20 @@ class SettingView extends GetView<SettingController> {
               SimpleCell(
                 title: TextKey.quanlianggupiaodaimashuaxin.tr,
                 isShowRightArrow: false,
-                rightWidget: IconButton(
-                  icon: const Icon(Icons.refresh, size: 22),
-                  onPressed: controller.refreshAllStockCodes,
-                ),
+                rightWidget: Obx(() {
+                  return IconButton(
+                    icon: controller.isRefreshingStockCodes.value
+                        ? SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Icon(Icons.refresh, size: 22),
+                    onPressed: controller.refreshAllStockCodes,
+                  );
+                }),
                 onPressed: controller.refreshAllStockCodes,
               ),
             ],
