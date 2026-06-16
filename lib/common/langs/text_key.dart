@@ -220,35 +220,49 @@ const Map<String, String> zh = {
   TextKey.quanlianggupiaoshuaxinchenggong: '刷新成功 %s 条',
   TextKey.quanlianggupiaoshuaxinshibai: '刷新失败',
   TextKey.shiyongshuomingall: '''
-股票笔记说明
-对股票进行记录及复盘的 App （无服务端的App）
-支持：中英语切换，日夜模式切换。
-富文本笔记
+股票笔记使用说明
 
-列表左滑：持有（买入），置顶，标签，收藏，删除
+一款本地离线、无服务端的投资记录与复盘工具，所有数据均保存在设备本地，支持中文/英文切换与浅色/深色模式。
 
-增加：
-股票的增加，计划，备注
-笔记的增加
+【股票管理】
+• 新增股票：输入股票代码，自动联想 A 股、港股、美股及基金代码。
+• 股票详情：记录买入计划、目标价、备注等信息，随时更新。
+• 列表操作：左滑单元格可进行持有/买入、置顶、标签、收藏、删除等操作。
+• 批量删除：长按列表进入多选模式，可批量移入删除列表。
+• 删除与恢复：
+  - 普通列表删除：数据会先移入“删除列表”，可随时恢复。
+  - 删除列表删除：数据将被永久清除，无法恢复。
 
-删：
-列表长按可以进行批量删除功能
-非删除列表删除-数据放进删除列表（非真实删除）
-删除列表-恢复：恢复回去
-删除：永久删除
+【交易记录】
+• 在股票详情中新增交易，记录买入/卖出、股数、价格。
+• 支持设置持有成本价，便于跟踪收益情况。
 
-改：
-进去修改保存后，更新时间改变。
+【笔记】
+• 富文本笔记，支持图文混排，可用于记录投资逻辑与复盘。
+• 笔记可关联股票，方便集中查看。
 
-查：
-股票支持列表：全部，收藏，删除
-条件搜索：满足买卖与临近买卖（程序设定）
-标签
-搜索栏
+【标签】
+• 为股票和笔记添加自定义标签，快速分类与筛选。
+• 可新建、编辑、删除标签（默认标签不支持删除）。
 
-一些说明：
-临近买卖（默认设置3个点内) 修改：设置-股票 临近买卖点
+【条件提醒】
+• 系统根据设置的价格条件自动判断“满足买卖”或“临近买卖”。
+• 临近买卖点默认范围为 3%，可在“设置 - 股票”中调整。
 
+【数据管理】
+• 导入/导出：支持将数据库导出为文件，或通过分享导入其他设备的备份。
+• 多数据源：可创建或切换多个本地数据库文件，实现多账户/多场景管理。
+• 文件名需包含 stocknotes_ 前缀才能被识别。
+• 全量刷新：在设置中可手动刷新全部股票代码与名称缓存。
+
+【设置】
+• 切换语言、主题模式（浅色/深色/跟随系统）。
+• 调整股票列表条件提醒阈值。
+• 查看名言警句与恢复默认数据。
+
+【注意事项】
+• 卸载应用或清除数据会导致本地数据丢失，请定期导出备份。
+• 导入数据源前，请先初始化本地数据源。
 ''',
 };
 
@@ -367,40 +381,48 @@ const Map<String, String> en = {
   TextKey.quanlianggupiaoshuaxinchenggong: 'Refresh success: %s',
   TextKey.quanlianggupiaoshuaxinshibai: 'Refresh failed',
   TextKey.shiyongshuomingall: '''
-Stock Notes Explanation
+Stock Notes User Guide
 
-An app for recording and reviewing stocks (an app without a server)
+A privacy-first, offline investment journaling and review app. All data is stored locally on your device with no backend server. Supports Chinese/English switching and light/dark modes.
 
-Supports: Switch between Chinese and English, switch between day and night modes.
+【Stock Management】
+• Add stocks: Enter a stock code and get suggestions for A-shares, HK stocks, US stocks, and funds.
+• Stock detail: Record plans, target prices, remarks, and more, then update anytime.
+• List actions: Swipe left on a cell to buy/hold, pin to top, tag, favorite, or delete.
+• Batch delete: Long-press the list to enter multi-select mode and move items to the delete list in bulk.
+• Delete & recover:
+  - Delete from the normal list: Items move to the "Delete list" and can be restored later.
+  - Delete from the delete list: Items are permanently removed and cannot be recovered.
 
-Add:
+【Trade Records】
+• Add trades inside a stock detail, recording buy/sell type, shares, and price.
+• Set a holding cost price to track returns.
 
-- Adding stocks, plans, and notes
-- Adding notes
+【Notes】
+• Rich-text notes with mixed text and images for recording investment logic and reviews.
+• Notes can be linked to stocks for centralized viewing.
 
-Delete:
+【Tags】
+• Add custom tags to stocks and notes for quick categorization and filtering.
+• Create, edit, and delete tags (default tags cannot be deleted).
 
-- Long press on the list to perform batch deletion functions
-- Deleting from non-deletion list - data goes into the deletion list (not real deletion)
-- Deletion list - recovery: return to the original list
-- Deletion: permanent deletion
+【Condition Alerts】
+• The app automatically marks stocks as "Meet Buy/Sell" or "Near Buy/Sell" based on configured price conditions.
+• The default "Near" range is 3% and can be adjusted in Settings - Stocks.
 
-Modify:
+【Data Management】
+• Import/Export: Export your database to a file or import a backup shared from another device.
+• Multi-data source: Create or switch between multiple local database files for multi-account or multi-scenario management.
+• File names must contain the "stocknotes_" prefix to be recognized.
+• Full refresh: Manually refresh all stock codes and name caches from Settings.
 
-- After entering to modify and save, the update time changes.
+【Settings】
+• Switch language and theme mode (light/dark/follow system).
+• Adjust condition-alert thresholds for the stock list.
+• View words of wisdom and restore default data.
 
-Search:
-
-- Stock support list: all, favorites, deleted
-- Condition search: meets buy/sell and near buy/sell (program settings)
-
-Tags
-
-Search bar
-
-Some notes:
-
-- Near buy/sell (default set to 3 points) modification: settings - stocks - near buy/sell points
-
+【Notes】
+• Uninstalling the app or clearing its data will erase local data. Please export backups regularly.
+• Initialize the local data source before importing an external data source.
 ''',
 };
