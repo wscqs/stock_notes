@@ -6,9 +6,10 @@ class SimpleCell extends StatelessWidget {
   final String? title;
   final String? subTitle;
   final VoidCallback? onPressed;
-  final double? radius;
-  final bool? isCheck;
-  final bool? isShowRightArrow;
+  final double radius;
+  final bool isCheck;
+  final bool isShowRightArrow;
+  final Widget? rightWidget;
 
   const SimpleCell(
       {super.key,
@@ -17,7 +18,8 @@ class SimpleCell extends StatelessWidget {
       this.onPressed,
       this.radius = 0,
       this.isCheck = false,
-      this.isShowRightArrow = true});
+      this.isShowRightArrow = true,
+      this.rightWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class SimpleCell extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radius!),
+          borderRadius: BorderRadius.circular(radius),
           color: Theme.of(context).colorScheme.surfaceContainerLow,
         ),
         child: Row(
@@ -35,12 +37,14 @@ class SimpleCell extends StatelessWidget {
             kSpaceMax(),
             Text(subTitle ?? ""),
             kSpaceW(4),
-            if (isShowRightArrow!)
+            if (rightWidget != null)
+              rightWidget!
+            else if (isShowRightArrow)
               Icon(
                 Icons.arrow_forward_ios,
                 size: 16,
               )
-            else if (isCheck!)
+            else if (isCheck)
               Icon(
                 Icons.check,
                 size: 20,

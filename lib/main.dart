@@ -45,9 +45,12 @@ main() async {
   });
 
   // 后台异步刷新本地 A 股 code/name 缓存，不阻塞启动
+  // 若本地已有缓存则跳过，避免每次启动都请求网络
   Future.microtask(() async {
     try {
-      await StockNameService.refreshStockMap();
+      if (StockNameService.cachedStockMap.isEmpty) {
+        await StockNameService.refreshStockMap();
+      }
     } catch (e) {
       if (kDebugMode) {
         print('StockNameService init error: $e');

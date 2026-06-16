@@ -68,6 +68,15 @@ class SettingView extends GetView<SettingController> {
                       arguments: {"type": "near points"});
                 },
               ),
+              SimpleCell(
+                title: TextKey.quanlianggupiaodaimashuaxin.tr,
+                isShowRightArrow: false,
+                rightWidget: IconButton(
+                  icon: const Icon(Icons.refresh, size: 22),
+                  onPressed: controller.refreshAllStockCodes,
+                ),
+                onPressed: controller.refreshAllStockCodes,
+              ),
             ],
           );
         },

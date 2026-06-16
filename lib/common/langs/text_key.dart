@@ -105,6 +105,9 @@ class TextKey {
   static const mingyanjinju = 'mingyanjinju';
   static const xuanzhongdejingjuwufashancu = 'xuanzhongdejingjuwufashancu';
   static const morenmingyangwufabianji = 'morenmingyangwufabianji';
+  static const quanlianggupiaodaimashuaxin = 'quanlianggupiaodaimashuaxin';
+  static const quanlianggupiaoshuaxinchenggong = 'quanlianggupiaoshuaxinchenggong';
+  static const quanlianggupiaoshuaxinshibai = 'quanlianggupiaoshuaxinshibai';
 }
 
 const Map<String, String> zh = {
@@ -213,6 +216,9 @@ const Map<String, String> zh = {
   TextKey.mingyanjinju: '名言警句',
   TextKey.xuanzhongdejingjuwufashancu: '选中的名言不支持删除',
   TextKey.morenmingyangwufabianji: '默认名言无法修改',
+  TextKey.quanlianggupiaodaimashuaxin: '全股票代码刷新',
+  TextKey.quanlianggupiaoshuaxinchenggong: '刷新成功 %s 条',
+  TextKey.quanlianggupiaoshuaxinshibai: '刷新失败',
   TextKey.shiyongshuomingall: '''
 股票笔记说明
 对股票进行记录及复盘的 App （无服务端的App）
@@ -357,6 +363,9 @@ const Map<String, String> en = {
   TextKey.xuanzhongdejingjuwufashancu:
       'The selected words are not supported for deletion',
   TextKey.morenmingyangwufabianji: 'Default words cannot be modified',
+  TextKey.quanlianggupiaodaimashuaxin: 'Refresh all stock codes',
+  TextKey.quanlianggupiaoshuaxinchenggong: 'Refresh success: %s',
+  TextKey.quanlianggupiaoshuaxinshibai: 'Refresh failed',
   TextKey.shiyongshuomingall: '''
 Stock Notes Explanation
 
