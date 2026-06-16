@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:stock_notes/common/services/stock_name_service.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
@@ -34,6 +35,7 @@ class StockeditController extends BaseController {
   final serStockData = StockTxModel().obs;
   final localStockData = Rxn<StockItem>();
   final isLocalData = false.obs;
+  final searchSuggestions = <MapEntry<String, String>>[].obs;
 
   //针对卖买，计算收益率
   final pPriceYieldRate = 0.0.obs;
@@ -61,6 +63,7 @@ class StockeditController extends BaseController {
   void onInit() {
     super.onInit();
     stockNumController.addListener(_updateStockNum);
+    debounce(stockNum, (_) => _updateSearchSuggestions(), time: 200.milliseconds);
     pPriceBuyController.addListener(_updateYieldRate);
     pPriceSaleController.addListener(_updateYieldRate);
     pMarketCapBuyController.addListener(_updateYieldRate);
@@ -133,6 +136,24 @@ class StockeditController extends BaseController {
 
   void _updateStockNum() {
     stockNum.value = stockNumController.text;
+  }
+
+  /// 根据输入文本从本地 A 股 code/name 缓存联想
+  void _updateSearchSuggestions() {
+    final keyword = stockNumController.text.trim();
+    if (keyword.isEmpty) {
+      searchSuggestions.clear();
+      return;
+    }
+    searchSuggestions.value = StockNameService.search(keyword);
+  }
+
+  /// 点击搜索建议：填充 code 并触发搜索
+  void selectSearchSuggestion(MapEntry<String, String> entry) {
+    stockNumController.text = entry.key;
+    stockNum.value = entry.key;
+    searchSuggestions.clear();
+    search();
   }
 
   void _updateYieldRate() {

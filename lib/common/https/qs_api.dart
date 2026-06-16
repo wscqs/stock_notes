@@ -84,6 +84,8 @@ class QsApi {
             code.startsWith('3') ||
             code.startsWith('1')) {
           return 'sz$code'; // 深证主板、创业板、深市基金
+        } else if (code.startsWith('92')) {
+          return 'bj$code'; // 北交所
         }
       }
 

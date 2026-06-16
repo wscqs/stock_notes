@@ -1,10 +1,12 @@
 import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/app/modules/famous/controllers/famous_data_help.dart';
+import 'package:stock_notes/common/services/stock_name_service.dart';
 
 import 'app/routes/app_pages.dart';
 import 'common/database/DatabaseManager.dart';
@@ -40,6 +42,17 @@ main() async {
     appLinks.uriLinkStream.listen((Uri? uri) {
       if (uri != null) AppPages.handleDeepLink(uri);
     });
+  });
+
+  // 后台异步刷新本地 A 股 code/name 缓存，不阻塞启动
+  Future.microtask(() async {
+    try {
+      await StockNameService.refreshStockMap();
+    } catch (e) {
+      if (kDebugMode) {
+        print('StockNameService init error: $e');
+      }
+    }
   });
 
   // checkOpenedFile();
