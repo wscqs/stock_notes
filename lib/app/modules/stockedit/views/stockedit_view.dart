@@ -114,6 +114,7 @@ class StockeditView extends GetView<StockeditController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             StockSearchField(
+              key: controller.searchFieldKey,
               controller: controller.stockNumController,
               onClear: controller.clearStockNum,
               focusNode: controller.stockNumFocusNode,
@@ -124,81 +125,10 @@ class StockeditView extends GetView<StockeditController> {
               hintText: TextKey.shurugupiaotishi.tr,
               stockValue: controller.stockNum,
             ),
-            _buildSearchSuggestions(),
           ],
         ),
       ),
     );
-  }
-
-  /// 股票名称/代码本地缓存联想列表
-  Widget _buildSearchSuggestions() {
-    return Obx(() {
-      final suggestions = controller.searchSuggestions.toList();
-      if (suggestions.isEmpty) return const SizedBox.shrink();
-      final theme = Get.theme;
-      final textTheme = Get.textTheme;
-      return Container(
-        margin: const EdgeInsets.only(top: 4),
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: theme.shadowColor.withValues(alpha: 0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        constraints: const BoxConstraints(maxHeight: 220),
-        child: ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: suggestions.length,
-          itemBuilder: (context, index) {
-            final entry = suggestions[index];
-            return InkWell(
-              key: ValueKey(entry.key),
-              onTap: () {
-                controller.selectSearchSuggestion(entry);
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  border: index != suggestions.length - 1
-                      ? Border(
-                          bottom: BorderSide(
-                            color: theme.dividerColor.withValues(alpha: 0.5),
-                          ),
-                        )
-                      : null,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        entry.value,
-                        style: textTheme.bodyMedium,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      entry.key,
-                      style: textTheme.bodySmall?.copyWith(
-                            color: theme.hintColor,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    });
   }
 
   Widget _gupiaojilu() {

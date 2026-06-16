@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
@@ -18,6 +19,8 @@ class StockeditController extends BaseController {
   final stockNum = "".obs;
   final stockNumController = TextEditingController();
   final stockNumFocusNode = FocusNode();
+  final searchFieldKey = GlobalKey();
+  static const _attachTag = 'stock_search_suggestions';
 
   final pPriceBuyController = TextEditingController();
   final pPriceSaleController = TextEditingController();
@@ -58,11 +61,13 @@ class StockeditController extends BaseController {
   final tradeType = 0.obs; // 0=买, 1=卖
 
   var isFirstCome = true;
+  var _ignoreNextSuggestionUpdate = false;
 
   @override
   void onInit() {
     super.onInit();
     stockNumController.addListener(_updateStockNum);
+    stockNumFocusNode.addListener(_onStockNumFocusChange);
     debounce(stockNum, (_) => _updateSearchSuggestions(), time: 200.milliseconds);
     pPriceBuyController.addListener(_updateYieldRate);
     pPriceSaleController.addListener(_updateYieldRate);
@@ -138,22 +143,139 @@ class StockeditController extends BaseController {
     stockNum.value = stockNumController.text;
   }
 
+  /// 搜索框焦点变化监听：获得焦点时尝试弹出联想，失去焦点时关闭弹窗
+  void _onStockNumFocusChange() {
+    if (stockNumFocusNode.hasFocus) {
+      _updateSearchSuggestions();
+    } else {
+      _dismissAttachPopup();
+    }
+  }
+
   /// 根据输入文本从本地 A 股 code/name 缓存联想
   void _updateSearchSuggestions() {
+    if (_ignoreNextSuggestionUpdate) {
+      _ignoreNextSuggestionUpdate = false;
+      _dismissAttachPopup();
+      return;
+    }
     final keyword = stockNumController.text.trim();
     if (keyword.isEmpty) {
       searchSuggestions.clear();
+      _dismissAttachPopup();
       return;
     }
     searchSuggestions.value = StockNameService.search(keyword);
+    if (searchSuggestions.isNotEmpty) {
+      _showAttachPopup();
+    } else {
+      _dismissAttachPopup();
+    }
   }
 
   /// 点击搜索建议：填充 code 并触发搜索
   void selectSearchSuggestion(MapEntry<String, String> entry) {
+    _ignoreNextSuggestionUpdate = true;
     stockNumController.text = entry.key;
     stockNum.value = entry.key;
     searchSuggestions.clear();
+    _dismissAttachPopup();
     search();
+  }
+
+  /// 显示搜索建议弹窗（锚定在搜索框下方）
+  void _showAttachPopup() {
+    if (SmartDialog.checkExist(tag: _attachTag)) return;
+    if (searchFieldKey.currentContext == null) return;
+    SmartDialog.showAttach(
+      tag: _attachTag,
+      targetContext: searchFieldKey.currentContext,
+      alignment: Alignment.bottomCenter,
+      maskColor: Colors.transparent,
+      clickMaskDismiss: false,
+      usePenetrate: true,
+      keepSingle: true,
+      builder: (_) => _buildSuggestionsPopup(),
+    );
+  }
+
+  /// 关闭搜索建议弹窗
+  void _dismissAttachPopup() {
+    SmartDialog.dismiss(tag: _attachTag);
+  }
+
+  /// 弹窗内容：Obx 监听 searchSuggestions，实时刷新
+  Widget _buildSuggestionsPopup() {
+    return Obx(() {
+      final suggestions = searchSuggestions.toList();
+      if (suggestions.isEmpty) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => _dismissAttachPopup());
+        return const SizedBox.shrink();
+      }
+      final theme = Get.theme;
+      final textTheme = Get.textTheme;
+      return Container(
+        margin: const EdgeInsets.only(top: 4),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        constraints: const BoxConstraints(maxHeight: 220, maxWidth: 280),
+        child: ListView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemCount: suggestions.length,
+          itemBuilder: (context, index) {
+            final entry = suggestions[index];
+            return InkWell(
+              key: ValueKey(entry.key),
+              onTap: () {
+                selectSearchSuggestion(entry);
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  border: index != suggestions.length - 1
+                      ? Border(
+                          bottom: BorderSide(
+                            color: theme.dividerColor.withValues(alpha: 0.5),
+                          ),
+                        )
+                      : null,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        entry.value,
+                        style: textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      entry.key,
+                      style: textTheme.bodySmall?.copyWith(
+                            color: theme.hintColor,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    });
   }
 
   void _updateYieldRate() {
@@ -435,6 +557,8 @@ class StockeditController extends BaseController {
 
   void clearStockNum() {
     stockNumController.clear();
+    searchSuggestions.clear();
+    _dismissAttachPopup();
   }
 
   void clickLookStock() {
@@ -471,8 +595,11 @@ class StockeditController extends BaseController {
 
   @override
   void onClose() {
+    _dismissAttachPopup();
     stockNumController.removeListener(_updateStockNum);
+    stockNumFocusNode.removeListener(_onStockNumFocusChange);
     stockNumController.dispose();
+    stockNumFocusNode.dispose();
     pPriceBuyController.removeListener(_updateYieldRate);
     pPriceBuyController.dispose();
     pPriceSaleController.removeListener(_updateYieldRate);

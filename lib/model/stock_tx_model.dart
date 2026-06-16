@@ -74,7 +74,8 @@ class StockTxModel {
 
   //股票页面使用
   String showAllInfo() {
-    return "股票名称：$name\n股票代码：$code\n 市价：$currentPrice\n市盈率：$peRatioTtm\n市净率：$pbRatio\n总市值：$totalMarketCap";
+    String orDash(String? value) => value ?? "-";
+    return "股票名称：${orDash(name)}\n股票代码：${orDash(code)}\n 市价：${orDash(currentPrice)}\n市盈率：${orDash(peRatioTtm)}\n市净率：${orDash(pbRatio)}\n总市值：${orDash(totalMarketCap)}";
   }
 }
 
