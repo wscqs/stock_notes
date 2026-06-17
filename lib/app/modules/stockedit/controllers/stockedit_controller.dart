@@ -1,18 +1,13 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/services/stock_name_service.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
+import 'package:stock_notes/utils/share_image_util.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
@@ -628,90 +623,16 @@ class StockeditController extends BaseController {
   }
 
   Future<void> clickShare() async {
-    final ctx = Get.context;
-    if (ctx == null || !ctx.mounted) return;
-    // 收起键盘并取消焦点，避免截图里出现光标/键盘
-    FocusScope.of(ctx).unfocus();
-
-    try {
-      await WidgetsBinding.instance.endOfFrame;
-      if (!ctx.mounted || isClosed) return;
-      await Future.delayed(const Duration(milliseconds: 100));
-      if (!ctx.mounted || isClosed) return;
-
-      final file = await _captureShareImage(ctx);
-      if (file == null || isClosed) return;
-      if (!ctx.mounted || isClosed) return;
-
-      final subject = (serStockData.value.name ?? "").isNotEmpty
-          ? '${serStockData.value.name} (${serStockData.value.code ?? ""})'
-          : TextKey.gupiao.tr;
-
-      if (!ctx.mounted || isClosed) return;
-      await _shareImage(file, subject, ctx);
-    } on Exception catch (e) {
-      debugPrint('clickShare error: $e');
-      QsHud.dismiss();
-      QsHud.showToast(TextKey.fails.tr);
-    }
-  }
-
-  Future<File?> _captureShareImage(BuildContext context) async {
-    QsHud.showLoading();
-    try {
-      final renderObject = contentKey.currentContext?.findRenderObject();
-      if (renderObject == null || renderObject is! RenderRepaintBoundary) {
-        QsHud.dismiss();
-        QsHud.showToast(TextKey.fails.tr);
-        return null;
-      }
-
-      final boundary = renderObject;
-      final pixelRatio = MediaQuery.devicePixelRatioOf(context);
-      final image = await boundary.toImage(pixelRatio: pixelRatio);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (byteData == null) {
-        QsHud.dismiss();
-        QsHud.showToast(TextKey.fails.tr);
-        return null;
-      }
-
-      final pngBytes = byteData.buffer.asUint8List();
-      final tempDir = await getTemporaryDirectory();
-      final fileName =
-          'stock_share_${stockNum.value}_${DateTime.now().millisecondsSinceEpoch}.png';
-      final file = File('${tempDir.path}/$fileName');
-      await file.writeAsBytes(pngBytes);
-      QsHud.dismiss();
-      return file;
-    } on Exception catch (e) {
-      QsHud.dismiss();
-      debugPrint('_captureShareImage error: $e');
-      QsHud.showToast(TextKey.fails.tr);
-      return null;
-    }
-  }
-
-  Future<void> _shareImage(File file, String subject, BuildContext context) async {
-    if (!context.mounted) return;
-    final size = MediaQuery.sizeOf(context);
-    final origin = Rect.fromCenter(
-      center: Offset(size.width / 2, size.height * 0.85),
-      width: 2,
-      height: 2,
+    if (isClosed) return;
+    final subject = (serStockData.value.name ?? "").isNotEmpty
+        ? '${serStockData.value.name} (${serStockData.value.code ?? ""})'
+        : TextKey.gupiao.tr;
+    if (isClosed) return;
+    await ShareImageUtil.share(
+      key: contentKey,
+      subject: subject,
+      filePrefix: 'stock_share_${stockNum.value}',
     );
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [XFile(file.path)],
-        text: subject,
-        subject: subject,
-        sharePositionOrigin: origin,
-      ),
-    );
-    // 分享完成后延迟清理临时文件
-    Future.delayed(const Duration(minutes: 5)).then((_) {
-      file.delete().ignore();
-    });
   }
 
   void clickOpCollect() {
