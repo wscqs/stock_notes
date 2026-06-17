@@ -35,6 +35,11 @@ class NoteeditView extends GetView<NoteeditController> {
                   icon: const Icon(Icons.visibility),
                   tooltip: '预览',
                 ),
+              IconButton(
+                onPressed: controller.clickShare,
+                icon: const Icon(Icons.share_outlined),
+                tooltip: '分享',
+              ),
               ElevatedButton(
                   onPressed: controller.save, child: Text(TextKey.baocun.tr))
             ],
@@ -42,34 +47,38 @@ class NoteeditView extends GetView<NoteeditController> {
           body: SafeArea(
             child: Stack(
               children: [
-                CustomScrollView(
+                SingleChildScrollView(
                   controller: controller.editorScrollController,
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: buildTitleTextField(),
-                    ),
-                    SliverToBoxAdapter(
+                  child: RepaintBoundary(
+                    key: controller.contentKey,
+                    child: Container(
+                      color: Get.theme.scaffoldBackgroundColor,
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 16, right: 16, top: 4, bottom: 12),
-                        child: Divider(
-                            thickness: 0.5,
-                            color: Colors.grey.withValues(alpha: 0.5)),
+                        // 为分享图片保留底部边距
+                        padding: const EdgeInsets.only(bottom: 32),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            buildTitleTextField(),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16, right: 16, top: 4, bottom: 12),
+                              child: Divider(
+                                  thickness: 0.5,
+                                  color: Colors.grey.withValues(alpha: 0.5)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16, right: 16, bottom: 16),
+                              child: buildQuillEditor(),
+                            ),
+                            if (controller.isEditing.value)
+                              const SizedBox(height: 52),
+                          ],
+                        ),
                       ),
                     ),
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16, right: 16, bottom: 16),
-                          child: buildQuillEditor()),
-                    ),
-                    if (controller.isEditing.value)
-                      SliverToBoxAdapter(
-                          child: SizedBox(
-                        height: 52,
-                      )),
-                  ],
+                  ),
                 ),
                 if (controller.isEditing.value)
                   Align(
@@ -105,7 +114,7 @@ class NoteeditView extends GetView<NoteeditController> {
   QuillEditor buildQuillEditor() {
     return QuillEditor(
       focusNode: controller.editorFocusNode,
-      scrollController: controller.editorScrollController,
+      scrollController: controller.quillScrollController,
       controller: controller.quillController,
       config: QuillEditorConfig(
         scrollable: false,

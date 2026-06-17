@@ -11,6 +11,7 @@ import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:path/path.dart' as path;
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
+import 'package:stock_notes/utils/share_image_util.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
@@ -47,6 +48,8 @@ class NoteeditController extends GetxController {
   }();
   final FocusNode editorFocusNode = FocusNode();
   final ScrollController editorScrollController = ScrollController();
+  final ScrollController quillScrollController = ScrollController();
+  final contentKey = GlobalKey(); // 用于截图滚动全部内容
 
   final localData = Rxn<NoteItem>();
   final isLocalData = false.obs;
@@ -159,6 +162,7 @@ class NoteeditController extends GetxController {
   void onClose() {
     quillController.dispose();
     editorScrollController.dispose();
+    quillScrollController.dispose();
     editorFocusNode.dispose();
     super.onClose();
   }
@@ -286,6 +290,28 @@ class NoteeditController extends GetxController {
     } else {
       QsHud.showToast('未找到该股票记录');
     }
+  }
+
+  /// 分享笔记：截图滚动全部内容
+  Future<void> clickShare() async {
+    if (isClosed) return;
+    var subject = titleController.text.trim();
+    if (subject.isEmpty) {
+      final plainText = quillController.document.toPlainText().trim();
+      if (plainText.isNotEmpty) {
+        subject = plainText.length > 18 ? plainText.substring(0, 18) : plainText;
+      }
+    }
+    if (subject.isEmpty) {
+      subject = TextKey.biji.tr;
+    }
+    if (isClosed) return;
+    final prefix = 'note_share_${localData.value?.id ?? DateTime.now().millisecondsSinceEpoch}';
+    await ShareImageUtil.share(
+      key: contentKey,
+      subject: subject,
+      filePrefix: prefix,
+    );
   }
 
   Color _fromHex(String hex) {
