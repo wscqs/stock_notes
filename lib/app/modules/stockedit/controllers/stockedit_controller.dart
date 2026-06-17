@@ -620,6 +620,10 @@ class StockeditController extends BaseController {
     super.onClose();
   }
 
+  void clickShare() {
+    // 分享功能预留，后续接入原生分享
+  }
+
   void clickOpCollect() {
     if (!isLocalData.value) {
       _popSaveAlert(

@@ -44,6 +44,7 @@ class TextKey {
   static const look = 'look';
   static const refresh = 'refresh';
   static const back = 'back';
+  static const huifu = 'huifu';
   static const allcheck = 'allcheck';
   static const biaoti = 'biaoti';
   static const shuruneirongtishi = 'shuruneirongtishi';
@@ -83,6 +84,7 @@ class TextKey {
   static const daorubingxuanzhe = 'daorubingxuanzhe';
   static const noFile = 'noFile';
   static const fileShare = 'fileShare';
+  static const share = 'share';
   static const gengaimingzi = 'gengaimingzi';
   static const danqianxuanzhongsjybnsc = 'danqianxuanzhongsjybnsc';
   static const qiehuanshujuzhong = 'qiehuanshujuzhong';
@@ -155,6 +157,7 @@ const Map<String, String> zh = {
   TextKey.look: '查看',
   TextKey.refresh: '刷新',
   TextKey.back: '返回',
+  TextKey.huifu: '恢复',
   TextKey.allcheck: '全选',
   TextKey.biaoti: '标题',
   TextKey.shuruneirongtishi: '请输入内容',
@@ -191,6 +194,7 @@ const Map<String, String> zh = {
   TextKey.daorubingxuanzhe: '导入并选择',
   TextKey.noFile: '文件为空',
   TextKey.fileShare: '文件分享',
+  TextKey.share: '分享',
   TextKey.gengaimingzi: '修改名称',
   TextKey.danqianxuanzhongsjybnsc: '当前选中的数据源不能删除',
   TextKey.qiehuanshujuzhong: '切换数据源中',
@@ -312,6 +316,7 @@ const Map<String, String> en = {
   TextKey.look: 'Look',
   TextKey.refresh: 'Refresh',
   TextKey.back: 'Back',
+  TextKey.huifu: 'Restore',
   TextKey.allcheck: 'All Check',
   TextKey.biaoti: 'Title',
   TextKey.shuruneirongtishi: 'Please enter content',
@@ -349,6 +354,7 @@ const Map<String, String> en = {
   TextKey.daorubingxuanzhe: 'Import and select',
   TextKey.noFile: 'File is empty',
   TextKey.fileShare: 'File Share',
+  TextKey.share: 'Share',
   TextKey.gengaimingzi: 'Edit Name',
   TextKey.danqianxuanzhongsjybnsc:
       'The current selected data source cannot be deleted',

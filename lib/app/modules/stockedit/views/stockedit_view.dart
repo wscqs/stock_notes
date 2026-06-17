@@ -21,45 +21,47 @@ class StockeditView extends GetView<StockeditController> {
         FocusScope.of(context).unfocus(); // 关闭键盘
       },
       child: Scaffold(
-          appBar: AppBar(
-            title: Obx(() {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(controller.isLocalData.value
-                            ? controller.localStockData.value!.name
-                            : TextKey.gupiao.tr),
-                        if (controller.localStockData?.value?.opDelete ?? false)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Icon(
-                              Icons.delete,
-                              size: 16,
-                              color: Colors.red,
-                            ),
+        appBar: AppBar(
+          title: Obx(() {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(controller.isLocalData.value
+                          ? controller.localStockData.value!.name
+                          : TextKey.gupiao.tr),
+                      if (controller.localStockData?.value?.opDelete ?? false)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Icon(
+                            Icons.delete,
+                            size: 16,
+                            color: Colors.red,
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
                   ),
-                ],
-              );
-            }),
-            centerTitle: true,
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    controller.save();
-                  },
-                  child: Text(TextKey.baocun.tr))
-            ],
-          ),
-          body: Obx(() {
-            return _visibilityDetectorWithCustomScrollView(context);
-          })),
+                ),
+              ],
+            );
+          }),
+          centerTitle: true,
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  controller.save();
+                },
+                child: Text(TextKey.baocun.tr))
+          ],
+        ),
+        body: Obx(() {
+          return _visibilityDetectorWithCustomScrollView(context);
+        }),
+        bottomNavigationBar: buildBottomBar(),
+      ),
     );
   }
 
@@ -238,9 +240,12 @@ class StockeditView extends GetView<StockeditController> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: isBuy ? Colors.red.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+                    color: isBuy
+                        ? Colors.red.withValues(alpha: 0.1)
+                        : Colors.green.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -516,8 +521,6 @@ class StockeditView extends GetView<StockeditController> {
                 ),
               ),
               buildMinesweeperButton(),
-              kSpaceMax(),
-              buildActionButtons(),
             ],
           ],
         ),
@@ -573,100 +576,131 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
-  Widget buildActionButtons() {
-    if (controller.localStockData.value?.opDelete == true) {
-      return buildEditRestoreRowBtns();
-    } else {
-      return buildEditRowBtns();
-    }
+  Widget buildBottomBar() {
+    return Obx(() {
+      final isDeleted = controller.localStockData.value?.opDelete == true;
+      return Container(
+        decoration: BoxDecoration(
+          color: Get.theme.colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Get.theme.shadowColor.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: SizedBox(
+            height: kBottomNavigationBarHeight,
+            child: isDeleted
+                ? _buildDeletedBottomActions()
+                : _buildNormalBottomActions(),
+          ),
+        ),
+      );
+    });
   }
 
-  Widget buildEditRowBtns() {
-    return Opacity(
-      opacity: (controller.isLocalData.value ? 1.0 : 0.3),
-      child: Row(children: [
-        InkWell(
-          onTap: () {
-            controller.clickOpBuy();
-          },
-          child: Padding(
-            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-            child: Icon(
-              (controller.localStockData.value?.opBuy ?? false)
-                  ? Icons.trending_flat
-                  : Icons.trending_up,
-              size: 20,
-            ),
-          ),
+  Widget _buildNormalBottomActions() {
+    final canOperate = controller.isLocalData.value;
+    final local = controller.localStockData.value;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildBottomActionItem(
+          icon: Icons.share_outlined,
+          label: TextKey.share.tr,
+          onTap: controller.clickShare,
         ),
-        InkWell(
-          onTap: () {
-            controller.clickPushTag();
-          },
-          child: Padding(
-            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-            child: Icon(
-              Remix.price_tag_3_line,
-              size: 20,
-            ),
-          ),
+        _buildBottomActionItem(
+          icon: Icons.trending_up,
+          label: TextKey.chiyou.tr,
+          color: (local?.opBuy ?? false) ? Colors.red : null,
+          onTap: canOperate ? controller.clickOpBuy : null,
         ),
-        InkWell(
-          onTap: () {
-            controller.clickOpCollect();
-          },
-          child: Padding(
-            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-            child: Icon(
-              (controller.localStockData.value?.opCollect ?? false)
-                  ? Icons.star
-                  : Icons.star_border_outlined,
-              size: 20,
-            ),
-          ),
+        _buildBottomActionItem(
+          icon: Remix.price_tag_3_line,
+          label: TextKey.biaoqian.tr,
+          onTap: canOperate ? controller.clickPushTag : null,
         ),
-        InkWell(
-          onTap: () {
-            controller.clickOpDelete();
-          },
-          child: Padding(
-            padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-            child: Icon(
-              Icons.delete_forever,
-              size: 20,
-            ),
-          ),
+        _buildBottomActionItem(
+          icon: (local?.opCollect ?? false)
+              ? Icons.star
+              : Icons.star_border_outlined,
+          label: TextKey.collect.tr,
+          color: (local?.opCollect ?? false) ? Colors.amber : null,
+          onTap: canOperate ? controller.clickOpCollect : null,
         ),
-      ]),
+        _buildBottomActionItem(
+          icon: Icons.delete_forever,
+          label: TextKey.delete.tr,
+          onTap: canOperate ? controller.clickOpDelete : null,
+        ),
+      ],
     );
   }
 
-  Widget buildEditRestoreRowBtns() {
-    return Row(children: [
-      InkWell(
-        onTap: () {
-          controller.clickOpRestore();
-        },
-        child: Padding(
-          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-          child: Icon(
-            Icons.restore,
-            size: 20,
+  Widget _buildDeletedBottomActions() {
+    final theme = Get.theme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildBottomActionItem(
+          icon: Icons.restore,
+          label: TextKey.huifu.tr,
+          color: Colors.green,
+          onTap: controller.clickOpRestore,
+        ),
+        _buildBottomActionItem(
+          icon: Icons.delete_forever,
+          label: TextKey.delete.tr,
+          color: theme.colorScheme.error,
+          onTap: controller.clickOpDelete,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomActionItem({
+    required IconData icon,
+    required String label,
+    Color? color,
+    VoidCallback? onTap,
+  }) {
+    final theme = Get.theme;
+    final enabled = onTap != null;
+    final effectiveColor = color ?? theme.colorScheme.onSurfaceVariant;
+    return MergeSemantics(
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        child: InkWell(
+          onTap: onTap,
+          child: Opacity(
+            opacity: enabled ? 1.0 : 0.3,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 22,
+                  color: effectiveColor,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: effectiveColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      InkWell(
-        onTap: () {
-          controller.clickOpDelete();
-        },
-        child: Padding(
-          padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-          child: Icon(
-            Icons.delete_forever,
-            size: 20,
-          ),
-        ),
-      ),
-    ]);
+    );
   }
 }
