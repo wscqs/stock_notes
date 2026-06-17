@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -15,8 +16,8 @@ import 'qs_hud.dart';
 class ShareImageUtil {
   ShareImageUtil._();
 
-  /// 生成的 PNG 最大高度（像素），超过则放弃截图，避免 OOM
-  static const int _maxImageHeight = 16000;
+  /// 生成的 PNG 最大高度（像素），超过则自动降低清晰度缩放，避免 OOM / GPU 纹理超限
+  static const int _maxImageHeight = 16384;
 
   /// 把 [key] 对应的滚动 widget 截图并分享
   /// [subject] 分享文字主题/标题
@@ -73,14 +74,12 @@ class ShareImageUtil {
       }
 
       final boundary = renderObject;
-      final pixelRatio = MediaQuery.devicePixelRatioOf(context);
       final logicalHeight = boundary.size.height;
-      final imageHeight = (logicalHeight * pixelRatio).ceil();
-      if (imageHeight > _maxImageHeight) {
-        QsHud.dismiss();
-        QsHud.showToast(TextKey.fails.tr);
-        return null;
-      }
+      final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+      // 长内容自动降低 pixelRatio 缩放截图，避免 GPU 纹理超限 / OOM
+      final pixelRatio = logicalHeight <= 0
+          ? devicePixelRatio
+          : math.min(devicePixelRatio, _maxImageHeight / logicalHeight);
 
       final image = await boundary.toImage(pixelRatio: pixelRatio);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
