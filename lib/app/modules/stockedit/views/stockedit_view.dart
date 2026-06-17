@@ -84,24 +84,33 @@ class StockeditView extends GetView<StockeditController> {
 
   Widget buildContentView(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        // spacing: 16,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!controller.isLocalData.value) ...[
-            buildCenterSearchField(),
-            kSpaceH(12),
-          ],
-          _gupiaoinfo(),
-          kSpaceH(24),
-          _gupiaojihua(),
-          kSpaceH(24),
-          _gupiaojilu(),
-          kSpaceH(24),
-          _jiaoyijilu(),
-        ],
+      child: RepaintBoundary(
+        key: controller.contentKey,
+        child: Container(
+          color: Get.theme.scaffoldBackgroundColor,
+          child: Padding(
+            // 为分享图片保留左右/底部边距
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+            child: Column(
+              // spacing: 16,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (!controller.isLocalData.value) ...[
+                  buildCenterSearchField(),
+                  kSpaceH(12),
+                ],
+                _gupiaoinfo(),
+                kSpaceH(24),
+                _gupiaojihua(),
+                kSpaceH(24),
+                _gupiaojilu(),
+                kSpaceH(24),
+                _jiaoyijilu(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
