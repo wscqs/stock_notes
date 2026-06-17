@@ -35,11 +35,12 @@ class NoteeditView extends GetView<NoteeditController> {
                   icon: const Icon(Icons.visibility),
                   tooltip: '预览',
                 ),
-              IconButton(
-                onPressed: controller.clickShare,
-                icon: const Icon(Icons.share_outlined),
-                tooltip: '分享',
-              ),
+              if (!controller.isEditing.value)
+                IconButton(
+                  onPressed: controller.clickShare,
+                  icon: const Icon(Icons.share_outlined),
+                  tooltip: '分享',
+                ),
               ElevatedButton(
                   onPressed: controller.save, child: Text(TextKey.baocun.tr))
             ],
