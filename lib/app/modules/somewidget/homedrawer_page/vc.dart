@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:stock_notes/utils/qs_constants.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
@@ -19,6 +21,10 @@ class HomedrawerVC extends GetxController {
   @override
   void onInit() {
     super.onInit();
+  }
+
+  void shareApp() {
+    SharePlus.instance.share(ShareParams(text: kAppGithubUrl));
   }
 
   void clickShujuyuan() {

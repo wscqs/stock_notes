@@ -77,6 +77,7 @@ class TextKey {
   static const daoru = 'daoru';
   static const daochu = 'daochu';
   static const shujuyuan = 'shujuyuan';
+  static const fenxiangApp = 'fenxiang'; // 分享 App
   static const qingshuru = 'qingshuru';
   static const shurumingzisouziszm = 'shurumingzisouziszm';
   static const shoucichuangjianshujuyuan = 'shoucichuangjianshujuyuan';
@@ -108,7 +109,8 @@ class TextKey {
   static const xuanzhongdejingjuwufashancu = 'xuanzhongdejingjuwufashancu';
   static const morenmingyangwufabianji = 'morenmingyangwufabianji';
   static const quanlianggupiaodaimashuaxin = 'quanlianggupiaodaimashuaxin';
-  static const quanlianggupiaoshuaxinchenggong = 'quanlianggupiaoshuaxinchenggong';
+  static const quanlianggupiaoshuaxinchenggong =
+      'quanlianggupiaoshuaxinchenggong';
   static const quanlianggupiaoshuaxinshibai = 'quanlianggupiaoshuaxinshibai';
 }
 
@@ -187,6 +189,7 @@ const Map<String, String> zh = {
   TextKey.daoru: '导入',
   TextKey.daochu: '导出',
   TextKey.shujuyuan: '数据源',
+  TextKey.fenxiangApp: '分享',
   TextKey.qingshuru: '请输入',
   TextKey.shurumingzisouziszm: '建议名字首字母，如ttz',
   TextKey.shoucichuangjianshujuyuan: '首次创建数据源',
@@ -346,6 +349,7 @@ const Map<String, String> en = {
   TextKey.daoru: 'Import',
   TextKey.daochu: 'Export',
   TextKey.shujuyuan: 'Data Source',
+  TextKey.fenxiangApp: 'Share App',
   TextKey.qingshuru: 'Please enter',
   TextKey.shurumingzisouziszm:
       'Suggest the first letter of the name, such as ttz',

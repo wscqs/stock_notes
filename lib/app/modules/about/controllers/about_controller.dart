@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../common/langs/text_key.dart';
+import '../../../../utils/qs_constants.dart';
 
 class AboutController extends GetxController {
   void toCustomerService() {
@@ -19,7 +20,7 @@ class AboutController extends GetxController {
     ));
   }
 
-  final Uri _url = Uri.parse('https://github.com/wscqs/stock_notes');
+  final Uri _url = Uri.parse(kAppGithubUrl);
 
   void toGithub() {
     launchUrl(_url);

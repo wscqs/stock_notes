@@ -110,6 +110,18 @@ class HomedrawerPage extends StatelessWidget {
               ],
             ),
           ),
+          ListTile(
+            tileColor: Theme.of(context).colorScheme.surfaceContainer,
+            title: Text(TextKey.fenxiangApp.tr),
+            onTap: () {
+              parentVC.closeDrawer();
+              vc.shareApp();
+            },
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
         ],
       ),
     );
