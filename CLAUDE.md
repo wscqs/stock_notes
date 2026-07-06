@@ -36,6 +36,37 @@ dart run flutter_native_splash:create
 dart run package_rename
 ```
 
+## Release Workflow
+
+Releases are cut from the `main` branch and automated via GitHub Actions.
+
+1. Bump `version` in `pubspec.yaml` (e.g. `2.3.0+18` → `2.3.1+19`).
+2. Stage release-related changes and commit:
+   ```bash
+   git commit -m "release: v2.3.1" -m "修复Windows关闭还占内存"
+   ```
+3. Create an annotated tag:
+   ```bash
+   git tag -a v2.3.1 -m "修复Windows关闭还占内存"
+   ```
+4. Push the commit and tag:
+   ```bash
+   git push origin main
+   git push origin v2.3.1
+   ```
+5. Create a GitHub Release for the tag (e.g. via `gh release create v2.3.1`).
+   This triggers `.github/workflows/flutter_build.yml`, which builds and uploads:
+   - Android APK (`app-release.apk`)
+   - macOS app zip (`macos-stocknote.zip`)
+   - Windows app zip (`windows-stocknote.zip`)
+
+> **Note:** iOS is supported by the codebase but is **not** part of the automated release builds.
+
+## Testing
+
+- Run tests with `flutter test`.
+- `test/widget_test.dart` currently contains a placeholder smoke test. Replace it with real widget tests as the project grows.
+
 ## Architecture
 
 ### State Management & Routing
