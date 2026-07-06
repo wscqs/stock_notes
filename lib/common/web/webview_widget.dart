@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:zikzak_inappwebview/zikzak_inappwebview.dart';
 
 import '../../utils/qs_hud.dart';
 
