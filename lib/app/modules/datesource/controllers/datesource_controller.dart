@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -124,13 +123,23 @@ class DatesourceController extends GetxController {
     }
 
     try {
-      final saveLocation = await getSaveLocation(
-        suggestedName: p.basename(lastBackupFile!.path),
+      // Windows 上文件对话框方案不稳定，改为保存到 Downloads 并打开文件夹
+      final downloadsDir = await getDownloadsDirectory();
+      final targetDir = downloadsDir ?? await getApplicationDocumentsDirectory();
+      final targetFile = File(
+        p.join(targetDir.path, p.basename(lastBackupFile!.path)),
       );
-      if (saveLocation != null) {
-        await lastBackupFile!.copy(saveLocation.path);
-        QsHud.showToast(TextKey.success.tr);
+      if (await targetFile.exists()) {
+        await targetFile.delete();
       }
+      await lastBackupFile!.copy(targetFile.path);
+
+      // 打开资源管理器定位到文件
+      Process.run('explorer', ['/select,', targetFile.path])
+          .then((_) {})
+          .catchError((_) {});
+
+      QsHud.showToast(TextKey.success.tr);
     } catch (e) {
       QsHud.showToast(TextKey.fails.tr);
     }
