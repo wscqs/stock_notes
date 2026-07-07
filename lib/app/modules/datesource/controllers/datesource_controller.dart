@@ -109,7 +109,32 @@ class DatesourceController extends GetxController {
     }
     await db.customStatement('VACUUM INTO ?', [file.path]);
     lastBackupFile = file;
-    shareBackup();
+    if (Platform.isWindows) {
+      await exportBackupForWindows();
+    } else {
+      await shareBackup();
+    }
+  }
+
+  Future<void> exportBackupForWindows() async {
+    if (lastBackupFile == null || !(await lastBackupFile!.exists())) {
+      QsHud.showToast(TextKey.noFile.tr);
+      return;
+    }
+
+    try {
+      final outputPath = await FilePicker.platform.saveFile(
+        dialogTitle: TextKey.daochu.tr,
+        fileName: p.basename(lastBackupFile!.path),
+        type: FileType.any,
+      );
+      if (outputPath != null) {
+        await lastBackupFile!.copy(outputPath);
+        QsHud.showToast(TextKey.success.tr);
+      }
+    } catch (e) {
+      QsHud.showToast(TextKey.fails.tr);
+    }
   }
 
   Future<void> inputBackup() async {
