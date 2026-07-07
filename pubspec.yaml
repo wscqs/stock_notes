@@ -1,7 +1,7 @@
 name: stock_notes
 description: "Stock Notes"
 publish_to: 'none'
-version: 2.3.2+20
+version: 2.3.3+21
 
 environment:
   sdk: ^3.6.0
@@ -70,6 +70,7 @@ dependencies:
   # 如果需要使用国际化，请添加以下依赖
   flutter_localizations:
     sdk: flutter
+  file_selector: ^1.1.0
 
 dev_dependencies:
   flutter_test:

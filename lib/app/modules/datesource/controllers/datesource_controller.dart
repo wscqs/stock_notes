@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -123,13 +124,11 @@ class DatesourceController extends GetxController {
     }
 
     try {
-      final outputPath = await FilePicker.platform.saveFile(
-        dialogTitle: TextKey.daochu.tr,
-        fileName: p.basename(lastBackupFile!.path),
-        type: FileType.any,
+      final saveLocation = await getSaveLocation(
+        suggestedName: p.basename(lastBackupFile!.path),
       );
-      if (outputPath != null) {
-        await lastBackupFile!.copy(outputPath);
+      if (saveLocation != null) {
+        await lastBackupFile!.copy(saveLocation.path);
         QsHud.showToast(TextKey.success.tr);
       }
     } catch (e) {
