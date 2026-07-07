@@ -102,17 +102,22 @@ class DatesourceController extends GetxController {
       return;
     }
     QsView.hideKeyboard();
-    final backupDir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(backupDir.path, 'stocknotes_${name}.db'));
-    if (await file.exists()) {
-      await file.delete();
-    }
-    await db.customStatement('VACUUM INTO ?', [file.path]);
-    lastBackupFile = file;
-    if (Platform.isWindows) {
-      await exportBackupForWindows();
-    } else {
-      await shareBackup();
+    try {
+      // 用临时目录生成备份，避免和 currentLocalBackup 生成的本地文件冲突/锁定
+      final tempDir = await getTemporaryDirectory();
+      final file = File(p.join(tempDir.path, 'stocknotes_${name}.db'));
+      if (await file.exists()) {
+        await file.delete();
+      }
+      await db.customStatement('VACUUM INTO ?', [file.path]);
+      lastBackupFile = file;
+      if (Platform.isWindows) {
+        await exportBackupForWindows();
+      } else {
+        await shareBackup();
+      }
+    } catch (e) {
+      QsHud.showToast(TextKey.fails.tr);
     }
   }
 
