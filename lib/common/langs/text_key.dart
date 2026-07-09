@@ -10,6 +10,7 @@ class TextKey {
   static const yiguanbi = 'yiguanbi'; // 已关闭
   static const English = 'English';
   static const queding = 'queding';
+  static const queren = 'queren';
   static const quxiao = 'quxiao';
   static const lianxi = 'lianxi';
   static const gupiao = 'gupiao';
@@ -92,6 +93,7 @@ class TextKey {
   static const errorFile = 'errorFile';
   static const tihuan = 'tihuan';
   static const xinzen = 'xinzen';
+  static const xinjian = 'xinjian';
   static const tongming = 'tongming';
   static const errortishixianchushihuasjy = 'errortishixianchushihuasjy';
   static const errorwjmbhsn = 'errorwjmbhsn';
@@ -126,6 +128,7 @@ const Map<String, String> zh = {
   TextKey.yiguanbi: '已关闭',
   TextKey.English: 'English',
   TextKey.queding: '确定',
+  TextKey.queren: '确认',
   TextKey.quxiao: '取消',
   TextKey.lianxi: '联系',
   TextKey.gupiao: '股票',
@@ -204,6 +207,7 @@ const Map<String, String> zh = {
   TextKey.errorFile: '文件错误',
   TextKey.tihuan: '替换',
   TextKey.xinzen: '新增',
+  TextKey.xinjian: '新建',
   TextKey.tongming: '同名',
   TextKey.errortishixianchushihuasjy: "请先初始化本地数据源，左边抽屉点击数据源初始化后,再重试导入数据源",
   TextKey.errorwjmbhsn: '文件名需要：stocknotes_xxx',
@@ -285,6 +289,7 @@ const Map<String, String> en = {
   TextKey.yiguanbi: 'Disabled',
   TextKey.English: 'English',
   TextKey.queding: 'Sure',
+  TextKey.queren: 'Confirm',
   TextKey.quxiao: 'Cancel',
   TextKey.lianxi: 'Contact',
   TextKey.gupiao: 'Stock',
@@ -366,6 +371,7 @@ const Map<String, String> en = {
   TextKey.errorFile: 'File error',
   TextKey.tihuan: 'Replace',
   TextKey.xinzen: 'Add',
+  TextKey.xinjian: 'New',
   TextKey.tongming: 'Same name',
   TextKey.errortishixianchushihuasjy:
       "Please first initialize the local data source, click the data source initialization on the left drawer, and then retry importing the data source",

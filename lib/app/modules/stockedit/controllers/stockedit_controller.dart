@@ -12,8 +12,8 @@ import 'package:stock_notes/utils/share_image_util.dart';
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../common/web/webview_page.dart';
-import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
+import '../../tagsedit/views/tagsedit_view.dart';
 
 class StockeditController extends BaseController {
   final db = Get.find<DatabaseManager>().db;
@@ -439,7 +439,7 @@ class StockeditController extends BaseController {
   }
 
   //进入别的页面后后退刷新UI(现在只改变了标签）
-  Future<void> _dbSomeDataRefreshUI() async {
+  Future<void> refreshTags() async {
     if (isLocalData.value) {
       final db = Get.find<DatabaseManager>().db;
       var stockItem =
@@ -696,7 +696,7 @@ class StockeditController extends BaseController {
           });
       return;
     }
-    Get.toNamed(Routes.TAGSEDIT, arguments: localStockData.value);
+    TagseditView.show(localStockData.value!);
   }
 
   @override
@@ -705,7 +705,7 @@ class StockeditController extends BaseController {
     if (isFirstCome) {
       isFirstCome = false;
     } else {
-      _dbSomeDataRefreshUI(); //后退才刷新UI
+      refreshTags(); //后退才刷新UI
     }
   }
 

@@ -6,10 +6,12 @@ import 'package:stock_notes/utils/qs_hud.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/langs/text_key.dart';
+import '../../homestock/controllers/homestock_controller.dart';
+import '../../stockedit/controllers/stockedit_controller.dart';
 
 class TagseditController extends GetxController {
   final db = Get.find<DatabaseManager>().db;
-  late StockItem stockItem;
+  final StockItem stockItem;
 
   final selTags = <StockItemTag>[].obs;
   final tags = <StockItemTag>[].obs;
@@ -21,11 +23,11 @@ class TagseditController extends GetxController {
     TextKey.delete.tr,
   ];
 
+  TagseditController({required this.stockItem});
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    stockItem = Get.arguments;
-    // print(stockItem);
     getData();
   }
 
@@ -50,6 +52,8 @@ class TagseditController extends GetxController {
 
   @override
   void onClose() {
+    tagNameController.dispose();
+    tagNameControllerFocusNode.dispose();
     super.onClose();
   }
 
@@ -135,9 +139,20 @@ class TagseditController extends GetxController {
   }
 
   // 标签与股票关系保存
-  void save() {
-    db.updateStockTagsByStockItemId(stockItem.id, selTags);
+  Future<void> save() async {
+    await db.updateStockTagsByStockItemId(stockItem.id, selTags);
+    stockItem.tagList = selTags.toList();
     Get.back();
+    _notifyRefresh();
+  }
+
+  void _notifyRefresh() {
+    if (Get.isRegistered<HomestockController>()) {
+      Get.find<HomestockController>().refreshItemTags(stockItem);
+    }
+    if (Get.isRegistered<StockeditController>()) {
+      Get.find<StockeditController>().refreshTags();
+    }
   }
 
   void onTapOp(String s, StockItemTag item) {

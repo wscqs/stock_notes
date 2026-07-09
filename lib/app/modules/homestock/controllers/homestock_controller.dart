@@ -15,6 +15,7 @@ import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
+import '../../tagsedit/views/tagsedit_view.dart';
 import '../../tabs/controllers/tabs_controller.dart';
 
 class HomestockController extends BaseController
@@ -289,7 +290,7 @@ class HomestockController extends BaseController
     this.query.value = query;
     var filterItems = <StockItem>[];
     if (query.isEmpty) {
-      filterItems = dbItems;
+      filterItems = List.from(dbItems);
     } else {
       filterItems = dbItems
           .where((item) =>
@@ -451,7 +452,16 @@ class HomestockController extends BaseController
   }
 
   void clickPushTag(StockItem item) {
-    Get.toNamed(Routes.TAGSEDIT, arguments: item);
+    TagseditView.show(item);
+  }
+
+  void refreshItemTags(StockItem item) {
+    final index = dbItems.indexWhere((i) => i.id == item.id);
+    if (index != -1) {
+      dbItems[index].tagList = List.from(item.tagList);
+    }
+    filterItems(searchController.text);
+    items.refresh();
   }
 
   //标签过滤功能
