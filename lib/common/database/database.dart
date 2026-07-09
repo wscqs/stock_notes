@@ -485,6 +485,22 @@ extension StockItemExt on StockItem {
   double? pMarketCapSalePoints() => _calcPoint(pMarketCapSale, totalMarketCap);
   double? pPeTtmSalePoints() => _calcPoint(pPeTtmSale, peRatioTtm);
 
+  /// 持有收益率：仅当标记为持有且输入了成本价时才计算。
+  double? get holdingYieldRate {
+    if (!opBuy) return null;
+    final buyPrice = double.tryParse(rBuyPrice ?? "");
+    final price = double.tryParse(currentPrice ?? "");
+    if (buyPrice == null || buyPrice == 0 || price == null) return null;
+    return (price - buyPrice) / buyPrice;
+  }
+
+  String? get holdingYieldRateText {
+    final rate = holdingYieldRate;
+    if (rate == null) return null;
+    final sign = rate > 0 ? '+' : '';
+    return "$sign${(rate * 100).toStringAsFixed(1)}%";
+  }
+
   void setConditions() {
     extra.priceCondition = _setVarCondition(
       buyPoint: pPriceBuyPoints(),

@@ -440,6 +440,8 @@ class _HomeStockCellState extends State<HomeStockCell>
 
   Widget buildContents() {
     final conditionInfo = widget.item.showCellConditionInfo() ?? "";
+    final yieldRate = widget.item.holdingYieldRate;
+    final yieldRateText = widget.item.holdingYieldRateText;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -497,6 +499,21 @@ class _HomeStockCellState extends State<HomeStockCell>
                       Icons.trending_up,
                       size: 13,
                       color: Colors.red.shade400,
+                    ),
+                  ],
+                  if (yieldRate != null && yieldRateText != null) ...[
+                    kSpaceW(4),
+                    Text(
+                      yieldRateText,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: yieldRate > 0
+                            ? Colors.red
+                            : yieldRate < 0
+                                ? Colors.green
+                                : Colors.grey,
+                      ),
                     ),
                   ],
                 ],
