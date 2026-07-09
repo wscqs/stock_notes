@@ -670,7 +670,9 @@ class _HomeStockCellState extends State<HomeStockCell>
               ),
               SlideAction(
                 color: Colors.orange,
-                icon: Remix.price_tag_3_line,
+                icon: widget.item.tagList.isNotEmpty
+                    ? Remix.price_tag_3_fill
+                    : Remix.price_tag_3_line,
                 onPressed: () {
                   controller.clickPushTag(widget.item);
                 },

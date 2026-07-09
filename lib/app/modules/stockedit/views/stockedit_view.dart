@@ -629,8 +629,13 @@ class StockeditView extends GetView<StockeditController> {
           onTap: canOperate ? controller.clickOpBuy : null,
         ),
         _buildBottomActionItem(
-          icon: Remix.price_tag_3_line,
+          icon: ((controller.localStockData.value?.tagList.length ?? 0) > 0)
+              ? Remix.price_tag_3_fill
+              : Remix.price_tag_3_line,
           label: TextKey.biaoqian.tr,
+          color: ((controller.localStockData.value?.tagList.length ?? 0) > 0)
+              ? Colors.blue
+              : null,
           onTap: canOperate ? controller.clickPushTag : null,
         ),
         _buildBottomActionItem(
