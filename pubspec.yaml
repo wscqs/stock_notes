@@ -11,7 +11,7 @@ dependencies:
   get: ^4.7.3 #路由/状态插件
   #get: ^5.0.0-release-candidate-9.3.2 #中间件有点问题（SplashMiddleware正式版再试看看）
   #dio: ^5.8.0+1 //web不能运行
-  dio: ^5.9.2
+  dio: ^5.10.0
   visibility_detector: ^0.4.0+2
   fl_charset: ^1.0.2
 
@@ -19,7 +19,7 @@ dependencies:
   intl: ^0.20.2  # 格式化日期
   crypto: ^3.0.7  # 生成 MD5
   encrypt: ^5.0.3
-  connectivity_plus: ^6.1.0
+  connectivity_plus: ^7.2.0
   app_links: ^7.0.0 #记住要看文档，深链接需手动关闭
 
   #UI
@@ -52,14 +52,14 @@ dependencies:
   drift_flutter: ^0.3.0
   sqlite3_flutter_libs: ^0.6.0+eol
   drift_db_viewer: ^2.1.0 #测试看数据
-  path_provider: ^2.1.5
+  path_provider: ^2.1.6
   #  isar: ^3.1.0+1
 
   #原生相关
   #  image_gallery_saver: ^2.0.3
-  image_picker: ^1.2.2  # 用于从相册选择图片
+  image_picker: ^1.2.3  # 用于从相册选择图片
   #  share_plus: ^9.0.0
-  permission_handler: ^12.0.1  # 用于请求权限
+  permission_handler: ^12.0.3  # 用于请求权限
   package_info_plus: ^8.3.0
   device_info_plus: ^11.3.3
   # flutter_udid: ^4.0.0 #设备唯一标识
