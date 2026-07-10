@@ -4,8 +4,23 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../common/langs/text_key.dart';
 import '../../../../utils/qs_constants.dart';
+import '../../../../utils/qs_devicepackageinfo.dart';
 
 class AboutController extends GetxController {
+  final version = ''.obs;
+  final buildNumber = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadPackageInfo();
+  }
+
+  Future<void> _loadPackageInfo() async {
+    version.value = await QsDevicePackageInfo.getVersion();
+    buildNumber.value = await QsDevicePackageInfo.getBuildNumber();
+  }
+
   void toCustomerService() {
     Get.dialog(AlertDialog(
       title: Text(TextKey.lianxi.tr),

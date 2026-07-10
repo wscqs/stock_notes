@@ -25,6 +25,13 @@ class AboutView extends GetView<AboutController> {
               child: Image(
                   image: AssetImage(Assets.imagesIcon), width: 80, height: 80)),
 
+          kSpaceH(12.h),
+
+          Obx(() => Text(
+                'v${controller.version} (${controller.buildNumber})',
+                style: TextStyle(fontSize: 13.sp, color: Colors.grey),
+              )),
+
           kSpaceH(20.h),
 
           Container(
