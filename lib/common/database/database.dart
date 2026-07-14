@@ -14,7 +14,15 @@ part 'database.g.dart';
 //  await Get.putAsync(() async => AppDatabase());
 //  final db = Get.find<AppDatabase>();
 
-@DriftDatabase(tables: [StockItems, NoteItems, StockItemTags, StockTags, StockTrades])
+@DriftDatabase(tables: [
+  StockItems,
+  NoteItems,
+  StockItemTags,
+  StockTags,
+  StockTrades,
+  NoteItemTags,
+  NoteTags
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String path) : super(_openConnection(path));
   //网页需后端Web:TypeError: Failed to execute 'compile' on 'WebAssembly': Incorrect response MIME type. Expected 'application/wasm'.
@@ -37,7 +45,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   //改表要处理合并migration
   @override
@@ -45,6 +53,11 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (migrator, from, to) async {
           if (from == 1) {
             await migrator.createTable(stockTrades);
+          }
+          if (from <= 2) {
+            await migrator.createTable(noteItemTags);
+            await migrator.createTable(noteTags);
+            await _seedDefaultNoteTags();
           }
         },
         onCreate: (migrator) async {
@@ -59,8 +72,20 @@ class AppDatabase extends _$AppDatabase {
               StockItemTagsCompanion.insert(name: '卖'),
             ]);
           });
+          //笔记标签默认加三个。 股票，复盘，政策
+          await _seedDefaultNoteTags();
         },
       );
+
+  Future<void> _seedDefaultNoteTags() {
+    return batch((batch) {
+      batch.insertAll(noteItemTags, [
+        NoteItemTagsCompanion.insert(name: '股票'),
+        NoteItemTagsCompanion.insert(name: '复盘'),
+        NoteItemTagsCompanion.insert(name: '政策'),
+      ]);
+    });
+  }
 
   //stock
   Future<void> addStock(StockItemsCompanion item) => stockItems.insertOne(item);
@@ -282,8 +307,57 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  // note_item_tags
+  Future<void> addNoteItemTag(NoteItemTagsCompanion item) =>
+      noteItemTags.insertOne(item);
+  Future<void> addNoteItemTagOnConflictUpdate(NoteItemTagsCompanion item) {
+    return noteItemTags.insertOnConflictUpdate(item);
+  }
+
+  Future<void> deleteNoteItemTag(NoteItemTag itemDelete) {
+    return (delete(noteItemTags)..where((tbl) => tbl.id.equals(itemDelete.id)))
+        .go();
+  }
+
+  Future<void> updateNoteItemTag(
+    NoteItemTagsCompanion updatedItem,
+    int id,
+  ) {
+    return (update(noteItemTags)..where((tbl) => tbl.id.equals(id)))
+        .write(updatedItem);
+  }
+
+  Future<List<NoteItemTag>> getNoteItemTags() {
+    return (select(noteItemTags)).get();
+  }
+
+  Future<NoteItemTag?> getNoteItemTag(String name) {
+    return (select(noteItemTags)..where((tbl) => tbl.name.equals(name)))
+        .getSingleOrNull();
+  }
+
+  // note_tags
+  Future<List<NoteTag>> getNoteTagsByNoteItemId(int noteId) {
+    return (select(noteTags)..where((tbl) => tbl.noteId.equals(noteId))).get();
+  }
+
+  Future<void> updateNoteTagsByNoteItemId(
+      int noteId, List<NoteItemTag> selTags) {
+    return batch((batch) {
+      batch.deleteWhere(noteTags, (tbl) => tbl.noteId.equals(noteId));
+      for (var item in selTags) {
+        batch.insert(
+            noteTags,
+            NoteTagsCompanion.insert(
+              noteId: noteId,
+              tagId: item.id,
+            ));
+      }
+    });
+  }
+
   //note
-  Future<void> addNote(NoteItemsCompanion item) => noteItems.insertOne(item);
+  Future<int> addNote(NoteItemsCompanion item) => noteItems.insertOne(item);
   Future<void> addNoteOnConflictUpdate(NoteItemsCompanion item) {
     //item updateAt 设置为当前时间
     item = item.copyWith(updateAt: Value(DateTime.now()));
@@ -313,6 +387,43 @@ class AppDatabase extends _$AppDatabase {
   Future<NoteItem?> getNoteItem(int id) {
     return (select(noteItems)..where((tbl) => tbl.id.equals(id)))
         .getSingleOrNull();
+  }
+
+  Future<NoteItem?> getNoteItemWithTags(int id) async {
+    final item = await getNoteItem(id);
+    if (item == null) return null;
+    final tagJoinQuery = select(noteItemTags).join([
+      innerJoin(noteTags, noteTags.tagId.equalsExp(noteItemTags.id)),
+    ])
+      ..where(noteTags.noteId.equals(item.id));
+    final joinedRows = await tagJoinQuery.get();
+    item.tagList =
+        joinedRows.map((row) => row.readTable(noteItemTags)).toList();
+    return item;
+  }
+
+  Future<List<NoteItem>> getNoteItemsWithTagsByNoteItems(
+      List<NoteItem> items) async {
+    if (items.isEmpty) return [];
+    final noteIds = items.map((e) => e.id).toList();
+    // 查询所有 noteId 对应的标签关联（一次性）
+    final tagJoinQuery = select(noteItemTags).join([
+      innerJoin(noteTags, noteTags.tagId.equalsExp(noteItemTags.id)),
+    ])
+      ..where(noteTags.noteId.isIn(noteIds));
+    final joinedRows = await tagJoinQuery.get();
+    // 构造 Map<noteId, List<Tag>>
+    final tagMap = <int, List<NoteItemTag>>{};
+    for (final row in joinedRows) {
+      final tag = row.readTable(noteItemTags);
+      final noteId = row.readTable(noteTags).noteId;
+      tagMap.putIfAbsent(noteId, () => []).add(tag);
+    }
+    // 赋值 tagList
+    for (final item in items) {
+      item.tagList = tagMap[item.id] ?? [];
+    }
+    return items;
   }
 
   Future<List<NoteItem>> getNoteItemsOnHome() {
@@ -440,6 +551,32 @@ final Map<int, StockItemExtraState> _stockItemExtras = {};
 
 StockItemExtraState _getExtra(int id) {
   return _stockItemExtras.putIfAbsent(id, () => StockItemExtraState());
+}
+
+//Note
+class NoteItemExtraState {
+  List<NoteItemTag> tagList;
+
+  NoteItemExtraState({
+    List<NoteItemTag>? tagList,
+  }) : tagList = tagList ?? [];
+}
+
+final Map<int, NoteItemExtraState> _noteItemExtras = {};
+
+NoteItemExtraState _getNoteExtra(int id) {
+  return _noteItemExtras.putIfAbsent(id, () => NoteItemExtraState());
+}
+
+extension NoteItemExt on NoteItem {
+  NoteItemExtraState get extra => _getNoteExtra(id);
+
+  List<NoteItemTag> get tagList => extra.tagList;
+  set tagList(List<NoteItemTag> value) => extra.tagList = value;
+
+  String? homeCellShowTagNames() {
+    return tagList.map((e) => e.name).join(" · ");
+  }
 }
 
 extension StockItemExt on StockItem {

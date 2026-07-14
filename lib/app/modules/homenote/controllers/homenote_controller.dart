@@ -7,6 +7,7 @@ import 'package:stock_notes/common/langs/text_key.dart';
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../routes/app_pages.dart';
+import '../../notetagsedit/views/notetagsedit_view.dart';
 import '../../tabs/controllers/tabs_controller.dart';
 
 class HomenoteController extends BaseController
@@ -52,6 +53,8 @@ class HomenoteController extends BaseController
     } else if (selectedOrderIndex.value == 2) {
       dbItems.value = await db.getNoteItemsOnHomeWithDelete();
     }
+    dbItems.value =
+        await db.getNoteItemsWithTagsByNoteItems(List.from(dbItems));
     String query = searchController.text;
     filterItems(query);
   }
@@ -108,7 +111,7 @@ class HomenoteController extends BaseController
     this.query.value = query;
     var filterItems = <NoteItem>[];
     if (query.isEmpty) {
-      filterItems = dbItems;
+      filterItems = List.from(dbItems);
     } else {
       filterItems = dbItems
           .where((item) => item.title.contains(query)) // 搜索逻辑
@@ -208,5 +211,18 @@ class HomenoteController extends BaseController
   void clickOpRestore(NoteItem item) {
     db.updateNoteWithOp(item.copyWith(opDelete: false));
     getDatas();
+  }
+
+  void clickPushTag(NoteItem item) {
+    NoteTagseditView.show(item);
+  }
+
+  void refreshItemTags(NoteItem item) {
+    final index = dbItems.indexWhere((i) => i.id == item.id);
+    if (index != -1) {
+      dbItems[index].tagList = List.from(item.tagList);
+    }
+    filterItems(searchController.text);
+    items.refresh();
   }
 }

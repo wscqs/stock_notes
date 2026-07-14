@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/widget/keep_alive_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -282,6 +283,7 @@ class _HomeNoteCellState extends State<HomeNoteCell>
 
   Column buildContents() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -315,6 +317,31 @@ class _HomeNoteCellState extends State<HomeNoteCell>
               ),
           ],
         ),
+        if (widget.item.tagList.isNotEmpty) ...[
+          kSpaceH(6),
+          Wrap(
+            spacing: 6,
+            runSpacing: 4,
+            children: widget.item.tagList.map((tag) {
+              return Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                decoration: BoxDecoration(
+                  color: Get.theme.colorScheme.primaryContainer
+                      .withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Text(
+                  tag.name,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Get.theme.colorScheme.onPrimaryContainer,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ],
     );
   }
@@ -323,7 +350,7 @@ class _HomeNoteCellState extends State<HomeNoteCell>
     final isRestoreMode = controller.selectedOrderIndex == 2;
 
     return ActionPane(
-      extentRatio: isRestoreMode ? 0.35 : 0.52,
+      extentRatio: isRestoreMode ? 0.35 : 0.68,
       motion: const BehindMotion(),
       children: isRestoreMode
           ? [
@@ -350,6 +377,15 @@ class _HomeNoteCellState extends State<HomeNoteCell>
                     : Icons.push_pin_outlined,
                 onPressed: () {
                   controller.clickOpTop(widget.item);
+                },
+              ),
+              SlideAction(
+                color: Colors.orange,
+                icon: widget.item.tagList.isNotEmpty
+                    ? Remix.price_tag_3_fill
+                    : Remix.price_tag_3_line,
+                onPressed: () {
+                  controller.clickPushTag(widget.item);
                 },
               ),
               SlideAction(

@@ -70,6 +70,18 @@ class StockTags extends Table {
   Set<Column> get primaryKey => {stockId, tagId};
 }
 
+class NoteItemTags extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+}
+
+class NoteTags extends Table {
+  IntColumn get noteId => integer().references(NoteItems, #id)();
+  IntColumn get tagId => integer().references(NoteItemTags, #id)();
+  @override
+  Set<Column> get primaryKey => {noteId, tagId};
+}
+
 class StockTrades extends Table with TableMixin {
   IntColumn get stockId => integer().references(StockItems, #id)();
   IntColumn get tradeType => integer()(); // 0=买, 1=卖
@@ -77,14 +89,6 @@ class StockTrades extends Table with TableMixin {
   TextColumn get shares => text().nullable()();
   TextColumn get remark => text().nullable()();
 }
-
-// class NoteTags extends Table {
-//   IntColumn get noteId =>
-//       integer().customConstraint('REFERENCES note_items(id)')();
-//   IntColumn get tagId => integer().customConstraint('REFERENCES tags(id)')();
-//   @override
-//   Set<Column> get primaryKey => {noteId, tagId};
-// }
 
 // class TodoItems extends Table with TableMixin {
 //   TextColumn get title => text().withLength(min: 6, max: 32)();

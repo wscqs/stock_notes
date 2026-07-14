@@ -17,6 +17,7 @@ import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../utils/stock_link_utils.dart';
 import '../../../routes/app_pages.dart';
+import '../../notetagsedit/views/notetagsedit_view.dart';
 
 class NoteeditController extends GetxController {
   final TextEditingController titleController = TextEditingController();
@@ -138,6 +139,7 @@ class NoteeditController extends GetxController {
     if (localData.value != null) {
       isLocalData.value = true;
       _dealHasLocalDataRefreshUI();
+      refreshTags();
     } else {
       //新建
       Future.delayed(500.milliseconds, () {
@@ -189,7 +191,62 @@ class NoteeditController extends GetxController {
     quillController.document = Document.fromJson(wrappedDelta);
   }
 
-  Future<void> save() async {
+  //进入别的页面后后退刷新UI(现在只改变了标签）
+  Future<void> refreshTags() async {
+    if (isLocalData.value) {
+      final db = Get.find<DatabaseManager>().db;
+      var noteItem = await db.getNoteItemWithTags(localData.value!.id);
+      if (noteItem != null) {
+        localData.value!.tagList = noteItem.tagList;
+        localData.refresh();
+      }
+    }
+  }
+
+  //标签
+  void clickPushTag() {
+    if (!isLocalData.value) {
+      QsHud.showConfirmDialog(
+          title: TextKey.biaoqian.tr,
+          content: TextKey.cicaozuoxubaocun.tr,
+          confirmText: TextKey.baocunbingcaozu.tr,
+          onConfirm: () async {
+            await save(isBack: false);
+            if (isLocalData.value) {
+              clickPushTag();
+            }
+          });
+      return;
+    }
+    NoteTagseditView.show(localData.value!);
+  }
+
+  //收藏
+  void clickOpCollect() {
+    if (!isLocalData.value) return;
+    final db = Get.find<DatabaseManager>().db;
+    localData.value =
+        localData.value!.copyWith(opCollect: !localData.value!.opCollect);
+    localData.refresh();
+    db.updateNoteWithOp(localData.value!);
+  }
+
+  //删除（已在删除列表则真正删除）
+  void clickOpDelete() {
+    if (!isLocalData.value) return;
+    final db = Get.find<DatabaseManager>().db;
+    if (localData.value!.opDelete) {
+      db.deleteNote(localData.value!);
+      QsHud.showToast(TextKey.delete.tr + TextKey.success.tr);
+    } else {
+      db.updateNoteWithOp(localData.value!.copyWith(opDelete: true));
+      QsHud.showToast(TextKey.yidaoshanchuliebiao.tr);
+    }
+    canPop = true;
+    Get.back();
+  }
+
+  Future<void> save({bool isBack = true}) async {
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
     final db = Get.find<DatabaseManager>().db;
@@ -221,10 +278,14 @@ class NoteeditController extends GetxController {
       );
       db.addNoteOnConflictUpdate(itemUpdate);
     } else {
-      db.addNote(itemsCompanion);
+      final id = await db.addNote(itemsCompanion);
+      localData.value = await db.getNoteItemWithTags(id);
+      isLocalData.value = true;
     }
     QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
-    Get.back();
+    if (isBack) {
+      Get.back();
+    }
   }
 
   //显示选择颜色弹窗

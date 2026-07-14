@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
+import 'package:remixicon/remixicon.dart';
+import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../controllers/noteedit_controller.dart';
@@ -27,7 +29,7 @@ class NoteeditView extends GetView<NoteeditController> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(TextKey.biji.tr),
+            // title: Text(TextKey.biji.tr),
             actions: [
               if (controller.isEditing.value)
                 IconButton(
@@ -37,10 +39,47 @@ class NoteeditView extends GetView<NoteeditController> {
                 ),
               if (!controller.isEditing.value)
                 IconButton(
-                  onPressed: controller.clickShare,
+                  onPressed: controller.isLocalData.value
+                      ? controller.clickShare
+                      : null,
                   icon: const Icon(Icons.share_outlined),
                   tooltip: '分享',
                 ),
+              IconButton(
+                onPressed: controller.isLocalData.value
+                    ? controller.clickPushTag
+                    : null,
+                icon: Icon(
+                  (controller.localData.value?.tagList.length ?? 0) > 0
+                      ? Remix.price_tag_3_fill
+                      : Remix.price_tag_3_line,
+                  color: (controller.localData.value?.tagList.length ?? 0) > 0
+                      ? Colors.blue
+                      : null,
+                ),
+                tooltip: TextKey.biaoqian.tr,
+              ),
+              IconButton(
+                onPressed: controller.isLocalData.value
+                    ? controller.clickOpCollect
+                    : null,
+                icon: Icon(
+                  (controller.localData.value?.opCollect ?? false)
+                      ? Icons.star
+                      : Icons.star_border_outlined,
+                  color: (controller.localData.value?.opCollect ?? false)
+                      ? Colors.amber
+                      : null,
+                ),
+                tooltip: TextKey.collect.tr,
+              ),
+              IconButton(
+                onPressed: controller.isLocalData.value
+                    ? controller.clickOpDelete
+                    : null,
+                icon: const Icon(Icons.delete_forever),
+                tooltip: TextKey.delete.tr,
+              ),
               ElevatedButton(
                   onPressed: controller.save, child: Text(TextKey.baocun.tr))
             ],
@@ -61,6 +100,33 @@ class NoteeditView extends GetView<NoteeditController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             buildTitleTextField(),
+                            if ((controller.localData.value?.tagList.length ??
+                                    0) >
+                                0)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 4),
+                                child: Row(
+                                  children: [
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.only(right: 4, top: 2),
+                                      child: Icon(
+                                        RemixIcons.price_tag_3_line,
+                                        size: 12,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        controller.localData.value
+                                                ?.homeCellShowTagNames() ??
+                                            "",
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: 16, right: 16, top: 4, bottom: 12),
