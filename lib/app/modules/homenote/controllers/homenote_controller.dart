@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/app/modules/base/base_controller.dart';
+import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
@@ -34,6 +36,9 @@ class HomenoteController extends BaseController
   final isOperate = false.obs;
   final selItems = <NoteItem>[].obs; //选择的items
   final customScrollController = ScrollController();
+
+  final selTags = <NoteItemTag>[].obs;
+  final tags = <NoteItemTag>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -117,7 +122,22 @@ class HomenoteController extends BaseController
           .where((item) => item.title.contains(query)) // 搜索逻辑
           .toList();
     }
+    if (selTags.isNotEmpty) {
+      filterItems = _updateFilterItemsWithSelTags(filterItems);
+    }
     items.value = filterItems;
+  }
+
+  List<NoteItem> _updateFilterItemsWithSelTags(List<NoteItem> filterItems) {
+    if (selTags.value.isEmpty) {
+      return filterItems;
+    } else {
+      return filterItems.where((item) {
+        return item.tagList.any((tag) {
+          return selTags.value.contains(tag);
+        });
+      }).toList();
+    }
   }
 
   void clickCell(NoteItem item) {
@@ -224,5 +244,91 @@ class HomenoteController extends BaseController
     }
     filterItems(searchController.text);
     items.refresh();
+  }
+
+  //标签过滤功能
+  Future<void> clickFilterPop(BuildContext context) async {
+    await getTagsData();
+    SmartDialog.showAttach(
+      targetContext: context,
+      maskColor: Colors.transparent,
+      alignment: Alignment.bottomCenter,
+      builder: (_) {
+        return getTagsPopWidget();
+      },
+    );
+  }
+
+  Future<void> getTagsData() async {
+    tags.value = await db.getNoteItemTags();
+  }
+
+  Widget getTagsPopWidget() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      color: Get.theme.colorScheme.surface,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          kSpaceH(8),
+          Text(
+            TextKey.biaoqian.tr,
+            style: TextStyle(
+                fontSize: 16,
+                color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.8)),
+          ),
+          kSpaceH(12),
+          Obx(() {
+            return Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: tags.map((tag) {
+                return getSelTagItemView(tag);
+              }).toList(),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget getSelTagItemView(NoteItemTag item) {
+    return GestureDetector(
+      onTap: () {
+        onTapSelTag(item);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 12, top: 4, bottom: 4, right: 12),
+        decoration: BoxDecoration(
+            color: Colors.grey.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(4)),
+        child: Text(
+          item.name,
+          style: TextStyle(
+            color: selTags.value.contains(item)
+                ? Colors.red
+                : Get.theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void onTapSelTag(NoteItemTag item) {
+    selTags.value.contains(item)
+        ? selTags.value.remove(item)
+        : selTags.value.add(item);
+    selTags.refresh();
+    getDatas();
+    SmartDialog.dismiss(status: SmartStatus.attach);
+  }
+
+  void clickFilterClose() {
+    selTags.value.clear();
+    selTags.refresh();
+    getDatas();
+    SmartDialog.dismiss(status: SmartStatus.attach);
   }
 }

@@ -42,6 +42,7 @@ class HomenoteView extends GetView<HomenoteController> {
       preferredSize: Size.fromHeight(76), // 指定 TabBar 高度
       child: Obx(() {
         return Container(
+          color: Get.theme.colorScheme.surface,
           padding: EdgeInsets.all(16),
           child: Row(
             children: [
@@ -52,12 +53,52 @@ class HomenoteView extends GetView<HomenoteController> {
                   child: buildHotPopViews(),
                 ),
               ),
+              kSpaceW(4),
+              if (controller.selTags.isNotEmpty) buildFilterCloseBtn(),
+              buildFilterBtn(),
               kSpaceW(8),
               Expanded(child: buildTopSearch()),
             ],
           ),
         );
       }),
+    );
+  }
+
+  Builder buildFilterBtn() {
+    return Builder(builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 8),
+        child: InkWell(
+            onTap: () {
+              controller.clickFilterPop(context);
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+              child: Icon(
+                Icons.filter_list_outlined,
+                size: 18,
+              ),
+            )),
+      );
+    });
+  }
+
+  Widget buildFilterCloseBtn() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: InkWell(
+          onTap: () {
+            controller.clickFilterClose();
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: Icon(
+              Icons.filter_list_off_outlined,
+              size: 18,
+              color: Colors.blueAccent,
+            ),
+          )),
     );
   }
 
