@@ -36,6 +36,7 @@ class StockeditController extends BaseController {
   final rAllRemarkController = TextEditingController();
   final rEventRemarkController = TextEditingController();
   final rBuyPriceController = TextEditingController();
+  final rHoldSharesController = TextEditingController();
 
   final serStockData = StockTxModel().obs;
   final localStockData = Rxn<StockItem>();
@@ -54,6 +55,11 @@ class StockeditController extends BaseController {
   final pMarketCapSalePoints = 0.0.obs;
   final pPeTtmSalePoints = 0.0.obs;
   final rBuyPriceYieldRate = 0.00001.obs;
+  //成本价/持有股数是否有效（决定股数输入框与收益信息展示）
+  final rBuyPriceValid = false.obs;
+  final rHoldSharesValid = false.obs;
+  final rHoldProfit = 0.0.obs; //收益额
+  final rHoldMarketValue = 0.0.obs; //持有总市值
 
   //交易记录
   final stockTrades = <StockTrade>[].obs;
@@ -78,6 +84,7 @@ class StockeditController extends BaseController {
     pPeTtmBuyController.addListener(_updateYieldRate);
     pPeTtmSaleController.addListener(_updateYieldRate);
     rBuyPriceController.addListener(_updateBuyPriceYieldRate);
+    rHoldSharesController.addListener(_updateBuyPriceYieldRate);
 
     localStockData.value = Get.arguments;
     if (localStockData.value != null) {
@@ -108,6 +115,7 @@ class StockeditController extends BaseController {
       pPeTtmSaleController.text = localStockData.value?.pPeTtmSale ?? "";
       pPeTtmRemarkController.text = localStockData.value?.pPeTtmRemark ?? "";
       rBuyPriceController.text = localStockData.value?.rBuyPrice ?? "";
+      rHoldSharesController.text = localStockData.value?.rHoldShares ?? "";
       rAllRemarkController.text = localStockData.value?.rAllRemark ?? "";
       rEventRemarkController.text = localStockData.value?.rEventRemark ?? "";
 
@@ -307,17 +315,25 @@ class StockeditController extends BaseController {
   }
 
   void _updateBuyPriceYieldRate() {
+    final buyPrice = double.tryParse(rBuyPriceController.text);
+    rBuyPriceValid.value = buyPrice != null && buyPrice > 0;
+    final shares = double.tryParse(rHoldSharesController.text);
+    rHoldSharesValid.value = shares != null && shares > 0;
+    rHoldProfit.value = 0.0;
+    rHoldMarketValue.value = 0.0;
     if ((serStockData.value.code ?? "").isNotEmpty) {
-      final buyPriceText = rBuyPriceController.text;
-      final currentPriceText = serStockData.value.currentPrice;
-
-      final buyPrice = double.tryParse(buyPriceText);
-      final currentPrice = double.tryParse(currentPriceText ?? "");
+      final currentPrice = double.tryParse(serStockData.value.currentPrice ?? "");
 
       if (buyPrice != null && buyPrice != 0 && currentPrice != null) {
         rBuyPriceYieldRate.value = (currentPrice - buyPrice) / buyPrice;
       } else {
         rBuyPriceYieldRate.value = 0.00001;
+      }
+      if (currentPrice != null && rHoldSharesValid.value) {
+        rHoldMarketValue.value = currentPrice * shares!;
+        if (buyPrice != null) {
+          rHoldProfit.value = (currentPrice - buyPrice) * shares;
+        }
       }
     }
   }
@@ -520,6 +536,7 @@ class StockeditController extends BaseController {
       pPeTtmSale: Value(pPeTtmSaleController.text),
       pPeTtmRemark: Value(pPeTtmRemarkController.text),
       rBuyPrice: Value(rBuyPriceController.text),
+      rHoldShares: Value(rHoldSharesController.text),
       rAllRemark: Value(rAllRemarkController.text),
       rEventRemark: Value(rEventRemarkController.text),
       cMeetUpdateAt: Value(cMeetUpdateAt),
@@ -616,6 +633,8 @@ class StockeditController extends BaseController {
     pPeTtmSaleController.dispose();
     rBuyPriceController.removeListener(_updateBuyPriceYieldRate);
     rBuyPriceController.dispose();
+    rHoldSharesController.removeListener(_updateBuyPriceYieldRate);
+    rHoldSharesController.dispose();
     tradePriceController.dispose();
     tradeSharesController.dispose();
     tradeRemarkController.dispose();

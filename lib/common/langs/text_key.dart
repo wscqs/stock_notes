@@ -98,6 +98,9 @@ class TextKey {
   static const errortishixianchushihuasjy = 'errortishixianchushihuasjy';
   static const errorwjmbhsn = 'errorwjmbhsn';
   static const chiyouchengbenjia = 'chiyouchengbenjia';
+  static const chiyougushu = 'chiyougushu';
+  static const shouyie = 'shouyie';
+  static const zongshizhi = 'zongshizhi';
   static const baocunbingcaozu = 'baocunbingcaozu';
   static const jiaoyi = 'jiaoyi';
   static const jiaoyijilu = 'jiaoyijilu';
@@ -213,6 +216,9 @@ const Map<String, String> zh = {
   TextKey.errorwjmbhsn: '文件名需要：stocknotes_xxx',
   TextKey.chiyou: '持有',
   TextKey.chiyouchengbenjia: '持有成本价',
+  TextKey.chiyougushu: '持有股数',
+  TextKey.shouyie: '收益额',
+  TextKey.zongshizhi: '总市值',
   TextKey.jiaoyi: '交易',
   TextKey.jiaoyijilu: '交易记录',
   TextKey.jiaoyileixing: '交易类型',
@@ -378,6 +384,9 @@ const Map<String, String> en = {
   TextKey.errorwjmbhsn: 'File name needs: stocknotes_xxx',
   TextKey.chiyou: 'Holding',
   TextKey.chiyouchengbenjia: 'Holding cost price',
+  TextKey.chiyougushu: 'Holding shares',
+  TextKey.shouyie: 'Profit',
+  TextKey.zongshizhi: 'Total value',
   TextKey.jiaoyi: 'Trade',
   TextKey.jiaoyijilu: 'Trade Records',
   TextKey.jiaoyileixing: 'Trade Type',

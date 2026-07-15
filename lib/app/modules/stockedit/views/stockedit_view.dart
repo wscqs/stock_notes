@@ -156,7 +156,7 @@ class StockeditView extends GetView<StockeditController> {
           Row(
             children: [
               SizedBox(
-                width: 120,
+                width: 100,
                 child: TextField(
                   controller: controller.rBuyPriceController,
                   decoration:
@@ -164,13 +164,22 @@ class StockeditView extends GetView<StockeditController> {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              if (controller.rBuyPriceYieldRate.value != 0.00001)
-                Text(
-                  "${TextKey.shouyilv.tr}: ${(controller.rBuyPriceYieldRate.value * 100).toStringAsFixed(1)}%",
-                  style: TextStyle(
-                    color: Colors.grey,
+              if (controller.rBuyPriceValid.value) ...[
+                kSpaceW(12),
+                SizedBox(
+                  width: 100,
+                  child: TextField(
+                    controller: controller.rHoldSharesController,
+                    decoration:
+                        InputDecoration(labelText: TextKey.chiyougushu.tr),
+                    keyboardType: TextInputType.number,
                   ),
                 ),
+              ],
+              if (controller.rBuyPriceYieldRate.value != 0.00001) ...[
+                kSpaceW(12),
+                Expanded(child: _buildHoldYieldInfo()),
+              ],
             ],
           ),
           kSpaceH(16),
@@ -198,6 +207,51 @@ class StockeditView extends GetView<StockeditController> {
             keyboardType: TextInputType.multiline,
           ),
         ]);
+  }
+
+  // 持有收益信息：未填股数时只显示收益率；填写后追加收益额与总市值（正红负绿平默认）
+  Widget _buildHoldYieldInfo() {
+    final rate = controller.rBuyPriceYieldRate.value;
+    final profit = controller.rHoldProfit.value;
+    final valueColor =
+        rate > 0 ? Colors.red : (rate < 0 ? Colors.green : Colors.grey);
+    final labelStyle = TextStyle(color: Colors.grey);
+    final valueStyle = TextStyle(color: valueColor);
+    if (!controller.rHoldSharesValid.value) {
+      return Text.rich(
+        TextSpan(children: [
+          TextSpan(text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
+          TextSpan(
+              text: "${(rate * 100).toStringAsFixed(1)}%", style: valueStyle),
+        ]),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text.rich(
+          TextSpan(children: [
+            TextSpan(text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
+            TextSpan(
+                text: "${(rate * 100).toStringAsFixed(1)}%", style: valueStyle),
+          ]),
+        ),
+        Text.rich(
+          TextSpan(children: [
+            TextSpan(text: "${TextKey.shouyie.tr}: ", style: labelStyle),
+            TextSpan(text: profit.toStringAsFixed(2), style: valueStyle),
+          ]),
+        ),
+        Text.rich(
+          TextSpan(children: [
+            TextSpan(text: "${TextKey.zongshizhi.tr}: ", style: labelStyle),
+            TextSpan(
+                text: controller.rHoldMarketValue.value.toStringAsFixed(2),
+                style: valueStyle),
+          ]),
+        ),
+      ],
+    );
   }
 
   Widget _jiaoyijilu() {
