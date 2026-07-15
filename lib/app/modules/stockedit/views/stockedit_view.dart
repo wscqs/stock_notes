@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
@@ -9,6 +11,7 @@ import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../commonwidget/stock_searchfield.dart';
+import '../../noteedit/views/noteedit_view.dart' show TimeStampEmbedBuilder;
 import '../controllers/stockedit_controller.dart';
 
 class StockeditView extends GetView<StockeditController> {
@@ -107,6 +110,8 @@ class StockeditView extends GetView<StockeditController> {
                 _gupiaojilu(),
                 kSpaceH(24),
                 _jiaoyijilu(),
+                kSpaceH(24),
+                _biji(),
               ],
             ),
           ),
@@ -254,6 +259,82 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
+  //笔记（大备注）：股票自己的富文本笔记
+  Widget _biji() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(TextKey.biji.tr, style: Get.textTheme.titleLarge),
+            Obx(() {
+              final hasNote = controller.hasNote.value;
+              return TextButton.icon(
+                onPressed: controller.clickPushNote,
+                icon: Icon(hasNote ? Icons.edit_outlined : Icons.add, size: 18),
+                label: Text(hasNote ? TextKey.xiugai.tr : TextKey.xinzen.tr),
+              );
+            }),
+          ],
+        ),
+        kSpaceH(8),
+        Obx(() {
+          if (!controller.hasNote.value) {
+            return Text(
+              TextKey.noData.tr,
+              style: TextStyle(color: Colors.grey),
+            );
+          }
+          return QuillEditor(
+            focusNode: controller.notePreviewFocusNode,
+            scrollController: controller.notePreviewScrollController,
+            controller: controller.noteQuillController,
+            config: QuillEditorConfig(
+              scrollable: false,
+              placeholder: '',
+              onLaunchUrl: (link) {
+                controller.handleLinkTap(link);
+              },
+              customLinkPrefixes: const ['stocknotes://'],
+              onTapUp: (details, getPositionForOffset) {
+                // 只读预览下拦截股票链接点击，跳转对应股票
+                final position = getPositionForOffset(details.globalPosition);
+                final result = controller.noteQuillController.document
+                    .querySegmentLeafNode(position.offset);
+                final leaf = result.leaf;
+                if (leaf != null) {
+                  final linkAttr = leaf.style.attributes[Attribute.link.key];
+                  if (linkAttr != null) {
+                    final link = linkAttr.value as String;
+                    if (link.startsWith('stocknotes://')) {
+                      controller.handleLinkTap(link);
+                      return true; // 阻止默认行为
+                    }
+                  }
+                }
+                return false;
+              },
+              embedBuilders: [
+                ...FlutterQuillEmbeds.editorBuilders(
+                  imageEmbedConfig: QuillEditorImageEmbedConfig(
+                    imageProviderBuilder: (context, imageUrl) {
+                      if (imageUrl.startsWith('assets/')) {
+                        return AssetImage(imageUrl);
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                TimeStampEmbedBuilder(),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
   Widget _jiaoyijilu() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,11 +342,11 @@ class StockeditView extends GetView<StockeditController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(TextKey.jiaoyijilu.tr, style: Get.textTheme.titleLarge),
+            Text(TextKey.jiaoyi.tr, style: Get.textTheme.titleLarge),
             TextButton.icon(
               onPressed: controller.showAddTradeDialog,
               icon: const Icon(Icons.add, size: 18),
-              label: Text(TextKey.xinzengjiaoyi.tr),
+              label: Text(TextKey.xinzen.tr),
             ),
           ],
         ),

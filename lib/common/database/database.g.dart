@@ -196,6 +196,11 @@ class $StockItemsTable extends StockItems
   late final GeneratedColumn<String> rHoldShares = GeneratedColumn<String>(
       'r_hold_shares', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _rNoteMeta = const VerificationMeta('rNote');
+  @override
+  late final GeneratedColumn<String> rNote = GeneratedColumn<String>(
+      'r_note', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _cMeetUpdateAtMeta =
       const VerificationMeta('cMeetUpdateAt');
   @override
@@ -266,6 +271,7 @@ class $StockItemsTable extends StockItems
         rEventRemark,
         rBuyPrice,
         rHoldShares,
+        rNote,
         cMeetUpdateAt,
         cNearUpdateAt,
         cPriceCondition,
@@ -435,6 +441,10 @@ class $StockItemsTable extends StockItems
           rHoldShares.isAcceptableOrUnknown(
               data['r_hold_shares']!, _rHoldSharesMeta));
     }
+    if (data.containsKey('r_note')) {
+      context.handle(
+          _rNoteMeta, rNote.isAcceptableOrUnknown(data['r_note']!, _rNoteMeta));
+    }
     if (data.containsKey('c_meet_update_at')) {
       context.handle(
           _cMeetUpdateAtMeta,
@@ -530,6 +540,8 @@ class $StockItemsTable extends StockItems
           .read(DriftSqlType.string, data['${effectivePrefix}r_buy_price']),
       rHoldShares: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}r_hold_shares']),
+      rNote: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}r_note']),
       cMeetUpdateAt: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}c_meet_update_at'])!,
       cNearUpdateAt: attachedDatabase.typeMapping.read(
@@ -578,6 +590,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
   final String? rEventRemark;
   final String? rBuyPrice;
   final String? rHoldShares;
+  final String? rNote;
   final DateTime cMeetUpdateAt;
   final DateTime cNearUpdateAt;
   final int cPriceCondition;
@@ -612,6 +625,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       this.rEventRemark,
       this.rBuyPrice,
       this.rHoldShares,
+      this.rNote,
       required this.cMeetUpdateAt,
       required this.cNearUpdateAt,
       required this.cPriceCondition,
@@ -683,6 +697,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
     }
     if (!nullToAbsent || rHoldShares != null) {
       map['r_hold_shares'] = Variable<String>(rHoldShares);
+    }
+    if (!nullToAbsent || rNote != null) {
+      map['r_note'] = Variable<String>(rNote);
     }
     map['c_meet_update_at'] = Variable<DateTime>(cMeetUpdateAt);
     map['c_near_update_at'] = Variable<DateTime>(cNearUpdateAt);
@@ -758,6 +775,8 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       rHoldShares: rHoldShares == null && nullToAbsent
           ? const Value.absent()
           : Value(rHoldShares),
+      rNote:
+          rNote == null && nullToAbsent ? const Value.absent() : Value(rNote),
       cMeetUpdateAt: Value(cMeetUpdateAt),
       cNearUpdateAt: Value(cNearUpdateAt),
       cPriceCondition: Value(cPriceCondition),
@@ -798,6 +817,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       rEventRemark: serializer.fromJson<String?>(json['rEventRemark']),
       rBuyPrice: serializer.fromJson<String?>(json['rBuyPrice']),
       rHoldShares: serializer.fromJson<String?>(json['rHoldShares']),
+      rNote: serializer.fromJson<String?>(json['rNote']),
       cMeetUpdateAt: serializer.fromJson<DateTime>(json['cMeetUpdateAt']),
       cNearUpdateAt: serializer.fromJson<DateTime>(json['cNearUpdateAt']),
       cPriceCondition: serializer.fromJson<int>(json['cPriceCondition']),
@@ -838,6 +858,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       'rEventRemark': serializer.toJson<String?>(rEventRemark),
       'rBuyPrice': serializer.toJson<String?>(rBuyPrice),
       'rHoldShares': serializer.toJson<String?>(rHoldShares),
+      'rNote': serializer.toJson<String?>(rNote),
       'cMeetUpdateAt': serializer.toJson<DateTime>(cMeetUpdateAt),
       'cNearUpdateAt': serializer.toJson<DateTime>(cNearUpdateAt),
       'cPriceCondition': serializer.toJson<int>(cPriceCondition),
@@ -875,6 +896,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           Value<String?> rEventRemark = const Value.absent(),
           Value<String?> rBuyPrice = const Value.absent(),
           Value<String?> rHoldShares = const Value.absent(),
+          Value<String?> rNote = const Value.absent(),
           DateTime? cMeetUpdateAt,
           DateTime? cNearUpdateAt,
           int? cPriceCondition,
@@ -918,6 +940,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
             rEventRemark.present ? rEventRemark.value : this.rEventRemark,
         rBuyPrice: rBuyPrice.present ? rBuyPrice.value : this.rBuyPrice,
         rHoldShares: rHoldShares.present ? rHoldShares.value : this.rHoldShares,
+        rNote: rNote.present ? rNote.value : this.rNote,
         cMeetUpdateAt: cMeetUpdateAt ?? this.cMeetUpdateAt,
         cNearUpdateAt: cNearUpdateAt ?? this.cNearUpdateAt,
         cPriceCondition: cPriceCondition ?? this.cPriceCondition,
@@ -978,6 +1001,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       rBuyPrice: data.rBuyPrice.present ? data.rBuyPrice.value : this.rBuyPrice,
       rHoldShares:
           data.rHoldShares.present ? data.rHoldShares.value : this.rHoldShares,
+      rNote: data.rNote.present ? data.rNote.value : this.rNote,
       cMeetUpdateAt: data.cMeetUpdateAt.present
           ? data.cMeetUpdateAt.value
           : this.cMeetUpdateAt,
@@ -1027,6 +1051,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           ..write('rEventRemark: $rEventRemark, ')
           ..write('rBuyPrice: $rBuyPrice, ')
           ..write('rHoldShares: $rHoldShares, ')
+          ..write('rNote: $rNote, ')
           ..write('cMeetUpdateAt: $cMeetUpdateAt, ')
           ..write('cNearUpdateAt: $cNearUpdateAt, ')
           ..write('cPriceCondition: $cPriceCondition, ')
@@ -1066,6 +1091,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         rEventRemark,
         rBuyPrice,
         rHoldShares,
+        rNote,
         cMeetUpdateAt,
         cNearUpdateAt,
         cPriceCondition,
@@ -1104,6 +1130,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           other.rEventRemark == this.rEventRemark &&
           other.rBuyPrice == this.rBuyPrice &&
           other.rHoldShares == this.rHoldShares &&
+          other.rNote == this.rNote &&
           other.cMeetUpdateAt == this.cMeetUpdateAt &&
           other.cNearUpdateAt == this.cNearUpdateAt &&
           other.cPriceCondition == this.cPriceCondition &&
@@ -1140,6 +1167,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
   final Value<String?> rEventRemark;
   final Value<String?> rBuyPrice;
   final Value<String?> rHoldShares;
+  final Value<String?> rNote;
   final Value<DateTime> cMeetUpdateAt;
   final Value<DateTime> cNearUpdateAt;
   final Value<int> cPriceCondition;
@@ -1174,6 +1202,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.rEventRemark = const Value.absent(),
     this.rBuyPrice = const Value.absent(),
     this.rHoldShares = const Value.absent(),
+    this.rNote = const Value.absent(),
     this.cMeetUpdateAt = const Value.absent(),
     this.cNearUpdateAt = const Value.absent(),
     this.cPriceCondition = const Value.absent(),
@@ -1209,6 +1238,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.rEventRemark = const Value.absent(),
     this.rBuyPrice = const Value.absent(),
     this.rHoldShares = const Value.absent(),
+    this.rNote = const Value.absent(),
     this.cMeetUpdateAt = const Value.absent(),
     this.cNearUpdateAt = const Value.absent(),
     this.cPriceCondition = const Value.absent(),
@@ -1246,6 +1276,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     Expression<String>? rEventRemark,
     Expression<String>? rBuyPrice,
     Expression<String>? rHoldShares,
+    Expression<String>? rNote,
     Expression<DateTime>? cMeetUpdateAt,
     Expression<DateTime>? cNearUpdateAt,
     Expression<int>? cPriceCondition,
@@ -1281,6 +1312,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       if (rEventRemark != null) 'r_event_remark': rEventRemark,
       if (rBuyPrice != null) 'r_buy_price': rBuyPrice,
       if (rHoldShares != null) 'r_hold_shares': rHoldShares,
+      if (rNote != null) 'r_note': rNote,
       if (cMeetUpdateAt != null) 'c_meet_update_at': cMeetUpdateAt,
       if (cNearUpdateAt != null) 'c_near_update_at': cNearUpdateAt,
       if (cPriceCondition != null) 'c_price_condition': cPriceCondition,
@@ -1319,6 +1351,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       Value<String?>? rEventRemark,
       Value<String?>? rBuyPrice,
       Value<String?>? rHoldShares,
+      Value<String?>? rNote,
       Value<DateTime>? cMeetUpdateAt,
       Value<DateTime>? cNearUpdateAt,
       Value<int>? cPriceCondition,
@@ -1353,6 +1386,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       rEventRemark: rEventRemark ?? this.rEventRemark,
       rBuyPrice: rBuyPrice ?? this.rBuyPrice,
       rHoldShares: rHoldShares ?? this.rHoldShares,
+      rNote: rNote ?? this.rNote,
       cMeetUpdateAt: cMeetUpdateAt ?? this.cMeetUpdateAt,
       cNearUpdateAt: cNearUpdateAt ?? this.cNearUpdateAt,
       cPriceCondition: cPriceCondition ?? this.cPriceCondition,
@@ -1448,6 +1482,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     if (rHoldShares.present) {
       map['r_hold_shares'] = Variable<String>(rHoldShares.value);
     }
+    if (rNote.present) {
+      map['r_note'] = Variable<String>(rNote.value);
+    }
     if (cMeetUpdateAt.present) {
       map['c_meet_update_at'] = Variable<DateTime>(cMeetUpdateAt.value);
     }
@@ -1497,6 +1534,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
           ..write('rEventRemark: $rEventRemark, ')
           ..write('rBuyPrice: $rBuyPrice, ')
           ..write('rHoldShares: $rHoldShares, ')
+          ..write('rNote: $rNote, ')
           ..write('cMeetUpdateAt: $cMeetUpdateAt, ')
           ..write('cNearUpdateAt: $cNearUpdateAt, ')
           ..write('cPriceCondition: $cPriceCondition, ')
@@ -3127,6 +3165,7 @@ typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
   Value<String?> rEventRemark,
   Value<String?> rBuyPrice,
   Value<String?> rHoldShares,
+  Value<String?> rNote,
   Value<DateTime> cMeetUpdateAt,
   Value<DateTime> cNearUpdateAt,
   Value<int> cPriceCondition,
@@ -3162,6 +3201,7 @@ typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<String?> rEventRemark,
   Value<String?> rBuyPrice,
   Value<String?> rHoldShares,
+  Value<String?> rNote,
   Value<DateTime> cMeetUpdateAt,
   Value<DateTime> cNearUpdateAt,
   Value<int> cPriceCondition,
@@ -3298,6 +3338,9 @@ class $$StockItemsTableFilterComposer
 
   ColumnFilters<String> get rHoldShares => $composableBuilder(
       column: $table.rHoldShares, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get rNote => $composableBuilder(
+      column: $table.rNote, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get cMeetUpdateAt => $composableBuilder(
       column: $table.cMeetUpdateAt, builder: (column) => ColumnFilters(column));
@@ -3462,6 +3505,9 @@ class $$StockItemsTableOrderingComposer
   ColumnOrderings<String> get rHoldShares => $composableBuilder(
       column: $table.rHoldShares, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get rNote => $composableBuilder(
+      column: $table.rNote, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get cMeetUpdateAt => $composableBuilder(
       column: $table.cMeetUpdateAt,
       builder: (column) => ColumnOrderings(column));
@@ -3576,6 +3622,9 @@ class $$StockItemsTableAnnotationComposer
   GeneratedColumn<String> get rHoldShares => $composableBuilder(
       column: $table.rHoldShares, builder: (column) => column);
 
+  GeneratedColumn<String> get rNote =>
+      $composableBuilder(column: $table.rNote, builder: (column) => column);
+
   GeneratedColumn<DateTime> get cMeetUpdateAt => $composableBuilder(
       column: $table.cMeetUpdateAt, builder: (column) => column);
 
@@ -3685,6 +3734,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<String?> rEventRemark = const Value.absent(),
             Value<String?> rBuyPrice = const Value.absent(),
             Value<String?> rHoldShares = const Value.absent(),
+            Value<String?> rNote = const Value.absent(),
             Value<DateTime> cMeetUpdateAt = const Value.absent(),
             Value<DateTime> cNearUpdateAt = const Value.absent(),
             Value<int> cPriceCondition = const Value.absent(),
@@ -3720,6 +3770,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             rEventRemark: rEventRemark,
             rBuyPrice: rBuyPrice,
             rHoldShares: rHoldShares,
+            rNote: rNote,
             cMeetUpdateAt: cMeetUpdateAt,
             cNearUpdateAt: cNearUpdateAt,
             cPriceCondition: cPriceCondition,
@@ -3755,6 +3806,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<String?> rEventRemark = const Value.absent(),
             Value<String?> rBuyPrice = const Value.absent(),
             Value<String?> rHoldShares = const Value.absent(),
+            Value<String?> rNote = const Value.absent(),
             Value<DateTime> cMeetUpdateAt = const Value.absent(),
             Value<DateTime> cNearUpdateAt = const Value.absent(),
             Value<int> cPriceCondition = const Value.absent(),
@@ -3790,6 +3842,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             rEventRemark: rEventRemark,
             rBuyPrice: rBuyPrice,
             rHoldShares: rHoldShares,
+            rNote: rNote,
             cMeetUpdateAt: cMeetUpdateAt,
             cNearUpdateAt: cNearUpdateAt,
             cPriceCondition: cPriceCondition,

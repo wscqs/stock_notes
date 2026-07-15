@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:stock_notes/common/https/qs_api.dart';
@@ -12,6 +15,8 @@ import 'package:stock_notes/utils/share_image_util.dart';
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../common/web/webview_page.dart';
+import '../../../../utils/stock_link_utils.dart';
+import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
 import '../../tagsedit/views/tagsedit_view.dart';
 
@@ -68,12 +73,19 @@ class StockeditController extends BaseController {
   final tradeRemarkController = TextEditingController();
   final tradeType = 0.obs; // 0=买, 1=卖
 
+  //股票笔记（大备注）预览
+  final noteQuillController = QuillController.basic();
+  final notePreviewFocusNode = FocusNode();
+  final notePreviewScrollController = ScrollController();
+  final hasNote = false.obs;
+
   var isFirstCome = true;
   var _ignoreNextSuggestionUpdate = false;
 
   @override
   void onInit() {
     super.onInit();
+    noteQuillController.readOnly = true; //笔记预览只读
     stockNumController.addListener(_updateStockNum);
     stockNumFocusNode.addListener(_onStockNumFocusChange);
     debounce(stockNum, (_) => _updateSearchSuggestions(), time: 200.milliseconds);
@@ -131,6 +143,7 @@ class StockeditController extends BaseController {
         );
       }
       _updateBuySalePoints();
+      _refreshNotePreview();
     } else {
       // isLocalData.value = false;
       // stockNum.value ="";
@@ -454,15 +467,40 @@ class StockeditController extends BaseController {
     }
   }
 
-  //进入别的页面后后退刷新UI(现在只改变了标签）
+  //进入别的页面后后退刷新UI（标签与笔记）
   Future<void> refreshTags() async {
     if (isLocalData.value) {
       final db = Get.find<DatabaseManager>().db;
       var stockItem =
           await db.getStockItemWithTagsByCode(localStockData.value!.code!);
-      localStockData.value!.tagList = stockItem!.tagList;
-      localStockData.refresh();
+      if (stockItem != null) {
+        localStockData.value = stockItem;
+        _refreshNotePreview();
+      }
     }
+  }
+
+  //刷新笔记（大备注）预览
+  String? _lastNoteContent;
+  void _refreshNotePreview() {
+    final content = localStockData.value?.rNote;
+    if (content != null && content.isNotEmpty) {
+      try {
+        if (content != _lastNoteContent) {
+          _lastNoteContent = content;
+          //文档变更会通知只读编辑器，键盘隐藏时它会 requestFocus 抢焦点，
+          //用 ignoreFocusOnTextChange 抑制（flutter_quill 自带机制）
+          noteQuillController.ignoreFocusOnTextChange = true;
+          noteQuillController.document = Document.fromJson(jsonDecode(content));
+          noteQuillController.ignoreFocusOnTextChange = false;
+        }
+        hasNote.value = true;
+        return;
+      } catch (_) {
+        noteQuillController.ignoreFocusOnTextChange = false;
+      }
+    }
+    hasNote.value = false;
   }
 
   //恢复功能现在有用这
@@ -638,6 +676,9 @@ class StockeditController extends BaseController {
     tradePriceController.dispose();
     tradeSharesController.dispose();
     tradeRemarkController.dispose();
+    noteQuillController.dispose();
+    notePreviewFocusNode.dispose();
+    notePreviewScrollController.dispose();
     super.onClose();
   }
 
@@ -716,6 +757,35 @@ class StockeditController extends BaseController {
       return;
     }
     TagseditView.show(localStockData.value!);
+  }
+
+  //笔记（大备注）：未保存股票时先提示保存
+  void clickPushNote() {
+    if (!isLocalData.value) {
+      _popSaveAlert(
+          title: TextKey.biji.tr,
+          onConfirm: () {
+            clickPushNote();
+          });
+      return;
+    }
+    Get.toNamed(Routes.STOCKNOTE, arguments: localStockData.value);
+  }
+
+  /// 处理笔记预览中股票链接的点击事件
+  Future<void> handleLinkTap(String link) async {
+    final code = StockLinkUtils.parseStockCodeFromLink(link);
+    if (code == null) return;
+
+    // 数据库中 code 可能是小写，优先尝试小写查询
+    var stockItem = await db.getStockItemWithTagsByCode(code.toLowerCase());
+    stockItem ??= await db.getStockItemWithTagsByCode(code);
+
+    if (stockItem != null) {
+      Get.toNamed(Routes.STOCKEDIT, arguments: stockItem);
+    } else {
+      QsHud.showToast('未找到该股票记录');
+    }
   }
 
   @override

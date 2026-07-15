@@ -45,7 +45,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   //改表要处理合并migration
   @override
@@ -61,6 +61,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from <= 3) {
             await migrator.addColumn(stockItems, stockItems.rHoldShares);
+          }
+          if (from <= 4) {
+            await migrator.addColumn(stockItems, stockItems.rNote);
           }
         },
         onCreate: (migrator) async {
@@ -119,6 +122,13 @@ class AppDatabase extends _$AppDatabase {
   // 单条更新，不改动 updatedAt
   Future<void> updateStockWithOp(StockItem itemUpdate) {
     return update(stockItems).replace(itemUpdate);
+  }
+
+  //更新股票笔记（大备注），改动 updateAt；content 传 null 表示清空
+  Future<void> updateStockRNote(int id, String? content) {
+    return (update(stockItems)..where((tbl) => tbl.id.equals(id))).write(
+        StockItemsCompanion(
+            rNote: Value(content), updateAt: Value(DateTime.now())));
   }
 
   Future<void> updateStock(

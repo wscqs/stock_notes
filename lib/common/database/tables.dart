@@ -33,6 +33,7 @@ class StockItems extends Table with TableMixin {
   TextColumn get rEventRemark => text().nullable()();
   TextColumn get rBuyPrice => text().nullable()(); //买入成本
   TextColumn get rHoldShares => text().nullable()(); //持有股数
+  TextColumn get rNote => text().nullable()(); //笔记（大备注，富文本delta json）
 
   //条件
   DateTimeColumn get cMeetUpdateAt =>

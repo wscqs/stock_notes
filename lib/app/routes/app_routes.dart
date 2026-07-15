@@ -13,6 +13,7 @@ abstract class Routes {
   static const ABOUT = _Paths.ABOUT;
   static const SIMPLESEL = _Paths.SIMPLESEL;
   static const STOCKEDIT = _Paths.STOCKEDIT;
+  static const STOCKNOTE = _Paths.STOCKNOTE;
   static const NOTEEDIT = _Paths.NOTEEDIT;
   static const USE = _Paths.USE;
   static const DATESOURCE = _Paths.DATESOURCE;
@@ -31,6 +32,7 @@ abstract class _Paths {
   static const ABOUT = '/about';
   static const SIMPLESEL = '/simplesel';
   static const STOCKEDIT = '/stockedit';
+  static const STOCKNOTE = '/stocknote';
   static const NOTEEDIT = '/noteedit';
   static const USE = '/use';
   static const DATESOURCE = '/datesource';
