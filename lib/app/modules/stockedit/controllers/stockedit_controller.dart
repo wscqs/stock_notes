@@ -8,6 +8,8 @@ import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/services/stock_name_service.dart';
+import 'package:stock_notes/common/web/stock_ext_links.dart';
+import 'package:stock_notes/common/web/webview_widget.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
@@ -79,6 +81,9 @@ class StockeditController extends BaseController {
   final notePreviewScrollController = ScrollController();
   final hasNote = false.obs;
 
+  //外链功能按钮勾选（全局配置）
+  final extLinkIds = <String>[].obs;
+
   var isFirstCome = true;
   var _ignoreNextSuggestionUpdate = false;
 
@@ -86,6 +91,7 @@ class StockeditController extends BaseController {
   void onInit() {
     super.onInit();
     noteQuillController.readOnly = true; //笔记预览只读
+    extLinkIds.value = StockExtLinks.selectedIds();
     stockNumController.addListener(_updateStockNum);
     stockNumFocusNode.addListener(_onStockNumFocusChange);
     debounce(stockNum, (_) => _updateSearchSuggestions(), time: 200.milliseconds);
@@ -631,36 +637,102 @@ class StockeditController extends BaseController {
     _dismissAttachPopup();
   }
 
-  void clickLookStock() {
-    String code = serStockData.value.code ?? ""; // 也可能是 sh000001、sz002415 等
-    String prefix = code.substring(0, 2); // hs / sh / sz
-    String number = code.substring(2); // 000506
-    String stockCode = '${prefix}_$number';
-    String loadResource = "https://m.10jqka.com.cn/stockpage/$stockCode"; //同花顺
-    loadResource =
-        "https://pqa9p2.smartapps.baidu.com/pages/quote/quote?market=ab&type=stock&code=$number"; //百度
-    if (prefix == "sh" || prefix == "sz") {
-      if (number.startsWith("5") || number.startsWith("1")) {
-        //基金
-        loadResource = "https://m.10jqka.com.cn/stockpage/hs_$number";
-      }
+  /// 打开外链（功能按钮或弹窗预览共用）
+  Future<void> openExtLink(StockExtLink link) async {
+    final code = serStockData.value.code ?? '';
+    if (code.isEmpty) {
+      QsHud.showToast(TextKey.shurugupiaotishi.tr);
+      return;
     }
-    // loadResource = "https://xueqiu.com/S/sh601126/";
+    final resource = await StockExtLinks.buildLoadResource(link, code);
+    if (resource == null) {
+      QsHud.showToast(TextKey.zanshibuzhichi.tr);
+      return;
+    }
     Get.to(() => WebViewPage(
-          loadResource: loadResource,
+          loadResource: resource,
+          webViewType:
+              link.isLocalAsset ? WebViewType.HTMLTEXT : WebViewType.URL,
+          title: link.title,
         ));
   }
 
-  //扫雷宝
-  void clickLookMinesweeper() {
-    String code = serStockData.value.code ?? ""; // 也可能是 sh000001、sz002415 等
-    String prefix = code.substring(0, 2); // hs / sh / sz
-    String number = code.substring(2); // 000506
-    String stockCode = '${prefix}_$number';
-    Get.to(() => WebViewPage(
-          loadResource:
-              "https://bowerbird.10jqka.com.cn/thslc/editor/view/433f6d9Ac0?code=$number",
-        ));
+  /// 弹窗内预览：不关闭弹窗，返回后勾选状态保留
+  void previewExtLink(StockExtLink link) {
+    openExtLink(link);
+  }
+
+  /// 选择关联链接弹窗：多选 + 预览，确定后写全局缓存并刷新按钮
+  void showExtLinkPicker() {
+    final tempSelected = extLinkIds.toSet();
+    QsHud.showDialog(StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          title: Text(TextKey.xuanzeguanlianlianjie.tr,
+              style: const TextStyle(fontSize: 20)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: StockExtLinks.all.map((link) {
+              final checked = tempSelected.contains(link.id);
+              return Row(
+                children: [
+                  Checkbox(
+                    value: checked,
+                    onChanged: (v) {
+                      setState(() {
+                        if (v == true) {
+                          tempSelected.add(link.id);
+                        } else {
+                          tempSelected.remove(link.id);
+                        }
+                      });
+                    },
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() {
+                          if (checked) {
+                            tempSelected.remove(link.id);
+                          } else {
+                            tempSelected.add(link.id);
+                          }
+                        });
+                      },
+                      child: Text(link.title),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.visibility_outlined),
+                    tooltip: link.title,
+                    onPressed: () => previewExtLink(link),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => QsHud.dismiss(),
+              child: Text(TextKey.quxiao.tr),
+            ),
+            TextButton(
+              onPressed: () {
+                final ordered = StockExtLinks.all
+                    .where((l) => tempSelected.contains(l.id))
+                    .map((l) => l.id)
+                    .toList();
+                StockExtLinks.saveSelectedIds(ordered);
+                extLinkIds.value = ordered;
+                QsHud.dismiss();
+              },
+              child: Text(TextKey.queding.tr),
+            ),
+          ],
+        );
+      },
+    ));
   }
 
   @override
