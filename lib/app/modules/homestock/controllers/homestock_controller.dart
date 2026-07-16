@@ -69,6 +69,13 @@ class HomestockController extends BaseController
     selectedFamous.value = FamousDataHelp().getSelectedValue();
     selectedFamous.refresh();
   };
+  //切换数据源后显式刷新，不依赖 VisibilityDetector 触发 onResume
+  late final EventBusCallback eventBusDbChangedCallback = (arg) {
+    db = Get.find<DatabaseManager>().db;
+    selectedDateSource.value =
+        QsCache.get<String>("selectedDateSourceKey") ?? "";
+    getDatas();
+  };
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -83,6 +90,7 @@ class HomestockController extends BaseController
       });
     });
     eventBus.on("eventBusFamous", eventBusFamouscallback);
+    eventBus.on("eventBusDbChanged", eventBusDbChangedCallback);
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {
     //   refreshAppui();

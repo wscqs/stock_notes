@@ -8,6 +8,7 @@ import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
+import '../../../../common/event_bus.dart';
 import '../../../routes/app_pages.dart';
 import '../../notetagsedit/views/notetagsedit_view.dart';
 import '../../tabs/controllers/tabs_controller.dart';
@@ -40,10 +41,17 @@ class HomenoteController extends BaseController
   final selTags = <NoteItemTag>[].obs;
   final tags = <NoteItemTag>[].obs;
 
+  //切换数据源后显式刷新，不依赖 VisibilityDetector 触发 onResume
+  late final EventBusCallback eventBusDbChangedCallback = (arg) {
+    db = Get.find<DatabaseManager>().db;
+    getDatas();
+  };
+
   @override
   Future<void> onInit() async {
     super.onInit();
     getDatas();
+    eventBus.on("eventBusDbChanged", eventBusDbChangedCallback);
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {
     //   refreshAppui();

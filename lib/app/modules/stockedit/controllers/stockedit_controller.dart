@@ -888,7 +888,12 @@ class StockeditController extends BaseController {
           });
       return;
     }
-    Get.toNamed(Routes.STOCKNOTE, arguments: localStockData.value);
+    //带上最新价格：实时行情优先，其次本地缓存
+    final price = (serStockData.value.currentPrice?.isNotEmpty == true)
+        ? serStockData.value.currentPrice
+        : localStockData.value?.currentPrice;
+    Get.toNamed(Routes.STOCKNOTE,
+        arguments: localStockData.value!.copyWith(currentPrice: Value(price)));
   }
 
   /// 处理笔记预览中股票链接的点击事件

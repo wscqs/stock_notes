@@ -86,7 +86,11 @@ class StockExtLinks {
     ),
   ];
 
-  static const List<String> defaultSelectedIds = ['kline_baidu', 'saolei_ths'];
+  static const List<String> defaultSelectedIds = [
+    'kline_baidu',
+    'jiankuan',
+    'saolei_ths'
+  ];
 
   /// 全部链接 id 的显示顺序（含未勾选）；无缓存时按 [all] 定义顺序。
   /// 缓存中的未知 id 会被剔除，[all] 中新增 id 追加到末尾。

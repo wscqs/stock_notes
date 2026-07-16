@@ -10,12 +10,14 @@ import 'package:stock_notes/utils/qs_constants.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
+import '../../../../common/database/database.dart';
 import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_utils.dart' as QsView;
 import '../../../routes/app_pages.dart';
 
 class HomedrawerVC extends GetxController {
-  final db = Get.find<DatabaseManager>().db;
+  // 切换数据源后 DatabaseManager 内的 db 会更换，必须每次动态获取，不能缓存
+  AppDatabase get db => Get.find<DatabaseManager>().db;
   File? lastBackupFile;
 
   @override

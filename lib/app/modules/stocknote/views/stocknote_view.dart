@@ -28,7 +28,21 @@ class StocknoteView extends GetView<StocknoteController> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(controller.stockData.value?.name ?? TextKey.biji.tr),
+            title: Column(
+              children: [
+                Text(controller.stockData.value?.name ?? TextKey.biji.tr),
+                if ((controller.stockData.value?.currentPrice ?? "")
+                    .isNotEmpty)
+                  Text(
+                    controller.stockData.value!.currentPrice!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Get.theme.colorScheme.onSurface,
+                    ),
+                  ),
+              ],
+            ),
             centerTitle: true,
             actions: [
               ElevatedButton(

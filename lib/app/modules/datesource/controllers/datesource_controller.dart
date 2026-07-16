@@ -13,12 +13,15 @@ import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_view.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
+import '../../../../common/database/database.dart';
+import '../../../../common/event_bus.dart';
 
 class DatesourceController extends GetxController {
   final nameText = TextEditingController();
   final selectedOption = "doInputSel".obs;
 
-  final db = Get.find<DatabaseManager>().db;
+  // 切换数据源后 DatabaseManager 内的 db 会更换，必须每次动态获取，不能缓存
+  AppDatabase get db => Get.find<DatabaseManager>().db;
   File? lastBackupFile;
   final dateSourceList = <Map<String, dynamic>>[].obs;
   final selectedDateSource = "".obs; //name
@@ -92,6 +95,12 @@ class DatesourceController extends GetxController {
     var name = nameText.text;
     final backupDir = await getApplicationDocumentsDirectory();
     final file = File(p.join(backupDir.path, 'stocknotes_${name}.db'));
+    // 当前活动库就是该文件时不能删了再快照：
+    // Windows 删除被占用文件会抛异常；其他平台后续写入会落到已删除的文件上，重启后丢数据
+    final currentPath = Get.find<DatabaseManager>().currentPath;
+    if (currentPath != null && p.equals(file.path, currentPath)) {
+      return;
+    }
     if (await file.exists()) {
       await file.delete();
     }
@@ -361,6 +370,8 @@ class DatesourceController extends GetxController {
     // print(filename);
     // final newPath = '/your/path/stocknotes_B.db';
     await Get.find<DatabaseManager>().switchDatabase(filename);
+    // 显式通知首页刷新数据，不再只依赖 VisibilityDetector 触发 onResume（该机制不稳定）
+    eventBus.emit("eventBusDbChanged", "");
 
     // await db.close();
     // QsHud.showLoading(message: TextKey.qiehuanshujuzhong.tr); //速度太快，没出现加载
