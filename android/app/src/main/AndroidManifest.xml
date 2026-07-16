@@ -36,18 +36,45 @@
             </intent-filter>
             <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
 
+            <!-- 带 mimeType 的文件打开请求（旧版微信/QQ 会设置 type） -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="content"
+                    android:mimeType="*/*" />
+            </intent-filter>
+
+            <!-- 不带 mimeType 的文件打开请求（新版微信/QQ 只给 content URI，按路径匹配） -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:scheme="content"
+                    android:host="*"
+                    android:pathPattern=".*\\.db" />
                 <data
                     android:scheme="file"
                     android:host="*"
                     android:pathPattern=".*\\.db" />
-                <data
-                    android:scheme="content"
-                    android:mimeType="*/*"
-                    android:pathPattern=".*\\.db" />
+            </intent-filter>
+
+            <!-- 系统分享（ACTION_SEND），文件在 EXTRA_STREAM 里，由 MainActivity 转交导入流程。
+                 不写 */*，避免分享图片/文本时也出现在分享面板 -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/x-sqlite3" />
+                <data android:mimeType="application/vnd.sqlite3" />
+                <data android:mimeType="application/x-sqlite" />
+            </intent-filter>
+
+            <!-- 系统分享文本：识别文本中的股票后直达详情页，由 MainActivity 转交 -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

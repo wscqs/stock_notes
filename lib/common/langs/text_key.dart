@@ -97,6 +97,7 @@ class TextKey {
   static const tongming = 'tongming';
   static const errortishixianchushihuasjy = 'errortishixianchushihuasjy';
   static const errorwjmbhsn = 'errorwjmbhsn';
+  static const weishibiedaogupiao = 'weishibiedaogupiao';
   static const chiyouchengbenjia = 'chiyouchengbenjia';
   static const chiyougushu = 'chiyougushu';
   static const shouyie = 'shouyie';
@@ -215,6 +216,7 @@ const Map<String, String> zh = {
   TextKey.tongming: '同名',
   TextKey.errortishixianchushihuasjy: "请先初始化本地数据源，左边抽屉点击数据源初始化后,再重试导入数据源",
   TextKey.errorwjmbhsn: '文件名需要：stocknotes_xxx',
+  TextKey.weishibiedaogupiao: '未识别到股票',
   TextKey.chiyou: '持有',
   TextKey.chiyouchengbenjia: '持有成本价',
   TextKey.chiyougushu: '持有股数',
@@ -384,6 +386,7 @@ const Map<String, String> en = {
   TextKey.errortishixianchushihuasjy:
       "Please first initialize the local data source, click the data source initialization on the left drawer, and then retry importing the data source",
   TextKey.errorwjmbhsn: 'File name needs: stocknotes_xxx',
+  TextKey.weishibiedaogupiao: 'No stock recognized',
   TextKey.chiyou: 'Holding',
   TextKey.chiyouchengbenjia: 'Holding cost price',
   TextKey.chiyougushu: 'Holding shares',

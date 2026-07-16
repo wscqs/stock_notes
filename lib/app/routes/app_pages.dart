@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../common/langs/text_key.dart';
+import '../../common/services/stock_name_service.dart';
 import '../../utils/qs_cache.dart';
 import '../../utils/qs_hud.dart';
 import '../modules/about/bindings/about_binding.dart';
@@ -39,12 +40,23 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static void handleDeepLink(Uri uri) {
+  static Future<void> handleDeepLink(Uri uri) async {
+    // 冷启动时 app_links 会立即回放首次 URI，可能早于 GetMaterialApp 构建完成，
+    // 此时 contextless 导航会直接抛异常导致后续跳转丢失，先等 Get 路由就绪
+    var waitCount = 0;
+    while (Get.context == null && waitCount < 100) {
+      await Future.delayed(const Duration(milliseconds: 50));
+      waitCount++;
+    }
+    if (Get.context == null) return;
+
     // content://com.tencent.mm.external.fileprovider/attachment/stocknotes_abc.db
-    if ((uri.scheme == 'content' || uri.scheme == 'file') &&
-        uri.path.endsWith('db')) {
+    if (uri.scheme == 'content' || uri.scheme == 'file') {
       //文件
-      if (!uri.path.contains("stocknotes_")) {
+      // file:// 路径含真实文件名，可直接校验；
+      // content:// 路径可能不含文件名（新版微信/QQ），文件名在数据源页读取后校验
+      if (uri.scheme == 'file' &&
+          (!uri.path.endsWith('db') || !uri.path.contains("stocknotes_"))) {
         QsHud.showToast(TextKey.errorwjmbhsn.tr);
         return;
       }
@@ -80,7 +92,21 @@ class AppPages {
       Get.toNamed(Routes.SPLASH);
     } else if (fragment == '/setting') {
       Get.toNamed(Routes.SETTING);
-    } else if (fragment == '/about') {}
+    } else if (fragment == '/about') {
+    } else if (path == '/sharetext') {
+      // 系统分享的文本：识别其中的股票代码/名称，直达股票详情（编辑）页
+      final text = params['text'] ?? '';
+      final code = StockNameService.detectStockCode(text);
+      if (code == null) {
+        QsHud.showToast(TextKey.weishibiedaogupiao.tr);
+        return;
+      }
+      Get.offAllNamed(Routes.TABS, arguments: null);
+      //延迟 1 秒
+      Future.delayed(const Duration(seconds: 1), () {
+        Get.toNamed(Routes.STOCKEDIT, arguments: code);
+      });
+    }
   }
 
   static const INITIAL = Routes.TABS;

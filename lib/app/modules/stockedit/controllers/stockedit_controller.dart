@@ -98,12 +98,22 @@ class StockeditController extends BaseController {
     rBuyPriceController.addListener(_updateBuyPriceYieldRate);
     rHoldSharesController.addListener(_updateBuyPriceYieldRate);
 
-    localStockData.value = Get.arguments;
+    final args = Get.arguments;
+    if (args is StockItem) {
+      localStockData.value = args;
+    }
     if (localStockData.value != null) {
       isLocalData.value = true;
       _dealHasLocalDataRefreshUI();
       loadTrades();
       // search();
+    } else if (args is String && args.isNotEmpty) {
+      // 文本分享识别出的股票代码：预填并自动搜索（search 内部会回查本地库）
+      stockNum.value = args;
+      stockNumController.text = args;
+      Future.delayed(300.milliseconds, () {
+        search();
+      });
     } else {
       Future.delayed(500.milliseconds, () {
         stockNumFocusNode.requestFocus();

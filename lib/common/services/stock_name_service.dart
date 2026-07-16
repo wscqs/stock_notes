@@ -133,4 +133,63 @@ abstract final class StockNameService {
         .take(limit)
         .toList();
   }
+
+  /// 从分享文本中识别股票代码
+  ///
+  /// 识别顺序：
+  /// 1. 港股显式标记：HK00700 / hk0700 / 00700.HK（不区分大小写）；
+  /// 2. A 股 6 位数字代码（需存在于缓存，缓存为空时按常见前缀兜底）；
+  /// 3. 港股括号写法：(00700)（分享文本中港股代码通常补零为 5 位且以 0 开头）；
+  /// 4. A 股名称匹配（取最长命中，减少误判）。
+  /// 识别不到返回 null。返回纯数字代码即可，行情接口会自动补 hk 等市场前缀。
+  static String? detectStockCode(String text) {
+    if (text.trim().isEmpty) return null;
+    final map = cachedStockMap;
+
+    // 1. 港股显式标记：HK00700 / hk 0700 / 00700.HK
+    final hkMarked = RegExp(
+            r'(?<![\da-z])hk\s?(\d{4,5})(?!\d)|(?<!\d)(\d{4,5})\s*[.．]\s*hk(?![a-z])',
+            caseSensitive: false)
+        .firstMatch(text);
+    if (hkMarked != null) {
+      return hkMarked.group(1) ?? hkMarked.group(2);
+    }
+
+    // 2. A 股：独立的 6 位数字（前后不能还是数字，排除手机号等长数字串）
+    final codes = RegExp(r'(?<!\d)\d{6}(?!\d)')
+        .allMatches(text)
+        .map((m) => m.group(0)!)
+        .toList();
+    if (codes.isNotEmpty) {
+      for (final code in codes) {
+        if (map.containsKey(code)) return code;
+      }
+      // 缓存缺失或未命中时的前缀兜底：沪 60/68，深 00/30，北 4/8，场内基金 15/51/56/58
+      for (final code in codes) {
+        if (RegExp(r'^(60|68|00|30|4|8|15|51|56|58)').hasMatch(code)) {
+          return code;
+        }
+      }
+    }
+
+    // 3. 港股括号写法：(00700)
+    final hkParen = RegExp(r'[(（]\s*(0\d{4})\s*[)）]').firstMatch(text);
+    if (hkParen != null) return hkParen.group(1);
+
+    // 4. 名称匹配：取文本中命中的最长名称
+    if (map.isNotEmpty) {
+      String? bestCode;
+      var bestLen = 0;
+      map.forEach((code, name) {
+        if (name.length >= 2 &&
+            name.length > bestLen &&
+            text.contains(name)) {
+          bestCode = code;
+          bestLen = name.length;
+        }
+      });
+      return bestCode;
+    }
+    return null;
+  }
 }

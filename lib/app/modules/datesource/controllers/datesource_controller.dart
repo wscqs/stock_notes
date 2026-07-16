@@ -41,12 +41,17 @@ class DatesourceController extends GetxController {
     var arguments = Get.arguments;
     if (arguments != null) {
       Uri uri = arguments;
-      var filename = uri.pathSegments.last;
+      var filename = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : '';
       var originalPath = uri.path;
       final file = await copyContentUriToCacheFile(uri);
       if (file != null) {
-        filename = filename = file!.uri.pathSegments.last;
-        originalPath = file!.uri.path;
+        filename = file.uri.pathSegments.last;
+        originalPath = file.path;
+      }
+      // content URI 真实文件名在 copyContentUriToCacheFile 中解析，这里统一校验
+      if (!filename.endsWith('.db') || !filename.contains('stocknotes_')) {
+        QsHud.showToast(TextKey.errorwjmbhsn.tr);
+        return;
       }
       selectedOption.value = "doInput";
       File copiedFile = await inputDBSaveLocalList(filename, originalPath);
@@ -386,14 +391,20 @@ const platform = MethodChannel('com.stocknotes.channel/open_file');
 Future<File?> copyContentUriToCacheFile(Uri uri) async {
   if (!Platform.isAndroid) return null;
   try {
-    final Uint8List? bytes =
-        await platform.invokeMethod<Uint8List>('readContentUri', {
+    final Map? result = await platform.invokeMethod<Map>('readContentUri', {
       'uri': uri.toString(),
     });
+    if (result == null) return null;
+    final bytes = result['bytes'] as Uint8List?;
     if (bytes == null) return null;
-
+    // 新版微信/QQ 的 content URI 可能不带文件名，优先使用系统查询到的真实文件名
+    var name = result['name'] as String?;
+    if (name == null || name.isEmpty) {
+      name = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : '';
+    }
+    if (name.isEmpty) return null;
     final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/${uri.pathSegments.last}');
+    final file = File('${dir.path}/$name');
     await file.writeAsBytes(bytes);
     return file;
   } catch (e) {
