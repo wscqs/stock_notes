@@ -57,9 +57,10 @@ class StockExtLinks {
   // (sh|sz 开头) 且非 sh5xxxxx、sz1xxxxx（基金）
   static bool isAStock(String code);
 
-  // 生成目标：本地 asset 返回注入后的 html 字符串，URL 类型返回替换后的 url
+  // 生成目标：本地 asset 读取 asset 并返回注入后的 html 字符串，URL 类型返回替换后的 url
   // stockCode 形如 sz300848；A 股以外返回 null（调用方隐藏按钮）
-  static String? buildLoadResource(StockExtLink link, String stockCode);
+  // 异步：本地 asset 需 rootBundle.loadString
+  static Future<String?> buildLoadResource(StockExtLink link, String stockCode);
 }
 ```
 
@@ -75,7 +76,7 @@ class StockExtLinks {
 - 新增 `final extLinkIds = <String>[].obs`，`onInit` 时读 `StockExtLinks.selectedIds()`。
 - 新增 `openExtLink(StockExtLink link)`：
   - 取 `serStockData.value.code`，为空则 toast（复用 `TextKey.shurugupiaotishi`）。
-  - 调 `StockExtLinks.buildLoadResource`，非 A 股返回 null 则 toast 不支持。
+  - `await StockExtLinks.buildLoadResource(...)`，非 A 股返回 null 则 toast 不支持。
   - 远程：`Get.to(() => WebViewPage(loadResource: url, title: link.title))`
   - 本地：`Get.to(() => WebViewPage(loadResource: htmlString, webViewType: WebViewType.HTMLTEXT, title: link.title))`
 - 新增 `previewExtLink(StockExtLink link)`：与 `openExtLink` 相同实现，弹窗不关闭直接 `Get.to`（返回后弹窗仍在，勾选状态保留）。
