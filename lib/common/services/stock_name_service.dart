@@ -17,11 +17,16 @@ abstract final class StockNameService {
   static const int _defaultMaxPages = 100;
   static const Duration _timeout = Duration(seconds: 15);
 
+  /// 内存缓存，避免每次访问都从 Hive 反序列化并复制全量 Map
+  static Map<String, String>? _memoryMap;
+
   /// 从本地缓存读取股票 Map（code -> name）
   static Map<String, String> get cachedStockMap {
+    final memoryMap = _memoryMap;
+    if (memoryMap != null) return memoryMap;
     final cached = QsCache.get<Map<dynamic, dynamic>>(_cacheKey);
     if (cached == null || cached.isEmpty) return {};
-    return cached.map(
+    return _memoryMap = cached.map(
       (key, value) => MapEntry(key.toString(), value.toString()),
     );
   }
@@ -111,6 +116,7 @@ abstract final class StockNameService {
     if (map.isNotEmpty) {
       QsCache.set(_cacheKey, map);
       QsCache.set(_lastUpdateKey, DateTime.now().toIso8601String());
+      _memoryMap = map;
     }
     return map;
   }

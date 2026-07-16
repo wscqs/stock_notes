@@ -44,23 +44,25 @@ main() async {
     });
   });
 
-  // 后台异步刷新本地 A 股 code/name 缓存，不阻塞启动
-  // 若本地已有缓存则跳过，避免每次启动都请求网络
-  Future.microtask(() async {
-    try {
-      if (StockNameService.cachedStockMap.isEmpty) {
-        await StockNameService.refreshStockMap();
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('StockNameService init error: $e');
-      }
-    }
-  });
-
   // checkOpenedFile();
   // QsRequest.initDio();
   runApp(MyApp());
+
+  // 首帧渲染完成后再预热本地 A 股 code/name 缓存（约几千条，反序列化较耗时），
+  // 避免与首帧争抢主线程；若本地无缓存则后台异步拉取，不阻塞启动
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      try {
+        if (StockNameService.cachedStockMap.isEmpty) {
+          await StockNameService.refreshStockMap();
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('StockNameService init error: $e');
+        }
+      }
+    });
+  });
 }
 
 class MyApp extends StatelessWidget {

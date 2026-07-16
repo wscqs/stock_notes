@@ -40,7 +40,8 @@ class AppDatabase extends _$AppDatabase {
     // print(path);
     return LazyDatabase(() async {
       final file = File(path);
-      return NativeDatabase(file);
+      // 在后台 isolate 中执行 SQLite 打开与查询，避免阻塞主线程（首帧/滚动更流畅）
+      return NativeDatabase.createInBackground(file);
     });
   }
 

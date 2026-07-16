@@ -17,78 +17,40 @@ class AppTheme {
   /// 亮色主题样式
   // static ThemeData light =
   //     FlexThemeData.light(scheme: FlexScheme.redWine); //夜间红白，red是红黑
-  static ThemeData light = ThemeData(
-    colorScheme: FlexThemeData.light(scheme: FlexScheme.redWine).colorScheme,
-    appBarTheme: AppBarTheme(
-      // backgroundColor: FlexThemeData.light(scheme: FlexScheme.redWine)
-      //     .colorScheme
-      //     .onPrimaryContainer,
-      // foregroundColor: Color.fromARGB(200, 0, 0, 0),
-      centerTitle: true,
-      titleTextStyle: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: FlexThemeData.light(scheme: FlexScheme.redWine)
-            .colorScheme
-            .onPrimaryContainer,
+  static ThemeData light = () {
+    // FlexThemeData 构建较耗时，复用一次构建结果
+    final flexTheme = FlexThemeData.light(scheme: FlexScheme.redWine);
+    return ThemeData(
+      colorScheme: flexTheme.colorScheme,
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: flexTheme.colorScheme.onPrimaryContainer,
+        ),
       ),
-    ),
-    // textTheme: _textTheme,
-    // colorScheme: MaterialTheme.lightScheme(),
-    // fontFamily: Font_Montserrat,
-    // scaffoldBackgroundColor: Color.fromRGBO(249, 249, 249, 1.0),
-    // colorScheme: ColorScheme.fromSeed(
-    //   seedColor: themeColor,
-    //   primary: themeColor,
-    //   secondary: secondaryColor,
-    //   brightness: Brightness.light,
-    //   surface: Colors.white,
-    //   surfaceTint: Colors.transparent,
-    // ),
-
-    // cardColor: Colors.white,
-    // cardTheme: const CardTheme(
-    //   color: Colors.white,
-    // ),
-  );
+      // textTheme: _textTheme,
+      // fontFamily: Font_Montserrat,
+    );
+  }();
 
   /// 暗色主题样式
   // static ThemeData dark = FlexThemeData.dark(scheme: FlexScheme.redWine);
-
-  static ThemeData dark = ThemeData(
-    colorScheme: FlexThemeData.dark(scheme: FlexScheme.redWine).colorScheme,
-    appBarTheme: AppBarTheme(
-      centerTitle: true,
-      titleTextStyle: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
+  static ThemeData dark = () {
+    final flexTheme = FlexThemeData.dark(scheme: FlexScheme.redWine);
+    return ThemeData(
+      colorScheme: flexTheme.colorScheme,
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-    ),
-//   colorScheme: MaterialTheme.darkScheme(),
-    // fontFamily: Font_Montserrat,
-    //   scaffoldBackgroundColor: Colors.black.withAlpha(222),
-    //   colorScheme: ColorScheme.fromSeed(
-    //     seedColor: darkThemeColor,
-    //     brightness: Brightness.dark,
-    //     surface: const Color.fromARGB(255, 42, 42, 42),
-    //     surfaceTint: Colors.transparent,
-    //   ),
-    //   appBarTheme: const AppBarTheme(
-    //     backgroundColor: Color.fromARGB(255, 34, 34, 34),
-    //     centerTitle: true,
-    //     titleTextStyle: TextStyle(
-    //       fontSize: 18,
-    //       fontWeight: FontWeight.bold,
-    //     ),
-    //   ),
-    //   bottomAppBarTheme: const BottomAppBarTheme(
-    //     color: Color.fromARGB(255, 34, 34, 34),
-    //   ),
-    //   cardColor: Colors.black,
-    //   cardTheme: const CardTheme(
-    //       // color: Colors.white,
-    //       ),
-  );
+      // fontFamily: Font_Montserrat,
+    );
+  }();
 }
 
 // static final TextTheme _textTheme = TextTheme(
@@ -96,10 +58,10 @@ class AppTheme {
 //   titleMedium: GoogleFonts.montserrat(fontWeight: _medium, fontSize: 16.0),
 //   headlineMedium: GoogleFonts.montserrat(fontWeight: _bold, fontSize: 20.0),
 //   bodySmall: GoogleFonts.oswald(fontWeight: _semiBold, fontSize: 16.0),
-//   headlineSmall: GoogleFonts.oswald(fontWeight: _medium, fontSize: 16.0),
+//   headlineSmall: GoogleFonts.montserrat(fontWeight: _medium, fontSize: 18.0),
 //   labelSmall: GoogleFonts.montserrat(fontWeight: _medium, fontSize: 12.0),
-//   bodyLarge: GoogleFonts.montserrat(fontWeight: _regular, fontSize: 14.0),
+//   bodyLarge: GoogleFonts.oswald(fontWeight: _regular, fontSize: 14.0),
 //   titleSmall: GoogleFonts.montserrat(fontWeight: _medium, fontSize: 14.0),
 //   bodyMedium: GoogleFonts.montserrat(fontWeight: _regular, fontSize: 16.0),
-//   labelLarge: GoogleFonts.montserrat(fontWeight: _semiBold, fontSize: 14.0),
+//   labelLarge: GoogleFonts.montserrat(fontWeight: _semiBold, fontSize: 16.0),
 // );

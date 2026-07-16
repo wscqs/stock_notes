@@ -76,7 +76,12 @@ class HomestockController extends BaseController
         QsCache.get<String>("selectedDateSourceKey") ?? "";
     selectedFamous.value = FamousDataHelp().getSelectedValue();
     await getDatas();
-    dbSyncSerData(isShowLoading: false);
+    // 首帧渲染后再同步行情，避免网络响应处理/写库与首帧渲染争抢主线程
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        dbSyncSerData(isShowLoading: false);
+      });
+    });
     eventBus.on("eventBusFamous", eventBusFamouscallback);
     // 初始化回调，在这里绑定 refreshAppui 方法
     // eventBuscallbackrefreshAppui = (arg) {
