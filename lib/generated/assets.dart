@@ -2,5 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String htmlGainiantong = 'assets/html/gainiantong.html';
+  static const String htmlJiankuan = 'assets/html/jiankuan.html';
   static const String imagesIcon = 'assets/images/icon.png';
 }
