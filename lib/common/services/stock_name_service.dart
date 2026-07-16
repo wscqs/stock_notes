@@ -118,18 +118,37 @@ abstract final class StockNameService {
   /// 按名称或 code 从本地缓存搜索股票
   ///
   /// 返回 [{code, name}] 列表，最多 [limit] 条。
+  /// 排序优先级：代码前缀 > 名称前缀 > 代码包含 > 名称包含，
+  /// 例如输入 300 时 300xxx 排在 920300 前面。
   static List<MapEntry<String, String>> search(String keyword,
       {int limit = 20}) {
-    if (keyword.trim().isEmpty) return [];
+    final lowerKeyword = keyword.trim().toLowerCase();
+    if (lowerKeyword.isEmpty) return [];
 
     final map = cachedStockMap;
     if (map.isEmpty) return [];
 
-    final lowerKeyword = keyword.toLowerCase();
-    return map.entries
-        .where((e) =>
-            e.value.toLowerCase().contains(lowerKeyword) ||
-            e.key.toLowerCase().contains(lowerKeyword))
+    // 分桶即完成排序：桶内保持缓存原顺序
+    final codePrefix = <MapEntry<String, String>>[];
+    final namePrefix = <MapEntry<String, String>>[];
+    final codeContains = <MapEntry<String, String>>[];
+    final nameContains = <MapEntry<String, String>>[];
+
+    for (final e in map.entries) {
+      final code = e.key.toLowerCase();
+      final name = e.value.toLowerCase();
+      if (code.startsWith(lowerKeyword)) {
+        codePrefix.add(e);
+      } else if (name.startsWith(lowerKeyword)) {
+        namePrefix.add(e);
+      } else if (code.contains(lowerKeyword)) {
+        codeContains.add(e);
+      } else if (name.contains(lowerKeyword)) {
+        nameContains.add(e);
+      }
+    }
+
+    return [...codePrefix, ...namePrefix, ...codeContains, ...nameContains]
         .take(limit)
         .toList();
   }

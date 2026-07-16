@@ -193,7 +193,8 @@ class StockeditController extends BaseController {
       return;
     }
     final keyword = stockNumController.text.trim();
-    if (keyword.isEmpty) {
+    // 搜索框未聚焦（如已点搜索/选中建议）时不弹联想，并关掉残留弹窗
+    if (keyword.isEmpty || !stockNumFocusNode.hasFocus) {
       searchSuggestions.clear();
       _dismissAttachPopup();
       return;
@@ -429,6 +430,8 @@ class StockeditController extends BaseController {
   }
 
   Future<void> search() async {
+    //点搜索后关闭股票名称/代码匹配提示弹窗
+    _dismissAttachPopup();
     if (stockNum.isEmpty) {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;

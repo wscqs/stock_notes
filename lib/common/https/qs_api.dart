@@ -142,7 +142,10 @@ class QsApi {
       // print(parts);
 
       final name = parts[1];
-      final currentPrice = parts[3];
+      // 港股市价保留2位小数（腾讯港股返回3位小数）
+      final currentPrice = code.startsWith('hk')
+          ? (double.tryParse(parts[3])?.toStringAsFixed(2) ?? parts[3])
+          : parts[3];
       // 从 code 提取 market_type
       String marketType = '';
       if (code.startsWith('sh')) {
