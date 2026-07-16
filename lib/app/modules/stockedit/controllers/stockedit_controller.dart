@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
+import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/services/stock_name_service.dart';
@@ -669,55 +670,82 @@ class StockeditController extends BaseController {
     openExtLink(link);
   }
 
-  /// 选择关联链接弹窗：多选 + 预览，确定后写全局缓存并刷新按钮
+  /// 选择关联链接弹窗：多选 + 预览 + 拖拽排序，确定后写全局缓存并刷新按钮
   void showExtLinkPicker() {
+    final tempOrder = StockExtLinks.orderedIds().toList();
     final tempSelected = extLinkIds.toSet();
     Get.dialog(StatefulBuilder(
       builder: (context, setState) {
+        void toggle(String id, bool checked) {
+          setState(() {
+            if (checked) {
+              tempSelected.remove(id);
+            } else {
+              tempSelected.add(id);
+            }
+          });
+        }
+
+        Widget buildCell(String id, int index) {
+          final link = StockExtLinks.byId(id);
+          if (link == null) return SizedBox.shrink(key: ValueKey(id));
+          final checked = tempSelected.contains(id);
+          return Row(
+            key: ValueKey(id),
+            children: [
+              Checkbox(
+                value: checked,
+                onChanged: (_) => toggle(id, checked),
+              ),
+              Icon(link.icon, size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => toggle(id, checked),
+                  child: Text(link.title),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.visibility_outlined),
+                tooltip: link.title,
+                onPressed: () => previewExtLink(link),
+              ),
+              ReorderableDragStartListener(
+                index: index,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Icon(
+                    RemixIcons.drag_move_2_line,
+                    size: 20,
+                    color: Get.theme.hintColor,
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
         return AlertDialog(
           title: Text(TextKey.xuanzeguanlianlianjie.tr,
               style: const TextStyle(fontSize: 20)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: StockExtLinks.all.map((link) {
-              final checked = tempSelected.contains(link.id);
-              return Row(
-                children: [
-                  Checkbox(
-                    value: checked,
-                    onChanged: (v) {
-                      setState(() {
-                        if (v == true) {
-                          tempSelected.add(link.id);
-                        } else {
-                          tempSelected.remove(link.id);
-                        }
-                      });
-                    },
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        setState(() {
-                          if (checked) {
-                            tempSelected.remove(link.id);
-                          } else {
-                            tempSelected.add(link.id);
-                          }
-                        });
-                      },
-                      child: Text(link.title),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.visibility_outlined),
-                    tooltip: link.title,
-                    onPressed: () => previewExtLink(link),
-                  ),
-                ],
-              );
-            }).toList(),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ReorderableListView(
+              shrinkWrap: true,
+              buildDefaultDragHandles: false,
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) newIndex--;
+                  final id = tempOrder.removeAt(oldIndex);
+                  tempOrder.insert(newIndex, id);
+                });
+              },
+              children: [
+                for (var i = 0; i < tempOrder.length; i++)
+                  buildCell(tempOrder[i], i),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -726,10 +754,9 @@ class StockeditController extends BaseController {
             ),
             TextButton(
               onPressed: () {
-                final ordered = StockExtLinks.all
-                    .where((l) => tempSelected.contains(l.id))
-                    .map((l) => l.id)
-                    .toList();
+                StockExtLinks.saveOrderedIds(tempOrder);
+                final ordered =
+                    tempOrder.where(tempSelected.contains).toList();
                 StockExtLinks.saveSelectedIds(ordered);
                 extLinkIds.value = ordered;
                 Get.back();

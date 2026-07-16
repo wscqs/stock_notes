@@ -1,4 +1,6 @@
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/widgets.dart' show IconData;
+import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/utils/qs_cache.dart';
 
 /// 股票详情页可配置外链定义
@@ -7,6 +9,7 @@ class StockExtLink {
     required this.id,
     required this.title,
     required this.urlTemplate,
+    required this.icon,
     this.isLocalAsset = false,
     this.useMarketPrefix = false,
   });
@@ -16,6 +19,9 @@ class StockExtLink {
 
   /// 固定中文标题（如 k线百），不走 i18n
   final String title;
+
+  /// 选择弹窗 cell 左侧图标
+  final IconData icon;
 
   /// URL 模板（含 xxxxxx 占位符）或本地 asset 路径
   final String urlTemplate;
@@ -31,56 +37,92 @@ class StockExtLinks {
   StockExtLinks._();
 
   static const _cacheKey = 'stock_ext_link_selection';
+  static const _cacheOrderKey = 'stock_ext_link_order';
   static const _placeholder = 'xxxxxx';
 
   static const List<StockExtLink> all = [
     StockExtLink(
       id: 'kline_baidu',
       title: 'k线百',
+      icon: RemixIcons.line_chart_line,
       urlTemplate:
           'https://pqa9p2.smartapps.baidu.com/pages/quote/quote?market=ab&type=stock&code=xxxxxx',
     ),
     StockExtLink(
+      id: 'jiankuan',
+      title: '简况',
+      icon: RemixIcons.article_line,
+      urlTemplate: 'assets/html/jiankuan.html',
+      isLocalAsset: true,
+    ),
+    StockExtLink(
       id: 'saolei_ths',
       title: '扫雷同',
+      icon: RemixIcons.shield_check_line,
       urlTemplate:
           'https://bowerbird.10jqka.com.cn/thslc/editor/view/433f6d9Ac0?code=xxxxxx',
     ),
     StockExtLink(
       id: 'saolei_essence',
       title: '扫雷安',
+      icon: RemixIcons.radar_line,
       urlTemplate:
           'https://static.essence.com.cn/zixun/sweep-car/index.html#/pages/sweepDetails/index?StockCode=xxxxxx',
     ),
     StockExtLink(
-      id: 'dashi_em',
-      title: '大事东',
-      urlTemplate: 'https://emh5.eastmoney.com/html/detail.html?fc=xxxxxx#/gsds',
-      useMarketPrefix: true,
-    ),
-    StockExtLink(
       id: 'gainian_ths',
       title: '概念同',
+      icon: RemixIcons.bubble_chart_line,
       urlTemplate: 'assets/html/gainiantong.html',
       isLocalAsset: true,
     ),
     StockExtLink(
-      id: 'jiankuan',
-      title: '简况',
-      urlTemplate: 'assets/html/jiankuan.html',
-      isLocalAsset: true,
+      id: 'dashi_em',
+      title: '大事东',
+      icon: RemixIcons.calendar_event_line,
+      urlTemplate:
+          'https://emh5.eastmoney.com/html/detail.html?fc=xxxxxx#/gsds',
+      useMarketPrefix: true,
     ),
   ];
 
   static const List<String> defaultSelectedIds = ['kline_baidu', 'saolei_ths'];
 
+  /// 全部链接 id 的显示顺序（含未勾选）；无缓存时按 [all] 定义顺序。
+  /// 缓存中的未知 id 会被剔除，[all] 中新增 id 追加到末尾。
+  static List<String> orderedIds() {
+    final allIds = all.map((l) => l.id).toList();
+    final cached = QsCache.get(_cacheOrderKey);
+    if (cached is! List) return allIds;
+    final known = allIds.toSet();
+    final result =
+        cached.map((e) => e.toString()).where(known.contains).toList();
+    result.addAll(allIds.where((id) => !result.contains(id)));
+    return result;
+  }
+
+  static void saveOrderedIds(List<String> ids) {
+    QsCache.set(_cacheOrderKey, ids);
+  }
+
+  /// 按 id 查找链接定义；未命中返回 null
+  static StockExtLink? byId(String id) {
+    for (final link in all) {
+      if (link.id == id) return link;
+    }
+    return null;
+  }
+
   /// 读取勾选的链接 id；无缓存或缓存损坏时返回默认勾选。
-  /// 返回值按 [all] 定义顺序排列。
+  /// 返回值按用户自定义顺序（[orderedIds]）排列。
   static List<String> selectedIds() {
     final cached = QsCache.get(_cacheKey);
-    if (cached is! List) return List.of(defaultSelectedIds);
+    if (cached is! List) {
+      final defaults = defaultSelectedIds.toSet();
+      return orderedIds().where(defaults.contains).toList();
+    }
     final ids = cached.map((e) => e.toString()).toSet();
-    return all.map((l) => l.id).where(ids.contains).toList();
+    return orderedIds().where(ids.contains).toList();
   }
 
   static void saveSelectedIds(List<String> ids) {

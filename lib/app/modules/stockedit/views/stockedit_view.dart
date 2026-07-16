@@ -700,7 +700,7 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
-  // 已勾选的外链文字按钮：横向滚动，A股才显示
+  // 已勾选的外链图标按钮：横向滚动，A股才显示，顺序同选择弹窗自定义排序
   Widget _buildExtLinkButtons() {
     final code = controller.serStockData.value.code ??
         controller.localStockData.value?.code ??
@@ -711,18 +711,20 @@ class StockeditView extends GetView<StockeditController> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: StockExtLinks.all
-            .where((link) => controller.extLinkIds.contains(link.id))
-            .map((link) => InkWell(
-                  onTap: () => controller.openExtLink(link),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 12),
-                    child: Text(
-                      link.title,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Get.theme.colorScheme.primary,
+        children: controller.extLinkIds
+            .map((id) => StockExtLinks.byId(id))
+            .whereType<StockExtLink>()
+            .map((link) => Tooltip(
+                  message: link.title,
+                  child: InkWell(
+                    onTap: () => controller.openExtLink(link),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 12),
+                      child: Icon(
+                        link.icon,
+                        size: 18,
+                        // color: Get.theme.colorScheme.primary,
                       ),
                     ),
                   ),
