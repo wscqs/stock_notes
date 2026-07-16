@@ -644,13 +644,20 @@ class StockeditController extends BaseController {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;
     }
-    final resource = await StockExtLinks.buildLoadResource(link, code);
+    final String? resource;
+    try {
+      resource = await StockExtLinks.buildLoadResource(link, code);
+    } catch (_) {
+      QsHud.showToast(TextKey.jiazashibai.tr);
+      return;
+    }
     if (resource == null) {
       QsHud.showToast(TextKey.zanshibuzhichi.tr);
       return;
     }
+    final loadResource = resource;
     Get.to(() => WebViewPage(
-          loadResource: resource,
+          loadResource: loadResource,
           webViewType:
               link.isLocalAsset ? WebViewType.HTMLTEXT : WebViewType.URL,
           title: link.title,
@@ -665,7 +672,7 @@ class StockeditController extends BaseController {
   /// 选择关联链接弹窗：多选 + 预览，确定后写全局缓存并刷新按钮
   void showExtLinkPicker() {
     final tempSelected = extLinkIds.toSet();
-    QsHud.showDialog(StatefulBuilder(
+    Get.dialog(StatefulBuilder(
       builder: (context, setState) {
         return AlertDialog(
           title: Text(TextKey.xuanzeguanlianlianjie.tr,
@@ -714,7 +721,7 @@ class StockeditController extends BaseController {
           ),
           actions: [
             TextButton(
-              onPressed: () => QsHud.dismiss(),
+              onPressed: () => Get.back(),
               child: Text(TextKey.quxiao.tr),
             ),
             TextButton(
@@ -725,7 +732,7 @@ class StockeditController extends BaseController {
                     .toList();
                 StockExtLinks.saveSelectedIds(ordered);
                 extLinkIds.value = ordered;
-                QsHud.dismiss();
+                Get.back();
               },
               child: Text(TextKey.queding.tr),
             ),

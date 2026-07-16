@@ -121,6 +121,7 @@ class TextKey {
   static const quanlianggupiaoshuaxinshibai = 'quanlianggupiaoshuaxinshibai';
   static const xuanzeguanlianlianjie = 'xuanzeguanlianlianjie';
   static const zanshibuzhichi = 'zanshibuzhichi';
+  static const jiazashibai = 'jiazashibai';
 }
 
 const Map<String, String> zh = {
@@ -244,6 +245,7 @@ const Map<String, String> zh = {
   TextKey.quanlianggupiaoshuaxinshibai: '刷新失败',
   TextKey.xuanzeguanlianlianjie: '选择关联链接',
   TextKey.zanshibuzhichi: '暂不支持该股票',
+  TextKey.jiazashibai: '加载失败',
   TextKey.shiyongshuomingall: '''
 股票笔记使用说明
 
@@ -417,6 +419,7 @@ const Map<String, String> en = {
   TextKey.quanlianggupiaoshuaxinshibai: 'Refresh failed',
   TextKey.xuanzeguanlianlianjie: 'Select related links',
   TextKey.zanshibuzhichi: 'Not supported for this stock',
+  TextKey.jiazashibai: 'Load failed',
   TextKey.shiyongshuomingall: '''
 Stock Notes User Guide
 
