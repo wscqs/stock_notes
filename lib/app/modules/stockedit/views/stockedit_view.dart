@@ -162,7 +162,7 @@ class StockeditView extends GetView<StockeditController> {
           Row(
             children: [
               SizedBox(
-                width: 100,
+                width: 84,
                 child: TextField(
                   controller: controller.rBuyPriceController,
                   decoration:
@@ -173,7 +173,7 @@ class StockeditView extends GetView<StockeditController> {
               if (controller.rBuyPriceValid.value) ...[
                 kSpaceW(12),
                 SizedBox(
-                  width: 100,
+                  width: 84,
                   child: TextField(
                     controller: controller.rHoldSharesController,
                     decoration:
