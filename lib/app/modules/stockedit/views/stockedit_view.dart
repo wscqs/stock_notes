@@ -7,6 +7,7 @@ import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:stock_notes/common/web/stock_ext_links.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -651,21 +652,22 @@ class StockeditView extends GetView<StockeditController> {
                       size: 20,
                     ),
                   )),
-              InkWell(
-                onTap: () {
-                  controller.clickLookStock();
-                },
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-                  child: Icon(
-                    Icons.web,
-                    size: 20,
-                  ),
+              Expanded(child: _buildExtLinkButtons()),
+            ] else
+              const Spacer(),
+            InkWell(
+              onTap: () {
+                controller.showExtLinkPicker();
+              },
+              child: const Padding(
+                padding:
+                    EdgeInsets.only(left: 8, right: 4, top: 12, bottom: 12),
+                child: Icon(
+                  RemixIcons.link,
+                  size: 20,
                 ),
               ),
-              buildMinesweeperButton(),
-            ],
+            ),
           ],
         ),
         kSpaceH(8),
@@ -698,24 +700,34 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
-  Widget buildMinesweeperButton() {
-    final code = controller.serStockData.value.code ?? '';
-    final isAStock = (code.startsWith("sh") || code.startsWith("sz")) &&
-        !code.startsWith("sh5") &&
-        !code.startsWith("sz1");
-
-    if (!isAStock) return SizedBox.shrink(); // 占位不显示
-
-    return InkWell(
-      onTap: () {
-        controller.clickLookMinesweeper();
-      },
-      child: const Padding(
-        padding: EdgeInsets.only(left: 8, right: 12, top: 12, bottom: 12),
-        child: Icon(
-          RemixIcons.alarm_warning_line,
-          size: 20,
-        ),
+  // 已勾选的外链文字按钮：横向滚动，A股才显示
+  Widget _buildExtLinkButtons() {
+    final code = controller.serStockData.value.code ??
+        controller.localStockData.value?.code ??
+        '';
+    if (!StockExtLinks.isAStock(code)) {
+      return const SizedBox.shrink();
+    }
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: StockExtLinks.all
+            .where((link) => controller.extLinkIds.contains(link.id))
+            .map((link) => InkWell(
+                  onTap: () => controller.openExtLink(link),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 12),
+                    child: Text(
+                      link.title,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Get.theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ))
+            .toList(),
       ),
     );
   }
