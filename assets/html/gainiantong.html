@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票概念信息</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #BEC4CD;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 5px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .title {
+            display: none;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 24px;
+            color: white;
+        }
+        .concept-card {
+            background-color: #111;
+            border-radius: 8px;
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .concept-card:hover {
+            background-color: #222;
+        }
+        .concept-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffa500;
+        }
+        .concept-name:hover {  
+            text-decoration: underline;  
+            cursor: pointer;  
+        }
+        .leaders:hover {  
+            text-decoration: underline;  
+            cursor: pointer;  
+        }
+        .concept-explain {  
+            font-size: 14px;  
+            color: #BEC4CD;  
+            margin-top: 5px;  
+            display: -webkit-box;  
+            -webkit-box-orient: vertical;  
+            -webkit-line-clamp: 5;
+            overflow: hidden;  
+            text-overflow: ellipsis;
+        }
+        .leaders {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        .leader {
+            font-size: 11px;
+            color: #e74c3c; 
+            margin-right: 10px;
+        }
+        .leader-name {
+            font-weight: bold;
+        }
+        .error-message {
+            color: #ff4444;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .stock-info {
+            display: none;
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            background-color: #2d2d2d;
+            margin: 10% auto;
+            padding: 5px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 1000px;
+            max-height: 80vh;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            color: #fff;
+        }
+        .modal-iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            filter: invert(0.95) hue-rotate(180deg);
+        }
+        body::-webkit-scrollbar {
+            width: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">股票概念信息</h1>
+        <div id="stock-info" class="stock-info"></div>
+        <div id="concepts-container"></div>
+    </div>
+
+    <div id="conceptModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <iframe id="concept-iframe" class="modal-iframe" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_STOCK_CODE = '002131';
+        const modal = document.getElementById('conceptModal');
+        const modalClose = document.querySelector('.modal-close');
+        const conceptIframe = document.getElementById('concept-iframe');
+
+        function closeModal() {
+            modal.style.display = 'none';
+            conceptIframe.src = 'about:blank';
+        }
+
+        modalClose.onclick = closeModal;
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        function fetchStockConcepts(stockCode) {  
+            var conceptsContainer = document.getElementById('concepts-container');  
+            var stockInfoContainer = document.getElementById('stock-info');  
+            
+            conceptsContainer.innerHTML = '加载中...';  
+            stockInfoContainer.innerHTML = '';  
+
+            var xhr = new XMLHttpRequest();  
+            xhr.open('GET', `https://basic.10jqka.com.cn/basicapi/concept/stock_concept_list/?code=${stockCode}&locale=zh_CN`, true);  
+            
+            xhr.onreadystatechange = function() {  
+                if (xhr.readyState === 4) {  
+                    if (xhr.status === 200) {  
+                        var result = JSON.parse(xhr.responseText);  
+                        conceptsContainer.innerHTML = '';
+
+                        if (result.status_code === 0) {  
+                            var concepts = result.data;  
+                            if (concepts.length === 0) {  
+                                conceptsContainer.innerHTML = '<p class="error-message">未找到该股票的概念信息</p>';  
+                                return;  
+                            }  
+
+                            stockInfoContainer.innerHTML = `当前股票：${stockCode}`;  
+
+                            concepts.forEach(function(concept) {  
+                                var conceptCard = document.createElement('div');  
+                                conceptCard.className = 'concept-card';  
+
+                                var leadersHtml = '';  
+                                if (concept.leader && concept.leader.length > 0) {  
+                                    leadersHtml = '<div class="leaders">概念龙头：';  
+                                    concept.leader.forEach(function(leader) {  
+                                        var stockElement = document.createElement('a');  
+                                        stockElement.href = `http://www.treeid/code_${leader.code}`;  
+                                        stockElement.textContent = leader.name;  
+                                        stockElement.style.color = 'inherit';  
+                                        stockElement.style.textDecoration = 'none';  
+
+                                        leadersHtml += `<span class="leader">  
+                                            <span class="leader-name"></span>  
+                                            ${stockElement.outerHTML} (<a href="http://www.treeid/code_${leader.code}" style="color: inherit; text-decoration: none;">${leader.code}</a>)  
+                                        </span> `;  
+                                    });  
+                                    leadersHtml += '</div>';  
+                                }  
+
+                                var conceptNameElement = document.createElement('div');  
+                                conceptNameElement.className = 'concept-name';  
+                                conceptNameElement.textContent = concept.concept_name;  
+
+                                conceptNameElement.addEventListener('click', function() {  
+                                    if (concept.plate_id && concept.market_id) {  
+                                        modal.style.display = 'block';  
+                                        conceptIframe.src = `https://basic.10jqka.com.cn/conceptph/briefinfo/index.html?code=${concept.plate_id}&marketid=${concept.market_id}`;  
+                                    }  
+                                });  
+
+                                var conceptExplainElement = document.createElement('div');  
+                                conceptExplainElement.className = 'concept-explain';  
+                                conceptExplainElement.textContent = '相关说明：' + concept.concept_explain;  
+
+                                conceptCard.appendChild(conceptNameElement);  
+                                conceptCard.appendChild(conceptExplainElement);  
+                                
+                                if (leadersHtml) {  
+                                    var leadersElement = document.createElement('div');  
+                                    leadersElement.innerHTML = leadersHtml;  
+                                    conceptCard.appendChild(leadersElement);  
+                                }  
+
+                                conceptsContainer.appendChild(conceptCard);  
+                            });  
+                        } else {  
+                            conceptsContainer.innerHTML = '<p class="error-message">无法加载数据，请稍后重试。</p>';  
+                        }  
+                    } else {  
+                        conceptsContainer.innerHTML = '<p class="error-message">网络错误，请检查网络连接。</p>';  
+                    }  
+                }  
+            };  
+
+            xhr.send();  
+        }
+
+        function handleHashChange() {
+            var appCode = (typeof window.APP_STOCK_CODE === 'string') ? window.APP_STOCK_CODE.trim() : '';
+            var stockCode = /^\d{6}$/.test(appCode) ? appCode
+                : (window.location.hash.substring(1).trim() || DEFAULT_STOCK_CODE);
+            
+            if (/^\d{6}$/.test(stockCode)) {
+                fetchStockConcepts(stockCode);
+            } else {
+                window.location.hash = DEFAULT_STOCK_CODE;
+                fetchStockConcepts(DEFAULT_STOCK_CODE);
+            }
+        }
+
+        window.addEventListener('hashchange', handleHashChange);
+        handleHashChange();
+    </script>
+</body>
+</html>

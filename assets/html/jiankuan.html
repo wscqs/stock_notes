@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>同花顺简框加强版</title>
+<style>
+:root {
+    --bg-dark: #000000;
+    --bg-card: #0a0a0a;
+    --bg-panel: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-title: #999999;
+    --text-content: #ff9600;
+    --border-light: #2a2a2a;
+    --highlight: #00FFFF;
+    --positive: #ff0000;
+    --negative: #00ff44;
+
+    --status-h: clamp(22px, 6vw, 26px);
+    --font-xs: clamp(9px, 2.8vw, 11px);
+    --font-sm: clamp(10px, 3vw, 12px);
+    --pad: clamp(2px, 1vw, 4px);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+                 "Microsoft YaHei", Arial, sans-serif;
+    font-size: var(--font-xs);
+    line-height: 1.35;
+}
+
+#status-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--status-h);
+    padding: 0 env(safe-area-inset-left) 0 env(safe-area-inset-right);
+    background: var(--bg-panel);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-sm);
+    z-index: 10;
+    border-bottom: 1px solid var(--border-light);
+}
+
+#stock-info {
+    color: var(--highlight);
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content-box {
+    position: absolute;
+    top: var(--status-h);
+    left: 0; right: 0; bottom: 0;
+    padding: var(--pad);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.content-box::-webkit-scrollbar { width: 2px; }
+.content-box::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 2px;
+}
+
+.info-section {
+    border: 0.5px solid var(--border-light);
+    margin-bottom: 2px;
+    background: var(--bg-card);
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    padding: var(--pad) 6px;
+    background: #080808;
+    border-bottom: 1px solid var(--border-light);
+}
+.info-row:last-child { border-bottom: none; }
+
+.info-title {
+    width: clamp(28px, 8vw, 32px);
+    flex-shrink: 0;
+    color: var(--text-title);
+    font-size: var(--font-xs);
+}
+
+.info-content {
+    flex: 1;
+    color: var(--text-content);
+    font-size: var(--font-xs);
+    word-break: break-word;
+}
+
+.anomaly-row { cursor: pointer; }
+.anomaly-row:hover { background: #0f0f0f; }
+
+.event-date { color: var(--highlight); }
+.event-keywords { color: var(--positive); margin-left: 4px; }
+
+.anomaly-detail {
+    display: none;
+    padding: 6px 6px 6px 36px;
+    font-size: clamp(8px, 2.5vw, 9px);
+    color: #aaa;
+    background: #0f0f0f;
+    border-top: 1px solid #2a2a2a;
+}
+
+@media (max-width: 480px) {
+    .info-content { line-height: 1.45; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="status-bar">
+    <span id="stock-info">加载中...</span>
+    <span id="rank-info"></span>
+</div>
+
+<div id="app" class="content-box"></div>
+
+<script>
+const API = {
+    stockData: code =>
+      `https://apphwshhq.longhuvip.com/w1/api/index.php?DeviceID=&PhoneOSNew=2&State=1&StockID=${code}&Token=&UserID=&VerSion=5.17.0.9&a=GetStockPanKou_Narrow&apiv=w38&c=StockL2Data`,
+    stockRank: 'https://emappdata.eastmoney.com/stockrank/getCurrentLatest',
+    f10Data: code => `https://basic.10jqka.com.cn/api/stockph/simple/f10/${code}`,
+    companyInfo: (code, market) =>
+      `https://basic.10jqka.com.cn/basicapi/company_info/merge_info/v1/base_info/?code=${code}&market=${market}&type=stock`,
+    anomaly: 'https://flow.10jqka.com.cn/anomaly/v1/history'
+};
+
+const getMarketId = c => c.startsWith('6') ? '17' : '33';
+const getMarketPrefix = c => c.startsWith('6') ? 'SH' : 'SZ';
+
+class StockViewer {
+    constructor() {
+        this.currentCode = '';
+        this.currentName = '';
+        this.rank = '--';
+        this.rankChange = 0;
+        this.f10Data = null;
+        this.companyDesc = '';
+        this.latestAnomaly = null;
+        this.lastFetchTime = { f10:0, company:0, anomaly:0, rank:0 };
+        this.abortController = null;
+        this.container = document.getElementById('app');
+        this.init();
+    }
+
+    async fetchData(url, signal, opt={}) {
+        try {
+            const r = await fetch(url, { ...opt, signal });
+            return await r.json();
+        } catch(e) {
+            if(e.name!=='AbortError') console.error(url,e);
+            return null;
+        }
+    }
+
+    async getPrimaryStockData(code,signal){
+        const d=await this.fetchData(API.stockData(code),signal);
+        return d?.errcode==='0'?d:null;
+    }
+
+    async getStockRank(code,signal){
+        if(this.lastFetchTime.rank && Date.now()-this.lastFetchTime.rank<60000)
+            return {rank:this.rank,change:this.rankChange};
+        const body={appId:'appId01',globalId:'786e4c21-70dc-435a-93bb-38',
+                   srcSecurityCode:getMarketPrefix(code)+code};
+        const d=await this.fetchData(API.stockRank,signal,{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(body)
+        });
+        this.lastFetchTime.rank=Date.now();
+        if(d?.data){this.rank=d.data.rank;this.rankChange=d.data.rankChange||0;}
+        return {rank:this.rank,change:this.rankChange};
+    }
+
+    async getStockF10(code,signal){
+        if(this.lastFetchTime.f10 && Date.now()-this.lastFetchTime.f10<300000)
+            return this.f10Data;
+        const d=await this.fetchData(API.f10Data(code),signal);
+        this.lastFetchTime.f10=Date.now();
+        if(d?.data) this.f10Data=d.data;
+        return this.f10Data;
+    }
+
+    async getCompanyInfo(code,signal){
+        if(this.lastFetchTime.company && Date.now()-this.lastFetchTime.company<300000)
+            return this.companyDesc;
+        const d=await this.fetchData(API.companyInfo(code,getMarketId(code)),signal);
+        this.lastFetchTime.company=Date.now();
+        if(d?.data?.describe) this.companyDesc=d.data.describe;
+        return this.companyDesc;
+    }
+
+    async getAnomaly(code,signal){
+        if(this.lastFetchTime.anomaly && Date.now()-this.lastFetchTime.anomaly<60000)
+            return this.latestAnomaly;
+        const body={thsHqCode:code,marketId:getMarketId(code),count:1};
+        const d=await this.fetchData(API.anomaly,signal,{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(body)
+        });
+        this.lastFetchTime.anomaly=Date.now();
+        this.latestAnomaly=d?.data?.anomalyAnalysisList?.[0]||null;
+        return this.latestAnomaly;
+    }
+
+    escapeHtml(t){
+        return t?.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))||'';
+    }
+
+    updateTopBar(){
+        document.getElementById('stock-info').innerText=
+            `${this.currentCode}${this.currentName?' '+this.currentName:''}`;
+        let html='';
+        if(this.rank!=='--'){
+            if(this.rankChange>0) html+=` ▲${this.rankChange}`;
+            else if(this.rankChange<0) html+=` ▼${-this.rankChange}`;
+            document.getElementById('rank-info').innerHTML=
+                `排名:<span style="color:var(--positive);font-weight:bold;">${this.rank}</span>${html}`;
+        }else{
+            document.getElementById('rank-info').innerHTML='';
+        }
+    }
+
+    async updateData(){
+        if(this.abortController) this.abortController.abort();
+        this.abortController=new AbortController();
+        const signal=this.abortController.signal;
+
+        if(!this.currentCode) this.currentCode=this.getStockCode();
+
+        const stock=await this.getPrimaryStockData(this.currentCode,signal);
+        if(!stock){
+            this.container.innerHTML='<div style="padding:20px;text-align:center">获取数据失败</div>';
+            return;
+        }
+
+        this.currentName=stock.name||'';
+
+        const p=[
+            this.getStockRank(this.currentCode,signal),
+            this.getCompanyInfo(this.currentCode,signal),
+            this.getStockF10(this.currentCode,signal),
+            this.getAnomaly(this.currentCode,signal)
+        ];
+
+        await Promise.all(p);
+        this.updateTopBar();
+        this.render();
+    }
+
+    renderAnomaly(){
+        if(!this.latestAnomaly) return '';
+        const i=this.latestAnomaly;
+        const kw=i.keywordList?.join('、')||'';
+        const r=this.escapeHtml(i.reason||'');
+        setTimeout(()=>{
+            const row=document.getElementById('anomaly-row');
+            const det=document.getElementById('anomaly-detail');
+            if(row&&det) row.onclick=()=>det.style.display=det.style.display==='block'?'none':'block';
+        },50);
+        return `<div class="info-section">
+            <div id="anomaly-row" class="info-row anomaly-row">
+                <span class="info-title">异动</span>
+                <span class="info-content">
+                    <span class="event-date">${i.date}</span>
+                    ${kw?`<span class="event-keywords">${kw}</span>`:''}
+                </span>
+            </div>
+            <div class="anomaly-detail" id="anomaly-detail">${r}</div>
+        </div>`;
+    }
+
+    renderCompanyInfo(){
+        if(!this.companyDesc) return '';
+        return `<div class="info-section">
+            <div class="info-row">
+                <span class="info-title">亮点</span>
+                <span class="info-content">${this.escapeHtml(this.companyDesc)}</span>
+            </div>
+        </div>`;
+    }
+
+    renderSimpleConcepts(){
+        if(!this.f10Data?.blocks?.info) return '';
+        return `<div class="info-section">
+            <div class="info-row">
+                <span class="info-title">概念</span>
+                <span class="info-content" style="word-break:break-all">
+                    ${this.escapeHtml(this.f10Data.blocks.info)}
+                </span>
+            </div>
+        </div>`;
+    }
+
+    renderMainBusiness(){
+        if(!this.f10Data?.mainproduct?.info) return '';
+        return `<div class="info-section">
+            <div class="info-row">
+                <span class="info-title">主营</span>
+                <span class="info-content">${this.escapeHtml(this.f10Data.mainproduct.info)}</span>
+            </div>
+        </div>`;
+    }
+
+    renderIndustry(){
+        if(!this.f10Data?.industry) return '';
+        const ind=this.f10Data.industry.tip||this.f10Data.industry.info||'';
+        const area=this.f10Data.area?.info||'';
+        return `<div class="info-section">
+            <div class="info-row">
+                <span class="info-title">行业</span>
+                <span class="info-content">${this.escapeHtml(ind)} - ${this.escapeHtml(area)}</span>
+            </div>
+        </div>`;
+    }
+
+    renderRestricted(){
+        if(!this.f10Data?.restricted?.info) return '';
+        let h='<div class="info-section">';
+        h+=`<div class="info-row"><span class="info-title">解禁</span><span class="info-content">${this.escapeHtml(this.f10Data.restricted.info)}</span></div>`;
+        if(this.f10Data.restrictedtype?.info)
+            h+=`<div class="info-row"><span class="info-title">类型</span><span class="info-content">${this.escapeHtml(this.f10Data.restrictedtype.info)}</span></div>`;
+        if(this.f10Data.restrictednum?.info)
+            h+=`<div class="info-row"><span class="info-title">数量</span><span class="info-content">${this.escapeHtml(this.f10Data.restrictednum.info)}</span></div>`;
+        if(this.f10Data.restrictedpercent?.info)
+            h+=`<div class="info-row"><span class="info-title">占比</span><span class="info-content">${this.escapeHtml(this.f10Data.restrictedpercent.info)}</span></div>`;
+        h+='</div>';
+        return h;
+    }
+
+    renderReduce(){
+        if(!this.f10Data?.reduceplan?.info) return '';
+        let h='<div class="info-section">';
+        h+=`<div class="info-row"><span class="info-title">减持</span><span class="info-content">${this.escapeHtml(this.f10Data.reduceplan.info)}</span></div>`;
+        if(this.f10Data.newreducedate?.info)
+            h+=`<div class="info-row"><span class="info-title">期间</span><span class="info-content">${this.escapeHtml(this.f10Data.newreducedate.info)}</span></div>`;
+        if(this.f10Data.reducetotal?.info)
+            h+=`<div class="info-row"><span class="info-title">合计</span><span class="info-content">${this.escapeHtml(this.f10Data.reducetotal.info)}</span></div>`;
+        if(this.f10Data.reducerate?.info)
+            h+=`<div class="info-row"><span class="info-title">占比</span><span class="info-content">${this.escapeHtml(this.f10Data.reducerate.info)}</span></div>`;
+        h+='</div>';
+        return h;
+    }
+
+    render(){
+        const html=[
+            this.renderAnomaly(),
+            this.renderCompanyInfo(),
+            this.renderSimpleConcepts(),
+            this.renderMainBusiness(),
+            this.renderIndustry(),
+            this.renderRestricted(),
+            this.renderReduce()
+        ].filter(Boolean).join('');
+        this.container.innerHTML=html||'<div style="padding:20px;text-align:center">暂无数据</div>';
+    }
+
+    getStockCode(){
+        const a=(typeof window.APP_STOCK_CODE==='string'?window.APP_STOCK_CODE.trim():'');
+        if(/^\d{6}$/.test(a)) return a;
+        const h=location.hash.replace('#','');
+        return /^\d{6}$/.test(h)?h:'600000';
+    }
+
+    initCodeWatcher(){
+        window.addEventListener('hashchange',()=>{
+            const c=this.getStockCode();
+            if(c!==this.currentCode){
+                this.currentCode=c;
+                this.lastFetchTime={f10:0,company:0,anomaly:0,rank:0};
+                this.latestAnomaly=null;
+                this.updateData();
+            }
+        });
+    }
+
+    init(){
+        this.initCodeWatcher();
+        this.currentCode=this.getStockCode();
+        this.updateData();
+    }
+}
+
+new StockViewer();
+</script>
+</body>
+</html>
