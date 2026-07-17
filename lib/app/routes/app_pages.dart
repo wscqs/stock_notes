@@ -166,11 +166,13 @@ class AppPages {
       name: _Paths.STOCKNOTE,
       page: () => const StocknoteView(),
       binding: StocknoteBinding(),
+      transition: Transition.downToUp,
     ),
     GetPage(
       name: _Paths.NOTEEDIT,
       page: () => const NoteeditView(),
       binding: NoteeditBinding(),
+      transition: Transition.zoom,
     ),
     GetPage(
       name: _Paths.USE,
