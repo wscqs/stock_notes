@@ -30,7 +30,7 @@ dependencies:
   zikzak_inappwebview: ^4.4.4
   flutter_slidable: ^4.0.3 #cell滑动事件
   photo_view: ^0.15.0 #图片预览
-  dropdown_button2: ^3.0.0-beta.25
+  dropdown_button2: ^3.1.0
   flutter_auto_size_text: ^5.0.0
   flutter_quill: ^11.5.0  #https://github.com/fleather-editor/fleather 文字按钮颜色等可以参考
   flutter_quill_extensions: ^11.0.0  # 用于支持图片等嵌入功能

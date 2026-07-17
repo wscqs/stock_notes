@@ -52,22 +52,31 @@ class StocknoteView extends GetView<StocknoteController> {
           body: SafeArea(
             child: Stack(
               children: [
-                SingleChildScrollView(
-                  controller: controller.editorScrollController,
-                  child: Container(
-                    color: Get.theme.scaffoldBackgroundColor,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          buildQuillEditor(),
-                          const SizedBox(height: 52),
-                        ],
+                LayoutBuilder(builder: (context, constraints) {
+                  return GestureDetector(
+                    // 文本很少时，点击空白处也能聚焦进入编辑状态
+                    behavior: HitTestBehavior.opaque,
+                    onTap: controller.focusEditorToEnd,
+                    child: SingleChildScrollView(
+                      controller: controller.editorScrollController,
+                      child: Container(
+                        color: Get.theme.scaffoldBackgroundColor,
+                        constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight), // 内容不足一屏也撑满
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              buildQuillEditor(),
+                              const SizedBox(height: 52),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: buildQuillSimpleToolbar()),
@@ -82,7 +91,9 @@ class StocknoteView extends GetView<StocknoteController> {
   QuillEditor buildQuillEditor() {
     return QuillEditor(
       focusNode: controller.editorFocusNode,
-      scrollController: controller.quillScrollController,
+      // 与外层 SingleChildScrollView 共用同一 ScrollController，
+      // 否则 flutter_quill 的 _showCaretOnScreen 因 hasClients=false 不滚动
+      scrollController: controller.editorScrollController,
       controller: controller.quillController,
       config: QuillEditorConfig(
         scrollable: false,

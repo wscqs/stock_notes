@@ -49,7 +49,6 @@ class StocknoteController extends GetxController {
   }();
   final FocusNode editorFocusNode = FocusNode();
   final ScrollController editorScrollController = ScrollController();
-  final ScrollController quillScrollController = ScrollController();
 
   final stockData = Rxn<StockItem>();
 
@@ -133,7 +132,6 @@ class StocknoteController extends GetxController {
   void onClose() {
     quillController.dispose();
     editorScrollController.dispose();
-    quillScrollController.dispose();
     editorFocusNode.dispose();
     super.onClose();
   }
@@ -232,6 +230,12 @@ class StocknoteController extends GetxController {
     } else {
       currentTextColor.value = Get.theme.colorScheme.onSurface;
     }
+  }
+
+  /// 点击空白区域：聚焦编辑器（进入编辑状态），光标移到文末
+  void focusEditorToEnd() {
+    editorFocusNode.requestFocus();
+    quillController.moveCursorToEnd();
   }
 
   /// 处理笔记中股票链接的点击事件

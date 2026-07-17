@@ -49,7 +49,6 @@ class NoteeditController extends GetxController {
   }();
   final FocusNode editorFocusNode = FocusNode();
   final ScrollController editorScrollController = ScrollController();
-  final ScrollController quillScrollController = ScrollController();
   final contentKey = GlobalKey(); // 用于截图滚动全部内容
 
   final localData = Rxn<NoteItem>();
@@ -126,6 +125,9 @@ class NoteeditController extends GetxController {
           // print("Editor is focused (editing).");
           isEditing.value = true;
           quillController.readOnly = false;
+          // 预览态切编辑态后，等键盘弹起再触发一次光标跟随，
+          // 否则 flutter_quill 内部 focus 监听未注册，光标会被键盘挡住
+          _ensureCursorVisibleAfterKeyboard();
         } else {
           // print("Editor is not focused.");
           isEditing.value = false;
@@ -164,7 +166,6 @@ class NoteeditController extends GetxController {
   void onClose() {
     quillController.dispose();
     editorScrollController.dispose();
-    quillScrollController.dispose();
     editorFocusNode.dispose();
     super.onClose();
   }
@@ -179,6 +180,17 @@ class NoteeditController extends GetxController {
       // 从预览切换到编辑：请求焦点，由 listener 自动设置 readOnly
       editorFocusNode.requestFocus();
     }
+  }
+
+  /// 键盘弹起后重新触发 flutter_quill 的光标跟随滚动。
+  /// 预览态切编辑态时 flutter_quill 内部未注册 focus 监听，
+  /// 点击后光标可能被键盘遮挡，需等视口稳定后再推一次 selection。
+  void _ensureCursorVisibleAfterKeyboard() {
+    Future.delayed(550.milliseconds, () {
+      if (!editorFocusNode.hasFocus) return;
+      final selection = quillController.selection;
+      quillController.updateSelection(selection, ChangeSource.local);
+    });
   }
 
   /// 根据数据库股票列表，自动识别笔记中的股票名称/代码并包装为 link

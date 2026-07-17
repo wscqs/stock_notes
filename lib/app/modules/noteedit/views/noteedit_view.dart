@@ -181,7 +181,9 @@ class NoteeditView extends GetView<NoteeditController> {
   QuillEditor buildQuillEditor() {
     return QuillEditor(
       focusNode: controller.editorFocusNode,
-      scrollController: controller.quillScrollController,
+      // 与外层 SingleChildScrollView 共用同一 ScrollController，
+      // 否则 flutter_quill 的 _showCaretOnScreen 因 hasClients=false 不滚动
+      scrollController: controller.editorScrollController,
       controller: controller.quillController,
       config: QuillEditorConfig(
         scrollable: false,
