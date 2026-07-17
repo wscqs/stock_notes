@@ -182,6 +182,12 @@ class NoteeditController extends GetxController {
     }
   }
 
+  /// 点击空白处进入编辑时，聚焦编辑器并把光标移到文档末尾
+  void focusEditorAtEnd() {
+    editorFocusNode.requestFocus();
+    quillController.moveCursorToEnd();
+  }
+
   /// 键盘弹起后重新触发 flutter_quill 的光标跟随滚动。
   /// 预览态切编辑态时 flutter_quill 内部未注册 focus 监听，
   /// 点击后光标可能被键盘遮挡，需等视口稳定后再推一次 selection。

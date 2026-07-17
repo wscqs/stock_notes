@@ -85,73 +85,113 @@ class NoteeditView extends GetView<NoteeditController> {
             ],
           ),
           body: SafeArea(
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  controller: controller.editorScrollController,
-                  child: RepaintBoundary(
-                    key: controller.contentKey,
-                    child: Container(
-                      color: Get.theme.scaffoldBackgroundColor,
-                      child: Padding(
-                        // 为分享图片保留底部边距
-                        padding: const EdgeInsets.only(bottom: 32),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    SingleChildScrollView(
+                      controller: controller.editorScrollController,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Stack(
                           children: [
-                            buildTitleTextField(),
-                            if ((controller.localData.value?.tagList.length ??
-                                    0) >
-                                0)
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, bottom: 4),
-                                child: Row(
-                                  children: [
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.only(right: 4, top: 2),
-                                      child: Icon(
-                                        RemixIcons.price_tag_3_line,
-                                        size: 12,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        controller.localData.value
-                                                ?.homeCellShowTagNames() ??
-                                            "",
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ),
-                                  ],
+                            Positioned.fill(
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: () {
+                                  if (!controller.isEditing.value) {
+                                    controller.focusEditorAtEnd();
+                                  }
+                                },
+                                child: Container(
+                                  color: Get.theme.scaffoldBackgroundColor,
                                 ),
                               ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16, right: 16, top: 4, bottom: 12),
-                              child: Divider(
-                                  thickness: 0.5,
-                                  color: Colors.grey.withValues(alpha: 0.5)),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16, right: 16, bottom: 16),
-                              child: buildQuillEditor(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RepaintBoundary(
+                                  key: controller.contentKey,
+                                  child: Padding(
+                                    // 为分享图片保留底部边距
+                                    padding:
+                                        const EdgeInsets.only(bottom: 32),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        buildTitleTextField(),
+                                        if ((controller.localData.value?.tagList
+                                                    .length ??
+                                                0) >
+                                            0)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 16,
+                                                right: 16,
+                                                bottom: 4),
+                                            child: Row(
+                                              children: [
+                                                const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 4, top: 2),
+                                                  child: Icon(
+                                                    RemixIcons.price_tag_3_line,
+                                                    size: 12,
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    controller.localData.value
+                                                            ?.homeCellShowTagNames() ??
+                                                        "",
+                                                    style: const TextStyle(
+                                                        fontSize: 12),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 16,
+                                              right: 16,
+                                              top: 4,
+                                              bottom: 12),
+                                          child: Divider(
+                                              thickness: 0.5,
+                                              color: Colors.grey.withValues(
+                                                  alpha: 0.5)),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 16,
+                                              right: 16,
+                                              bottom: 16),
+                                          child: buildQuillEditor(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (controller.isEditing.value)
+                                  const SizedBox(height: 52),
+                              ],
                             ),
-                            if (controller.isEditing.value)
-                              const SizedBox(height: 52),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                ),
-                if (controller.isEditing.value)
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: buildQuillSimpleToolbar()),
-              ],
+                    if (controller.isEditing.value)
+                      Align(
+                          alignment: Alignment.bottomCenter,
+                          child: buildQuillSimpleToolbar()),
+                  ],
+                );
+              },
             ),
           ),
         ),
