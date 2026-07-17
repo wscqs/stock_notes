@@ -187,12 +187,12 @@ class NoteeditView extends GetView<NoteeditController> {
                                           padding: const EdgeInsets.only(
                                               left: 16,
                                               right: 16,
-                                              top: 4,
-                                              bottom: 12),
+                                              top: 0,
+                                              bottom: 8),
                                           child: Divider(
                                               thickness: 0.5,
                                               color: Colors.grey
-                                                  .withValues(alpha: 0.5)),
+                                                  .withValues(alpha: 0.4)),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.only(
@@ -227,10 +227,10 @@ class NoteeditView extends GetView<NoteeditController> {
 
   Padding buildTitleTextField() {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 12),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 6),
       child: TextField(
         controller: controller.titleController,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         minLines: 1,
         maxLines: null,
         decoration: InputDecoration(
