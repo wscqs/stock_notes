@@ -341,7 +341,11 @@ class _HomeNoteCellState extends State<HomeNoteCell>
           children: [
             Text(
               widget.item.createdAt.toDateString() ?? "",
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(
+                fontSize: 11,
+                color: Get.theme.colorScheme.onSurfaceVariant
+                    .withValues(alpha: 0.8),
+              ),
             ),
             kSpaceW(8),
             if (widget.item.opTop)

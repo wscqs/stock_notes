@@ -415,7 +415,9 @@ class _HomeStockCellState extends State<HomeStockCell>
                 },
                 borderRadius: BorderRadius.circular(16),
                 child: Padding(
-                  padding: const EdgeInsets.all(14.0),
+                  // padding: const EdgeInsets.all(12.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   child: Obx(() {
                     return Row(
                       children: [
@@ -451,8 +453,9 @@ class _HomeStockCellState extends State<HomeStockCell>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 名称 + 价格 + 状态图标
+              // 名称 + 价格
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
                     child: Text(
@@ -470,12 +473,29 @@ class _HomeStockCellState extends State<HomeStockCell>
                     Text(
                       widget.item.currentPrice!,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: Get.theme.colorScheme.onSurface,
                       ),
                     ),
                   ],
+                ],
+              ),
+              kSpaceH(4),
+              // 代码行 + 状态图标
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      widget.item.code ?? "",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Get.theme.colorScheme.onSurfaceVariant,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  kSpaceW(2),
                   if (widget.item.opTop) ...[
                     kSpaceW(4),
                     Icon(
@@ -503,29 +523,24 @@ class _HomeStockCellState extends State<HomeStockCell>
                   ],
                   if (yieldRate != null && yieldRateText != null) ...[
                     kSpaceW(4),
-                    Text(
-                      yieldRateText,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: yieldRate > 0
-                            ? Colors.red
-                            : yieldRate < 0
-                                ? Colors.green
-                                : Colors.grey,
+                    Flexible(
+                      child: Text(
+                        yieldRateText,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: yieldRate > 0
+                              ? Colors.red
+                              : yieldRate < 0
+                                  ? Colors.green
+                                  : Colors.grey,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                   ],
                 ],
-              ),
-              kSpaceH(6),
-              // 代码行
-              Text(
-                widget.item.code ?? "",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Get.theme.colorScheme.onSurfaceVariant,
-                ),
               ),
               if (widget.item.tagList.isNotEmpty) ...[
                 kSpaceH(6),
@@ -563,7 +578,7 @@ class _HomeStockCellState extends State<HomeStockCell>
             children: [
               if (conditionInfo.isNotEmpty) ...[
                 _buildConditionTags(conditionInfo),
-                kSpaceH(6),
+                kSpaceH(4),
               ],
               Text(
                 widget.item.homeCellShowTime(
@@ -589,7 +604,7 @@ class _HomeStockCellState extends State<HomeStockCell>
       children: lines.asMap().entries.map((entry) {
         return Padding(
           padding:
-              EdgeInsets.only(bottom: entry.key < lines.length - 1 ? 2 : 0),
+              EdgeInsets.only(bottom: entry.key < lines.length - 1 ? 0 : 0),
           child: _buildConditionLine(entry.value),
         );
       }).toList(),
