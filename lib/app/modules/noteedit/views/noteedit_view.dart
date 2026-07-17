@@ -6,6 +6,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
@@ -32,6 +33,15 @@ class NoteeditView extends GetView<NoteeditController> {
             // title: Text(TextKey.biji.tr),
             actions: [
               if (controller.localData.value?.opDelete == true) ...[
+                //已删除文本
+                Text(
+                  TextKey.deleted.tr,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+                kSpaceW(12),
                 // 已删除笔记：恢复 + 永久删除
                 IconButton(
                   onPressed: controller.isLocalData.value
@@ -71,10 +81,9 @@ class NoteeditView extends GetView<NoteeditController> {
                     (controller.localData.value?.tagList.length ?? 0) > 0
                         ? Remix.price_tag_3_fill
                         : Remix.price_tag_3_line,
-                    color:
-                        (controller.localData.value?.tagList.length ?? 0) > 0
-                            ? Colors.blue
-                            : null,
+                    color: (controller.localData.value?.tagList.length ?? 0) > 0
+                        ? Colors.blue
+                        : null,
                   ),
                   tooltip: TextKey.biaoqian.tr,
                 ),
@@ -99,12 +108,10 @@ class NoteeditView extends GetView<NoteeditController> {
                   icon: const Icon(Icons.delete_forever),
                   tooltip: TextKey.delete.tr,
                 ),
-                const SizedBox(width: 8),
-                IconButton(
-                  onPressed: controller.save,
-                  icon: const Icon(Icons.save_outlined),
-                  tooltip: TextKey.baocun.tr,
-                ),
+                const SizedBox(width: 20),
+
+                ElevatedButton(
+                    onPressed: controller.save, child: Text(TextKey.baocun.tr))
               ]
             ],
           ),
@@ -141,8 +148,7 @@ class NoteeditView extends GetView<NoteeditController> {
                                   key: controller.contentKey,
                                   child: Padding(
                                     // 为分享图片保留底部边距
-                                    padding:
-                                        const EdgeInsets.only(bottom: 32),
+                                    padding: const EdgeInsets.only(bottom: 32),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -154,9 +160,7 @@ class NoteeditView extends GetView<NoteeditController> {
                                             0)
                                           Padding(
                                             padding: const EdgeInsets.only(
-                                                left: 16,
-                                                right: 16,
-                                                bottom: 4),
+                                                left: 16, right: 16, bottom: 4),
                                             child: Row(
                                               children: [
                                                 const Padding(
@@ -187,14 +191,12 @@ class NoteeditView extends GetView<NoteeditController> {
                                               bottom: 12),
                                           child: Divider(
                                               thickness: 0.5,
-                                              color: Colors.grey.withValues(
-                                                  alpha: 0.5)),
+                                              color: Colors.grey
+                                                  .withValues(alpha: 0.5)),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 16,
-                                              right: 16,
-                                              bottom: 16),
+                                              left: 16, right: 16, bottom: 16),
                                           child: buildQuillEditor(),
                                         ),
                                       ],

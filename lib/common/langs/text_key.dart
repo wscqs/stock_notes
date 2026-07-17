@@ -42,6 +42,7 @@ class TextKey {
   static const chiyou = 'chiyou';
   static const collect = 'collect';
   static const delete = 'delete';
+  static const deleted = 'deleted';
   static const noData = 'noData';
   static const look = 'look';
   static const refresh = 'refresh';
@@ -168,6 +169,7 @@ const Map<String, String> zh = {
   TextKey.all: '全部',
   TextKey.collect: '收藏',
   TextKey.delete: '删除',
+  TextKey.deleted: '已删除',
   TextKey.noData: '暂无数据',
   TextKey.look: '查看',
   TextKey.refresh: '刷新',
@@ -339,6 +341,7 @@ const Map<String, String> en = {
   TextKey.all: 'All',
   TextKey.collect: 'Collect',
   TextKey.delete: 'Delete',
+  TextKey.deleted: 'Deleted',
   TextKey.noData: 'No data',
   TextKey.look: 'Look',
   TextKey.refresh: 'Refresh',
