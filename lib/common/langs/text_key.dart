@@ -16,6 +16,7 @@ class TextKey {
   static const gupiao = 'gupiao';
   static const biji = 'biji';
   static const baocun = 'baochun';
+  static const wancheng = 'wancheng';
   static const jihua = 'jihua';
   static const jige = 'jige';
   static const buy = 'buy';
@@ -142,6 +143,7 @@ const Map<String, String> zh = {
   TextKey.gupiao: '股票',
   TextKey.biji: '笔记',
   TextKey.baocun: '保存',
+  TextKey.wancheng: '完成',
   TextKey.jihua: '计划',
   TextKey.jige: "价格",
   TextKey.buy: '买',
@@ -311,6 +313,7 @@ const Map<String, String> en = {
   TextKey.gupiao: 'Stock',
   TextKey.biji: 'Note',
   TextKey.baocun: 'Save',
+  TextKey.wancheng: 'Done',
   TextKey.jihua: 'Plan',
   TextKey.jige: "Price",
   TextKey.buy: 'Buy',

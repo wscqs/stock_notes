@@ -27,38 +27,22 @@ class StockeditView extends GetView<StockeditController> {
       child: Scaffold(
         appBar: AppBar(
           title: Obx(() {
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(controller.isLocalData.value
-                          ? controller.localStockData.value!.name
-                          : TextKey.gupiao.tr),
-                      if (controller.localStockData?.value?.opDelete ?? false)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Icon(
-                            Icons.delete,
-                            size: 16,
-                            color: Colors.red,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            );
+            return Text(controller.isLocalData.value
+                ? controller.localStockData.value!.name
+                : TextKey.gupiao.tr);
           }),
           centerTitle: true,
           actions: [
-            ElevatedButton(
-                onPressed: () {
-                  controller.save();
-                },
-                child: Text(TextKey.baocun.tr))
+            IconButton(
+              icon: const Icon(Icons.save_outlined),
+              tooltip: TextKey.baocun.tr,
+              onPressed: () => controller.save(isBack: false),
+            ),
+            IconButton(
+              icon: const Icon(Icons.check),
+              tooltip: TextKey.wancheng.tr,
+              onPressed: () => controller.save(),
+            ),
           ],
         ),
         body: Obx(() {

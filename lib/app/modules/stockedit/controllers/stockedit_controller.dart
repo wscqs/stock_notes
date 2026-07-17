@@ -611,6 +611,10 @@ class StockeditController extends BaseController {
       db.addStockOnConflictUpdate(itemUpdate);
     } else {
       db.addStock(itemCompanion);
+      // 新股票保存后如果留在当前页，需要同步本地状态，否则后续操作仍提示保存
+      if (!isBack) {
+        await firstSaveDbAndRefreshUI();
+      }
     }
     QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
     if (isBack) {
