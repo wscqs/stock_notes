@@ -99,9 +99,12 @@ class NoteeditView extends GetView<NoteeditController> {
                   icon: const Icon(Icons.delete_forever),
                   tooltip: TextKey.delete.tr,
                 ),
-                ElevatedButton(
-                    onPressed: controller.save,
-                    child: Text(TextKey.baocun.tr))
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: controller.save,
+                  icon: const Icon(Icons.save_outlined),
+                  tooltip: TextKey.baocun.tr,
+                ),
               ]
             ],
           ),
