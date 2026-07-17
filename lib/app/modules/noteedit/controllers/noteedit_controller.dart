@@ -272,8 +272,6 @@ class NoteeditController extends GetxController {
     localData.refresh();
     db.updateNoteWithOp(localData.value!);
     QsHud.showToast(TextKey.huifu.tr + TextKey.success.tr);
-    canPop = true;
-    Get.back();
   }
 
   Future<void> save({bool isBack = true}) async {
