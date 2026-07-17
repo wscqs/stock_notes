@@ -264,6 +264,18 @@ class NoteeditController extends GetxController {
     Get.back();
   }
 
+  //恢复
+  void clickRestore() {
+    if (!isLocalData.value) return;
+    final db = Get.find<DatabaseManager>().db;
+    localData.value = localData.value!.copyWith(opDelete: false);
+    localData.refresh();
+    db.updateNoteWithOp(localData.value!);
+    QsHud.showToast(TextKey.huifu.tr + TextKey.success.tr);
+    canPop = true;
+    Get.back();
+  }
+
   Future<void> save({bool isBack = true}) async {
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
