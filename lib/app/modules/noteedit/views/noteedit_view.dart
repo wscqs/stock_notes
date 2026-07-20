@@ -30,11 +30,12 @@ class NoteeditView extends GetView<NoteeditController> {
         child: Scaffold(
           appBar: AppBar(
             actions: [
-              IconButton(
-                icon: const Icon(Icons.save_outlined),
-                tooltip: TextKey.baocun.tr,
-                onPressed: controller.saveOnly,
-              ),
+              if (controller.isEditing.value)
+                IconButton(
+                  icon: const Icon(Icons.save_outlined),
+                  tooltip: TextKey.baocun.tr,
+                  onPressed: controller.saveOnly,
+                ),
               IconButton(
                 icon: const Icon(Icons.check),
                 tooltip: TextKey.wancheng.tr,
