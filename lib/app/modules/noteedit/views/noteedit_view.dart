@@ -43,6 +43,7 @@ class NoteeditView extends GetView<NoteeditController> {
               ),
             ],
           ),
+          bottomNavigationBar: buildBottomBar(),
           body: SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
