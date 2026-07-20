@@ -316,6 +316,12 @@ class NoteeditController extends GetxController {
     }
   }
 
+  /// 仅保存，不退出页面
+  Future<void> saveOnly() async => await save(isBack: false);
+
+  /// 保存并退出页面
+  Future<void> complete() async => await save(isBack: true);
+
   //显示选择颜色弹窗
   void showColorPicker() {
     SmartDialog.show(
