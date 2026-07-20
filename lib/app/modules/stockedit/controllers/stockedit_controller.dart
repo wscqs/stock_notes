@@ -87,6 +87,7 @@ class StockeditController extends BaseController {
 
   var isFirstCome = true;
   var _ignoreNextSuggestionUpdate = false;
+  var _wasPaused = false;
 
   @override
   void onInit() {
@@ -95,7 +96,8 @@ class StockeditController extends BaseController {
     extLinkIds.value = StockExtLinks.selectedIds();
     stockNumController.addListener(_updateStockNum);
     stockNumFocusNode.addListener(_onStockNumFocusChange);
-    debounce(stockNum, (_) => _updateSearchSuggestions(), time: 200.milliseconds);
+    debounce(stockNum, (_) => _updateSearchSuggestions(),
+        time: 200.milliseconds);
     pPriceBuyController.addListener(_updateYieldRate);
     pPriceSaleController.addListener(_updateYieldRate);
     pMarketCapBuyController.addListener(_updateYieldRate);
@@ -306,8 +308,8 @@ class StockeditController extends BaseController {
                     Text(
                       entry.key,
                       style: textTheme.bodySmall?.copyWith(
-                            color: theme.hintColor,
-                          ),
+                        color: theme.hintColor,
+                      ),
                     ),
                   ],
                 ),
@@ -320,26 +322,28 @@ class StockeditController extends BaseController {
   }
 
   void _updateYieldRate() {
-    if (pPriceBuyController.text.isNotEmpty &&
-        pPriceSaleController.text.isNotEmpty &&
-        (double.tryParse(pPriceBuyController.text) ?? 0.0) >= 0) {
-      pPriceYieldRate.value = (double.parse(pPriceSaleController.text) -
-              double.parse(pPriceBuyController.text)) /
-          double.parse(pPriceBuyController.text);
+    final priceBuy = double.tryParse(pPriceBuyController.text);
+    final priceSale = double.tryParse(pPriceSaleController.text);
+    if (priceBuy != null && priceSale != null && priceBuy > 0) {
+      pPriceYieldRate.value = (priceSale - priceBuy) / priceBuy;
+    } else {
+      pPriceYieldRate.value = 0.0;
     }
-    if (pMarketCapBuyController.text.isNotEmpty &&
-        pMarketCapSaleController.text.isNotEmpty &&
-        (double.tryParse(pMarketCapBuyController.text) ?? 0.0) >= 0) {
-      pMarketCapYieldRate.value = (double.parse(pMarketCapSaleController.text) -
-              double.parse(pMarketCapBuyController.text)) /
-          double.parse(pMarketCapBuyController.text);
+
+    final marketCapBuy = double.tryParse(pMarketCapBuyController.text);
+    final marketCapSale = double.tryParse(pMarketCapSaleController.text);
+    if (marketCapBuy != null && marketCapSale != null && marketCapBuy > 0) {
+      pMarketCapYieldRate.value = (marketCapSale - marketCapBuy) / marketCapBuy;
+    } else {
+      pMarketCapYieldRate.value = 0.0;
     }
-    if (pPeTtmBuyController.text.isNotEmpty &&
-        pPeTtmSaleController.text.isNotEmpty &&
-        (double.tryParse(pPeTtmBuyController.text) ?? 0.0) >= 0) {
-      pPeTtmYieldRate.value = (double.parse(pPeTtmSaleController.text) -
-              double.parse(pPeTtmBuyController.text)) /
-          double.parse(pPeTtmBuyController.text);
+
+    final peTtmBuy = double.tryParse(pPeTtmBuyController.text);
+    final peTtmSale = double.tryParse(pPeTtmSaleController.text);
+    if (peTtmBuy != null && peTtmSale != null && peTtmBuy > 0) {
+      pPeTtmYieldRate.value = (peTtmSale - peTtmBuy) / peTtmBuy;
+    } else {
+      pPeTtmYieldRate.value = 0.0;
     }
 
     _updateBuySalePoints();
@@ -353,7 +357,8 @@ class StockeditController extends BaseController {
     rHoldProfit.value = 0.0;
     rHoldMarketValue.value = 0.0;
     if ((serStockData.value.code ?? "").isNotEmpty) {
-      final currentPrice = double.tryParse(serStockData.value.currentPrice ?? "");
+      final currentPrice =
+          double.tryParse(serStockData.value.currentPrice ?? "");
 
       if (buyPrice != null && buyPrice != 0 && currentPrice != null) {
         rBuyPriceYieldRate.value = (currentPrice - buyPrice) / buyPrice;
@@ -676,6 +681,8 @@ class StockeditController extends BaseController {
 
   /// 选择关联链接弹窗：多选 + 预览 + 拖拽排序，确定后写全局缓存并刷新按钮
   void showExtLinkPicker() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    _wasPaused = true;
     final tempOrder = StockExtLinks.orderedIds().toList();
     final tempSelected = extLinkIds.toSet();
     Get.dialog(StatefulBuilder(
@@ -759,8 +766,7 @@ class StockeditController extends BaseController {
             TextButton(
               onPressed: () {
                 StockExtLinks.saveOrderedIds(tempOrder);
-                final ordered =
-                    tempOrder.where(tempSelected.contains).toList();
+                final ordered = tempOrder.where(tempSelected.contains).toList();
                 StockExtLinks.saveSelectedIds(ordered);
                 extLinkIds.value = ordered;
                 Get.back();
@@ -879,6 +885,8 @@ class StockeditController extends BaseController {
           });
       return;
     }
+    FocusManager.instance.primaryFocus?.unfocus();
+    _wasPaused = true;
     TagseditView.show(localStockData.value!);
   }
 
@@ -892,6 +900,8 @@ class StockeditController extends BaseController {
           });
       return;
     }
+    FocusManager.instance.primaryFocus?.unfocus();
+    _wasPaused = true;
     //带上最新价格：实时行情优先，其次本地缓存
     final price = (serStockData.value.currentPrice?.isNotEmpty == true)
         ? serStockData.value.currentPrice
@@ -921,7 +931,10 @@ class StockeditController extends BaseController {
     super.onResume();
     if (isFirstCome) {
       isFirstCome = false;
-    } else {
+    } else if (_wasPaused) {
+      _wasPaused = false;
+      // 从标签/笔记页返回时，取消可能自动恢复的输入框焦点，避免键盘自动弹出
+      FocusManager.instance.primaryFocus?.unfocus();
       refreshTags(); //后退才刷新UI
     }
   }
@@ -929,14 +942,14 @@ class StockeditController extends BaseController {
   @override
   void onPause() {
     super.onPause();
+    _wasPaused = true;
   }
 
   // ========== 交易记录 ==========
 
   Future<void> loadTrades() async {
     if (localStockData.value != null) {
-      final trades =
-          await db.getStockTradesByStockId(localStockData.value!.id);
+      final trades = await db.getStockTradesByStockId(localStockData.value!.id);
       stockTrades.value = trades;
     }
   }
