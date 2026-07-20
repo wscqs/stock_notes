@@ -52,7 +52,7 @@
     body {
       margin: 0;
       min-height: 100%;
-      background-color: #ffffff;
+      background-color: #000000;
           background-size: 100% 100%;
     }
 
@@ -101,13 +101,32 @@
       bottom: 0;
       right: 0;
     }
-
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #000000;
-          }
-    }
   </style>
+  <script id="splash-theme-script">
+    // 在 Flutter 渲染前根据 App 保存的主题偏好设置 splash 背景色，
+    // 避免夜间模式加载时出现白色闪烁。
+    (function () {
+      const key = 'flutter.themeCodeKey';
+      const raw = localStorage.getItem(key);
+      let isDark = true; // 与 App 默认主题（dark）保持一致
+      if (raw) {
+        try {
+          const value = JSON.parse(raw);
+          if (value === 'light') {
+            isDark = false;
+          } else if (value === 'system') {
+            isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+        } catch (_) {
+          // 解析失败时沿用默认暗色
+        }
+      }
+      const bg = isDark ? '#000000' : '#ffffff';
+      const style = document.createElement('style');
+      style.textContent = 'body { background-color: ' + bg + '; }';
+      document.head.appendChild(style);
+    })();
+  </script>
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
       document.getElementById("splash")?.remove();
