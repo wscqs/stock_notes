@@ -308,6 +308,127 @@ class NoteeditView extends GetView<NoteeditController> {
       ),
     );
   }
+
+  Widget? buildBottomBar() {
+    if (controller.isEditing.value) return null;
+
+    return Obx(() {
+      final isDeleted = controller.localData.value?.opDelete == true;
+      return Container(
+        decoration: BoxDecoration(
+          color: Get.theme.colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Get.theme.shadowColor.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: SizedBox(
+            height: kBottomNavigationBarHeight,
+            child: isDeleted
+                ? _buildDeletedBottomActions()
+                : _buildNormalBottomActions(),
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _buildNormalBottomActions() {
+    final canOperate = controller.isLocalData.value;
+    final local = controller.localData.value;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildBottomActionItem(
+          icon: Icons.share_outlined,
+          label: TextKey.share.tr,
+          onTap: canOperate ? controller.clickShare : null,
+        ),
+        _buildBottomActionItem(
+          icon: (local?.tagList.length ?? 0) > 0
+              ? Remix.price_tag_3_fill
+              : Remix.price_tag_3_line,
+          label: TextKey.biaoqian.tr,
+          color: (local?.tagList.length ?? 0) > 0 ? Colors.blue : null,
+          onTap: canOperate ? controller.clickPushTag : null,
+        ),
+        _buildBottomActionItem(
+          icon: (local?.opCollect ?? false)
+              ? Icons.star
+              : Icons.star_border_outlined,
+          label: TextKey.collect.tr,
+          color: (local?.opCollect ?? false) ? Colors.amber : null,
+          onTap: canOperate ? controller.clickOpCollect : null,
+        ),
+        _buildBottomActionItem(
+          icon: Icons.delete_forever,
+          label: TextKey.delete.tr,
+          onTap: canOperate ? controller.clickOpDelete : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDeletedBottomActions() {
+    final theme = Get.theme;
+    final canOperate = controller.isLocalData.value;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildBottomActionItem(
+          icon: Icons.restore,
+          label: TextKey.huifu.tr,
+          color: Colors.green,
+          onTap: canOperate ? controller.clickRestore : null,
+        ),
+        _buildBottomActionItem(
+          icon: Icons.delete_forever,
+          label: TextKey.delete.tr,
+          color: theme.colorScheme.error,
+          onTap: canOperate ? controller.clickOpDelete : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomActionItem({
+    required IconData icon,
+    required String label,
+    Color? color,
+    VoidCallback? onTap,
+  }) {
+    final theme = Get.theme;
+    final enabled = onTap != null;
+    final effectiveColor = color ?? theme.colorScheme.onSurfaceVariant;
+    return MergeSemantics(
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        child: InkWell(
+          onTap: onTap,
+          child: Opacity(
+            opacity: enabled ? 1.0 : 0.3,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 22, color: effectiveColor),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 10, color: effectiveColor),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class TimeStampEmbed extends Embeddable {
