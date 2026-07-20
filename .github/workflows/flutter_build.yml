@@ -68,6 +68,9 @@ jobs:
       - name: Clean Flutter pub
         run: flutter clean
 
+      - name: Enable Swift Package Manager
+        run: flutter config --enable-swift-package-manager
+
       - name: Flutter pub get
         run: flutter pub get
 
