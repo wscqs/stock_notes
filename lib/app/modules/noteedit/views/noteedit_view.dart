@@ -201,7 +201,10 @@ class NoteeditView extends GetView<NoteeditController> {
             final linkAttr = leaf.style.attributes[Attribute.link.key];
             if (linkAttr != null) {
               final link = linkAttr.value as String;
-              if (link.startsWith('stocknotes://')) {
+              final normalizedLink = link.trim().toLowerCase();
+              if (normalizedLink.startsWith('stocknotes://') ||
+                  normalizedLink.startsWith('http://') ||
+                  normalizedLink.startsWith('https://')) {
                 controller.handleLinkTap(link);
                 return true; // 阻止默认行为（包括获取焦点）
               }

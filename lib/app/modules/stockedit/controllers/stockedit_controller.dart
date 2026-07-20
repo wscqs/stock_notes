@@ -13,6 +13,7 @@ import 'package:stock_notes/common/web/stock_ext_links.dart';
 import 'package:stock_notes/common/web/webview_widget.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
+import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
@@ -914,8 +915,17 @@ class StockeditController extends BaseController {
         arguments: localStockData.value!.copyWith(currentPrice: Value(price)));
   }
 
-  /// 处理笔记预览中股票链接的点击事件
+  /// 处理笔记预览中链接的点击事件（支持股票链接与应用内 http/https 链接）
   Future<void> handleLinkTap(String link) async {
+    final normalizedLink = link.trim().toLowerCase();
+    if (normalizedLink.startsWith('http://') ||
+        normalizedLink.startsWith('https://')) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      _wasPaused = true;
+      await openLinkInAppWebView(link);
+      return;
+    }
+
     final code = StockLinkUtils.parseStockCodeFromLink(link);
     if (code == null) return;
 

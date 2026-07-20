@@ -10,6 +10,7 @@ import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:path/path.dart' as path;
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
+import 'package:stock_notes/utils/qs_link_opener.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
@@ -238,8 +239,15 @@ class StocknoteController extends GetxController {
     quillController.moveCursorToEnd();
   }
 
-  /// 处理笔记中股票链接的点击事件
+  /// 处理笔记中链接的点击事件（支持股票链接与应用内 http/https 链接）
   Future<void> handleLinkTap(String link) async {
+    final normalizedLink = link.trim().toLowerCase();
+    if (normalizedLink.startsWith('http://') ||
+        normalizedLink.startsWith('https://')) {
+      await openLinkInAppWebView(link);
+      return;
+    }
+
     final code = StockLinkUtils.parseStockCodeFromLink(link);
     if (code == null) return;
 

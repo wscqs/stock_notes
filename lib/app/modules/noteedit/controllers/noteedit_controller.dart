@@ -11,6 +11,7 @@ import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:path/path.dart' as path;
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
+import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
@@ -277,6 +278,7 @@ class NoteeditController extends GetxController {
   Future<void> save({bool isBack = true}) async {
     //键盘隐藏
     FocusScope.of(Get.context!).requestFocus(FocusNode());
+    editorFocusNode.unfocus(); //这行有监听，所以一定要关闭
     final db = Get.find<DatabaseManager>().db;
     String title = titleController.text;
     if (title.isEmpty) {
@@ -296,7 +298,8 @@ class NoteeditController extends GetxController {
     title = title.trim();
     // 自动识别股票代码/名称并包装为可点击的 link
     await _wrapStockLinks();
-    final encodedContent = jsonEncode(quillController.document.toDelta().toJson());
+    final encodedContent =
+        jsonEncode(quillController.document.toDelta().toJson());
     NoteItemsCompanion itemsCompanion =
         NoteItemsCompanion.insert(title: title, content: Value(encodedContent));
     if (localData.value != null) {
@@ -313,6 +316,11 @@ class NoteeditController extends GetxController {
     QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
     if (isBack) {
       Get.back();
+    } else {
+      //延迟 1 秒
+      Future.delayed(500.milliseconds, () {
+        FocusScope.of(Get.context!).requestFocus(FocusNode());
+      });
     }
   }
 
@@ -370,8 +378,18 @@ class NoteeditController extends GetxController {
     }
   }
 
-  /// 处理笔记中股票链接的点击事件
+  /// 处理笔记中链接的点击事件（支持股票链接与应用内 http/https 链接）
   Future<void> handleLinkTap(String link) async {
+    // FocusManager.instance.primaryFocus?.unfocus();
+    editorFocusNode.unfocus();
+    final normalizedLink = link.trim().toLowerCase();
+    if (normalizedLink.startsWith('http://') ||
+        normalizedLink.startsWith('https://')) {
+      await openLinkInAppWebView(link);
+      // _wasPaused = true;
+      return;
+    }
+
     final code = StockLinkUtils.parseStockCodeFromLink(link);
     if (code == null) return;
 
@@ -394,14 +412,16 @@ class NoteeditController extends GetxController {
     if (subject.isEmpty) {
       final plainText = quillController.document.toPlainText().trim();
       if (plainText.isNotEmpty) {
-        subject = plainText.length > 18 ? plainText.substring(0, 18) : plainText;
+        subject =
+            plainText.length > 18 ? plainText.substring(0, 18) : plainText;
       }
     }
     if (subject.isEmpty) {
       subject = TextKey.biji.tr;
     }
     if (isClosed) return;
-    final prefix = 'note_share_${localData.value?.id ?? DateTime.now().millisecondsSinceEpoch}';
+    final prefix =
+        'note_share_${localData.value?.id ?? DateTime.now().millisecondsSinceEpoch}';
     await ShareImageUtil.share(
       key: contentKey,
       subject: subject,
