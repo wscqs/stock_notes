@@ -30,96 +30,17 @@ class NoteeditView extends GetView<NoteeditController> {
         },
         child: Scaffold(
           appBar: AppBar(
-            // title: Text(TextKey.biji.tr),
             actions: [
-              if (controller.localData.value?.opDelete == true) ...[
-                //已删除文本
-                Text(
-                  TextKey.deleted.tr,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 12,
-                  ),
-                ),
-                kSpaceW(12),
-                // 已删除笔记：恢复 + 永久删除
-                IconButton(
-                  onPressed: controller.isLocalData.value
-                      ? controller.clickRestore
-                      : null,
-                  icon: const Icon(Icons.restore),
-                  tooltip: TextKey.huifu.tr,
-                ),
-                IconButton(
-                  onPressed: controller.isLocalData.value
-                      ? controller.clickOpDelete
-                      : null,
-                  icon: const Icon(Icons.delete_forever),
-                  tooltip: TextKey.delete.tr,
-                ),
-              ] else ...[
-                // 非删除笔记：保持原有按钮
-                if (controller.isEditing.value)
-                  IconButton(
-                    onPressed: controller.toggleEditMode,
-                    icon: const Icon(Icons.visibility),
-                    tooltip: '预览',
-                  ),
-                if (!controller.isEditing.value)
-                  IconButton(
-                    onPressed: controller.isLocalData.value
-                        ? controller.clickShare
-                        : null,
-                    icon: const Icon(Icons.share_outlined),
-                    tooltip: '分享',
-                  ),
-                IconButton(
-                  onPressed: controller.isLocalData.value
-                      ? controller.clickPushTag
-                      : null,
-                  icon: Icon(
-                    (controller.localData.value?.tagList.length ?? 0) > 0
-                        ? Remix.price_tag_3_fill
-                        : Remix.price_tag_3_line,
-                    color: (controller.localData.value?.tagList.length ?? 0) > 0
-                        ? Colors.blue
-                        : null,
-                  ),
-                  tooltip: TextKey.biaoqian.tr,
-                ),
-                IconButton(
-                  onPressed: controller.isLocalData.value
-                      ? controller.clickOpCollect
-                      : null,
-                  icon: Icon(
-                    (controller.localData.value?.opCollect ?? false)
-                        ? Icons.star
-                        : Icons.star_border_outlined,
-                    color: (controller.localData.value?.opCollect ?? false)
-                        ? Colors.amber
-                        : null,
-                  ),
-                  tooltip: TextKey.collect.tr,
-                ),
-                IconButton(
-                  onPressed: controller.isLocalData.value
-                      ? controller.clickOpDelete
-                      : null,
-                  icon: const Icon(Icons.delete_forever),
-                  tooltip: TextKey.delete.tr,
-                ),
-                const SizedBox(width: 12),
-                IconButton(
-                  icon: const Icon(Icons.save_outlined),
-                  tooltip: TextKey.baocun.tr,
-                  onPressed: controller.saveOnly,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.check),
-                  tooltip: TextKey.wancheng.tr,
-                  onPressed: controller.complete,
-                ),
-              ]
+              IconButton(
+                icon: const Icon(Icons.save_outlined),
+                tooltip: TextKey.baocun.tr,
+                onPressed: controller.saveOnly,
+              ),
+              IconButton(
+                icon: const Icon(Icons.check),
+                tooltip: TextKey.wancheng.tr,
+                onPressed: controller.complete,
+              ),
             ],
           ),
           body: SafeArea(
