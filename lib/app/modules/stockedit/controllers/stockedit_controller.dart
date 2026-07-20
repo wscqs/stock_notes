@@ -466,8 +466,12 @@ class StockeditController extends BaseController {
       if (!isLocalData.value) {
         final db = Get.find<DatabaseManager>().db;
         var stockItem = await db.getStockItem(serStockData.value.code!);
-        localStockData.value = stockItem;
-        _dealHasLocalDataRefreshUI();
+        if (stockItem != null) {
+          localStockData.value = stockItem;
+          isLocalData.value = true;
+          _dealHasLocalDataRefreshUI();
+          loadTrades();
+        }
       } else {
         //本地数据有值
         _updateBuySalePoints(); //更新买卖点数
