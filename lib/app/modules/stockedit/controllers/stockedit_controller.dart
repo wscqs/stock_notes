@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:date_field/date_field.dart';
 import 'package:drift/drift.dart' hide Column;
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -76,6 +78,7 @@ class StockeditController extends BaseController {
   final tradeSharesController = TextEditingController();
   final tradeRemarkController = TextEditingController();
   final tradeType = 0.obs; // 0=买, 1=卖
+  final tradeDate = DateTime.now().obs;
 
   //股票笔记（大备注）预览
   final noteQuillController = QuillController.basic();
@@ -978,6 +981,7 @@ class StockeditController extends BaseController {
       return;
     }
     tradeType.value = 0;
+    tradeDate.value = DateTime.now();
     tradePriceController.clear();
     tradeSharesController.clear();
     tradeRemarkController.clear();
@@ -1057,6 +1061,7 @@ class StockeditController extends BaseController {
       price: Value(tradePriceController.text),
       shares: Value(tradeSharesController.text),
       remark: Value(tradeRemarkController.text),
+      tradeDate: Value(tradeDate.value),
     );
     await db.addStockTrade(item);
     QsHud.dismiss();
