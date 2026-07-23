@@ -2391,9 +2391,24 @@ class $StockTradesTable extends StockTrades
   late final GeneratedColumn<String> remark = GeneratedColumn<String>(
       'remark', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _tradeDateMeta =
+      const VerificationMeta('tradeDate');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, createdAt, updateAt, stockId, tradeType, price, shares, remark];
+  late final GeneratedColumn<DateTime> tradeDate = GeneratedColumn<DateTime>(
+      'trade_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        createdAt,
+        updateAt,
+        stockId,
+        tradeType,
+        price,
+        shares,
+        remark,
+        tradeDate
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2439,6 +2454,10 @@ class $StockTradesTable extends StockTrades
       context.handle(_remarkMeta,
           remark.isAcceptableOrUnknown(data['remark']!, _remarkMeta));
     }
+    if (data.containsKey('trade_date')) {
+      context.handle(_tradeDateMeta,
+          tradeDate.isAcceptableOrUnknown(data['trade_date']!, _tradeDateMeta));
+    }
     return context;
   }
 
@@ -2464,6 +2483,8 @@ class $StockTradesTable extends StockTrades
           .read(DriftSqlType.string, data['${effectivePrefix}shares']),
       remark: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}remark']),
+      tradeDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}trade_date']),
     );
   }
 
@@ -2482,6 +2503,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
   final String? price;
   final String? shares;
   final String? remark;
+  final DateTime? tradeDate;
   const StockTrade(
       {required this.id,
       required this.createdAt,
@@ -2490,7 +2512,8 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       required this.tradeType,
       this.price,
       this.shares,
-      this.remark});
+      this.remark,
+      this.tradeDate});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2508,6 +2531,9 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
     if (!nullToAbsent || remark != null) {
       map['remark'] = Variable<String>(remark);
     }
+    if (!nullToAbsent || tradeDate != null) {
+      map['trade_date'] = Variable<DateTime>(tradeDate);
+    }
     return map;
   }
 
@@ -2524,6 +2550,9 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
           shares == null && nullToAbsent ? const Value.absent() : Value(shares),
       remark:
           remark == null && nullToAbsent ? const Value.absent() : Value(remark),
+      tradeDate: tradeDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tradeDate),
     );
   }
 
@@ -2539,6 +2568,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       price: serializer.fromJson<String?>(json['price']),
       shares: serializer.fromJson<String?>(json['shares']),
       remark: serializer.fromJson<String?>(json['remark']),
+      tradeDate: serializer.fromJson<DateTime?>(json['tradeDate']),
     );
   }
   @override
@@ -2553,6 +2583,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       'price': serializer.toJson<String?>(price),
       'shares': serializer.toJson<String?>(shares),
       'remark': serializer.toJson<String?>(remark),
+      'tradeDate': serializer.toJson<DateTime?>(tradeDate),
     };
   }
 
@@ -2564,7 +2595,8 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
           int? tradeType,
           Value<String?> price = const Value.absent(),
           Value<String?> shares = const Value.absent(),
-          Value<String?> remark = const Value.absent()}) =>
+          Value<String?> remark = const Value.absent(),
+          Value<DateTime?> tradeDate = const Value.absent()}) =>
       StockTrade(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -2574,6 +2606,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
         price: price.present ? price.value : this.price,
         shares: shares.present ? shares.value : this.shares,
         remark: remark.present ? remark.value : this.remark,
+        tradeDate: tradeDate.present ? tradeDate.value : this.tradeDate,
       );
   StockTrade copyWithCompanion(StockTradesCompanion data) {
     return StockTrade(
@@ -2585,6 +2618,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       price: data.price.present ? data.price.value : this.price,
       shares: data.shares.present ? data.shares.value : this.shares,
       remark: data.remark.present ? data.remark.value : this.remark,
+      tradeDate: data.tradeDate.present ? data.tradeDate.value : this.tradeDate,
     );
   }
 
@@ -2598,14 +2632,15 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
           ..write('tradeType: $tradeType, ')
           ..write('price: $price, ')
           ..write('shares: $shares, ')
-          ..write('remark: $remark')
+          ..write('remark: $remark, ')
+          ..write('tradeDate: $tradeDate')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, createdAt, updateAt, stockId, tradeType, price, shares, remark);
+  int get hashCode => Object.hash(id, createdAt, updateAt, stockId, tradeType,
+      price, shares, remark, tradeDate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2617,7 +2652,8 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
           other.tradeType == this.tradeType &&
           other.price == this.price &&
           other.shares == this.shares &&
-          other.remark == this.remark);
+          other.remark == this.remark &&
+          other.tradeDate == this.tradeDate);
 }
 
 class StockTradesCompanion extends UpdateCompanion<StockTrade> {
@@ -2629,6 +2665,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
   final Value<String?> price;
   final Value<String?> shares;
   final Value<String?> remark;
+  final Value<DateTime?> tradeDate;
   const StockTradesCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -2638,6 +2675,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     this.price = const Value.absent(),
     this.shares = const Value.absent(),
     this.remark = const Value.absent(),
+    this.tradeDate = const Value.absent(),
   });
   StockTradesCompanion.insert({
     this.id = const Value.absent(),
@@ -2648,6 +2686,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     this.price = const Value.absent(),
     this.shares = const Value.absent(),
     this.remark = const Value.absent(),
+    this.tradeDate = const Value.absent(),
   })  : stockId = Value(stockId),
         tradeType = Value(tradeType);
   static Insertable<StockTrade> custom({
@@ -2659,6 +2698,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     Expression<String>? price,
     Expression<String>? shares,
     Expression<String>? remark,
+    Expression<DateTime>? tradeDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2669,6 +2709,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
       if (price != null) 'price': price,
       if (shares != null) 'shares': shares,
       if (remark != null) 'remark': remark,
+      if (tradeDate != null) 'trade_date': tradeDate,
     });
   }
 
@@ -2680,7 +2721,8 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
       Value<int>? tradeType,
       Value<String?>? price,
       Value<String?>? shares,
-      Value<String?>? remark}) {
+      Value<String?>? remark,
+      Value<DateTime?>? tradeDate}) {
     return StockTradesCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
@@ -2690,6 +2732,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
       price: price ?? this.price,
       shares: shares ?? this.shares,
       remark: remark ?? this.remark,
+      tradeDate: tradeDate ?? this.tradeDate,
     );
   }
 
@@ -2720,6 +2763,9 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     if (remark.present) {
       map['remark'] = Variable<String>(remark.value);
     }
+    if (tradeDate.present) {
+      map['trade_date'] = Variable<DateTime>(tradeDate.value);
+    }
     return map;
   }
 
@@ -2733,7 +2779,8 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
           ..write('tradeType: $tradeType, ')
           ..write('price: $price, ')
           ..write('shares: $shares, ')
-          ..write('remark: $remark')
+          ..write('remark: $remark, ')
+          ..write('tradeDate: $tradeDate')
           ..write(')'))
         .toString();
   }
@@ -4720,6 +4767,7 @@ typedef $$StockTradesTableCreateCompanionBuilder = StockTradesCompanion
   Value<String?> price,
   Value<String?> shares,
   Value<String?> remark,
+  Value<DateTime?> tradeDate,
 });
 typedef $$StockTradesTableUpdateCompanionBuilder = StockTradesCompanion
     Function({
@@ -4731,6 +4779,7 @@ typedef $$StockTradesTableUpdateCompanionBuilder = StockTradesCompanion
   Value<String?> price,
   Value<String?> shares,
   Value<String?> remark,
+  Value<DateTime?> tradeDate,
 });
 
 final class $$StockTradesTableReferences
@@ -4783,6 +4832,9 @@ class $$StockTradesTableFilterComposer
   ColumnFilters<String> get remark => $composableBuilder(
       column: $table.remark, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<DateTime> get tradeDate => $composableBuilder(
+      column: $table.tradeDate, builder: (column) => ColumnFilters(column));
+
   $$StockItemsTableFilterComposer get stockId {
     final $$StockItemsTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -4834,6 +4886,9 @@ class $$StockTradesTableOrderingComposer
   ColumnOrderings<String> get remark => $composableBuilder(
       column: $table.remark, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<DateTime> get tradeDate => $composableBuilder(
+      column: $table.tradeDate, builder: (column) => ColumnOrderings(column));
+
   $$StockItemsTableOrderingComposer get stockId {
     final $$StockItemsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -4884,6 +4939,9 @@ class $$StockTradesTableAnnotationComposer
 
   GeneratedColumn<String> get remark =>
       $composableBuilder(column: $table.remark, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get tradeDate =>
+      $composableBuilder(column: $table.tradeDate, builder: (column) => column);
 
   $$StockItemsTableAnnotationComposer get stockId {
     final $$StockItemsTableAnnotationComposer composer = $composerBuilder(
@@ -4937,6 +4995,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             Value<String?> price = const Value.absent(),
             Value<String?> shares = const Value.absent(),
             Value<String?> remark = const Value.absent(),
+            Value<DateTime?> tradeDate = const Value.absent(),
           }) =>
               StockTradesCompanion(
             id: id,
@@ -4947,6 +5006,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             price: price,
             shares: shares,
             remark: remark,
+            tradeDate: tradeDate,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -4957,6 +5017,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             Value<String?> price = const Value.absent(),
             Value<String?> shares = const Value.absent(),
             Value<String?> remark = const Value.absent(),
+            Value<DateTime?> tradeDate = const Value.absent(),
           }) =>
               StockTradesCompanion.insert(
             id: id,
@@ -4967,6 +5028,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             price: price,
             shares: shares,
             remark: remark,
+            tradeDate: tradeDate,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (

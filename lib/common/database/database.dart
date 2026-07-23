@@ -66,7 +66,7 @@ class AppDatabase extends _$AppDatabase {
           if (from <= 4) {
             await migrator.addColumn(stockItems, stockItems.rNote);
           }
-          if (from <= 5) {
+          if (from <= 5 && from > 1) {
             await migrator.addColumn(stockTrades, stockTrades.tradeDate);
           }
         },
