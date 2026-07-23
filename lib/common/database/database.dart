@@ -492,8 +492,15 @@ class AppDatabase extends _$AppDatabase {
     return (select(stockTrades)
           ..where((tbl) => tbl.stockId.equals(stockId))
           ..orderBy([
-            (tbl) =>
-                OrderingTerm(expression: tbl.createdAt, mode: OrderingMode.desc),
+            (tbl) => OrderingTerm(
+                  expression: tbl.tradeDate,
+                  mode: OrderingMode.desc,
+                  nulls: NullsOrder.last,
+                ),
+            (tbl) => OrderingTerm(
+                  expression: tbl.createdAt,
+                  mode: OrderingMode.desc,
+                ),
           ]))
         .get();
   }
