@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:date_field/date_field.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
@@ -1011,6 +1013,21 @@ class StockeditController extends BaseController {
               ],
             );
           }),
+          const SizedBox(height: 12),
+          DateTimeFormField(
+            mode: DateTimeFieldPickerMode.date,
+            dateFormat: DateFormat('yyyy-MM-dd'),
+            initialValue: tradeDate.value,
+            decoration: InputDecoration(
+              labelText: TextKey.jiaoyiriqi.tr,
+              suffixIcon: const Icon(Icons.calendar_today),
+            ),
+            onChanged: (DateTime? value) {
+              if (value != null) {
+                tradeDate.value = value;
+              }
+            },
+          ),
           const SizedBox(height: 12),
           TextField(
             controller: tradePriceController,
