@@ -17,6 +17,7 @@ dependencies:
 
   convert: ^3.1.2
   intl: ^0.20.2  # 格式化日期
+  date_field: ^6.0.3+1
   crypto: ^3.0.7  # 生成 MD5
   encrypt: ^5.0.3
   connectivity_plus: ^7.2.0
