@@ -90,6 +90,7 @@ class StockTrades extends Table with TableMixin {
   TextColumn get price => text().nullable()();
   TextColumn get shares => text().nullable()();
   TextColumn get remark => text().nullable()();
+  DateTimeColumn get tradeDate => dateTime().nullable()();
 }
 
 // class TodoItems extends Table with TableMixin {
