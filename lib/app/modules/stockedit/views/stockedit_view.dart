@@ -391,7 +391,7 @@ class StockeditView extends GetView<StockeditController> {
                 ),
                 const Spacer(),
                 Text(
-                  trade.createdAt.toDateString(),
+                  (trade.tradeDate ?? trade.createdAt).toDateString(),
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 12,
