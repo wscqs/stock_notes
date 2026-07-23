@@ -78,7 +78,10 @@ class StockeditController extends BaseController {
   final tradeSharesController = TextEditingController();
   final tradeRemarkController = TextEditingController();
   final tradeType = 0.obs; // 0=买, 1=卖
-  final tradeDate = DateTime.now().obs;
+  final tradeDate = (() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  })().obs;
 
   //股票笔记（大备注）预览
   final noteQuillController = QuillController.basic();
@@ -981,7 +984,10 @@ class StockeditController extends BaseController {
       return;
     }
     tradeType.value = 0;
-    tradeDate.value = DateTime.now();
+    tradeDate.value = (() {
+      final now = DateTime.now();
+      return DateTime(now.year, now.month, now.day);
+    })();
     tradePriceController.clear();
     tradeSharesController.clear();
     tradeRemarkController.clear();
@@ -1015,6 +1021,7 @@ class StockeditController extends BaseController {
           }),
           const SizedBox(height: 12),
           DateTimeFormField(
+            canClear: false,
             mode: DateTimeFieldPickerMode.date,
             dateFormat: DateFormat('yyyy-MM-dd'),
             initialValue: tradeDate.value,
