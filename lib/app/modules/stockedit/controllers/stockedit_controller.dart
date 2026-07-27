@@ -27,10 +27,12 @@ import '../../tagsedit/views/tagsedit_view.dart';
 
 /// Pure calculation used by [StockeditController.calculateTradeEstimate].
 /// Returns the estimated yield rate and, when [shares] is valid, the profit.
+/// [tradeType] 0=buy (买), 1=sell (卖).
 ({double? yieldRate, double? profit}) calculateTradeEstimateFromValues({
   required String? currentPrice,
   required String? tradePrice,
   required String? shares,
+  required int tradeType,
 }) {
   if (currentPrice == null ||
       currentPrice.isEmpty ||
@@ -45,13 +47,17 @@ import '../../tagsedit/views/tagsedit_view.dart';
     return (yieldRate: null, profit: null);
   }
 
-  final yieldRate = (current - trade) / trade;
+  final isSell = tradeType == 1;
+  final yieldRate =
+      isSell ? (trade - current) / current : (current - trade) / trade;
 
   double? profit;
   if (shares != null && shares.isNotEmpty) {
     final shareCount = double.tryParse(shares);
     if (shareCount != null) {
-      profit = (current - trade) * shareCount;
+      profit = isSell
+          ? (trade - current) * shareCount
+          : (current - trade) * shareCount;
     }
   }
 
@@ -113,7 +119,8 @@ class StockeditController extends BaseController {
   final tradeDate = (() {
     final now = DateTime.now();
     return DateTime(now.year, now.month, now.day);
-  })().obs;
+  })()
+      .obs;
 
   //股票笔记（大备注）预览
   final noteQuillController = QuillController.basic();
@@ -1180,11 +1187,13 @@ class StockeditController extends BaseController {
     );
   }
 
-  ({double? yieldRate, double? profit}) calculateTradeEstimate(StockTrade trade) {
+  ({double? yieldRate, double? profit}) calculateTradeEstimate(
+      StockTrade trade) {
     return calculateTradeEstimateFromValues(
       currentPrice: serStockData.value.currentPrice,
       tradePrice: trade.price,
       shares: trade.shares,
+      tradeType: trade.tradeType,
     );
   }
 
