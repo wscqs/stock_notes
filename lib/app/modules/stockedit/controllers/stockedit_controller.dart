@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:date_field/date_field.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -992,7 +991,7 @@ class StockeditController extends BaseController {
     tradeSharesController.clear();
     tradeRemarkController.clear();
 
-    QsHud.showDialog(AlertDialog(
+    Get.dialog(AlertDialog(
       title: Text(TextKey.xinzengjiaoyi.tr),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1020,21 +1019,28 @@ class StockeditController extends BaseController {
             );
           }),
           const SizedBox(height: 12),
-          DateTimeFormField(
-            canClear: false,
-            mode: DateTimeFieldPickerMode.date,
-            dateFormat: DateFormat('yyyy-MM-dd'),
-            initialValue: tradeDate.value,
-            decoration: InputDecoration(
-              labelText: TextKey.jiaoyiriqi.tr,
-              suffixIcon: const Icon(Icons.calendar_today),
-            ),
-            onChanged: (DateTime? value) {
-              if (value != null) {
-                tradeDate.value = value;
-              }
-            },
-          ),
+          Obx(() {
+            return TextFormField(
+              key: ValueKey(tradeDate.value),
+              readOnly: true,
+              initialValue: DateFormat('yyyy-MM-dd').format(tradeDate.value),
+              decoration: InputDecoration(
+                labelText: TextKey.jiaoyiriqi.tr,
+                suffixIcon: const Icon(Icons.calendar_today),
+              ),
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: Get.context!,
+                  initialDate: tradeDate.value,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+                if (picked != null) {
+                  tradeDate.value = picked;
+                }
+              },
+            );
+          }),
           const SizedBox(height: 12),
           TextField(
             controller: tradePriceController,
@@ -1058,7 +1064,7 @@ class StockeditController extends BaseController {
       actions: [
         TextButton(
           onPressed: () {
-            QsHud.dismiss();
+            Get.back();
           },
           child: Text(TextKey.quxiao.tr),
         ),
@@ -1086,7 +1092,7 @@ class StockeditController extends BaseController {
       tradeDate: Value(tradeDate.value),
     );
     await db.addStockTrade(item);
-    QsHud.dismiss();
+    Get.back();
     QsHud.showToast(TextKey.success.tr);
     loadTrades();
   }

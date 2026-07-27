@@ -273,14 +273,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.7"
-  date_field:
-    dependency: "direct main"
-    description:
-      name: date_field
-      sha256: "5714b1ac0ba1c860877b3040601a6fd20cb846042c9ae6d8216ffede422d43d1"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "6.0.3+1"
   db_viewer:
     dependency: transitive
     description:
