@@ -1108,6 +1108,36 @@ class StockeditController extends BaseController {
     );
   }
 
+  ({double? yieldRate, double? profit}) calculateTradeEstimate(StockTrade trade) {
+    final currentPriceStr = serStockData.value.currentPrice;
+    final tradePriceStr = trade.price;
+    if (currentPriceStr == null ||
+        currentPriceStr.isEmpty ||
+        tradePriceStr == null ||
+        tradePriceStr.isEmpty) {
+      return (yieldRate: null, profit: null);
+    }
+
+    final currentPrice = double.tryParse(currentPriceStr);
+    final tradePrice = double.tryParse(tradePriceStr);
+    if (currentPrice == null || tradePrice == null || tradePrice == 0) {
+      return (yieldRate: null, profit: null);
+    }
+
+    final yieldRate = (currentPrice - tradePrice) / tradePrice;
+
+    double? profit;
+    final sharesStr = trade.shares;
+    if (sharesStr != null && sharesStr.isNotEmpty) {
+      final shares = double.tryParse(sharesStr);
+      if (shares != null) {
+        profit = (currentPrice - tradePrice) * shares;
+      }
+    }
+
+    return (yieldRate: yieldRate, profit: profit);
+  }
+
   void showAllTradesSheet(Widget Function(StockTrade) buildTradeItem) {
     Get.bottomSheet(
       Container(
