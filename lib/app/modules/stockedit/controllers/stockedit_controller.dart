@@ -13,6 +13,7 @@ import 'package:stock_notes/common/services/stock_name_service.dart';
 import 'package:stock_notes/common/web/stock_ext_links.dart';
 import 'package:stock_notes/common/web/webview_widget.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
+import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
@@ -1105,6 +1106,159 @@ class StockeditController extends BaseController {
         await db.deleteStockTrade(trade);
         loadTrades();
       },
+    );
+  }
+
+  Widget buildTradeItem(StockTrade trade) {
+    final isBuy = trade.tradeType == 0;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: isBuy
+                        ? Colors.red.withValues(alpha: 0.1)
+                        : Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    isBuy ? TextKey.buy.tr : TextKey.sale.tr,
+                    style: TextStyle(
+                      color: isBuy ? Colors.red : Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  (trade.tradeDate ?? trade.createdAt).toDateString(),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () => deleteTrade(trade),
+                  child: Icon(
+                    Icons.delete_outline,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text(
+                  "${TextKey.jiage.tr}: ${trade.price ?? '-'}",
+                  style: TextStyle(fontSize: 14),
+                ),
+                if (trade.shares != null && trade.shares!.isNotEmpty) ...[
+                  const SizedBox(width: 16),
+                  Text(
+                    "${TextKey.gushu.tr}: ${trade.shares}",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ],
+            ),
+            if (trade.remark != null && trade.remark!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                "${TextKey.beizui.tr}: ${trade.remark}",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showAllTradesSheet() {
+    Get.bottomSheet(
+      GetBuilder<StockeditController>(
+        init: this,
+        builder: (_) {
+          return Container(
+            height: Get.height * 0.7,
+            decoration: BoxDecoration(
+              color: Get.theme.colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Text(
+                          TextKey.jiaoyijilu.tr,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: Obx(() {
+                        if (stockTrades.isEmpty) {
+                          return Center(
+                            child: Text(
+                              TextKey.noData.tr,
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          );
+                        }
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: stockTrades
+                                .map((trade) => buildTradeItem(trade))
+                                .toList(),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+      isScrollControlled: true,
+      backgroundColor: Get.theme.colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
     );
   }
 }
