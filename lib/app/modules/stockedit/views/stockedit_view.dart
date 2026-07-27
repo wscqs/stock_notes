@@ -940,8 +940,7 @@ class StockTradeListWithMore extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -951,6 +950,12 @@ class StockTradeListWithMore extends StatelessWidget {
                         color: Get.theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.chevron_right,
+                      size: 18,
+                      color: Get.theme.colorScheme.primary,
                     ),
                   ],
                 ),

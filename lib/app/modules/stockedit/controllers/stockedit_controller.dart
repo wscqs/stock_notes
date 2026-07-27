@@ -25,6 +25,39 @@ import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
 import '../../tagsedit/views/tagsedit_view.dart';
 
+/// Pure calculation used by [StockeditController.calculateTradeEstimate].
+/// Returns the estimated yield rate and, when [shares] is valid, the profit.
+({double? yieldRate, double? profit}) calculateTradeEstimateFromValues({
+  required String? currentPrice,
+  required String? tradePrice,
+  required String? shares,
+}) {
+  if (currentPrice == null ||
+      currentPrice.isEmpty ||
+      tradePrice == null ||
+      tradePrice.isEmpty) {
+    return (yieldRate: null, profit: null);
+  }
+
+  final current = double.tryParse(currentPrice);
+  final trade = double.tryParse(tradePrice);
+  if (current == null || trade == null || trade == 0) {
+    return (yieldRate: null, profit: null);
+  }
+
+  final yieldRate = (current - trade) / trade;
+
+  double? profit;
+  if (shares != null && shares.isNotEmpty) {
+    final shareCount = double.tryParse(shares);
+    if (shareCount != null) {
+      profit = (current - trade) * shareCount;
+    }
+  }
+
+  return (yieldRate: yieldRate, profit: profit);
+}
+
 class StockeditController extends BaseController {
   final db = Get.find<DatabaseManager>().db;
   final stockNum = "".obs;
@@ -1109,33 +1142,11 @@ class StockeditController extends BaseController {
   }
 
   ({double? yieldRate, double? profit}) calculateTradeEstimate(StockTrade trade) {
-    final currentPriceStr = serStockData.value.currentPrice;
-    final tradePriceStr = trade.price;
-    if (currentPriceStr == null ||
-        currentPriceStr.isEmpty ||
-        tradePriceStr == null ||
-        tradePriceStr.isEmpty) {
-      return (yieldRate: null, profit: null);
-    }
-
-    final currentPrice = double.tryParse(currentPriceStr);
-    final tradePrice = double.tryParse(tradePriceStr);
-    if (currentPrice == null || tradePrice == null || tradePrice == 0) {
-      return (yieldRate: null, profit: null);
-    }
-
-    final yieldRate = (currentPrice - tradePrice) / tradePrice;
-
-    double? profit;
-    final sharesStr = trade.shares;
-    if (sharesStr != null && sharesStr.isNotEmpty) {
-      final shares = double.tryParse(sharesStr);
-      if (shares != null) {
-        profit = (currentPrice - tradePrice) * shares;
-      }
-    }
-
-    return (yieldRate: yieldRate, profit: profit);
+    return calculateTradeEstimateFromValues(
+      currentPrice: serStockData.value.currentPrice,
+      tradePrice: trade.price,
+      shares: trade.shares,
+    );
   }
 
   void showAllTradesSheet(Widget Function(StockTrade) buildTradeItem) {
