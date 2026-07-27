@@ -208,93 +208,12 @@ git commit -m "feat(stockedit): truncate trade list to 3 with more entry"
 - Modify: `lib/app/modules/stockedit/controllers/stockedit_controller.dart`
 
 **Interfaces:**
-- Consumes: `_buildTradeItem` from `stockedit_view.dart` (used inside the bottom sheet builder).
-- Produces: `void showAllTradesSheet()` callable from the view.
+- Consumes: `_buildTradeItem` from `stockedit_view.dart`.
+- Produces: `Widget buildTradeItem(StockTrade trade)` and `void showAllTradesSheet()`.
 
-- [ ] **Step 1: Add the bottom sheet method**
+- [ ] **Step 1: Move trade item builder to controller**
 
-Insert the following method in `StockeditController`, near other trade-related methods (after `deleteTrade` is fine):
-
-```dart
-void showAllTradesSheet() {
-  Get.bottomSheet(
-    GetBuilder<StockeditController>(
-      init: this,
-      builder: (_) {
-        return Container(
-          height: Get.height * 0.7,
-          decoration: BoxDecoration(
-            color: Get.theme.colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Text(
-                        TextKey.jiaoyijilu.tr,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          icon: const Icon(Icons.close),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: Obx(() {
-                      if (stockTrades.isEmpty) {
-                        return Center(
-                          child: Text(
-                            TextKey.noData.tr,
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        );
-                      }
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: stockTrades
-                              .map((trade) => _buildTradeItem(trade))
-                              .toList(),
-                        ),
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    ),
-    isScrollControlled: true,
-    backgroundColor: Get.theme.colorScheme.surface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-  );
-}
-```
-
-**Note:** `_buildTradeItem` is a private method of `StockeditView`, not the controller. The bottom sheet builder above references it incorrectly. To keep the plan realistic and avoid cross-file private access, we will move `_buildTradeItem` to the controller as a public method `buildTradeItem(StockTrade trade)` in Task 3 Step 2.
-
-- [ ] **Step 2: Move trade item builder to controller**
-
-Move `_buildTradeItem` from `stockedit_view.dart` into `StockeditController` as a public method. Remove it from the view file.
+Move `_buildTradeItem(StockTrade trade)` from `stockedit_view.dart` into `StockeditController` as a public method `buildTradeItem(StockTrade trade)`. Remove the private method from the view file.
 
 In `stockedit_controller.dart`, add:
 
@@ -380,27 +299,94 @@ Widget buildTradeItem(StockTrade trade) {
 }
 ```
 
-**Caveat:** `toDateString()` is an extension method on `DateTime`. Ensure the controller file has access to it via existing imports or project-level extensions. `stockedit_controller.dart` already imports `package:stock_notes/utils/qs_date.dart`? Check imports and add if missing.
-
-In `stockedit_view.dart`, replace `_buildTradeItem(trade)` calls with `controller.buildTradeItem(trade)`.
-
-- [ ] **Step 3: Update the bottom sheet to use the public method**
-
-In the `showAllTradesSheet` method from Step 1, replace:
+**Caveat:** `toDateString()` is an extension method on `DateTime`. Ensure the controller file has access to it via existing imports or project-level extensions. If `qs_date.dart` is not imported, add:
 
 ```dart
-.map((trade) => _buildTradeItem(trade))
+import 'package:stock_notes/utils/qs_date.dart';
 ```
 
-with:
+In `stockedit_view.dart`, replace all `_buildTradeItem(trade)` calls with `controller.buildTradeItem(trade)`.
+
+- [ ] **Step 2: Add the bottom sheet method**
+
+Insert the following method in `StockeditController`, near other trade-related methods (after `deleteTrade` is fine):
 
 ```dart
-.map((trade) => buildTradeItem(trade))
+void showAllTradesSheet() {
+  Get.bottomSheet(
+    GetBuilder<StockeditController>(
+      init: this,
+      builder: (_) {
+        return Container(
+          height: Get.height * 0.7,
+          decoration: BoxDecoration(
+            color: Get.theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        TextKey.jiaoyijilu.tr,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: Obx(() {
+                      if (stockTrades.isEmpty) {
+                        return Center(
+                          child: Text(
+                            TextKey.noData.tr,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        );
+                      }
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: stockTrades
+                              .map((trade) => buildTradeItem(trade))
+                              .toList(),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+    isScrollControlled: true,
+    backgroundColor: Get.theme.colorScheme.surface,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+  );
+}
 ```
 
-because the method now lives in the same controller class.
-
-- [ ] **Step 4: Manual verification**
+- [ ] **Step 3: Manual verification**
 
 Run:
 
@@ -417,7 +403,7 @@ Expected:
 - Deleting a trade from the sheet updates both the sheet and the main view.
 - Closing the sheet via the close button or swipe returns to the main view.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add lib/app/modules/stockedit/views/stockedit_view.dart lib/app/modules/stockedit/controllers/stockedit_controller.dart
@@ -482,5 +468,5 @@ git commit -m "chore: verify trade list more feature"
 
 ### Notes
 
-- Task 3 Step 1 originally referenced `_buildTradeItem` from the controller, which is impossible because it was private in the view. Step 2 explicitly moves the builder to the controller as a public method and updates both call sites. This is the intended refactor and keeps the UI reusable.
+- Task 3 Step 1 moves `buildTradeItem` to the controller as a public method so it can be reused by both the main view and the bottom sheet. Task 3 Step 2 then implements the bottom sheet using this public method.
 - If `toDateString()` is not available in the controller after the move, add the necessary import before committing Task 3.
