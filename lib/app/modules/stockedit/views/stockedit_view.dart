@@ -346,14 +346,49 @@ class StockeditView extends GetView<StockeditController> {
               style: TextStyle(color: Colors.grey),
             );
           }
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.stockTrades.length,
-            itemBuilder: (context, index) {
-              final trade = controller.stockTrades[index];
-              return _buildTradeItem(trade);
-            },
+          final showMore = controller.stockTrades.length > 3;
+          final displayCount = showMore ? 3 : controller.stockTrades.length;
+          final moreCount = controller.stockTrades.length - 3;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: displayCount,
+                itemBuilder: (context, index) {
+                  final trade = controller.stockTrades[index];
+                  return _buildTradeItem(trade);
+                },
+              ),
+              if (showMore)
+                InkWell(
+                  onTap: controller.showAllTradesSheet,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${TextKey.gengduo.tr} ($moreCount)",
+                          style: TextStyle(
+                            color: Get.theme.colorScheme.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.chevron_right,
+                          size: 18,
+                          color: Get.theme.colorScheme.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
           );
         }),
       ],
