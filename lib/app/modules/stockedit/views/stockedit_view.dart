@@ -356,6 +356,48 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
+  Widget _buildTradeEstimate(StockTrade trade) {
+    final estimate = controller.calculateTradeEstimate(trade);
+    final yieldRate = estimate.yieldRate;
+
+    final valueColor = yieldRate == null
+        ? Colors.grey
+        : (yieldRate > 0
+            ? Colors.red
+            : (yieldRate < 0 ? Colors.green : Colors.grey));
+    final labelStyle = TextStyle(color: Colors.grey, fontSize: 12);
+    final valueStyle = TextStyle(color: valueColor, fontSize: 12);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text.rich(
+          TextSpan(children: [
+            TextSpan(
+                text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
+            TextSpan(
+              text: yieldRate == null
+                  ? "-"
+                  : "${(yieldRate * 100).toStringAsFixed(1)}%",
+              style: valueStyle,
+            ),
+          ]),
+        ),
+        if (estimate.profit != null)
+          Text.rich(
+            TextSpan(children: [
+              TextSpan(
+                  text: "${TextKey.shouyie.tr}: ", style: labelStyle),
+              TextSpan(
+                text: estimate.profit!.toStringAsFixed(2),
+                style: valueStyle,
+              ),
+            ]),
+          ),
+      ],
+    );
+  }
+
   Widget _buildTradeItem(StockTrade trade) {
     final isBuy = trade.tradeType == 0;
     return Card(
@@ -386,12 +428,19 @@ class StockeditView extends GetView<StockeditController> {
                   ),
                 ),
                 const Spacer(),
-                Text(
-                  (trade.tradeDate ?? trade.createdAt).toDateString(),
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      (trade.tradeDate ?? trade.createdAt).toDateString(),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    _buildTradeEstimate(trade),
+                  ],
                 ),
                 const SizedBox(width: 8),
                 GestureDetector(
@@ -891,7 +940,8 @@ class StockTradeListWithMore extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -901,12 +951,6 @@ class StockTradeListWithMore extends StatelessWidget {
                         color: Get.theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.chevron_right,
-                      size: 18,
-                      color: Get.theme.colorScheme.primary,
                     ),
                   ],
                 ),
