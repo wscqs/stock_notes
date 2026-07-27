@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/database/database.dart';
+import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/web/stock_ext_links.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
@@ -345,52 +346,93 @@ class StockeditView extends GetView<StockeditController> {
               style: TextStyle(color: Colors.grey),
             );
           }
-          final showMore = controller.stockTrades.length > 3;
-          final displayCount = showMore ? 3 : controller.stockTrades.length;
-          final moreCount = controller.stockTrades.length - 3;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: displayCount,
-                itemBuilder: (context, index) {
-                  final trade = controller.stockTrades[index];
-                  return controller.buildTradeItem(trade);
-                },
-              ),
-              if (showMore)
-                InkWell(
-                  onTap: controller.showAllTradesSheet,
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "${TextKey.gengduo.tr} ($moreCount)",
-                          style: TextStyle(
-                            color: Get.theme.colorScheme.primary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.chevron_right,
-                          size: 18,
-                          color: Get.theme.colorScheme.primary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
+          return StockTradeListWithMore(
+            trades: controller.stockTrades.toList(),
+            buildTradeItem: _buildTradeItem,
+            onShowAll: () => controller.showAllTradesSheet(_buildTradeItem),
           );
         }),
       ],
+    );
+  }
+
+  Widget _buildTradeItem(StockTrade trade) {
+    final isBuy = trade.tradeType == 0;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: isBuy
+                        ? Colors.red.withValues(alpha: 0.1)
+                        : Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    isBuy ? TextKey.buy.tr : TextKey.sale.tr,
+                    style: TextStyle(
+                      color: isBuy ? Colors.red : Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  (trade.tradeDate ?? trade.createdAt).toDateString(),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () => controller.deleteTrade(trade),
+                  child: Icon(
+                    Icons.delete_outline,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Text(
+                  "${TextKey.jiage.tr}: ${trade.price ?? '-'}",
+                  style: TextStyle(fontSize: 14),
+                ),
+                if (trade.shares != null && trade.shares!.isNotEmpty) ...[
+                  const SizedBox(width: 16),
+                  Text(
+                    "${TextKey.gushu.tr}: ${trade.shares}",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ],
+            ),
+            if (trade.remark != null && trade.remark!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                "${TextKey.beizui.tr}: ${trade.remark}",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -805,6 +847,73 @@ class StockeditView extends GetView<StockeditController> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A focused, testable widget that renders up to [maxVisibleTrades] trade cards
+/// followed by a "more" row when the total number of trades exceeds it.
+class StockTradeListWithMore extends StatelessWidget {
+  final List<StockTrade> trades;
+  final Widget Function(StockTrade) buildTradeItem;
+  final VoidCallback onShowAll;
+  final int maxVisibleTrades;
+
+  const StockTradeListWithMore({
+    super.key,
+    required this.trades,
+    required this.buildTradeItem,
+    required this.onShowAll,
+    this.maxVisibleTrades = 3,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final showMore = trades.length > maxVisibleTrades;
+    final displayCount = showMore ? maxVisibleTrades : trades.length;
+    final moreCount = trades.length - maxVisibleTrades;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: displayCount,
+          itemBuilder: (context, index) => buildTradeItem(trades[index]),
+        ),
+        if (showMore)
+          Material(
+            type: MaterialType.transparency,
+            borderRadius: BorderRadius.circular(8),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onShowAll,
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${TextKey.gengduo.tr} ($moreCount)",
+                      style: TextStyle(
+                        color: Get.theme.colorScheme.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.chevron_right,
+                      size: 18,
+                      color: Get.theme.colorScheme.primary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
