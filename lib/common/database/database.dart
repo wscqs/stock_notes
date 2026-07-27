@@ -488,6 +488,10 @@ class AppDatabase extends _$AppDatabase {
         .go();
   }
 
+  Future<void> updateStockTrade(StockTradesCompanion itemUpdate) {
+    return update(stockTrades).replace(itemUpdate);
+  }
+
   Future<List<StockTrade>> getStockTradesByStockId(int stockId) {
     return (select(stockTrades)
           ..where((tbl) => tbl.stockId.equals(stockId))

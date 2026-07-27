@@ -369,12 +369,12 @@ class StockeditView extends GetView<StockeditController> {
     final valueStyle = TextStyle(color: valueColor, fontSize: 12);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text.rich(
           TextSpan(children: [
-            TextSpan(
-                text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
+            TextSpan(text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
             TextSpan(
               text: yieldRate == null
                   ? "-"
@@ -386,8 +386,7 @@ class StockeditView extends GetView<StockeditController> {
         if (estimate.profit != null)
           Text.rich(
             TextSpan(children: [
-              TextSpan(
-                  text: "${TextKey.shouyie.tr}: ", style: labelStyle),
+              TextSpan(text: "${TextKey.shouyie.tr}: ", style: labelStyle),
               TextSpan(
                 text: estimate.profit!.toStringAsFixed(2),
                 style: valueStyle,
@@ -404,81 +403,101 @@ class StockeditView extends GetView<StockeditController> {
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: isBuy
-                        ? Colors.red.withValues(alpha: 0.1)
-                        : Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: isBuy
+                              ? Colors.red.withValues(alpha: 0.1)
+                              : Colors.green.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          isBuy ? TextKey.buy.tr : TextKey.sale.tr,
+                          style: TextStyle(
+                            color: isBuy ? Colors.red : Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        (trade.tradeDate ?? trade.createdAt).toDateString(),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    isBuy ? TextKey.buy.tr : TextKey.sale.tr,
-                    style: TextStyle(
-                      color: isBuy ? Colors.red : Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        "${TextKey.jiage.tr}: ${trade.price ?? '-'}",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      if (trade.shares != null && trade.shares!.isNotEmpty) ...[
+                        const SizedBox(width: 16),
+                        Text(
+                          "${TextKey.gushu.tr}: ${trade.shares}",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ],
                   ),
-                ),
-                const Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
+                  if (trade.remark != null && trade.remark!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
                     Text(
-                      (trade.tradeDate ?? trade.createdAt).toDateString(),
+                      "${TextKey.beizui.tr}: ${trade.remark}",
                       style: TextStyle(
-                        color: Colors.grey,
                         fontSize: 12,
+                        color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    _buildTradeEstimate(trade),
+                  ],
+                ],
+              ),
+            ),
+            kSpaceW(8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => controller.editTrade(trade),
+                      child: Icon(
+                        Icons.edit,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    GestureDetector(
+                      onTap: () => controller.deleteTrade(trade),
+                      child: Icon(
+                        Icons.delete_outline,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () => controller.deleteTrade(trade),
-                  child: Icon(
-                    Icons.delete_outline,
-                    size: 18,
-                    color: Colors.grey,
-                  ),
-                ),
+                const SizedBox(height: 4),
+                _buildTradeEstimate(trade),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Text(
-                  "${TextKey.jiage.tr}: ${trade.price ?? '-'}",
-                  style: TextStyle(fontSize: 14),
-                ),
-                if (trade.shares != null && trade.shares!.isNotEmpty) ...[
-                  const SizedBox(width: 16),
-                  Text(
-                    "${TextKey.gushu.tr}: ${trade.shares}",
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              ],
-            ),
-            if (trade.remark != null && trade.remark!.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(
-                "${TextKey.beizui.tr}: ${trade.remark}",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
           ],
         ),
       ),
@@ -940,7 +959,8 @@ class StockTradeListWithMore extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -950,12 +970,6 @@ class StockTradeListWithMore extends StatelessWidget {
                         color: Get.theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.chevron_right,
-                      size: 18,
-                      color: Get.theme.colorScheme.primary,
                     ),
                   ],
                 ),

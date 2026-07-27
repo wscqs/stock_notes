@@ -1015,17 +1015,32 @@ class StockeditController extends BaseController {
           });
       return;
     }
-    tradeType.value = 0;
-    tradeDate.value = (() {
-      final now = DateTime.now();
-      return DateTime(now.year, now.month, now.day);
-    })();
-    tradePriceController.clear();
-    tradeSharesController.clear();
-    tradeRemarkController.clear();
+    _showTradeDialog();
+  }
+
+  void editTrade(StockTrade trade) {
+    _showTradeDialog(existingTrade: trade);
+  }
+
+  void _showTradeDialog({StockTrade? existingTrade}) {
+    final isEdit = existingTrade != null;
+    tradeType.value = isEdit ? existingTrade.tradeType : 0;
+    tradeDate.value = isEdit
+        ? (existingTrade.tradeDate ??
+            (() {
+              final now = DateTime.now();
+              return DateTime(now.year, now.month, now.day);
+            })())
+        : (() {
+            final now = DateTime.now();
+            return DateTime(now.year, now.month, now.day);
+          })();
+    tradePriceController.text = existingTrade?.price ?? "";
+    tradeSharesController.text = existingTrade?.shares ?? "";
+    tradeRemarkController.text = existingTrade?.remark ?? "";
 
     Get.dialog(AlertDialog(
-      title: Text(TextKey.xinzengjiaoyi.tr),
+      title: Text(isEdit ? TextKey.xiugai.tr : TextKey.xinzengjiaoyi.tr),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1103,7 +1118,11 @@ class StockeditController extends BaseController {
         ),
         TextButton(
           onPressed: () {
-            addTrade();
+            if (isEdit) {
+              updateTrade(existingTrade);
+            } else {
+              addTrade();
+            }
           },
           child: Text(TextKey.queding.tr),
         ),
@@ -1125,6 +1144,26 @@ class StockeditController extends BaseController {
       tradeDate: Value(tradeDate.value),
     );
     await db.addStockTrade(item);
+    Get.back();
+    QsHud.showToast(TextKey.success.tr);
+    loadTrades();
+  }
+
+  Future<void> updateTrade(StockTrade trade) async {
+    if (tradePriceController.text.isEmpty) {
+      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.jiage.tr}");
+      return;
+    }
+    final item = StockTradesCompanion.insert(
+      id: Value(trade.id),
+      stockId: trade.stockId,
+      tradeType: tradeType.value,
+      price: Value(tradePriceController.text),
+      shares: Value(tradeSharesController.text),
+      remark: Value(tradeRemarkController.text),
+      tradeDate: Value(tradeDate.value),
+    );
+    await db.updateStockTrade(item);
     Get.back();
     QsHud.showToast(TextKey.success.tr);
     loadTrades();
