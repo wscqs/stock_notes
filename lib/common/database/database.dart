@@ -538,6 +538,10 @@ class AppDatabase extends _$AppDatabase {
           ]))
         .get();
   }
+
+  Future<List<StockItem>> getStockItemsByIds(List<int> ids) {
+    return (select(stockItems)..where((tbl) => tbl.id.isIn(ids))).get();
+  }
 }
 
 //Stock
