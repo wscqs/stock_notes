@@ -17,6 +17,7 @@ import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
 import 'package:stock_notes/common/extension/StockTrade++.dart';
+import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
@@ -76,19 +77,6 @@ class StockeditController extends BaseController {
 
   //交易记录
   final stockTrades = <StockTrade>[].obs;
-  final openPriceController = TextEditingController();
-  final openSharesController = TextEditingController();
-  final closePriceController = TextEditingController();
-  final closeSharesController = TextEditingController();
-  final planBuyPriceController = TextEditingController();
-  final planSalePriceController = TextEditingController();
-  final tradeRemarkController = TextEditingController();
-  final tradeType = 0.obs; // 0=买, 1=卖
-  final tradeDate = (() {
-    final now = DateTime.now();
-    return DateTime(now.year, now.month, now.day);
-  })()
-      .obs;
 
   //股票笔记（大备注）预览
   final noteQuillController = QuillController.basic();
@@ -821,13 +809,6 @@ class StockeditController extends BaseController {
     rBuyPriceController.dispose();
     rHoldSharesController.removeListener(_updateBuyPriceYieldRate);
     rHoldSharesController.dispose();
-    openPriceController.dispose();
-    openSharesController.dispose();
-    closePriceController.dispose();
-    closeSharesController.dispose();
-    planBuyPriceController.dispose();
-    planSalePriceController.dispose();
-    tradeRemarkController.dispose();
     noteQuillController.dispose();
     notePreviewFocusNode.dispose();
     notePreviewScrollController.dispose();
@@ -1023,268 +1004,40 @@ class StockeditController extends BaseController {
   }
 
   void _showTradeDialog({StockTrade? existingTrade}) {
-    final isEdit = existingTrade != null;
-    tradeType.value = isEdit ? existingTrade.tradeType : 0;
-    tradeDate.value = isEdit
-        ? (existingTrade.tradeDate ??
-            (() {
-              final now = DateTime.now();
-              return DateTime(now.year, now.month, now.day);
-            })())
-        : (() {
-            final now = DateTime.now();
-            return DateTime(now.year, now.month, now.day);
-          })();
-    openPriceController.text =
-        existingTrade?.openPrice ?? existingTrade?.price ?? "";
-    openSharesController.text =
-        existingTrade?.openShares ?? existingTrade?.shares ?? "";
-    closePriceController.text = existingTrade?.closePrice ?? "";
-    closeSharesController.text = existingTrade?.closeShares ?? "";
-    planBuyPriceController.text = existingTrade?.planBuyPrice ?? "";
-    planSalePriceController.text = existingTrade?.planSalePrice ?? "";
-    tradeRemarkController.text = existingTrade?.remark ?? "";
-
-    final planBuyPoints = 0.0.obs;
-    final planSalePoints = 0.0.obs;
-
-    void updatePlanPricePoints() {
-      final currentPrice =
-          double.tryParse(serStockData.value.currentPrice ?? "");
-      final buyPrice = double.tryParse(planBuyPriceController.text);
-      final salePrice = double.tryParse(planSalePriceController.text);
-
-      if (buyPrice != null && currentPrice != null && currentPrice != 0) {
-        planBuyPoints.value = (buyPrice - currentPrice) / currentPrice;
-      } else {
-        planBuyPoints.value = 0.0;
-      }
-
-      if (salePrice != null && currentPrice != null && currentPrice != 0) {
-        planSalePoints.value = (salePrice - currentPrice) / currentPrice;
-      } else {
-        planSalePoints.value = 0.0;
-      }
-    }
-
-    updatePlanPricePoints();
-
-    Get.dialog(AlertDialog(
-      title: Text(isEdit ? TextKey.xiugai.tr : TextKey.xinzengjiaoyi.tr),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Obx(() {
-              return Row(
-                children: [
-                  ChoiceChip(
-                    showCheckmark: false,
-                    label: Text(TextKey.buy.tr),
-                    selected: tradeType.value == 0,
-                    onSelected: (selected) {
-                      if (selected) tradeType.value = 0;
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  ChoiceChip(
-                    showCheckmark: false,
-                    label: Text(TextKey.sale.tr),
-                    selected: tradeType.value == 1,
-                    onSelected: (selected) {
-                      if (selected) tradeType.value = 1;
-                    },
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextFormField(
-                      key: ValueKey(tradeDate.value),
-                      //不要下划线
-                      // decoration: InputDecoration(
-                      //   border: InputBorder.none,
-                      // ),
-                      readOnly: true,
-                      textAlign: TextAlign.center,
-                      initialValue:
-                          DateFormat('yyyy-MM-dd').format(tradeDate.value),
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: Get.context!,
-                          initialDate: tradeDate.value,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2100),
-                        );
-                        if (picked != null) {
-                          tradeDate.value = picked;
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              );
-            }),
-            const SizedBox(height: 4),
-            // 开仓
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text('${TextKey.kaicang.tr}: '),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: openPriceController,
-                    decoration: InputDecoration(labelText: TextKey.jiage.tr),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: openSharesController,
-                    decoration: InputDecoration(labelText: TextKey.gushu.tr),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            // 平仓
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text('${TextKey.pingcang.tr}: '),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: closePriceController,
-                    decoration: InputDecoration(labelText: TextKey.jiage.tr),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: closeSharesController,
-                    decoration: InputDecoration(labelText: TextKey.gushu.tr),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            // 计划价格
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text('${TextKey.jihua.tr}: '),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Obx(() {
-                    final labelText = planBuyPoints.value == 0.0
-                        ? TextKey.maijia.tr
-                        : "${TextKey.maijia.tr}: ${(planBuyPoints.value * 100).toStringAsFixed(1)}%";
-                    return TextField(
-                      controller: planBuyPriceController,
-                      onChanged: (_) => updatePlanPricePoints(),
-                      decoration: InputDecoration(labelText: labelText),
-                      keyboardType: TextInputType.number,
-                    );
-                  }),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Obx(() {
-                    final labelText = planSalePoints.value == 0.0
-                        ? TextKey.maijia_s.tr
-                        : "${TextKey.maijia_s.tr}: ${(planSalePoints.value * 100).toStringAsFixed(1)}%";
-                    return TextField(
-                      controller: planSalePriceController,
-                      onChanged: (_) => updatePlanPricePoints(),
-                      decoration: InputDecoration(labelText: labelText),
-                      keyboardType: TextInputType.number,
-                    );
-                  }),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            TextField(
-              controller: tradeRemarkController,
-              maxLines: 2,
-              decoration: InputDecoration(labelText: TextKey.beizui.tr),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Get.back();
-          },
-          child: Text(TextKey.quxiao.tr),
-        ),
-        TextButton(
-          onPressed: () {
-            if (isEdit) {
-              updateTrade(existingTrade);
-            } else {
-              addTrade();
-            }
-          },
-          child: Text(TextKey.queding.tr),
-        ),
-      ],
-    ));
+    StockTradeDialog.show(
+      context: Get.context!,
+      existingTrade: existingTrade,
+      currentPrice: serStockData.value.currentPrice ?? '',
+      onSaved: (companion) {
+        if (existingTrade != null) {
+          _doUpdateTrade(companion);
+        } else {
+          _doAddTrade(companion);
+        }
+      },
+    );
   }
 
-  Future<void> addTrade() async {
-    if (openPriceController.text.isEmpty) {
+  Future<void> _doAddTrade(StockTradesCompanion companion) async {
+    if ((companion.openPrice.value ?? '').isEmpty) {
       QsHud.showToast(
           "${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
       return;
     }
-    final item = StockTradesCompanion.insert(
-      stockId: localStockData.value!.id,
-      tradeType: tradeType.value,
-      openPrice: Value(openPriceController.text),
-      openShares: Value(openSharesController.text),
-      closePrice: Value(closePriceController.text),
-      closeShares: Value(closeSharesController.text),
-      planBuyPrice: Value(planBuyPriceController.text),
-      planSalePrice: Value(planSalePriceController.text),
-      remark: Value(tradeRemarkController.text),
-      tradeDate: Value(tradeDate.value),
-    );
+    final item = companion.copyWith(stockId: Value(localStockData.value!.id));
     await db.addStockTrade(item);
     Get.back();
     QsHud.showToast(TextKey.success.tr);
     loadTrades();
   }
 
-  Future<void> updateTrade(StockTrade trade) async {
-    if (openPriceController.text.isEmpty) {
+  Future<void> _doUpdateTrade(StockTradesCompanion companion) async {
+    if ((companion.openPrice.value ?? '').isEmpty) {
       QsHud.showToast(
           "${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
       return;
     }
-    final item = StockTradesCompanion.insert(
-      id: Value(trade.id),
-      stockId: trade.stockId,
-      tradeType: tradeType.value,
-      openPrice: Value(openPriceController.text),
-      openShares: Value(openSharesController.text),
-      closePrice: Value(closePriceController.text),
-      closeShares: Value(closeSharesController.text),
-      planBuyPrice: Value(planBuyPriceController.text),
-      planSalePrice: Value(planSalePriceController.text),
-      remark: Value(tradeRemarkController.text),
-      tradeDate: Value(tradeDate.value),
-    );
-    await db.updateStockTrade(item);
+    await db.updateStockTrade(companion);
     Get.back();
     QsHud.showToast(TextKey.success.tr);
     loadTrades();
