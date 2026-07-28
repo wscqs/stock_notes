@@ -126,8 +126,12 @@ class StockeditController extends BaseController {
 
   //交易记录
   final stockTrades = <StockTrade>[].obs;
-  final tradePriceController = TextEditingController();
-  final tradeSharesController = TextEditingController();
+  final openPriceController = TextEditingController();
+  final openSharesController = TextEditingController();
+  final closePriceController = TextEditingController();
+  final closeSharesController = TextEditingController();
+  final planBuyPriceController = TextEditingController();
+  final planSalePriceController = TextEditingController();
   final tradeRemarkController = TextEditingController();
   final tradeType = 0.obs; // 0=买, 1=卖
   final tradeDate = (() {
@@ -866,8 +870,12 @@ class StockeditController extends BaseController {
     rBuyPriceController.dispose();
     rHoldSharesController.removeListener(_updateBuyPriceYieldRate);
     rHoldSharesController.dispose();
-    tradePriceController.dispose();
-    tradeSharesController.dispose();
+    openPriceController.dispose();
+    openSharesController.dispose();
+    closePriceController.dispose();
+    closeSharesController.dispose();
+    planBuyPriceController.dispose();
+    planSalePriceController.dispose();
     tradeRemarkController.dispose();
     noteQuillController.dispose();
     notePreviewFocusNode.dispose();
@@ -1056,8 +1064,12 @@ class StockeditController extends BaseController {
             final now = DateTime.now();
             return DateTime(now.year, now.month, now.day);
           })();
-    tradePriceController.text = existingTrade?.price ?? "";
-    tradeSharesController.text = existingTrade?.shares ?? "";
+    openPriceController.text = existingTrade?.openPrice ?? existingTrade?.price ?? "";
+    openSharesController.text = existingTrade?.openShares ?? existingTrade?.shares ?? "";
+    closePriceController.text = existingTrade?.closePrice ?? "";
+    closeSharesController.text = existingTrade?.closeShares ?? "";
+    planBuyPriceController.text = existingTrade?.planBuyPrice ?? "";
+    planSalePriceController.text = existingTrade?.planSalePrice ?? "";
     tradeRemarkController.text = existingTrade?.remark ?? "";
 
     Get.dialog(AlertDialog(
@@ -1116,20 +1128,63 @@ class StockeditController extends BaseController {
               );
             }),
             const SizedBox(height: 8),
+            // 开仓
             Row(
               children: [
                 Expanded(
                   child: TextField(
-                    controller: tradePriceController,
-                    decoration: InputDecoration(labelText: TextKey.jiage.tr),
+                    controller: openPriceController,
+                    decoration: InputDecoration(labelText: "${TextKey.kaicang.tr}${TextKey.jiage.tr}"),
                     keyboardType: TextInputType.number,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
-                    controller: tradeSharesController,
-                    decoration: InputDecoration(labelText: TextKey.gushu.tr),
+                    controller: openSharesController,
+                    decoration: InputDecoration(labelText: "${TextKey.kaicang.tr}${TextKey.gushu.tr}"),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // 平仓
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: closePriceController,
+                    decoration: InputDecoration(labelText: "${TextKey.pingcang.tr}${TextKey.jiage.tr}"),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: closeSharesController,
+                    decoration: InputDecoration(labelText: "${TextKey.pingcang.tr}${TextKey.gushu.tr}"),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // 计划价格
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: planBuyPriceController,
+                    decoration: InputDecoration(labelText: TextKey.jihuamaijia.tr),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    controller: planSalePriceController,
+                    decoration: InputDecoration(labelText: TextKey.jihuamaijia_s.tr),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -1166,15 +1221,19 @@ class StockeditController extends BaseController {
   }
 
   Future<void> addTrade() async {
-    if (tradePriceController.text.isEmpty) {
-      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.jiage.tr}");
+    if (openPriceController.text.isEmpty) {
+      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
       return;
     }
     final item = StockTradesCompanion.insert(
       stockId: localStockData.value!.id,
       tradeType: tradeType.value,
-      price: Value(tradePriceController.text),
-      shares: Value(tradeSharesController.text),
+      openPrice: Value(openPriceController.text),
+      openShares: Value(openSharesController.text),
+      closePrice: Value(closePriceController.text),
+      closeShares: Value(closeSharesController.text),
+      planBuyPrice: Value(planBuyPriceController.text),
+      planSalePrice: Value(planSalePriceController.text),
       remark: Value(tradeRemarkController.text),
       tradeDate: Value(tradeDate.value),
     );
@@ -1185,16 +1244,20 @@ class StockeditController extends BaseController {
   }
 
   Future<void> updateTrade(StockTrade trade) async {
-    if (tradePriceController.text.isEmpty) {
-      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.jiage.tr}");
+    if (openPriceController.text.isEmpty) {
+      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
       return;
     }
     final item = StockTradesCompanion.insert(
       id: Value(trade.id),
       stockId: trade.stockId,
       tradeType: tradeType.value,
-      price: Value(tradePriceController.text),
-      shares: Value(tradeSharesController.text),
+      openPrice: Value(openPriceController.text),
+      openShares: Value(openSharesController.text),
+      closePrice: Value(closePriceController.text),
+      closeShares: Value(closeSharesController.text),
+      planBuyPrice: Value(planBuyPriceController.text),
+      planSalePrice: Value(planSalePriceController.text),
       remark: Value(tradeRemarkController.text),
       tradeDate: Value(tradeDate.value),
     );
