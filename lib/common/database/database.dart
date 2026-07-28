@@ -522,6 +522,22 @@ class AppDatabase extends _$AppDatabase {
           ]))
         .get();
   }
+
+  Future<List<StockTrade>> getAllStockTrades() {
+    return (select(stockTrades)
+          ..orderBy([
+            (tbl) => OrderingTerm(
+                  expression: tbl.tradeDate,
+                  mode: OrderingMode.desc,
+                  nulls: NullsOrder.last,
+                ),
+            (tbl) => OrderingTerm(
+                  expression: tbl.createdAt,
+                  mode: OrderingMode.desc,
+                ),
+          ]))
+        .get();
+  }
 }
 
 //Stock
