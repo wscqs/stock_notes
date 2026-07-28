@@ -127,6 +127,10 @@ class TextKey {
   static const zanshibuzhichi = 'zanshibuzhichi';
   static const jiazashibai = 'jiazashibai';
   static const linkInvalid = 'linkInvalid';
+  static const kaicang = 'kaicang';
+  static const pingcang = 'pingcang';
+  static const jihuamaijia = 'jihuamaijia';
+  static const jihuamaijia_s = 'jihuamaijia_s';
 }
 
 const Map<String, String> zh = {
@@ -301,6 +305,10 @@ const Map<String, String> zh = {
 • 卸载应用或清除数据会导致本地数据丢失，请定期导出备份。
 • 导入数据源前，请先初始化本地数据源。
 ''',
+  TextKey.kaicang: '开仓',
+  TextKey.pingcang: '平仓',
+  TextKey.jihuamaijia: '计划买价',
+  TextKey.jihuamaijia_s: '计划卖价',
 };
 
 const Map<String, String> en = {
@@ -480,4 +488,8 @@ A privacy-first, offline investment journaling and review app. All data is store
 • Uninstalling the app or clearing its data will erase local data. Please export backups regularly.
 • Initialize the local data source before importing an external data source.
 ''',
+  TextKey.kaicang: 'Open',
+  TextKey.pingcang: 'Close',
+  TextKey.jihuamaijia: 'Plan Buy',
+  TextKey.jihuamaijia_s: 'Plan Sale',
 };
