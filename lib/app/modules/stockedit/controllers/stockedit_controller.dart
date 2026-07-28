@@ -26,38 +26,52 @@ import '../../base/base_controller.dart';
 import '../../tagsedit/views/tagsedit_view.dart';
 
 /// Pure calculation used by [StockeditController.calculateTradeEstimate].
-/// Returns the estimated yield rate and, when [shares] is valid, the profit.
-/// [tradeType] 0=buy (买), 1=sell (卖).
+/// Returns the estimated yield rate and, when [openShares] is valid, the profit.
+/// [tradeType] 0=buy (买 / long), 1=sell (卖 / short).
+/// For long: open is the buy, close is the sell.
+/// For short: open is the sell, close is the buy/cover.
+/// When [openShares] equals [closeShares] and [closePrice] is valid, profit is
+/// realized using the actual close price; otherwise it uses [currentPrice] for
+/// unrealized profit.
 ({double? yieldRate, double? profit}) calculateTradeEstimateFromValues({
   required String? currentPrice,
-  required String? tradePrice,
-  required String? shares,
+  required String? openPrice,
+  required String? closePrice,
+  required String? openShares,
+  required String? closeShares,
   required int tradeType,
 }) {
   if (currentPrice == null ||
       currentPrice.isEmpty ||
-      tradePrice == null ||
-      tradePrice.isEmpty) {
+      openPrice == null ||
+      openPrice.isEmpty) {
     return (yieldRate: null, profit: null);
   }
 
   final current = double.tryParse(currentPrice);
-  final trade = double.tryParse(tradePrice);
-  if (current == null || trade == null || trade == 0) {
+  final open = double.tryParse(openPrice);
+  if (current == null || open == null || open == 0) {
     return (yieldRate: null, profit: null);
   }
 
-  final isSell = tradeType == 1;
+  final isShort = tradeType == 1; // 卖 = 先卖后买
   final yieldRate =
-      isSell ? (trade - current) / current : (current - trade) / trade;
+      isShort ? (open - current) / open : (current - open) / open;
 
   double? profit;
-  if (shares != null && shares.isNotEmpty) {
-    final shareCount = double.tryParse(shares);
-    if (shareCount != null) {
-      profit = isSell
-          ? (trade - current) * shareCount
-          : (current - trade) * shareCount;
+  final openCount = double.tryParse(openShares ?? '');
+  final closeCount = double.tryParse(closeShares ?? '');
+  final hasClose = closePrice != null && closePrice.isNotEmpty;
+  final close = hasClose ? double.tryParse(closePrice) : null;
+
+  if (openCount != null && openCount > 0) {
+    if (closeCount != null &&
+        closeCount > 0 &&
+        openCount == closeCount &&
+        close != null) {
+      profit = isShort ? (open - close) * openCount : (close - open) * openCount;
+    } else {
+      profit = isShort ? (open - current) * openCount : (current - open) * openCount;
     }
   }
 
@@ -1205,8 +1219,10 @@ class StockeditController extends BaseController {
       StockTrade trade) {
     return calculateTradeEstimateFromValues(
       currentPrice: serStockData.value.currentPrice,
-      tradePrice: trade.price,
-      shares: trade.shares,
+      openPrice: trade.openPrice,
+      closePrice: trade.closePrice,
+      openShares: trade.openShares,
+      closeShares: trade.closeShares,
       tradeType: trade.tradeType,
     );
   }
