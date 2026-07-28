@@ -55,8 +55,7 @@ import '../../tagsedit/views/tagsedit_view.dart';
   }
 
   final isShort = tradeType == 1; // 卖 = 先卖后买
-  final yieldRate =
-      isShort ? (open - current) / open : (current - open) / open;
+  final yieldRate = isShort ? (open - current) / open : (current - open) / open;
 
   double? profit;
   final openCount = double.tryParse(openShares ?? '');
@@ -69,9 +68,11 @@ import '../../tagsedit/views/tagsedit_view.dart';
         closeCount > 0 &&
         openCount == closeCount &&
         close != null) {
-      profit = isShort ? (open - close) * openCount : (close - open) * openCount;
+      profit =
+          isShort ? (open - close) * openCount : (close - open) * openCount;
     } else {
-      profit = isShort ? (open - current) * openCount : (current - open) * openCount;
+      profit =
+          isShort ? (open - current) * openCount : (current - open) * openCount;
     }
   }
 
@@ -1064,13 +1065,39 @@ class StockeditController extends BaseController {
             final now = DateTime.now();
             return DateTime(now.year, now.month, now.day);
           })();
-    openPriceController.text = existingTrade?.openPrice ?? existingTrade?.price ?? "";
-    openSharesController.text = existingTrade?.openShares ?? existingTrade?.shares ?? "";
+    openPriceController.text =
+        existingTrade?.openPrice ?? existingTrade?.price ?? "";
+    openSharesController.text =
+        existingTrade?.openShares ?? existingTrade?.shares ?? "";
     closePriceController.text = existingTrade?.closePrice ?? "";
     closeSharesController.text = existingTrade?.closeShares ?? "";
     planBuyPriceController.text = existingTrade?.planBuyPrice ?? "";
     planSalePriceController.text = existingTrade?.planSalePrice ?? "";
     tradeRemarkController.text = existingTrade?.remark ?? "";
+
+    final planBuyPoints = 0.0.obs;
+    final planSalePoints = 0.0.obs;
+
+    void updatePlanPricePoints() {
+      final currentPrice =
+          double.tryParse(serStockData.value.currentPrice ?? "");
+      final buyPrice = double.tryParse(planBuyPriceController.text);
+      final salePrice = double.tryParse(planSalePriceController.text);
+
+      if (buyPrice != null && currentPrice != null && currentPrice != 0) {
+        planBuyPoints.value = (buyPrice - currentPrice) / currentPrice;
+      } else {
+        planBuyPoints.value = 0.0;
+      }
+
+      if (salePrice != null && currentPrice != null && currentPrice != 0) {
+        planSalePoints.value = (salePrice - currentPrice) / currentPrice;
+      } else {
+        planSalePoints.value = 0.0;
+      }
+    }
+
+    updatePlanPricePoints();
 
     Get.dialog(AlertDialog(
       title: Text(isEdit ? TextKey.xiugai.tr : TextKey.xinzengjiaoyi.tr),
@@ -1127,14 +1154,18 @@ class StockeditController extends BaseController {
                 ],
               );
             }),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             // 开仓
             Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
+                Text('${TextKey.kaicang.tr}: '),
+                const SizedBox(width: 8),
                 Expanded(
                   child: TextField(
                     controller: openPriceController,
-                    decoration: InputDecoration(labelText: "${TextKey.kaicang.tr}${TextKey.jiage.tr}"),
+                    decoration: InputDecoration(labelText: TextKey.jiage.tr),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -1142,20 +1173,24 @@ class StockeditController extends BaseController {
                 Expanded(
                   child: TextField(
                     controller: openSharesController,
-                    decoration: InputDecoration(labelText: "${TextKey.kaicang.tr}${TextKey.gushu.tr}"),
+                    decoration: InputDecoration(labelText: TextKey.gushu.tr),
                     keyboardType: TextInputType.number,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             // 平仓
             Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
+                Text('${TextKey.pingcang.tr}: '),
+                const SizedBox(width: 8),
                 Expanded(
                   child: TextField(
                     controller: closePriceController,
-                    decoration: InputDecoration(labelText: "${TextKey.pingcang.tr}${TextKey.jiage.tr}"),
+                    decoration: InputDecoration(labelText: TextKey.jiage.tr),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -1163,34 +1198,50 @@ class StockeditController extends BaseController {
                 Expanded(
                   child: TextField(
                     controller: closeSharesController,
-                    decoration: InputDecoration(labelText: "${TextKey.pingcang.tr}${TextKey.gushu.tr}"),
+                    decoration: InputDecoration(labelText: TextKey.gushu.tr),
                     keyboardType: TextInputType.number,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             // 计划价格
             Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
+                Text('${TextKey.jihua.tr}: '),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: TextField(
-                    controller: planBuyPriceController,
-                    decoration: InputDecoration(labelText: TextKey.jihuamaijia.tr),
-                    keyboardType: TextInputType.number,
-                  ),
+                  child: Obx(() {
+                    final labelText = planBuyPoints.value == 0.0
+                        ? TextKey.maijia.tr
+                        : "${TextKey.maijia.tr}: ${(planBuyPoints.value * 100).toStringAsFixed(1)}%";
+                    return TextField(
+                      controller: planBuyPriceController,
+                      onChanged: (_) => updatePlanPricePoints(),
+                      decoration: InputDecoration(labelText: labelText),
+                      keyboardType: TextInputType.number,
+                    );
+                  }),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: TextField(
-                    controller: planSalePriceController,
-                    decoration: InputDecoration(labelText: TextKey.jihuamaijia_s.tr),
-                    keyboardType: TextInputType.number,
-                  ),
+                  child: Obx(() {
+                    final labelText = planSalePoints.value == 0.0
+                        ? TextKey.maijia_s.tr
+                        : "${TextKey.maijia_s.tr}: ${(planSalePoints.value * 100).toStringAsFixed(1)}%";
+                    return TextField(
+                      controller: planSalePriceController,
+                      onChanged: (_) => updatePlanPricePoints(),
+                      decoration: InputDecoration(labelText: labelText),
+                      keyboardType: TextInputType.number,
+                    );
+                  }),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             TextField(
               controller: tradeRemarkController,
               maxLines: 2,
@@ -1222,7 +1273,8 @@ class StockeditController extends BaseController {
 
   Future<void> addTrade() async {
     if (openPriceController.text.isEmpty) {
-      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
+      QsHud.showToast(
+          "${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
       return;
     }
     final item = StockTradesCompanion.insert(
@@ -1245,7 +1297,8 @@ class StockeditController extends BaseController {
 
   Future<void> updateTrade(StockTrade trade) async {
     if (openPriceController.text.isEmpty) {
-      QsHud.showToast("${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
+      QsHud.showToast(
+          "${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
       return;
     }
     final item = StockTradesCompanion.insert(
