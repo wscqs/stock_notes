@@ -443,18 +443,36 @@ class StockeditView extends GetView<StockeditController> {
                   Row(
                     children: [
                       Text(
-                        "${TextKey.jiage.tr}: ${trade.price ?? '-'}",
+                        "${TextKey.kaicang.tr}: ${trade.openPrice ?? '-'}",
                         style: TextStyle(fontSize: 14),
                       ),
-                      if (trade.shares != null && trade.shares!.isNotEmpty) ...[
+                      if (trade.openShares != null && trade.openShares!.isNotEmpty) ...[
                         const SizedBox(width: 16),
                         Text(
-                          "${TextKey.gushu.tr}: ${trade.shares}",
+                          "${TextKey.gushu.tr}: ${trade.openShares}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
                     ],
                   ),
+                  if (trade.closePrice != null && trade.closePrice!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          "${TextKey.pingcang.tr}: ${trade.closePrice}",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        if (trade.closeShares != null && trade.closeShares!.isNotEmpty) ...[
+                          const SizedBox(width: 16),
+                          Text(
+                            "${TextKey.gushu.tr}: ${trade.closeShares}",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                   if (trade.remark != null && trade.remark!.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
