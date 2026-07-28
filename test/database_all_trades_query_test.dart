@@ -9,7 +9,8 @@ void main() {
   late String dbPath;
 
   setUp(() async {
-    dbPath = '${Directory.systemTemp.path}/test_all_trades_${DateTime.now().millisecondsSinceEpoch}.db';
+    dbPath =
+        '${Directory.systemTemp.path}/test_all_trades_${DateTime.now().millisecondsSinceEpoch}.db';
     db = AppDatabase(dbPath);
   });
 
@@ -20,7 +21,8 @@ void main() {
   });
 
   group('getAllStockTrades', () {
-    test('returns all trades ordered by tradeDate desc then createdAt desc', () async {
+    test('returns all trades ordered by tradeDate desc then createdAt desc',
+        () async {
       final stockId = await db.stockItems.insertOne(StockItemsCompanion.insert(
         marketType: 'sh',
         code: '600519',

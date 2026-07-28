@@ -248,8 +248,8 @@ class AppDatabase extends _$AppDatabase {
   Future<List<StockItem>> getStockItemsOnHomeWithCollect(
       {bool isMeet = false, bool isNear = false}) {
     return (select(stockItems)
-          ..where((tbl) =>
-              tbl.opCollect.equals(true) & tbl.opDelete.equals(false))
+          ..where(
+              (tbl) => tbl.opCollect.equals(true) & tbl.opDelete.equals(false))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
@@ -267,8 +267,7 @@ class AppDatabase extends _$AppDatabase {
   Future<List<StockItem>> getStockItemsOnHomeWithBuy(
       {bool isMeet = false, bool isNear = false}) {
     return (select(stockItems)
-          ..where(
-              (tbl) => tbl.opBuy.equals(true) & tbl.opDelete.equals(false))
+          ..where((tbl) => tbl.opBuy.equals(true) & tbl.opDelete.equals(false))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),
@@ -482,8 +481,8 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<NoteItem>> getNoteItemsOnHomeWithCollect() {
     return (select(noteItems)
-          ..where((tbl) =>
-              tbl.opCollect.equals(true) & tbl.opDelete.equals(false))
+          ..where(
+              (tbl) => tbl.opCollect.equals(true) & tbl.opDelete.equals(false))
           ..orderBy([
             (tbl) =>
                 OrderingTerm(expression: tbl.opTop, mode: OrderingMode.desc),

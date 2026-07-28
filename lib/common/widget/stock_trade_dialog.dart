@@ -55,10 +55,13 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     tradeType = (widget.existingTrade?.tradeType ?? 0).obs;
     tradeDate = (widget.existingTrade?.tradeDate ?? DateTime.now()).obs;
     openPriceController = TextEditingController(
-      text: widget.existingTrade?.openPrice ?? widget.existingTrade?.price ?? '',
+      text:
+          widget.existingTrade?.openPrice ?? widget.existingTrade?.price ?? '',
     );
     openSharesController = TextEditingController(
-      text: widget.existingTrade?.openShares ?? widget.existingTrade?.shares ?? '',
+      text: widget.existingTrade?.openShares ??
+          widget.existingTrade?.shares ??
+          '',
     );
     closePriceController = TextEditingController(
       text: widget.existingTrade?.closePrice ?? '',

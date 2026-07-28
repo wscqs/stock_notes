@@ -38,7 +38,8 @@ void main() {
     expect(find.text('2026-07-27'), findsOneWidget);
   });
 
-  testWidgets('renders stock name and code when stock is provided', (tester) async {
+  testWidgets('renders stock name and code when stock is provided',
+      (tester) async {
     final stock = StockItem(
       id: 1,
       createdAt: now,

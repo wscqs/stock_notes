@@ -216,7 +216,8 @@ void main() {
       expect(result.profit, closeTo(100, 1e-10));
     });
 
-    test('closed short trade with open price == close price has zero yield rate',
+    test(
+        'closed short trade with open price == close price has zero yield rate',
         () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '13.41',
@@ -244,7 +245,8 @@ void main() {
       expect(result.profit, closeTo(100.0, 1e-10));
     });
 
-    group('close price edge cases fall back to current-price unrealized P&L', () {
+    group('close price edge cases fall back to current-price unrealized P&L',
+        () {
       test('close price provided but close shares is null', () {
         final result = calculateTradeEstimateFromValues(
           currentPrice: '110',

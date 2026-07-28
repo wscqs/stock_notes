@@ -51,7 +51,8 @@ class StockTradeItem extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: isBuy
                                 ? Colors.red.withValues(alpha: 0.1)
@@ -91,7 +92,8 @@ class StockTradeItem extends StatelessWidget {
                           "${TextKey.kaicang.tr}: ${trade.openPrice ?? '-'}",
                           style: TextStyle(fontSize: 14),
                         ),
-                        if (trade.openShares != null && trade.openShares!.isNotEmpty) ...[
+                        if (trade.openShares != null &&
+                            trade.openShares!.isNotEmpty) ...[
                           const SizedBox(width: 16),
                           Text(
                             "${TextKey.gushu.tr}: ${trade.openShares}",
@@ -100,7 +102,8 @@ class StockTradeItem extends StatelessWidget {
                         ],
                       ],
                     ),
-                    if (trade.closePrice != null && trade.closePrice!.isNotEmpty) ...[
+                    if (trade.closePrice != null &&
+                        trade.closePrice!.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Row(
                         children: [
@@ -108,7 +111,8 @@ class StockTradeItem extends StatelessWidget {
                             "${TextKey.pingcang.tr}: ${trade.closePrice}",
                             style: TextStyle(fontSize: 14),
                           ),
-                          if (trade.closeShares != null && trade.closeShares!.isNotEmpty) ...[
+                          if (trade.closeShares != null &&
+                              trade.closeShares!.isNotEmpty) ...[
                             const SizedBox(width: 16),
                             Text(
                               "${TextKey.gushu.tr}: ${trade.closeShares}",
@@ -142,7 +146,8 @@ class StockTradeItem extends StatelessWidget {
                       const SizedBox(width: 12),
                       GestureDetector(
                         onTap: onDelete,
-                        child: Icon(Icons.delete_outline, size: 18, color: Colors.grey),
+                        child: Icon(Icons.delete_outline,
+                            size: 18, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -161,7 +166,9 @@ class StockTradeItem extends StatelessWidget {
     final yieldRate = estimate.yieldRate;
     final valueColor = yieldRate == null
         ? Colors.grey
-        : (yieldRate > 0 ? Colors.red : (yieldRate < 0 ? Colors.green : Colors.grey));
+        : (yieldRate > 0
+            ? Colors.red
+            : (yieldRate < 0 ? Colors.green : Colors.grey));
     final labelStyle = TextStyle(color: Colors.grey, fontSize: 12);
     final valueStyle = TextStyle(color: valueColor, fontSize: 12);
 
@@ -172,14 +179,17 @@ class StockTradeItem extends StatelessWidget {
         Text.rich(TextSpan(children: [
           TextSpan(text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
           TextSpan(
-            text: yieldRate == null ? "-" : "${(yieldRate * 100).toStringAsFixed(1)}%",
+            text: yieldRate == null
+                ? "-"
+                : "${(yieldRate * 100).toStringAsFixed(1)}%",
             style: valueStyle,
           ),
         ])),
         if (estimate.profit != null)
           Text.rich(TextSpan(children: [
             TextSpan(text: "${TextKey.shouyie.tr}: ", style: labelStyle),
-            TextSpan(text: estimate.profit!.toStringAsFixed(2), style: valueStyle),
+            TextSpan(
+                text: estimate.profit!.toStringAsFixed(2), style: valueStyle),
           ])),
       ],
     );

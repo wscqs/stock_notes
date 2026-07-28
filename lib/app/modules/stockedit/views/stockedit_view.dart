@@ -372,7 +372,8 @@ class StockeditView extends GetView<StockeditController> {
           return StockTradeListWithMore(
             trades: trades,
             buildTradeItem: _buildTradeItemForStock,
-            onShowAll: () => controller.showAllTradesSheet(_buildTradeItemForStock),
+            onShowAll: () =>
+                controller.showAllTradesSheet(_buildTradeItemForStock),
           );
         }),
       ],

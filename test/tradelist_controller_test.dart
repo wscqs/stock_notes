@@ -12,7 +12,8 @@ void main() {
   late String dbPath;
 
   setUp(() async {
-    dbPath = '${Directory.systemTemp.path}/test_tradelist_${DateTime.now().millisecondsSinceEpoch}.db';
+    dbPath =
+        '${Directory.systemTemp.path}/test_tradelist_${DateTime.now().millisecondsSinceEpoch}.db';
     final manager = DatabaseManager();
     await manager.init(path: dbPath);
     db = manager.db;
@@ -27,12 +28,17 @@ void main() {
   });
 
   group('TradelistController', () {
-    test('loadTrades filters only incomplete trades across all stocks', () async {
+    test('loadTrades filters only incomplete trades across all stocks',
+        () async {
       final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
-        marketType: 'sh', code: '600519', name: '茅台',
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
       ));
       final stockB = await db.stockItems.insertOne(StockItemsCompanion.insert(
-        marketType: 'sh', code: '000001', name: '平安',
+        marketType: 'sh',
+        code: '000001',
+        name: '平安',
       ));
 
       await db.addStockTrade(StockTradesCompanion.insert(
