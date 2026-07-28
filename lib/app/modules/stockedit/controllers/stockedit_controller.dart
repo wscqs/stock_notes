@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
+import 'package:intl/intl.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
@@ -1048,73 +1048,87 @@ class StockeditController extends BaseController {
 
     Get.dialog(AlertDialog(
       title: Text(isEdit ? TextKey.xiugai.tr : TextKey.xinzengjiaoyi.tr),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Obx(() {
-            return Row(
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Obx(() {
+              return Row(
+                children: [
+                  ChoiceChip(
+                    showCheckmark: false,
+                    label: Text(TextKey.buy.tr),
+                    selected: tradeType.value == 0,
+                    onSelected: (selected) {
+                      if (selected) tradeType.value = 0;
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    showCheckmark: false,
+                    label: Text(TextKey.sale.tr),
+                    selected: tradeType.value == 1,
+                    onSelected: (selected) {
+                      if (selected) tradeType.value = 1;
+                    },
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      key: ValueKey(tradeDate.value),
+                      //不要下划线
+                      // decoration: InputDecoration(
+                      //   border: InputBorder.none,
+                      // ),
+                      readOnly: true,
+                      textAlign: TextAlign.center,
+                      initialValue:
+                          DateFormat('yyyy-MM-dd').format(tradeDate.value),
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: Get.context!,
+                          initialDate: tradeDate.value,
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                        if (picked != null) {
+                          tradeDate.value = picked;
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
+            const SizedBox(height: 8),
+            Row(
               children: [
-                ChoiceChip(
-                  label: Text(TextKey.buy.tr),
-                  selected: tradeType.value == 0,
-                  onSelected: (selected) {
-                    if (selected) tradeType.value = 0;
-                  },
+                Expanded(
+                  child: TextField(
+                    controller: tradePriceController,
+                    decoration: InputDecoration(labelText: TextKey.jiage.tr),
+                    keyboardType: TextInputType.number,
+                  ),
                 ),
                 const SizedBox(width: 12),
-                ChoiceChip(
-                  label: Text(TextKey.sale.tr),
-                  selected: tradeType.value == 1,
-                  onSelected: (selected) {
-                    if (selected) tradeType.value = 1;
-                  },
+                Expanded(
+                  child: TextField(
+                    controller: tradeSharesController,
+                    decoration: InputDecoration(labelText: TextKey.gushu.tr),
+                    keyboardType: TextInputType.number,
+                  ),
                 ),
               ],
-            );
-          }),
-          const SizedBox(height: 12),
-          Obx(() {
-            return TextFormField(
-              key: ValueKey(tradeDate.value),
-              readOnly: true,
-              initialValue: DateFormat('yyyy-MM-dd').format(tradeDate.value),
-              decoration: InputDecoration(
-                labelText: TextKey.jiaoyiriqi.tr,
-                suffixIcon: const Icon(Icons.calendar_today),
-              ),
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: Get.context!,
-                  initialDate: tradeDate.value,
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
-                );
-                if (picked != null) {
-                  tradeDate.value = picked;
-                }
-              },
-            );
-          }),
-          const SizedBox(height: 12),
-          TextField(
-            controller: tradePriceController,
-            decoration: InputDecoration(labelText: TextKey.jiage.tr),
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: tradeSharesController,
-            decoration: InputDecoration(labelText: TextKey.gushu.tr),
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: tradeRemarkController,
-            maxLines: 2,
-            decoration: InputDecoration(labelText: TextKey.beizui.tr),
-          ),
-        ],
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: tradeRemarkController,
+              maxLines: 2,
+              decoration: InputDecoration(labelText: TextKey.beizui.tr),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
