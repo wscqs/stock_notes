@@ -32,6 +32,8 @@ import '../modules/stocknote/bindings/stocknote_binding.dart';
 import '../modules/stocknote/views/stocknote_view.dart';
 import '../modules/tabs/bindings/tabs_binding.dart';
 import '../modules/tabs/views/tabs_view.dart';
+import '../modules/tradelist/bindings/tradelist_binding.dart';
+import '../modules/tradelist/views/tradelist_view.dart';
 import '../modules/use/bindings/use_binding.dart';
 import '../modules/use/views/use_view.dart';
 
@@ -188,6 +190,11 @@ class AppPages {
       name: _Paths.FAMOUS,
       page: () => const FamousView(),
       binding: FamousBinding(),
+    ),
+    GetPage(
+      name: _Paths.TRADELIST,
+      page: () => const TradelistView(),
+      binding: TradelistBinding(),
     ),
   ];
 }
