@@ -7,8 +7,10 @@ void main() {
       expect(
         calculateTradeEstimateFromValues(
           currentPrice: null,
-          tradePrice: '10',
-          shares: '100',
+          openPrice: '10',
+          closePrice: null,
+          openShares: '100',
+          closeShares: null,
           tradeType: 0,
         ),
         (yieldRate: null, profit: null),
@@ -16,20 +18,24 @@ void main() {
       expect(
         calculateTradeEstimateFromValues(
           currentPrice: '',
-          tradePrice: '10',
-          shares: '100',
+          openPrice: '10',
+          closePrice: null,
+          openShares: '100',
+          closeShares: null,
           tradeType: 0,
         ),
         (yieldRate: null, profit: null),
       );
     });
 
-    test('null/empty trade price returns (null, null)', () {
+    test('null/empty open price returns (null, null)', () {
       expect(
         calculateTradeEstimateFromValues(
           currentPrice: '12',
-          tradePrice: null,
-          shares: '100',
+          openPrice: null,
+          closePrice: null,
+          openShares: '100',
+          closeShares: null,
           tradeType: 0,
         ),
         (yieldRate: null, profit: null),
@@ -37,20 +43,24 @@ void main() {
       expect(
         calculateTradeEstimateFromValues(
           currentPrice: '12',
-          tradePrice: '',
-          shares: '100',
+          openPrice: '',
+          closePrice: null,
+          openShares: '100',
+          closeShares: null,
           tradeType: 0,
         ),
         (yieldRate: null, profit: null),
       );
     });
 
-    test('zero trade price returns (null, null)', () {
+    test('zero open price returns (null, null)', () {
       expect(
         calculateTradeEstimateFromValues(
           currentPrice: '12',
-          tradePrice: '0',
-          shares: '100',
+          openPrice: '0',
+          closePrice: null,
+          openShares: '100',
+          closeShares: null,
           tradeType: 0,
         ),
         (yieldRate: null, profit: null),
@@ -58,12 +68,14 @@ void main() {
     });
 
     test(
-        'valid current price and trade price compute correct yield rate for buy',
+        'valid current price and open price compute correct yield rate for buy',
         () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '12',
-        tradePrice: '10',
-        shares: null,
+        openPrice: '10',
+        closePrice: null,
+        openShares: null,
+        closeShares: null,
         tradeType: 0,
       );
       expect(result.yieldRate, closeTo(0.2, 1e-10));
@@ -73,8 +85,10 @@ void main() {
     test('valid shares compute correct profit for buy', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '12',
-        tradePrice: '10',
-        shares: '100',
+        openPrice: '10',
+        closePrice: null,
+        openShares: '100',
+        closeShares: null,
         tradeType: 0,
       );
       expect(result.yieldRate, closeTo(0.2, 1e-10));
@@ -87,8 +101,10 @@ void main() {
       for (final shares in [null, '', 'abc']) {
         final result = calculateTradeEstimateFromValues(
           currentPrice: '12',
-          tradePrice: '10',
-          shares: shares,
+          openPrice: '10',
+          closePrice: null,
+          openShares: shares,
+          closeShares: null,
           tradeType: 0,
         );
         expect(result.yieldRate, closeTo(0.2, 1e-10),
@@ -97,69 +113,107 @@ void main() {
       }
     });
 
-    test('negative yield rate when current price < trade price for buy', () {
+    test('negative yield rate when current price < open price for buy', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '8',
-        tradePrice: '10',
-        shares: '100',
+        openPrice: '10',
+        closePrice: null,
+        openShares: '100',
+        closeShares: null,
         tradeType: 0,
       );
       expect(result.yieldRate, closeTo(-0.2, 1e-10));
       expect(result.profit, closeTo(-200, 1e-10));
     });
 
-    test('zero yield rate when current price == trade price for buy', () {
+    test('zero yield rate when current price == open price for buy', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '10',
-        tradePrice: '10',
-        shares: '100',
+        openPrice: '10',
+        closePrice: null,
+        openShares: '100',
+        closeShares: null,
         tradeType: 0,
       );
       expect(result.yieldRate, closeTo(0.0, 1e-10));
       expect(result.profit, closeTo(0.0, 1e-10));
     });
 
-    test('sell trade computes profit as (sell price - current price) * shares',
+    test('short trade computes profit as (open price - current price) * shares',
         () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '10',
-        tradePrice: '12',
-        shares: '100',
+        openPrice: '12',
+        closePrice: null,
+        openShares: '100',
+        closeShares: null,
         tradeType: 1,
       );
       expect(result.profit, closeTo(200, 1e-10));
     });
 
-    test('sell trade computes yield rate relative to current price', () {
+    test('short trade computes yield rate relative to open price', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '10',
-        tradePrice: '12',
-        shares: '100',
+        openPrice: '12',
+        closePrice: null,
+        openShares: '100',
+        closeShares: null,
         tradeType: 1,
       );
-      expect(result.yieldRate, closeTo(0.2, 1e-10));
+      expect(result.yieldRate, closeTo(2 / 12, 1e-10));
     });
 
-    test('sell trade shows loss when current price > sell price', () {
+    test('short trade shows loss when current price > open price', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '12',
-        tradePrice: '10',
-        shares: '100',
+        openPrice: '10',
+        closePrice: null,
+        openShares: '100',
+        closeShares: null,
         tradeType: 1,
       );
-      expect(result.yieldRate, closeTo(-1 / 6, 1e-10));
+      expect(result.yieldRate, closeTo(-0.2, 1e-10));
       expect(result.profit, closeTo(-200, 1e-10));
     });
 
-    test('sell trade shows zero when current price == sell price', () {
+    test('short trade shows zero when current price == open price', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '10',
-        tradePrice: '10',
-        shares: '100',
+        openPrice: '10',
+        closePrice: null,
+        openShares: '100',
+        closeShares: null,
         tradeType: 1,
       );
       expect(result.yieldRate, closeTo(0.0, 1e-10));
       expect(result.profit, closeTo(0.0, 1e-10));
+    });
+
+    test('closed long trade uses close price for profit', () {
+      final result = calculateTradeEstimateFromValues(
+        currentPrice: '110',
+        openPrice: '100',
+        closePrice: '115',
+        openShares: '10',
+        closeShares: '10',
+        tradeType: 0,
+      );
+      expect(result.yieldRate, closeTo(0.1, 1e-10));
+      expect(result.profit, closeTo(150, 1e-10));
+    });
+
+    test('closed short trade uses close price for profit', () {
+      final result = calculateTradeEstimateFromValues(
+        currentPrice: '95',
+        openPrice: '100',
+        closePrice: '90',
+        openShares: '10',
+        closeShares: '10',
+        tradeType: 1,
+      );
+      expect(result.yieldRate, closeTo(0.05, 1e-10));
+      expect(result.profit, closeTo(100, 1e-10));
     });
   });
 }
