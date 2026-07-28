@@ -69,7 +69,7 @@ class AppDatabase extends _$AppDatabase {
           if (from <= 5 && from > 1) {
             await migrator.addColumn(stockTrades, stockTrades.tradeDate);
           }
-          if (from <= 6) {
+          if (from <= 6 && from > 1) {
             await migrator.addColumn(stockTrades, stockTrades.openPrice);
             await migrator.addColumn(stockTrades, stockTrades.openShares);
             await migrator.addColumn(stockTrades, stockTrades.closePrice);
