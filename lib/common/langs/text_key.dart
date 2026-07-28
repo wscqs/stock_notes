@@ -130,7 +130,7 @@ class TextKey {
   static const kaicang = 'kaicang';
   static const pingcang = 'pingcang';
   static const jihuamaijia = 'jihuamaijia';
-  static const jihuamaijiaS = 'jihuamaijiaS';
+  static const jihuamaijia_s = 'jihuamaijia_s';
 }
 
 const Map<String, String> zh = {
@@ -308,7 +308,7 @@ const Map<String, String> zh = {
   TextKey.kaicang: '开仓',
   TextKey.pingcang: '平仓',
   TextKey.jihuamaijia: '计划买价',
-  TextKey.jihuamaijiaS: '计划卖价',
+  TextKey.jihuamaijia_s: '计划卖价',
 };
 
 const Map<String, String> en = {
@@ -491,5 +491,5 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.kaicang: 'Open',
   TextKey.pingcang: 'Close',
   TextKey.jihuamaijia: 'Plan Buy',
-  TextKey.jihuamaijiaS: 'Plan Sale',
+  TextKey.jihuamaijia_s: 'Plan Sale',
 };

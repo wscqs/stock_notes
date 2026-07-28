@@ -1184,7 +1184,7 @@ class StockeditController extends BaseController {
                 Expanded(
                   child: TextField(
                     controller: planSalePriceController,
-                    decoration: InputDecoration(labelText: TextKey.jihuamaijiaS.tr),
+                    decoration: InputDecoration(labelText: TextKey.jihuamaijia_s.tr),
                     keyboardType: TextInputType.number,
                   ),
                 ),
