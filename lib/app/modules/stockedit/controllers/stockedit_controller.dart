@@ -16,6 +16,7 @@ import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
+import 'package:stock_notes/common/extension/StockTrade++.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
@@ -24,69 +25,6 @@ import '../../../../utils/stock_link_utils.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
 import '../../tagsedit/views/tagsedit_view.dart';
-
-/// Pure calculation used by [StockeditController.calculateTradeEstimate].
-/// Returns the estimated yield rate and, when [openShares] is valid, the profit.
-/// [tradeType] 0=buy (买 / long), 1=sell (卖 / short).
-/// For long: open is the buy, close is the sell.
-/// For short: open is the sell, close is the buy/cover.
-/// When [openShares] equals [closeShares] and [closePrice] is valid, profit is
-/// realized using the actual close price; otherwise it uses [currentPrice] for
-/// unrealized profit.
-({double? yieldRate, double? profit}) calculateTradeEstimateFromValues({
-  required String? currentPrice,
-  required String? openPrice,
-  required String? closePrice,
-  required String? openShares,
-  required String? closeShares,
-  required int tradeType,
-}) {
-  if (currentPrice == null ||
-      currentPrice.isEmpty ||
-      openPrice == null ||
-      openPrice.isEmpty) {
-    return (yieldRate: null, profit: null);
-  }
-
-  final current = double.tryParse(currentPrice);
-  final open = double.tryParse(openPrice);
-  if (current == null || open == null || open == 0) {
-    return (yieldRate: null, profit: null);
-  }
-
-  final isShort = tradeType == 1; // 卖 = 先卖后买
-  final openCount = double.tryParse(openShares ?? '');
-  final closeCount = double.tryParse(closeShares ?? '');
-  final hasClose = closePrice != null && closePrice.isNotEmpty;
-  final close = hasClose ? double.tryParse(closePrice) : null;
-  final isCompleted = openCount != null &&
-      openCount > 0 &&
-      closeCount != null &&
-      closeCount > 0 &&
-      openCount == closeCount &&
-      close != null;
-
-  final yieldRate = isCompleted
-      ? (isShort ? (open - close) / open : (close - open) / open)
-      : (isShort ? (open - current) / open : (current - open) / open);
-
-  double? profit;
-
-  if (openCount != null && openCount > 0) {
-    if (closeCount != null &&
-        closeCount > 0 &&
-        openCount == closeCount &&
-        close != null) {
-      profit =
-          isShort ? (open - close) * openCount : (close - open) * openCount;
-    } else {
-      profit =
-          isShort ? (open - current) * openCount : (current - open) * openCount;
-    }
-  }
-
-  return (yieldRate: yieldRate, profit: profit);
-}
 
 class StockeditController extends BaseController {
   final db = Get.find<DatabaseManager>().db;
@@ -1041,17 +979,11 @@ class StockeditController extends BaseController {
 
   // ========== 交易记录 ==========
 
-  bool _isTradeCompleted(StockTrade trade) {
-    final open = double.tryParse(trade.openShares ?? '');
-    final close = double.tryParse(trade.closeShares ?? '');
-    return open != null && close != null && open > 0 && open == close;
-  }
-
   List<StockTrade> get incompleteTrades =>
-      stockTrades.where((t) => !_isTradeCompleted(t)).toList();
+      stockTrades.where((t) => !t.isCompleted).toList();
 
   List<StockTrade> get completedTrades =>
-      stockTrades.where((t) => _isTradeCompleted(t)).toList();
+      stockTrades.where((t) => t.isCompleted).toList();
 
   final tradeListFilter = 'trade'.obs; // 'all' | 'trade' | 'history'
 

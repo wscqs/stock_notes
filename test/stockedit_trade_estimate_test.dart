@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:stock_notes/app/modules/stockedit/controllers/stockedit_controller.dart';
+import 'package:stock_notes/common/extension/StockTrade++.dart';
 
 void main() {
   group('calculateTradeEstimateFromValues', () {
