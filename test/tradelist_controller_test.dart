@@ -65,5 +65,43 @@ void main() {
       expect(controller.trades.length, 1);
       expect(controller.trades.first.stockId, stockA);
     });
+
+    test('loadTrades populates stockMap with related stocks', () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+      final stockB = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '000001',
+        name: '平安',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        closeShares: const Value('5'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockB,
+        tradeType: 1,
+        openPrice: const Value('200'),
+        openShares: const Value('10'),
+        closeShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 26)),
+      ));
+
+      final controller = TradelistController();
+      controller.onInit();
+      await controller.loadTrades();
+
+      expect(controller.stockMap.length, 1);
+      expect(controller.stockMap.containsKey(stockA), true);
+      expect(controller.stockMap[stockA]?.name, '茅台');
+    });
   });
 }

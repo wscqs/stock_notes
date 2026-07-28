@@ -4,6 +4,7 @@ import 'package:stock_notes/app/routes/app_pages.dart';
 import 'package:stock_notes/common/database/DatabaseManager.dart';
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/extension/StockTrade++.dart';
+import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
@@ -36,19 +37,21 @@ class TradelistController extends BaseController {
   }
 
   void editTrade(StockTrade trade) {
+    final ctx = Get.context;
+    if (ctx == null) return;
     final stock = stockMap[trade.stockId];
     StockTradeDialog.show(
-      context: Get.context!,
+      context: ctx,
       existingTrade: trade,
       currentPrice: stock?.currentPrice ?? '',
       onSaved: (companion) async {
         if ((companion.openPrice.value ?? '').isEmpty) {
-          QsHud.showToast('请输入开仓价格');
+          QsHud.showToast(TextKey.qingshuru.tr + TextKey.kaicang.tr + TextKey.jiage.tr);
           return;
         }
         await db.updateStockTrade(companion);
         Get.back();
-        QsHud.showToast('成功');
+        QsHud.showToast(TextKey.success.tr);
         await loadTrades();
       },
     );
@@ -56,7 +59,7 @@ class TradelistController extends BaseController {
 
   void deleteTrade(StockTrade trade) {
     QsHud.showConfirmDialog(
-      title: '确认删除',
+      title: TextKey.querengdelete.tr,
       content: '',
       onConfirm: () async {
         await db.deleteStockTrade(trade);
@@ -68,7 +71,7 @@ class TradelistController extends BaseController {
   void openStockDetail(StockTrade trade) {
     final stock = stockMap[trade.stockId];
     if (stock == null) {
-      QsHud.showToast('股票不存在');
+      QsHud.showToast(TextKey.gupiaobucunzai.tr);
       return;
     }
     Get.toNamed(Routes.STOCKEDIT, arguments: stock);
