@@ -57,7 +57,8 @@ void main() {
   group('selectedIds', () {
     test('无缓存时返回默认勾选', () {
       // 测试环境 Hive box 未初始化，QsCache.get 返回 null → 默认值
-      expect(StockExtLinks.selectedIds(), ['kline_baidu', 'saolei_ths']);
+      expect(StockExtLinks.selectedIds(),
+          ['kline_baidu', 'jiankuan', 'saolei_ths']);
     });
     test('默认值按 all 顺序', () {
       final defaults = StockExtLinks.selectedIds();
@@ -72,16 +73,16 @@ void main() {
       final ids = StockExtLinks.all.map((l) => l.id).toSet();
       expect(ids.length, 6);
     });
-    test('顺序为k线百/扫雷同/扫雷安/大事东/概念同/简况', () {
+    test('顺序为k线百/简况/扫雷同/扫雷安/概念同/大事东', () {
       expect(
           StockExtLinks.all.map((l) => l.id).toList(),
           [
             'kline_baidu',
+            'jiankuan',
             'saolei_ths',
             'saolei_essence',
-            'dashi_em',
             'gainian_ths',
-            'jiankuan',
+            'dashi_em',
           ]);
     });
   });
