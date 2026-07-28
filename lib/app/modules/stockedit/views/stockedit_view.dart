@@ -15,6 +15,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../../commonwidget/stock_searchfield.dart';
 import '../../noteedit/views/noteedit_view.dart' show TimeStampEmbedBuilder;
 import '../controllers/stockedit_controller.dart';
+import 'package:stock_notes/app/routes/app_pages.dart';
 
 class StockeditView extends GetView<StockeditController> {
   const StockeditView({super.key});
@@ -43,6 +44,11 @@ class StockeditView extends GetView<StockeditController> {
               icon: const Icon(Icons.check),
               tooltip: TextKey.wancheng.tr,
               onPressed: () => controller.save(),
+            ),
+            IconButton(
+              icon: const Icon(Icons.trending_up),
+              tooltip: TextKey.jiaoyi.tr,
+              onPressed: () => Get.toNamed(Routes.TRADELIST),
             ),
           ],
         ),
