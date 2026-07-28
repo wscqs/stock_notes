@@ -55,13 +55,22 @@ import '../../tagsedit/views/tagsedit_view.dart';
   }
 
   final isShort = tradeType == 1; // 卖 = 先卖后买
-  final yieldRate = isShort ? (open - current) / open : (current - open) / open;
-
-  double? profit;
   final openCount = double.tryParse(openShares ?? '');
   final closeCount = double.tryParse(closeShares ?? '');
   final hasClose = closePrice != null && closePrice.isNotEmpty;
   final close = hasClose ? double.tryParse(closePrice) : null;
+  final isCompleted = openCount != null &&
+      openCount > 0 &&
+      closeCount != null &&
+      closeCount > 0 &&
+      openCount == closeCount &&
+      close != null;
+
+  final yieldRate = isCompleted
+      ? (isShort ? (open - close) / open : (close - open) / open)
+      : (isShort ? (open - current) / open : (current - open) / open);
+
+  double? profit;
 
   if (openCount != null && openCount > 0) {
     if (closeCount != null &&
@@ -111,6 +120,7 @@ class StockeditController extends BaseController {
   final pPriceYieldRate = 0.0.obs;
   final pMarketCapYieldRate = 0.0.obs;
   final pPeTtmYieldRate = 0.0.obs;
+
   //对应当前价格，计算点数
   final pPriceBuyPoints = 0.0.obs;
   final pMarketCapBuyPoints = 0.0.obs;
@@ -119,6 +129,7 @@ class StockeditController extends BaseController {
   final pMarketCapSalePoints = 0.0.obs;
   final pPeTtmSalePoints = 0.0.obs;
   final rBuyPriceYieldRate = 0.00001.obs;
+
   //成本价/持有股数是否有效（决定股数输入框与收益信息展示）
   final rBuyPriceValid = false.obs;
   final rHoldSharesValid = false.obs;
@@ -576,6 +587,7 @@ class StockeditController extends BaseController {
 
   //刷新笔记（大备注）预览
   String? _lastNoteContent;
+
   void _refreshNotePreview() {
     final content = localStockData.value?.rNote;
     if (content != null && content.isNotEmpty) {
@@ -1029,6 +1041,32 @@ class StockeditController extends BaseController {
 
   // ========== 交易记录 ==========
 
+  bool _isTradeCompleted(StockTrade trade) {
+    final open = double.tryParse(trade.openShares ?? '');
+    final close = double.tryParse(trade.closeShares ?? '');
+    return open != null && close != null && open > 0 && open == close;
+  }
+
+  List<StockTrade> get incompleteTrades =>
+      stockTrades.where((t) => !_isTradeCompleted(t)).toList();
+
+  List<StockTrade> get completedTrades =>
+      stockTrades.where((t) => _isTradeCompleted(t)).toList();
+
+  final tradeListFilter = 'trade'.obs; // 'all' | 'trade' | 'history'
+
+  List<StockTrade> get filteredTrades {
+    switch (tradeListFilter.value) {
+      case 'all':
+        return stockTrades.toList();
+      case 'history':
+        return completedTrades;
+      case 'trade':
+      default:
+        return incompleteTrades;
+    }
+  }
+
   Future<void> loadTrades() async {
     if (localStockData.value != null) {
       final trades = await db.getStockTradesByStockId(localStockData.value!.id);
@@ -1344,6 +1382,7 @@ class StockeditController extends BaseController {
   }
 
   void showAllTradesSheet(Widget Function(StockTrade) buildTradeItem) {
+    tradeListFilter.value = 'trade';
     Get.bottomSheet(
       Container(
         height: Get.height * 0.7,
@@ -1360,28 +1399,73 @@ class StockeditController extends BaseController {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    Text(
-                      TextKey.jiaoyijilu.tr,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            TextKey.jiaoyijilu.tr,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Align(
-                      alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        icon: const Icon(Icons.close),
-                      ),
+                      alignment: Alignment.centerRight,
+                      child: Obx(() {
+                        Widget filterButton(String value, String label) {
+                          final isSelected = tradeListFilter.value == value;
+                          return TextButton(
+                            onPressed: () {
+                              tradeListFilter.value = value;
+                            },
+                            style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              foregroundColor: isSelected
+                                  ? Get.theme.colorScheme.primary
+                                  : Colors.grey,
+                            ),
+                            child: Text(
+                              label,
+                              style: TextStyle(
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            filterButton('all', TextKey.all.tr),
+                            filterButton('trade', TextKey.jiaoyi.tr),
+                            filterButton('history', TextKey.lishi.tr),
+                          ],
+                        );
+                      }),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Expanded(
                   child: Obx(() {
-                    if (stockTrades.isEmpty) {
+                    final items = filteredTrades;
+                    if (items.isEmpty) {
                       return Center(
                         child: Text(
                           TextKey.noData.tr,
@@ -1391,7 +1475,7 @@ class StockeditController extends BaseController {
                     }
                     return SingleChildScrollView(
                       child: Column(
-                        children: stockTrades
+                        children: items
                             .map((trade) => buildTradeItem(trade))
                             .toList(),
                       ),

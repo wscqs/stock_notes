@@ -190,7 +190,7 @@ void main() {
       expect(result.profit, closeTo(0.0, 1e-10));
     });
 
-    test('closed long trade uses close price for profit', () {
+    test('closed long trade uses close price for yield rate and profit', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '110',
         openPrice: '100',
@@ -199,11 +199,11 @@ void main() {
         closeShares: '10',
         tradeType: 0,
       );
-      expect(result.yieldRate, closeTo(0.1, 1e-10));
+      expect(result.yieldRate, closeTo(0.15, 1e-10));
       expect(result.profit, closeTo(150, 1e-10));
     });
 
-    test('closed short trade uses close price for profit', () {
+    test('closed short trade uses close price for yield rate and profit', () {
       final result = calculateTradeEstimateFromValues(
         currentPrice: '95',
         openPrice: '100',
@@ -212,8 +212,22 @@ void main() {
         closeShares: '10',
         tradeType: 1,
       );
-      expect(result.yieldRate, closeTo(0.05, 1e-10));
+      expect(result.yieldRate, closeTo(0.1, 1e-10));
       expect(result.profit, closeTo(100, 1e-10));
+    });
+
+    test('closed short trade with open price == close price has zero yield rate',
+        () {
+      final result = calculateTradeEstimateFromValues(
+        currentPrice: '13.41',
+        openPrice: '2',
+        closePrice: '2',
+        openShares: '22',
+        closeShares: '22',
+        tradeType: 1,
+      );
+      expect(result.yieldRate, closeTo(0.0, 1e-10));
+      expect(result.profit, closeTo(0.0, 1e-10));
     });
 
     test('mismatched close shares falls back to current-price unrealized P&L',

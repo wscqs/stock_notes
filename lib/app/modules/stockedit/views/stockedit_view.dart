@@ -330,24 +330,40 @@ class StockeditView extends GetView<StockeditController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(TextKey.jiaoyi.tr, style: Get.textTheme.titleLarge),
-            TextButton.icon(
-              onPressed: controller.showAddTradeDialog,
-              icon: const Icon(Icons.add, size: 18),
-              label: Text(TextKey.xinzen.tr),
+            Row(
+              children: [
+                Text(TextKey.jiaoyi.tr, style: Get.textTheme.titleLarge),
+                TextButton.icon(
+                  onPressed: () =>
+                      controller.showAllTradesSheet(_buildTradeItem),
+                  icon: const Icon(Icons.list, size: 18),
+                  label: Text(TextKey.liebiao.tr),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton.icon(
+                  onPressed: controller.showAddTradeDialog,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text(TextKey.xinzen.tr),
+                ),
+              ],
             ),
           ],
         ),
         kSpaceH(8),
         Obx(() {
-          if (controller.stockTrades.isEmpty) {
+          final trades = controller.incompleteTrades;
+          if (trades.isEmpty) {
             return Text(
               TextKey.noData.tr,
               style: TextStyle(color: Colors.grey),
             );
           }
           return StockTradeListWithMore(
-            trades: controller.stockTrades.toList(),
+            trades: trades,
             buildTradeItem: _buildTradeItem,
             onShowAll: () => controller.showAllTradesSheet(_buildTradeItem),
           );
@@ -446,7 +462,8 @@ class StockeditView extends GetView<StockeditController> {
                         "${TextKey.kaicang.tr}: ${trade.openPrice ?? '-'}",
                         style: TextStyle(fontSize: 14),
                       ),
-                      if (trade.openShares != null && trade.openShares!.isNotEmpty) ...[
+                      if (trade.openShares != null &&
+                          trade.openShares!.isNotEmpty) ...[
                         const SizedBox(width: 16),
                         Text(
                           "${TextKey.gushu.tr}: ${trade.openShares}",
@@ -455,7 +472,8 @@ class StockeditView extends GetView<StockeditController> {
                       ],
                     ],
                   ),
-                  if (trade.closePrice != null && trade.closePrice!.isNotEmpty) ...[
+                  if (trade.closePrice != null &&
+                      trade.closePrice!.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Row(
                       children: [
@@ -463,7 +481,8 @@ class StockeditView extends GetView<StockeditController> {
                           "${TextKey.pingcang.tr}: ${trade.closePrice}",
                           style: TextStyle(fontSize: 14),
                         ),
-                        if (trade.closeShares != null && trade.closeShares!.isNotEmpty) ...[
+                        if (trade.closeShares != null &&
+                            trade.closeShares!.isNotEmpty) ...[
                           const SizedBox(width: 16),
                           Text(
                             "${TextKey.gushu.tr}: ${trade.closeShares}",
