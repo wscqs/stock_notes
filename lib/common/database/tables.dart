@@ -91,6 +91,13 @@ class StockTrades extends Table with TableMixin {
   TextColumn get shares => text().nullable()();
   TextColumn get remark => text().nullable()();
   DateTimeColumn get tradeDate => dateTime().nullable()();
+
+  TextColumn get openPrice => text().nullable()();
+  TextColumn get openShares => text().nullable()();
+  TextColumn get closePrice => text().nullable()();
+  TextColumn get closeShares => text().nullable()();
+  TextColumn get planBuyPrice => text().nullable()();
+  TextColumn get planSalePrice => text().nullable()();
 }
 
 // class TodoItems extends Table with TableMixin {

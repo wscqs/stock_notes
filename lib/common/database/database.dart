@@ -46,7 +46,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   //改表要处理合并migration
   @override
@@ -68,6 +68,17 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from <= 5 && from > 1) {
             await migrator.addColumn(stockTrades, stockTrades.tradeDate);
+          }
+          if (from <= 6) {
+            await migrator.addColumn(stockTrades, stockTrades.openPrice);
+            await migrator.addColumn(stockTrades, stockTrades.openShares);
+            await migrator.addColumn(stockTrades, stockTrades.closePrice);
+            await migrator.addColumn(stockTrades, stockTrades.closeShares);
+            await migrator.addColumn(stockTrades, stockTrades.planBuyPrice);
+            await migrator.addColumn(stockTrades, stockTrades.planSalePrice);
+            await customStatement(
+              'UPDATE stock_trades SET open_price = price, open_shares = shares',
+            );
           }
         },
         onCreate: (migrator) async {
