@@ -12,50 +12,126 @@ class StockTradeDialog {
     required String currentPrice,
     required void Function(StockTradesCompanion companion) onSaved,
   }) {
-    final tradeType = (existingTrade?.tradeType ?? 0).obs;
-    final tradeDate = (existingTrade?.tradeDate ?? DateTime.now()).obs;
-    final openPriceController = TextEditingController(
-      text: existingTrade?.openPrice ?? existingTrade?.price ?? '',
-    );
-    final openSharesController = TextEditingController(
-      text: existingTrade?.openShares ?? existingTrade?.shares ?? '',
-    );
-    final closePriceController = TextEditingController(
-      text: existingTrade?.closePrice ?? '',
-    );
-    final closeSharesController = TextEditingController(
-      text: existingTrade?.closeShares ?? '',
-    );
-    final planBuyPriceController = TextEditingController(
-      text: existingTrade?.planBuyPrice ?? '',
-    );
-    final planSalePriceController = TextEditingController(
-      text: existingTrade?.planSalePrice ?? '',
-    );
-    final tradeRemarkController = TextEditingController(
-      text: existingTrade?.remark ?? '',
-    );
+    Get.dialog(_StockTradeDialogContent(
+      existingTrade: existingTrade,
+      currentPrice: currentPrice,
+      onSaved: onSaved,
+    ));
+  }
+}
 
-    final planBuyPoints = 0.0.obs;
-    final planSalePoints = 0.0.obs;
+class _StockTradeDialogContent extends StatefulWidget {
+  final StockTrade? existingTrade;
+  final String currentPrice;
+  final void Function(StockTradesCompanion companion) onSaved;
 
-    void updatePlanPricePoints() {
-      final current = double.tryParse(currentPrice);
-      final buyPrice = double.tryParse(planBuyPriceController.text);
-      final salePrice = double.tryParse(planSalePriceController.text);
-      planBuyPoints.value = (current != null && current != 0 && buyPrice != null)
-          ? (buyPrice - current) / current
-          : 0.0;
-      planSalePoints.value =
-          (current != null && current != 0 && salePrice != null)
-              ? (salePrice - current) / current
-              : 0.0;
-    }
+  const _StockTradeDialogContent({
+    required this.existingTrade,
+    required this.currentPrice,
+    required this.onSaved,
+  });
 
+  @override
+  State<_StockTradeDialogContent> createState() =>
+      _StockTradeDialogContentState();
+}
+
+class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
+  late final RxInt tradeType;
+  late final Rx<DateTime> tradeDate;
+  late final TextEditingController openPriceController;
+  late final TextEditingController openSharesController;
+  late final TextEditingController closePriceController;
+  late final TextEditingController closeSharesController;
+  late final TextEditingController planBuyPriceController;
+  late final TextEditingController planSalePriceController;
+  late final TextEditingController tradeRemarkController;
+  late final RxDouble planBuyPoints;
+  late final RxDouble planSalePoints;
+
+  @override
+  void initState() {
+    super.initState();
+    tradeType = (widget.existingTrade?.tradeType ?? 0).obs;
+    tradeDate = (widget.existingTrade?.tradeDate ?? DateTime.now()).obs;
+    openPriceController = TextEditingController(
+      text: widget.existingTrade?.openPrice ?? widget.existingTrade?.price ?? '',
+    );
+    openSharesController = TextEditingController(
+      text: widget.existingTrade?.openShares ?? widget.existingTrade?.shares ?? '',
+    );
+    closePriceController = TextEditingController(
+      text: widget.existingTrade?.closePrice ?? '',
+    );
+    closeSharesController = TextEditingController(
+      text: widget.existingTrade?.closeShares ?? '',
+    );
+    planBuyPriceController = TextEditingController(
+      text: widget.existingTrade?.planBuyPrice ?? '',
+    );
+    planSalePriceController = TextEditingController(
+      text: widget.existingTrade?.planSalePrice ?? '',
+    );
+    tradeRemarkController = TextEditingController(
+      text: widget.existingTrade?.remark ?? '',
+    );
+    planBuyPoints = 0.0.obs;
+    planSalePoints = 0.0.obs;
     updatePlanPricePoints();
+  }
 
-    Get.dialog(AlertDialog(
-      title: Text(existingTrade != null
+  @override
+  void dispose() {
+    tradeType.close();
+    tradeDate.close();
+    openPriceController.dispose();
+    openSharesController.dispose();
+    closePriceController.dispose();
+    closeSharesController.dispose();
+    planBuyPriceController.dispose();
+    planSalePriceController.dispose();
+    tradeRemarkController.dispose();
+    planBuyPoints.close();
+    planSalePoints.close();
+    super.dispose();
+  }
+
+  void updatePlanPricePoints() {
+    final current = double.tryParse(widget.currentPrice);
+    final buyPrice = double.tryParse(planBuyPriceController.text);
+    final salePrice = double.tryParse(planSalePriceController.text);
+    planBuyPoints.value = (current != null && current != 0 && buyPrice != null)
+        ? (buyPrice - current) / current
+        : 0.0;
+    planSalePoints.value =
+        (current != null && current != 0 && salePrice != null)
+            ? (salePrice - current) / current
+            : 0.0;
+  }
+
+  void _handleSaved() {
+    var companion = StockTradesCompanion.insert(
+      stockId: widget.existingTrade?.stockId ?? 0,
+      tradeType: tradeType.value,
+      openPrice: Value(openPriceController.text),
+      openShares: Value(openSharesController.text),
+      closePrice: Value(closePriceController.text),
+      closeShares: Value(closeSharesController.text),
+      planBuyPrice: Value(planBuyPriceController.text),
+      planSalePrice: Value(planSalePriceController.text),
+      remark: Value(tradeRemarkController.text),
+      tradeDate: Value(tradeDate.value),
+    );
+    if (widget.existingTrade != null) {
+      companion = companion.copyWith(id: Value(widget.existingTrade!.id));
+    }
+    widget.onSaved(companion);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.existingTrade != null
           ? TextKey.xiugai.tr
           : TextKey.xinzengjiaoyi.tr),
       content: SingleChildScrollView(
@@ -193,30 +269,13 @@ class StockTradeDialog {
           ],
         ),
       ),
-    actions: [
+      actions: [
         TextButton(onPressed: Get.back, child: Text(TextKey.quxiao.tr)),
         TextButton(
-          onPressed: () {
-            var companion = StockTradesCompanion.insert(
-              stockId: existingTrade?.stockId ?? 0,
-              tradeType: tradeType.value,
-              openPrice: Value(openPriceController.text),
-              openShares: Value(openSharesController.text),
-              closePrice: Value(closePriceController.text),
-              closeShares: Value(closeSharesController.text),
-              planBuyPrice: Value(planBuyPriceController.text),
-              planSalePrice: Value(planSalePriceController.text),
-              remark: Value(tradeRemarkController.text),
-              tradeDate: Value(tradeDate.value),
-            );
-            if (existingTrade != null) {
-              companion = companion.copyWith(id: Value(existingTrade.id));
-            }
-            onSaved(companion);
-          },
+          onPressed: _handleSaved,
           child: Text(TextKey.queding.tr),
         ),
       ],
-    ));
+    );
   }
 }

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
-import 'package:intl/intl.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
@@ -1018,12 +1017,17 @@ class StockeditController extends BaseController {
     );
   }
 
-  Future<void> _doAddTrade(StockTradesCompanion companion) async {
+  bool _validateTradeCompanion(StockTradesCompanion companion) {
     if ((companion.openPrice.value ?? '').isEmpty) {
       QsHud.showToast(
           "${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
-      return;
+      return false;
     }
+    return true;
+  }
+
+  Future<void> _doAddTrade(StockTradesCompanion companion) async {
+    if (!_validateTradeCompanion(companion)) return;
     final item = companion.copyWith(stockId: Value(localStockData.value!.id));
     await db.addStockTrade(item);
     Get.back();
@@ -1032,11 +1036,7 @@ class StockeditController extends BaseController {
   }
 
   Future<void> _doUpdateTrade(StockTradesCompanion companion) async {
-    if ((companion.openPrice.value ?? '').isEmpty) {
-      QsHud.showToast(
-          "${TextKey.qingshuru.tr}${TextKey.kaicang.tr}${TextKey.jiage.tr}");
-      return;
-    }
+    if (!_validateTradeCompanion(companion)) return;
     await db.updateStockTrade(companion);
     Get.back();
     QsHud.showToast(TextKey.success.tr);
