@@ -215,5 +215,101 @@ void main() {
       expect(result.yieldRate, closeTo(0.05, 1e-10));
       expect(result.profit, closeTo(100, 1e-10));
     });
+
+    test('mismatched close shares falls back to current-price unrealized P&L',
+        () {
+      final result = calculateTradeEstimateFromValues(
+        currentPrice: '110',
+        openPrice: '100',
+        closePrice: '115',
+        openShares: '10',
+        closeShares: '5',
+        tradeType: 0,
+      );
+      expect(result.yieldRate, closeTo(0.1, 1e-10));
+      expect(result.profit, closeTo(100.0, 1e-10));
+    });
+
+    group('close price edge cases fall back to current-price unrealized P&L', () {
+      test('close price provided but close shares is null', () {
+        final result = calculateTradeEstimateFromValues(
+          currentPrice: '110',
+          openPrice: '100',
+          closePrice: '115',
+          openShares: '10',
+          closeShares: null,
+          tradeType: 0,
+        );
+        expect(result.yieldRate, closeTo(0.1, 1e-10));
+        expect(result.profit, closeTo(100.0, 1e-10));
+      });
+
+      test('close price provided but close shares is empty', () {
+        final result = calculateTradeEstimateFromValues(
+          currentPrice: '110',
+          openPrice: '100',
+          closePrice: '115',
+          openShares: '10',
+          closeShares: '',
+          tradeType: 0,
+        );
+        expect(result.yieldRate, closeTo(0.1, 1e-10));
+        expect(result.profit, closeTo(100.0, 1e-10));
+      });
+
+      test('close shares equals open shares but close price is empty', () {
+        final result = calculateTradeEstimateFromValues(
+          currentPrice: '110',
+          openPrice: '100',
+          closePrice: '',
+          openShares: '10',
+          closeShares: '10',
+          tradeType: 0,
+        );
+        expect(result.yieldRate, closeTo(0.1, 1e-10));
+        expect(result.profit, closeTo(100.0, 1e-10));
+      });
+
+      test('close price is unparseable', () {
+        final result = calculateTradeEstimateFromValues(
+          currentPrice: '110',
+          openPrice: '100',
+          closePrice: 'abc',
+          openShares: '10',
+          closeShares: '10',
+          tradeType: 0,
+        );
+        expect(result.yieldRate, closeTo(0.1, 1e-10));
+        expect(result.profit, closeTo(100.0, 1e-10));
+      });
+    });
+
+    group('zero or negative open shares result in null profit', () {
+      test('zero open shares', () {
+        final result = calculateTradeEstimateFromValues(
+          currentPrice: '110',
+          openPrice: '100',
+          closePrice: null,
+          openShares: '0',
+          closeShares: null,
+          tradeType: 0,
+        );
+        expect(result.yieldRate, closeTo(0.1, 1e-10));
+        expect(result.profit, isNull);
+      });
+
+      test('negative open shares', () {
+        final result = calculateTradeEstimateFromValues(
+          currentPrice: '110',
+          openPrice: '100',
+          closePrice: null,
+          openShares: '-10',
+          closeShares: null,
+          tradeType: 0,
+        );
+        expect(result.yieldRate, closeTo(0.1, 1e-10));
+        expect(result.profit, isNull);
+      });
+    });
   });
 }
