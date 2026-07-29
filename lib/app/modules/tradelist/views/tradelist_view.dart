@@ -14,6 +14,13 @@ class TradelistView extends GetView<TradelistController> {
       appBar: AppBar(
         title: Text(TextKey.jiaoyi.tr),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: TextKey.refresh.tr,
+            onPressed: controller.refreshCurrentPrices,
+          ),
+        ],
       ),
       body: Obx(() {
         if (controller.trades.isEmpty) {

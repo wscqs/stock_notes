@@ -11,6 +11,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../../common/database/database.dart';
 import '../../../../common/widget/qs_empty_view.dart';
+import '../../../routes/app_pages.dart';
 import '../../somewidget/homedrawer_page/view.dart';
 import '../controllers/homestock_controller.dart';
 
@@ -30,6 +31,11 @@ class HomestockView extends GetView<HomestockController> {
             title: Text(TextKey.gupiao.tr),
             centerTitle: true,
             actions: [
+              IconButton(
+                icon: const Icon(Icons.trending_up),
+                tooltip: TextKey.jiaoyi.tr,
+                onPressed: () => Get.toNamed(Routes.TRADELIST),
+              ),
               IconButton(
                   onPressed: () {
                     controller.clickRefresh();

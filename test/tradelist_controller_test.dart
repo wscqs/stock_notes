@@ -6,6 +6,7 @@ import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/app/modules/tradelist/controllers/tradelist_controller.dart';
 import 'package:stock_notes/common/database/DatabaseManager.dart';
 import 'package:stock_notes/common/database/database.dart';
+import 'package:stock_notes/model/stock_tx_model.dart';
 
 void main() {
   late AppDatabase db;
@@ -102,6 +103,42 @@ void main() {
       expect(controller.stockMap.length, 1);
       expect(controller.stockMap.containsKey(stockA), true);
       expect(controller.stockMap[stockA]?.name, '茅台');
+    });
+
+    test('refreshCurrentPrices updates currentPrice for related stocks',
+        () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+
+      final controller = TradelistController(
+        stockDataFetcher: ({required List<String> stockCodes}) async {
+          return [
+            StockTxModel(
+              code: 'sh600519',
+              name: '茅台',
+              currentPrice: '150.00',
+            ),
+          ];
+        },
+      );
+      controller.onInit();
+      await controller.loadTrades();
+      expect(controller.stockMap[stockA]?.currentPrice, equals(null));
+
+      await controller.refreshCurrentPrices(showLoading: false);
+
+      expect(controller.stockMap[stockA]?.currentPrice, '150.00');
     });
   });
 }
