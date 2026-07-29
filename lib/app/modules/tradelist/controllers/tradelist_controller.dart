@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/app/modules/base/base_controller.dart';
 import 'package:stock_notes/app/routes/app_pages.dart';
@@ -18,6 +19,14 @@ class TradelistController extends BaseController {
   final Future<List<StockTxModel>?> Function({required List<String> stockCodes})?
       stockDataFetcher;
 
+  // Filter state
+  final TextEditingController searchController = TextEditingController();
+  final query = ''.obs;
+  final isMeetConditionEnabled = false.obs;
+  final selectedSegment = 'all'.obs;
+  final selectedStock = Rxn<StockItem>();
+  final filteredTrades = <StockTrade>[].obs;
+
   TradelistController({this.stockDataFetcher});
 
   @override
@@ -26,11 +35,18 @@ class TradelistController extends BaseController {
     loadTrades();
   }
 
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
+  }
+
   Future<void> loadTrades() async {
     final allTrades = await db.getAllStockTrades();
     final incomplete = allTrades.where((t) => !t.isCompleted).toList();
     await _loadStockMap(incomplete);
     trades.value = incomplete;
+    applyFilters();
   }
 
   Future<void> _loadStockMap(List<StockTrade> trades) async {
@@ -41,6 +57,72 @@ class TradelistController extends BaseController {
     }
     final stocks = await db.getStockItemsByIds(stockIds);
     stockMap.value = {for (final s in stocks) s.id: s};
+  }
+
+  void applyFilters() {
+    query.value = searchController.text;
+    var result = List<StockTrade>.from(trades);
+
+    final queryText = searchController.text.trim();
+    if (queryText.isNotEmpty) {
+      result = result.where((trade) {
+        final stock = stockMap[trade.stockId];
+        if (stock == null) return false;
+        return stock.name.contains(queryText) ||
+            stock.code.contains(queryText);
+      }).toList();
+    }
+
+    if (isMeetConditionEnabled.value) {
+      result = result.where((trade) {
+        final stock = stockMap[trade.stockId];
+        final status = trade.meetStatus(stock?.currentPrice);
+        if (selectedSegment.value == 'bug') {
+          return status == TradeMeetStatus.b || status == TradeMeetStatus.bs;
+        } else if (selectedSegment.value == 'sale') {
+          return status == TradeMeetStatus.s || status == TradeMeetStatus.bs;
+        }
+        return status != TradeMeetStatus.none;
+      }).toList();
+    }
+
+    if (selectedStock.value != null) {
+      result = result
+          .where((trade) => trade.stockId == selectedStock.value!.id)
+          .toList();
+    }
+
+    filteredTrades.value = result;
+  }
+
+  void clearFilters() {
+    searchController.clear();
+    isMeetConditionEnabled.value = false;
+    selectedSegment.value = 'all';
+    selectedStock.value = null;
+    applyFilters();
+  }
+
+  void toggleMeetCondition() {
+    isMeetConditionEnabled.toggle();
+    if (isMeetConditionEnabled.value) {
+      selectedSegment.value = 'all';
+    }
+    applyFilters();
+  }
+
+  void onSegmentChanged(String value) {
+    selectedSegment.value = value;
+    applyFilters();
+  }
+
+  void selectStock(StockItem? stock) {
+    selectedStock.value = stock;
+    applyFilters();
+  }
+
+  void onSearchChanged(String value) {
+    applyFilters();
   }
 
   void editTrade(StockTrade trade) {

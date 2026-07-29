@@ -140,5 +140,181 @@ void main() {
 
       expect(controller.stockMap[stockA]?.currentPrice, '150.00');
     });
+
+    test(
+        'applyFilters excludes trades without plan prices when meet condition is enabled',
+        () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+
+      await db.updateStock(
+        StockItemsCompanion(
+          code: const Value('600519'),
+          currentPrice: const Value('120'),
+        ),
+        '600519',
+      );
+
+      final controller = TradelistController();
+      controller.onInit();
+      await controller.loadTrades();
+
+      controller.isMeetConditionEnabled.value = true;
+      controller.selectedSegment.value = 'all';
+      controller.applyFilters();
+
+      expect(controller.filteredTrades.length, 0);
+    });
+
+    test('applyFilters filters by buy segment using trade plan prices', () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        planSalePrice: const Value('110'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        planBuyPrice: const Value('90'),
+        tradeDate: Value(DateTime(2026, 7, 26)),
+      ));
+
+      await db.updateStock(
+        StockItemsCompanion(
+          code: const Value('600519'),
+          currentPrice: const Value('115'),
+        ),
+        '600519',
+      );
+
+      final controller = TradelistController();
+      controller.onInit();
+      await controller.loadTrades();
+
+      controller.isMeetConditionEnabled.value = true;
+      controller.selectedSegment.value = 'bug';
+      controller.applyFilters();
+
+      expect(controller.filteredTrades.length, 1);
+      expect(controller.filteredTrades.first.tradeDate, DateTime(2026, 7, 25));
+    });
+
+    test('applyFilters filters by sell segment using trade plan prices',
+        () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        planSalePrice: const Value('110'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        planBuyPrice: const Value('90'),
+        tradeDate: Value(DateTime(2026, 7, 26)),
+      ));
+
+      await db.updateStock(
+        StockItemsCompanion(
+          code: const Value('600519'),
+          currentPrice: const Value('85'),
+        ),
+        '600519',
+      );
+
+      final controller = TradelistController();
+      controller.onInit();
+      await controller.loadTrades();
+
+      controller.isMeetConditionEnabled.value = true;
+      controller.selectedSegment.value = 'sale';
+      controller.applyFilters();
+
+      expect(controller.filteredTrades.length, 1);
+      expect(controller.filteredTrades.first.tradeDate, DateTime(2026, 7, 26));
+    });
+
+    test('applyFilters all segment shows trades matching either condition',
+        () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        planSalePrice: const Value('110'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        planBuyPrice: const Value('120'),
+        tradeDate: Value(DateTime(2026, 7, 26)),
+      ));
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 27)),
+      ));
+
+      await db.updateStock(
+        StockItemsCompanion(
+          code: const Value('600519'),
+          currentPrice: const Value('115'),
+        ),
+        '600519',
+      );
+
+      final controller = TradelistController();
+      controller.onInit();
+      await controller.loadTrades();
+
+      controller.isMeetConditionEnabled.value = true;
+      controller.selectedSegment.value = 'all';
+      controller.applyFilters();
+
+      expect(controller.filteredTrades.length, 2);
+    });
   });
 }
