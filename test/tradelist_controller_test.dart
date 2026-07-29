@@ -177,7 +177,84 @@ void main() {
       expect(controller.filteredTrades.length, 0);
     });
 
-    test('applyFilters filters by buy segment using trade plan prices', () async {
+    test('applyFilters filters by stock name query', () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+      final stockB = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '000001',
+        name: '平安',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockB,
+        tradeType: 1,
+        openPrice: const Value('200'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 26)),
+      ));
+
+      final controller = TradelistController();
+      controller.onInit();
+      await controller.loadTrades();
+
+      controller.searchController.text = '茅台';
+      controller.onSearchChanged('茅台');
+
+      expect(controller.filteredTrades.length, 1);
+      expect(controller.filteredTrades.first.stockId, stockA);
+    });
+
+    test('applyFilters filters by stock code query', () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '600519',
+        name: '茅台',
+      ));
+      final stockB = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: '000001',
+        name: '平安',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockB,
+        tradeType: 1,
+        openPrice: const Value('200'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 26)),
+      ));
+
+      final controller = TradelistController();
+      controller.onInit();
+      await controller.loadTrades();
+
+      controller.searchController.text = '000001';
+      controller.onSearchChanged('000001');
+
+      expect(controller.filteredTrades.length, 1);
+      expect(controller.filteredTrades.first.stockId, stockB);
+    });
+
+    test('applyFilters filters by buy segment using trade plan prices',
+        () async {
       final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
         marketType: 'sh',
         code: '600519',

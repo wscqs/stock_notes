@@ -5,26 +5,36 @@ import 'package:stock_notes/app/modules/tradelist/controllers/tradelist_controll
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/widget/qs_empty_view.dart';
 import 'package:stock_notes/common/widget/stock_trade_item.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class TradelistView extends GetView<TradelistController> {
   const TradelistView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(TextKey.jiaoyi.tr),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: TextKey.refresh.tr,
-            onPressed: controller.refreshCurrentPrices,
-          ),
-        ],
-      ),
-      body: Obx(() {
-        return Column(
+    return VisibilityDetector(
+      key: const Key('TradelistViewVisibilityKey'),
+      onVisibilityChanged: (VisibilityInfo info) {
+        if (info.visibleFraction == 0) {
+          controller.onPause();
+        } else if (info.visibleFraction == 1) {
+          controller.onResume();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(TextKey.jiaoyi.tr),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: TextKey.refresh.tr,
+              onPressed: controller.refreshCurrentPrices,
+            ),
+          ],
+        ),
+        body: Obx(() {
+          return Column(
           children: [
             buildSearchBar(),
             buildFilterRow(context),
@@ -51,7 +61,7 @@ class TradelistView extends GetView<TradelistController> {
           ],
         );
       }),
-    );
+    ));
   }
 
   Widget buildSearchBar() {
@@ -225,8 +235,11 @@ class TradelistView extends GetView<TradelistController> {
 
   void _showStockFilterSheet(BuildContext context) {
     final stocks = controller.stockMap.values.toList();
+    int? tempSelectedId = controller.selectedStock.value?.id;
+
     Get.bottomSheet(
       Container(
+        height: Get.height * 0.7,
         decoration: BoxDecoration(
           color: Get.theme.colorScheme.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -234,55 +247,126 @@ class TradelistView extends GetView<TradelistController> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  TextKey.gupiao.tr,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.4,
-                  ),
-                  child: StatefulBuilder(
-                    builder: (context, setState) {
-                      return ListView(
-                        shrinkWrap: true,
-                        children: [
-                          ListTile(
-                            title: Text(TextKey.all.tr),
-                            selected: controller.selectedStock.value == null,
-                            selectedTileColor:
-                                Colors.red.withValues(alpha: 0.1),
-                            onTap: () {
-                              controller.selectStock(null);
-                              Get.back();
-                            },
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Text(
+                          TextKey.gupiao.tr,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
                           ),
-                          ...stocks.map((stock) => ListTile(
-                                title: Text('${stock.name} (${stock.code})'),
-                                selected: controller.selectedStock.value?.id ==
-                                    stock.id,
-                                selectedTileColor:
-                                    Colors.red.withValues(alpha: 0.1),
-                                onTap: () {
-                                  controller.selectStock(stock);
-                                  Get.back();
-                                },
-                              )),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            onPressed: Get.back,
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            _buildStockChip(
+                              name: TextKey.all.tr,
+                              selected: tempSelectedId == null,
+                              onTap: () => setState(() => tempSelectedId = null),
+                            ),
+                            ...stocks.map((stock) => _buildStockChip(
+                                  name: stock.name,
+                                  selected: tempSelectedId == stock.id,
+                                  onTap: () => setState(
+                                      () => tempSelectedId = stock.id),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          if (tempSelectedId == null) {
+                            controller.selectStock(null);
+                          } else {
+                            final stock = stocks.firstWhere(
+                              (s) => s.id == tempSelectedId,
+                            );
+                            controller.selectStock(stock);
+                          }
+                          Get.back();
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 48,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: Colors.grey.withValues(alpha: 0.2),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            TextKey.queren.tr,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Get.theme.colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
+          ),
+        ),
+      ),
+      isScrollControlled: true,
+      backgroundColor: Get.theme.colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+    );
+  }
+
+  Widget _buildStockChip({
+    required String name,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected
+              ? Colors.red.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          name,
+          style: TextStyle(
+            fontSize: 14,
+            color: selected
+                ? Colors.red
+                : Get.theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
         ),
       ),

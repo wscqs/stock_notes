@@ -176,8 +176,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('全部'), findsOneWidget);
-    expect(find.text('茅台 (600519)'), findsOneWidget);
-    expect(find.text('平安 (000001)'), findsOneWidget);
+    expect(find.text('茅台'), findsOneWidget);
+    expect(find.text('平安'), findsOneWidget);
   });
 
   testWidgets('selecting a stock from bottom sheet filters the list', (tester) async {
@@ -190,7 +190,9 @@ void main() {
     await tester.tap(find.byIcon(Icons.filter_list_outlined));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('茅台 (600519)'));
+    await tester.tap(find.text('茅台'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('确认'));
     await tester.pumpAndSettle();
 
     expect(find.text('茅台 (600519)'), findsOneWidget);

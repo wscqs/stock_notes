@@ -36,6 +36,12 @@ class TradelistController extends BaseController {
   }
 
   @override
+  void onResume() {
+    super.onResume();
+    loadTrades();
+  }
+
+  @override
   void onClose() {
     searchController.dispose();
     super.onClose();
@@ -92,7 +98,7 @@ class TradelistController extends BaseController {
           .toList();
     }
 
-    filteredTrades.value = result;
+    filteredTrades.assignAll(result);
   }
 
   void clearFilters() {
