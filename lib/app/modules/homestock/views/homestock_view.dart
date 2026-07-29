@@ -32,7 +32,10 @@ class HomestockView extends GetView<HomestockController> {
             centerTitle: true,
             actions: [
               IconButton(
-                icon: const Icon(Icons.trending_up),
+                icon: const Icon(
+                  RemixIcons.exchange_box_line,
+                  // size: 24,
+                ),
                 tooltip: TextKey.jiaoyi.tr,
                 onPressed: () => Get.toNamed(Routes.TRADELIST),
               ),

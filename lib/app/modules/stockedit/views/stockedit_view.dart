@@ -27,9 +27,24 @@ class StockeditView extends GetView<StockeditController> {
       child: Scaffold(
         appBar: AppBar(
           title: Obx(() {
-            return Text(controller.isLocalData.value
-                ? controller.localStockData.value!.name
-                : TextKey.gupiao.tr);
+            return Column(
+              children: [
+                Text(controller.isLocalData.value
+                    ? controller.localStockData.value!.name
+                    : TextKey.gupiao.tr),
+                if (controller.isLocalData.value &&
+                    (controller.serStockData.value.currentPrice ?? "")
+                        .isNotEmpty)
+                  Text(
+                    controller.serStockData.value.currentPrice!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Get.theme.colorScheme.onSurface,
+                    ),
+                  ),
+              ],
+            );
           }),
           centerTitle: true,
           actions: [
