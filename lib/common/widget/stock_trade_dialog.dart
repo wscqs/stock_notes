@@ -1,7 +1,7 @@
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:intl/intl.dart';
-import 'package:drift/drift.dart' hide Column;
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
@@ -134,9 +134,16 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.existingTrade != null
-          ? TextKey.xiugai.tr
-          : TextKey.xinzengjiaoyi.tr),
+      //可以设置宽度吗
+      contentPadding: const EdgeInsets.all(16),
+      titlePadding: const EdgeInsets.only(left: 20, top: 20),
+      actionsPadding: const EdgeInsets.only(right: 16, bottom: 16),
+      title: Text(
+        widget.existingTrade != null
+            ? TextKey.xiugai.tr
+            : TextKey.xinzengjiaoyi.tr,
+        style: const TextStyle(fontSize: 20),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -188,7 +195,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
               children: [
                 Text('${TextKey.kaicang.tr}: '),
                 const SizedBox(width: 8),
-                Expanded(
+                Flexible(
+                  flex: 4,
                   child: TextField(
                     controller: openPriceController,
                     decoration: InputDecoration(labelText: TextKey.jiage.tr),
@@ -196,7 +204,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(
+                Flexible(
+                  flex: 3,
                   child: TextField(
                     controller: openSharesController,
                     decoration: InputDecoration(labelText: TextKey.gushu.tr),
@@ -211,7 +220,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
               children: [
                 Text('${TextKey.pingcang.tr}: '),
                 const SizedBox(width: 8),
-                Expanded(
+                Flexible(
+                  flex: 4,
                   child: TextField(
                     controller: closePriceController,
                     decoration: InputDecoration(labelText: TextKey.jiage.tr),
@@ -219,7 +229,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(
+                Flexible(
+                  flex: 3,
                   child: TextField(
                     controller: closeSharesController,
                     decoration: InputDecoration(labelText: TextKey.gushu.tr),
@@ -234,7 +245,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
               children: [
                 Text('${TextKey.jihua.tr}: '),
                 const SizedBox(width: 8),
-                Expanded(
+                Flexible(
+                  flex: 5,
                   child: Obx(() {
                     final isBuy = tradeType.value == 0;
                     final baseLabel = isBuy
@@ -252,12 +264,12 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
                   }),
                 ),
                 const SizedBox(width: 12),
-                Expanded(
+                Flexible(
+                  flex: 4,
                   child: Obx(() {
                     final isBuy = tradeType.value == 0;
-                    final baseLabel = isBuy
-                        ? TextKey.zhiyingjia.tr
-                        : TextKey.zhisunjia.tr;
+                    final baseLabel =
+                        isBuy ? TextKey.zhiyingjia.tr : TextKey.zhisunjia.tr;
                     final label = planSalePoints.value == 0.0
                         ? baseLabel
                         : "$baseLabel: ${(planSalePoints.value * 100).toStringAsFixed(1)}%";
