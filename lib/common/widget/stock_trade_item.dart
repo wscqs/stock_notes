@@ -82,12 +82,27 @@ class StockTradeItem extends StatelessWidget {
                     ),
                     if (stock != null) ...[
                       const SizedBox(height: 4),
-                      Text(
-                        '${stock!.name} (${stock!.code})',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Get.theme.colorScheme.onSurfaceVariant,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            '${stock!.name} (${stock!.code})',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Get.theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          if (currentPrice?.isNotEmpty == true) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              currentPrice!,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: Get.theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ],
                     const SizedBox(height: 8),
@@ -124,6 +139,31 @@ class StockTradeItem extends StatelessWidget {
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
+                        ],
+                      ),
+                    ],
+                    if (trade.planBuyPrice?.isNotEmpty == true ||
+                        trade.planSalePrice?.isNotEmpty == true) ...[
+                      const SizedBox(height: 4),
+                      Wrap(
+                        spacing: 12,
+                        children: [
+                          if (trade.planBuyPrice?.isNotEmpty == true)
+                            Text(
+                              "${isBuy ? TextKey.zhisunjia.tr : TextKey.zhiyingjia_maihui.tr}: ${trade.planBuyPrice}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Get.theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          if (trade.planSalePrice?.isNotEmpty == true)
+                            Text(
+                              "${isBuy ? TextKey.zhiyingjia.tr : TextKey.zhisunjia.tr}: ${trade.planSalePrice}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Get.theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
                         ],
                       ),
                     ],
