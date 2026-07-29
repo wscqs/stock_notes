@@ -70,3 +70,32 @@ extension StockTradeExt on StockTrade {
 
   return (yieldRate: yieldRate, profit: profit);
 }
+
+enum TradeMeetStatus { none, b, s, bs }
+
+extension StockTradeConditionExt on StockTrade {
+  TradeMeetStatus meetStatus(String? currentPrice) {
+    final current = double.tryParse(currentPrice ?? '');
+    final planBuy = double.tryParse(planBuyPrice ?? '');
+    final planSale = double.tryParse(planSalePrice ?? '');
+
+    if (current == null) return TradeMeetStatus.none;
+
+    final isBuy = tradeType == 0;
+    bool meetB = false;
+    bool meetS = false;
+
+    if (isBuy) {
+      if (planSale != null && current >= planSale) meetB = true;
+      if (planBuy != null && current <= planBuy) meetS = true;
+    } else {
+      if (planBuy != null && current <= planBuy) meetB = true;
+      if (planSale != null && current >= planSale) meetS = true;
+    }
+
+    if (meetB && meetS) return TradeMeetStatus.bs;
+    if (meetB) return TradeMeetStatus.b;
+    if (meetS) return TradeMeetStatus.s;
+    return TradeMeetStatus.none;
+  }
+}
