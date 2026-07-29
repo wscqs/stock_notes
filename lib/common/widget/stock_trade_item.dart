@@ -34,6 +34,7 @@ class StockTradeItem extends StatelessWidget {
       closeShares: trade.closeShares,
       tradeType: trade.tradeType,
     );
+    final meetStatus = trade.meetStatus(currentPrice);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -73,6 +74,10 @@ class StockTradeItem extends StatelessWidget {
                           (trade.tradeDate ?? trade.createdAt).toDateString(),
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
+                        if (meetStatus != TradeMeetStatus.none) ...[
+                          const SizedBox(width: 8),
+                          _buildMeetStatusTag(meetStatus),
+                        ],
                       ],
                     ),
                     if (stock != null) ...[
@@ -158,6 +163,52 @@ class StockTradeItem extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildMeetStatusTag(TradeMeetStatus status) {
+    String label;
+    switch (status) {
+      case TradeMeetStatus.b:
+        label = '${TextKey.mangzu.tr}B';
+        break;
+      case TradeMeetStatus.s:
+        label = '${TextKey.mangzu.tr}S';
+        break;
+      case TradeMeetStatus.bs:
+        label = '${TextKey.mangzu.tr}BS';
+        break;
+      case TradeMeetStatus.none:
+        return const SizedBox.shrink();
+    }
+
+    return Text.rich(
+      TextSpan(
+        style: TextStyle(
+          fontSize: 11,
+          color: Get.theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
+        ),
+        children: label.split('').map((char) {
+          if (char == 'B') {
+            return TextSpan(
+              text: char,
+              style: TextStyle(
+                color: Colors.red.shade400,
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          } else if (char == 'S') {
+            return TextSpan(
+              text: char,
+              style: TextStyle(
+                color: Colors.blue.shade400,
+                fontWeight: FontWeight.w700,
+              ),
+            );
+          }
+          return TextSpan(text: char);
+        }).toList(),
       ),
     );
   }

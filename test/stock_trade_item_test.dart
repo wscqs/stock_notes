@@ -91,4 +91,89 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining('收益率: -'), findsOneWidget);
   });
+
+  testWidgets('renders meet B tag for buy long take profit', (tester) async {
+    final trade = StockTrade(
+      id: 1,
+      createdAt: now,
+      updateAt: now,
+      stockId: 1,
+      tradeType: 0,
+      openPrice: '100',
+      openShares: '100',
+      planBuyPrice: '90',
+      planSalePrice: '110',
+      tradeDate: now,
+    );
+    await tester.pumpWidget(buildTestableWidget(
+      StockTradeItem(trade: trade, currentPrice: '115'),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('满足B'), findsOneWidget);
+    expect(find.textContaining('满足S'), findsNothing);
+  });
+
+  testWidgets('renders meet S tag for buy long stop loss', (tester) async {
+    final trade = StockTrade(
+      id: 1,
+      createdAt: now,
+      updateAt: now,
+      stockId: 1,
+      tradeType: 0,
+      openPrice: '100',
+      openShares: '100',
+      planBuyPrice: '90',
+      planSalePrice: '110',
+      tradeDate: now,
+    );
+    await tester.pumpWidget(buildTestableWidget(
+      StockTradeItem(trade: trade, currentPrice: '85'),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('满足S'), findsOneWidget);
+    expect(find.textContaining('满足B'), findsNothing);
+  });
+
+  testWidgets('renders meet BS tag when both conditions met', (tester) async {
+    final trade = StockTrade(
+      id: 1,
+      createdAt: now,
+      updateAt: now,
+      stockId: 1,
+      tradeType: 0,
+      openPrice: '100',
+      openShares: '100',
+      planBuyPrice: '110',
+      planSalePrice: '90',
+      tradeDate: now,
+    );
+    await tester.pumpWidget(buildTestableWidget(
+      StockTradeItem(trade: trade, currentPrice: '100'),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('满足BS'), findsOneWidget);
+  });
+
+  testWidgets('does not render meet tag when no condition met',
+      (tester) async {
+    final trade = StockTrade(
+      id: 1,
+      createdAt: now,
+      updateAt: now,
+      stockId: 1,
+      tradeType: 0,
+      openPrice: '100',
+      openShares: '100',
+      planBuyPrice: '90',
+      planSalePrice: '110',
+      tradeDate: now,
+    );
+    await tester.pumpWidget(buildTestableWidget(
+      StockTradeItem(trade: trade, currentPrice: '100'),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('满足B'), findsNothing);
+    expect(find.textContaining('满足S'), findsNothing);
+    expect(find.textContaining('满足BS'), findsNothing);
+  });
 }
