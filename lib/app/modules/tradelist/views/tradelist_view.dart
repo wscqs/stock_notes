@@ -28,6 +28,7 @@ class TradelistView extends GetView<TradelistController> {
             return StockTradeItem(
               trade: trade,
               stock: stock,
+              currentPrice: stock?.currentPrice,
               onTap: () => controller.openStockDetail(trade),
               onEdit: () => controller.editTrade(trade),
               onDelete: () => controller.deleteTrade(trade),

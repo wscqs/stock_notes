@@ -73,4 +73,22 @@ void main() {
     await tester.tap(find.byType(Card));
     expect(tapped, isTrue);
   });
+
+  testWidgets('renders yield rate when currentPrice is provided',
+      (tester) async {
+    await tester.pumpWidget(buildTestableWidget(
+      StockTradeItem(trade: trade, currentPrice: '12.00'),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('20.0%'), findsOneWidget);
+  });
+
+  testWidgets('renders dash for yield rate when currentPrice is missing',
+      (tester) async {
+    await tester.pumpWidget(buildTestableWidget(
+      StockTradeItem(trade: trade),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('收益率: -'), findsOneWidget);
+  });
 }
