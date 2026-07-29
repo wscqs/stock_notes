@@ -236,9 +236,13 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Obx(() {
+                    final isBuy = tradeType.value == 0;
+                    final baseLabel = isBuy
+                        ? TextKey.zhisunjia.tr
+                        : TextKey.zhiyingjia_maihui.tr;
                     final label = planBuyPoints.value == 0.0
-                        ? TextKey.maijia.tr
-                        : "${TextKey.maijia.tr}: ${(planBuyPoints.value * 100).toStringAsFixed(1)}%";
+                        ? baseLabel
+                        : "$baseLabel: ${(planBuyPoints.value * 100).toStringAsFixed(1)}%";
                     return TextField(
                       controller: planBuyPriceController,
                       onChanged: (_) => updatePlanPricePoints(),
@@ -250,9 +254,13 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Obx(() {
+                    final isBuy = tradeType.value == 0;
+                    final baseLabel = isBuy
+                        ? TextKey.zhiyingjia.tr
+                        : TextKey.zhisunjia.tr;
                     final label = planSalePoints.value == 0.0
-                        ? TextKey.maijia_s.tr
-                        : "${TextKey.maijia_s.tr}: ${(planSalePoints.value * 100).toStringAsFixed(1)}%";
+                        ? baseLabel
+                        : "$baseLabel: ${(planSalePoints.value * 100).toStringAsFixed(1)}%";
                     return TextField(
                       controller: planSalePriceController,
                       onChanged: (_) => updatePlanPricePoints(),
