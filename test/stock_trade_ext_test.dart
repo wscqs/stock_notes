@@ -103,6 +103,21 @@ void main() {
     expect(trade.meetStatus('100'), TradeMeetStatus.none);
   });
 
+  test('buy long: current below planSalePrice and no planBuy returns none', () {
+    final trade = StockTrade(
+      id: 1,
+      createdAt: DateTime(2026, 7, 27),
+      updateAt: DateTime(2026, 7, 27),
+      stockId: 1,
+      tradeType: 0,
+      openPrice: '100',
+      openShares: '10',
+      planSalePrice: '23',
+      tradeDate: DateTime(2026, 7, 27),
+    );
+    expect(trade.meetStatus('12.56'), TradeMeetStatus.none);
+  });
+
   test('returns none when neither condition is met', () {
     final trade = buildTrade(
       tradeType: 0,
