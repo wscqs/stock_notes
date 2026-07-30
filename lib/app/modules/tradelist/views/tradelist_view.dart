@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,90 +14,148 @@ class TradelistView extends GetView<TradelistController> {
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
-      key: const Key('TradelistViewVisibilityKey'),
-      onVisibilityChanged: (VisibilityInfo info) {
-        if (info.visibleFraction == 0) {
-          controller.onPause();
-        } else if (info.visibleFraction == 1) {
-          controller.onResume();
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(TextKey.jiaoyi.tr),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              tooltip: TextKey.refresh.tr,
-              onPressed: controller.refreshCurrentPrices,
-            ),
-          ],
-        ),
-        body: Obx(() {
-          return Column(
-          children: [
-            buildSearchBar(),
-            buildFilterRow(context),
-            Expanded(
-              child: controller.filteredTrades.isEmpty
-                  ? QsEmptyView(message: TextKey.noData.tr)
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: controller.filteredTrades.length,
-                      itemBuilder: (context, index) {
-                        final trade = controller.filteredTrades[index];
-                        final stock = controller.stockMap[trade.stockId];
-                        return StockTradeItem(
-                          trade: trade,
-                          stock: stock,
-                          currentPrice: stock?.currentPrice,
-                          onTap: () => controller.openStockDetail(trade),
-                          onEdit: () => controller.editTrade(trade),
-                          onDelete: () => controller.deleteTrade(trade),
-                        );
-                      },
-                    ),
-            ),
-          ],
-        );
-      }),
-    ));
+        key: const Key('TradelistViewVisibilityKey'),
+        onVisibilityChanged: (VisibilityInfo info) {
+          if (info.visibleFraction == 0) {
+            controller.onPause();
+          } else if (info.visibleFraction == 1) {
+            controller.onResume();
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(TextKey.jiaoyi.tr),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                tooltip: TextKey.refresh.tr,
+                onPressed: controller.refreshCurrentPrices,
+              ),
+            ],
+          ),
+          body: Obx(() {
+            return Column(
+              children: [
+                buildSearchBar(),
+                buildFilterRow(context),
+                Expanded(
+                  child: controller.filteredTrades.isEmpty
+                      ? QsEmptyView(message: TextKey.noData.tr)
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: controller.filteredTrades.length,
+                          itemBuilder: (context, index) {
+                            final trade = controller.filteredTrades[index];
+                            final stock = controller.stockMap[trade.stockId];
+                            return StockTradeItem(
+                              trade: trade,
+                              stock: stock,
+                              currentPrice: stock?.currentPrice,
+                              onTap: () => controller.openStockDetail(trade),
+                              onEdit: () => controller.editTrade(trade),
+                              onDelete: () => controller.deleteTrade(trade),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            );
+          }),
+        ));
   }
 
   Widget buildSearchBar() {
     return Container(
       color: Get.theme.colorScheme.surface,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: TextField(
-        controller: controller.searchController,
-        onChanged: controller.onSearchChanged,
-        decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
-          prefixIconConstraints:
-              const BoxConstraints(minWidth: 40, minHeight: 40),
-          prefixIcon: const Padding(
-            padding: EdgeInsets.only(left: 12, right: 8),
-            child: Icon(Icons.search, size: 20),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller.searchController,
+              onChanged: controller.onSearchChanged,
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
+                prefixIconConstraints:
+                    const BoxConstraints(minWidth: 40, minHeight: 40),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.only(left: 12, right: 8),
+                  child: Icon(Icons.search, size: 20),
+                ),
+                hintText: "${TextKey.search.tr} ...",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                suffixIcon: controller.query.value.isNotEmpty
+                    ? SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: IconButton(
+                          icon: const Icon(Icons.close, size: 20),
+                          onPressed: () {
+                            controller.searchController.clear();
+                            controller.applyFilters();
+                          },
+                        ),
+                      )
+                    : null,
+              ),
+            ),
           ),
-          hintText: "${TextKey.search.tr} ...",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
+          const SizedBox(width: 8),
+          _buildSortDropdown(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSortDropdown() {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<int>(
+        isExpanded: true,
+        hint: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                controller.sortOptions[controller.selectedSortIndex.value],
+              ),
+              const Icon(
+                Icons.arrow_drop_down,
+                size: 20,
+              )
+            ],
           ),
-          suffixIcon: controller.query.value.isNotEmpty
-              ? SizedBox(
-                  width: 44,
+        ),
+        items: controller.sortOptions
+            .asMap()
+            .entries
+            .map((entry) => DropdownItem<int>(
+                  value: entry.key,
                   height: 44,
-                  child: IconButton(
-                    icon: const Icon(Icons.close, size: 20),
-                    onPressed: () {
-                      controller.searchController.clear();
-                      controller.applyFilters();
-                    },
+                  child: Text(
+                    entry.value,
+                    style: const TextStyle(fontSize: 14),
                   ),
-                )
-              : null,
+                ))
+            .toList(),
+        onChanged: (int? value) {
+          if (value != null) {
+            controller.onSortChanged(value);
+          }
+        },
+        iconStyleData: const IconStyleData(iconSize: 0),
+        buttonStyleData: const ButtonStyleData(
+          padding: EdgeInsets.only(left: 4, right: 4),
+          height: 44,
+          width: 72,
+        ),
+        dropdownStyleData: const DropdownStyleData(
+          width: 100,
+          offset: Offset(-8, 0),
         ),
       ),
     );
@@ -282,13 +341,14 @@ class TradelistView extends GetView<TradelistController> {
                             _buildStockChip(
                               name: TextKey.all.tr,
                               selected: tempSelectedId == null,
-                              onTap: () => setState(() => tempSelectedId = null),
+                              onTap: () =>
+                                  setState(() => tempSelectedId = null),
                             ),
                             ...stocks.map((stock) => _buildStockChip(
                                   name: stock.name,
                                   selected: tempSelectedId == stock.id,
-                                  onTap: () => setState(
-                                      () => tempSelectedId = stock.id),
+                                  onTap: () =>
+                                      setState(() => tempSelectedId = stock.id),
                                 )),
                           ],
                         ),

@@ -27,6 +27,15 @@ class TradelistController extends BaseController {
   final selectedStock = Rxn<StockItem>();
   final filteredTrades = <StockTrade>[].obs;
 
+  // Sort state
+  List<String> sortOptions = [
+    TextKey.jiaoyiriqi.tr,
+    TextKey.shouyilv.tr,
+    TextKey.shouyie.tr,
+    TextKey.gupiaodaima.tr,
+  ];
+  final selectedSortIndex = 0.obs;
+
   TradelistController({this.stockDataFetcher});
 
   @override
@@ -38,7 +47,18 @@ class TradelistController extends BaseController {
   @override
   void onResume() {
     super.onResume();
+    _refreshSortOptions();
     loadTrades();
+  }
+
+  void _refreshSortOptions() {
+    sortOptions = [
+      TextKey.jiaoyiriqi.tr,
+      TextKey.shouyilv.tr,
+      TextKey.shouyie.tr,
+      TextKey.gupiaodaima.tr,
+    ];
+    selectedSortIndex.refresh();
   }
 
   @override
@@ -98,7 +118,62 @@ class TradelistController extends BaseController {
           .toList();
     }
 
+    result = _sortTrades(result);
+
     filteredTrades.assignAll(result);
+  }
+
+  List<StockTrade> _sortTrades(List<StockTrade> list) {
+    switch (selectedSortIndex.value) {
+      case 0: // Date
+        list.sort((a, b) {
+          final da = a.tradeDate ?? a.createdAt;
+          final db = b.tradeDate ?? b.createdAt;
+          return db.compareTo(da);
+        });
+      case 1: // Yield rate
+        list.sort((a, b) {
+          final ea = _tradeEstimate(a);
+          final eb = _tradeEstimate(b);
+          if (ea.yieldRate == null && eb.yieldRate == null) return 0;
+          if (ea.yieldRate == null) return 1;
+          if (eb.yieldRate == null) return -1;
+          return eb.yieldRate!.compareTo(ea.yieldRate!);
+        });
+      case 2: // Profit amount
+        list.sort((a, b) {
+          final ea = _tradeEstimate(a);
+          final eb = _tradeEstimate(b);
+          if (ea.profit == null && eb.profit == null) return 0;
+          if (ea.profit == null) return 1;
+          if (eb.profit == null) return -1;
+          return eb.profit!.compareTo(ea.profit!);
+        });
+      case 3: // Stock code
+        list.sort((a, b) {
+          final ca = stockMap[a.stockId]?.code ?? '';
+          final cb = stockMap[b.stockId]?.code ?? '';
+          return ca.compareTo(cb);
+        });
+    }
+    return list;
+  }
+
+  ({double? yieldRate, double? profit}) _tradeEstimate(StockTrade trade) {
+    final stock = stockMap[trade.stockId];
+    return calculateTradeEstimateFromValues(
+      currentPrice: stock?.currentPrice,
+      openPrice: trade.openPrice,
+      closePrice: trade.closePrice,
+      openShares: trade.openShares,
+      closeShares: trade.closeShares,
+      tradeType: trade.tradeType,
+    );
+  }
+
+  void onSortChanged(int index) {
+    selectedSortIndex.value = index;
+    applyFilters();
   }
 
   void clearFilters() {
