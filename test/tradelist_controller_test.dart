@@ -142,6 +142,43 @@ void main() {
     });
 
     test(
+        'refreshCurrentPrices updates currentPrice when DB stores prefixed codes',
+        () async {
+      final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh',
+        code: 'sh600519',
+        name: '茅台',
+      ));
+
+      await db.addStockTrade(StockTradesCompanion.insert(
+        stockId: stockA,
+        tradeType: 0,
+        openPrice: const Value('100'),
+        openShares: const Value('10'),
+        tradeDate: Value(DateTime(2026, 7, 25)),
+      ));
+
+      final controller = TradelistController(
+        stockDataFetcher: ({required List<String> stockCodes}) async {
+          return [
+            StockTxModel(
+              code: 'sh600519',
+              name: '茅台',
+              currentPrice: '150.00',
+            ),
+          ];
+        },
+      );
+      controller.onInit();
+      await controller.loadTrades();
+      expect(controller.stockMap[stockA]?.currentPrice, equals(null));
+
+      await controller.refreshCurrentPrices(showLoading: false);
+
+      expect(controller.stockMap[stockA]?.currentPrice, '150.00');
+    });
+
+    test(
         'applyFilters excludes trades without plan prices when meet condition is enabled',
         () async {
       final stockA = await db.stockItems.insertOne(StockItemsCompanion.insert(

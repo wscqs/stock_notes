@@ -6,17 +6,17 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:remixicon/remixicon.dart';
+import 'package:stock_notes/common/extension/StockTrade++.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/services/stock_name_service.dart';
 import 'package:stock_notes/common/web/stock_ext_links.dart';
 import 'package:stock_notes/common/web/webview_widget.dart';
+import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
-import 'package:stock_notes/common/extension/StockTrade++.dart';
-import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
@@ -812,6 +812,11 @@ class StockeditController extends BaseController {
     notePreviewFocusNode.dispose();
     notePreviewScrollController.dispose();
     super.onClose();
+  }
+
+  //移除所有的controller键盘焦点(要考虑解决）
+  void removeAllKeyboardClick() {
+    stockNumFocusNode.unfocus();
   }
 
   Future<void> clickShare() async {

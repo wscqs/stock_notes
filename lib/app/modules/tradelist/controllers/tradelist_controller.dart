@@ -188,7 +188,7 @@ class TradelistController extends BaseController {
       if (results != null && results.isNotEmpty) {
         for (final stock in stocks) {
           final result = results.firstWhereOrNull(
-            (r) => _pureCode(r.code ?? '') == stock.code,
+            (r) => _pureCode(r.code ?? '') == _pureCode(stock.code),
           );
           if (result != null) {
             await db.updateStock(
