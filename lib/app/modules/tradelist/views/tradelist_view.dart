@@ -105,29 +105,51 @@ class TradelistView extends GetView<TradelistController> {
             ),
           ),
           const SizedBox(width: 8),
-          _buildSortDropdown(),
+          _buildSortButton(),
         ],
       ),
     );
   }
 
-  Widget _buildSortDropdown() {
+  Widget _buildSortButton() {
+    return Container(
+      height: 44,
+      padding: const EdgeInsets.only(left: 8),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Get.theme.colorScheme.outline.withValues(alpha: 0.4),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildSortFieldSelector(),
+          Container(
+            width: 0.5,
+            height: 20,
+            color: Get.theme.colorScheme.outline.withValues(alpha: 0.3),
+          ),
+          _buildSortDirectionButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSortFieldSelector() {
     return DropdownButtonHideUnderline(
       child: DropdownButton2<int>(
-        isExpanded: true,
-        hint: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                controller.sortOptions[controller.selectedSortIndex.value],
-              ),
-              const Icon(
-                Icons.arrow_drop_down,
-                size: 20,
-              )
-            ],
+        isExpanded: false,
+        customButton: Container(
+          width: 64,
+          height: 44,
+          alignment: Alignment.center,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              controller.sortOptions[controller.selectedSortIndex.value],
+              style: const TextStyle(fontSize: 14),
+            ),
           ),
         ),
         items: controller.sortOptions
@@ -147,16 +169,33 @@ class TradelistView extends GetView<TradelistController> {
             controller.onSortChanged(value);
           }
         },
-        iconStyleData: const IconStyleData(iconSize: 0),
         buttonStyleData: const ButtonStyleData(
-          padding: EdgeInsets.only(left: 4, right: 4),
+          width: 64,
           height: 44,
-          width: 72,
+          padding: EdgeInsets.zero,
         ),
         dropdownStyleData: const DropdownStyleData(
           width: 100,
           offset: Offset(-8, 0),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSortDirectionButton() {
+    return InkWell(
+      onTap: controller.toggleSortDirection,
+      child: Container(
+        width: 40,
+        height: 44,
+        alignment: Alignment.center,
+        child: Obx(() => Icon(
+              controller.sortAscending.value
+                  ? Icons.arrow_upward
+                  : Icons.arrow_downward,
+              size: 18,
+              color: Get.theme.colorScheme.onSurface,
+            )),
       ),
     );
   }

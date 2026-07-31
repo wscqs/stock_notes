@@ -35,6 +35,9 @@ class TradelistController extends BaseController {
     TextKey.gupiaodaima.tr,
   ];
   final selectedSortIndex = 0.obs;
+  final sortAscending = false.obs;
+
+  final List<bool> _defaultSortAscending = [false, false, false, true];
 
   TradelistController({this.stockDataFetcher});
 
@@ -129,7 +132,9 @@ class TradelistController extends BaseController {
         list.sort((a, b) {
           final da = a.tradeDate ?? a.createdAt;
           final db = b.tradeDate ?? b.createdAt;
-          return db.compareTo(da);
+          return sortAscending.value
+              ? da.compareTo(db)
+              : db.compareTo(da);
         });
       case 1: // Yield rate
         list.sort((a, b) {
@@ -138,7 +143,9 @@ class TradelistController extends BaseController {
           if (ea.yieldRate == null && eb.yieldRate == null) return 0;
           if (ea.yieldRate == null) return 1;
           if (eb.yieldRate == null) return -1;
-          return eb.yieldRate!.compareTo(ea.yieldRate!);
+          return sortAscending.value
+              ? ea.yieldRate!.compareTo(eb.yieldRate!)
+              : eb.yieldRate!.compareTo(ea.yieldRate!);
         });
       case 2: // Profit amount
         list.sort((a, b) {
@@ -147,13 +154,17 @@ class TradelistController extends BaseController {
           if (ea.profit == null && eb.profit == null) return 0;
           if (ea.profit == null) return 1;
           if (eb.profit == null) return -1;
-          return eb.profit!.compareTo(ea.profit!);
+          return sortAscending.value
+              ? ea.profit!.compareTo(eb.profit!)
+              : eb.profit!.compareTo(ea.profit!);
         });
       case 3: // Stock code
         list.sort((a, b) {
           final ca = stockMap[a.stockId]?.code ?? '';
           final cb = stockMap[b.stockId]?.code ?? '';
-          return ca.compareTo(cb);
+          return sortAscending.value
+              ? ca.compareTo(cb)
+              : cb.compareTo(ca);
         });
     }
     return list;
@@ -173,6 +184,12 @@ class TradelistController extends BaseController {
 
   void onSortChanged(int index) {
     selectedSortIndex.value = index;
+    sortAscending.value = _defaultSortAscending[index];
+    applyFilters();
+  }
+
+  void toggleSortDirection() {
+    sortAscending.toggle();
     applyFilters();
   }
 
