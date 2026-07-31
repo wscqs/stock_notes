@@ -22,7 +22,8 @@ class StockeditView extends GetView<StockeditController> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).unfocus(); // 关闭键盘
+        // FocusScope.of(context).unfocus(); // 关闭键盘这个bug
+        FocusManager.instance.primaryFocus?.unfocus(); //用这个
       },
       child: Scaffold(
         appBar: AppBar(

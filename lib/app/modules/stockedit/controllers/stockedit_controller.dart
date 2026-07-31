@@ -88,7 +88,6 @@ class StockeditController extends BaseController {
 
   var isFirstCome = true;
   var _ignoreNextSuggestionUpdate = false;
-  var _wasPaused = false;
 
   @override
   void onInit() {
@@ -655,6 +654,7 @@ class StockeditController extends BaseController {
 
   /// 打开外链（功能按钮或弹窗预览共用）
   Future<void> openExtLink(StockExtLink link) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     final code = serStockData.value.code ?? '';
     if (code.isEmpty) {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
@@ -688,7 +688,6 @@ class StockeditController extends BaseController {
   /// 选择关联链接弹窗：多选 + 预览 + 拖拽排序，确定后写全局缓存并刷新按钮
   void showExtLinkPicker() {
     FocusManager.instance.primaryFocus?.unfocus();
-    _wasPaused = true;
     final tempOrder = StockExtLinks.orderedIds().toList();
     final tempSelected = extLinkIds.toSet();
     Get.dialog(StatefulBuilder(
@@ -894,7 +893,6 @@ class StockeditController extends BaseController {
       return;
     }
     FocusManager.instance.primaryFocus?.unfocus();
-    _wasPaused = true;
     TagseditView.show(localStockData.value!);
   }
 
@@ -909,7 +907,6 @@ class StockeditController extends BaseController {
       return;
     }
     FocusManager.instance.primaryFocus?.unfocus();
-    _wasPaused = true;
     //带上最新价格：实时行情优先，其次本地缓存
     final price = (serStockData.value.currentPrice?.isNotEmpty == true)
         ? serStockData.value.currentPrice
@@ -924,7 +921,6 @@ class StockeditController extends BaseController {
     if (normalizedLink.startsWith('http://') ||
         normalizedLink.startsWith('https://')) {
       FocusManager.instance.primaryFocus?.unfocus();
-      _wasPaused = true;
       await openLinkInAppWebView(link);
       return;
     }
@@ -948,10 +944,8 @@ class StockeditController extends BaseController {
     super.onResume();
     if (isFirstCome) {
       isFirstCome = false;
-    } else if (_wasPaused) {
-      _wasPaused = false;
-      // 从标签/笔记页返回时，取消可能自动恢复的输入框焦点，避免键盘自动弹出
-      FocusManager.instance.primaryFocus?.unfocus();
+    } else {
+      // FocusManager.instance.primaryFocus?.unfocus(); //记得用这关闭键盘，其他的关闭有 bug
       refreshTags(); //后退才刷新UI
     }
   }
@@ -959,7 +953,6 @@ class StockeditController extends BaseController {
   @override
   void onPause() {
     super.onPause();
-    _wasPaused = true;
   }
 
   // ========== 交易记录 ==========
@@ -1000,6 +993,7 @@ class StockeditController extends BaseController {
           });
       return;
     }
+    FocusManager.instance.primaryFocus?.unfocus();
     _showTradeDialog();
   }
 
@@ -1072,6 +1066,7 @@ class StockeditController extends BaseController {
   }
 
   void showAllTradesSheet(Widget Function(StockTrade) buildTradeItem) {
+    FocusManager.instance.primaryFocus?.unfocus();
     tradeListFilter.value = 'trade';
     Get.bottomSheet(
       Container(
