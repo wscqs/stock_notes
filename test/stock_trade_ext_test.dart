@@ -33,22 +33,22 @@ void main() {
     );
   }
 
-  test('buy long: current >= planSalePrice returns b', () {
+  test('buy long: current >= planSalePrice returns s', () {
     final trade = buildTrade(
       tradeType: 0,
       planBuyPrice: '90',
       planSalePrice: '110',
     );
-    expect(trade.meetStatus('115'), TradeMeetStatus.b);
+    expect(trade.meetStatus('115'), TradeMeetStatus.s);
   });
 
-  test('buy long: current <= planBuyPrice returns s', () {
+  test('buy long: current <= planBuyPrice returns b', () {
     final trade = buildTrade(
       tradeType: 0,
       planBuyPrice: '90',
       planSalePrice: '110',
     );
-    expect(trade.meetStatus('85'), TradeMeetStatus.s);
+    expect(trade.meetStatus('85'), TradeMeetStatus.b);
   });
 
   test('buy long: both conditions returns bs', () {

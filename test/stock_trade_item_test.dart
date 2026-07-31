@@ -92,7 +92,7 @@ void main() {
     expect(find.textContaining('收益率: -'), findsOneWidget);
   });
 
-  testWidgets('renders meet B tag for buy long take profit', (tester) async {
+  testWidgets('renders meet S tag for buy long take profit', (tester) async {
     final trade = StockTrade(
       id: 1,
       createdAt: now,
@@ -109,11 +109,11 @@ void main() {
       StockTradeItem(trade: trade, currentPrice: '115'),
     ));
     await tester.pumpAndSettle();
-    expect(find.textContaining('满足B'), findsOneWidget);
-    expect(find.textContaining('满足S'), findsNothing);
+    expect(find.textContaining('满足S'), findsOneWidget);
+    expect(find.textContaining('满足B'), findsNothing);
   });
 
-  testWidgets('renders meet S tag for buy long stop loss', (tester) async {
+  testWidgets('renders meet B tag for buy long stop loss', (tester) async {
     final trade = StockTrade(
       id: 1,
       createdAt: now,
@@ -130,8 +130,8 @@ void main() {
       StockTradeItem(trade: trade, currentPrice: '85'),
     ));
     await tester.pumpAndSettle();
-    expect(find.textContaining('满足S'), findsOneWidget);
-    expect(find.textContaining('满足B'), findsNothing);
+    expect(find.textContaining('满足B'), findsOneWidget);
+    expect(find.textContaining('满足S'), findsNothing);
   });
 
   testWidgets('renders meet BS tag when both conditions met', (tester) async {

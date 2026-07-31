@@ -81,17 +81,15 @@ extension StockTradeConditionExt on StockTrade {
 
     if (current == null) return TradeMeetStatus.none;
 
-    final isBuy = tradeType == 0;
     bool meetB = false;
     bool meetS = false;
 
-    if (isBuy) {
-      if (planSale != null && current >= planSale) meetB = true;
-      if (planBuy != null && current <= planBuy) meetS = true;
-    } else {
-      if (planBuy != null && current <= planBuy) meetB = true;
-      if (planSale != null && current >= planSale) meetS = true;
-    }
+    // B = current reached the planned buy price (below or equal).
+    // S = current reached the planned sale price (above or equal).
+    // This matches the stock-level B/S semantics and makes take-profit on
+    // a long position show S, not B.
+    if (planBuy != null && current <= planBuy) meetB = true;
+    if (planSale != null && current >= planSale) meetS = true;
 
     if (meetB && meetS) return TradeMeetStatus.bs;
     if (meetB) return TradeMeetStatus.b;

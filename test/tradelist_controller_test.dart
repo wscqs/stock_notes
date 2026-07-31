@@ -318,7 +318,7 @@ void main() {
       await db.updateStock(
         StockItemsCompanion(
           code: const Value('600519'),
-          currentPrice: const Value('115'),
+          currentPrice: const Value('85'),
         ),
         '600519',
       );
@@ -332,7 +332,7 @@ void main() {
       controller.applyFilters();
 
       expect(controller.filteredTrades.length, 1);
-      expect(controller.filteredTrades.first.tradeDate, DateTime(2026, 7, 25));
+      expect(controller.filteredTrades.first.tradeDate, DateTime(2026, 7, 26));
     });
 
     test('applyFilters filters by sell segment using trade plan prices',
@@ -363,7 +363,7 @@ void main() {
       await db.updateStock(
         StockItemsCompanion(
           code: const Value('600519'),
-          currentPrice: const Value('85'),
+          currentPrice: const Value('115'),
         ),
         '600519',
       );
@@ -377,7 +377,7 @@ void main() {
       controller.applyFilters();
 
       expect(controller.filteredTrades.length, 1);
-      expect(controller.filteredTrades.first.tradeDate, DateTime(2026, 7, 26));
+      expect(controller.filteredTrades.first.tradeDate, DateTime(2026, 7, 25));
     });
 
     test('applyFilters all segment shows trades matching either condition',
