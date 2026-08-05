@@ -156,6 +156,10 @@ class StockeditView extends GetView<StockeditController> {
           Row(
             children: [
               Text(TextKey.jilu.tr, style: Get.textTheme.titleLarge),
+              if (controller.localStockData.value?.opBuy == true) ...[
+                kSpaceW(12),
+                _buildHoldStatusBar(),
+              ],
             ],
           ),
           kSpaceH(16),
@@ -213,6 +217,74 @@ class StockeditView extends GetView<StockeditController> {
             keyboardType: TextInputType.multiline,
           ),
         ]);
+  }
+
+  // 持有操作状态（锁仓/停买/停卖）：分段选择器样式，单选高亮，再点取消
+  Widget _buildHoldStatusBar() {
+    final current = controller.localStockData.value?.rHoldStatus ?? 0;
+    final items = [
+      (1, TextKey.suocang.tr),
+      (2, TextKey.tingmai.tr),
+      (3, TextKey.tingmaichu.tr),
+    ];
+    final borderColor = Colors.grey.withValues(alpha: 0.3);
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: borderColor, width: 0.8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < items.length; i++) ...[
+            if (i > 0) Container(width: 0.8, height: 14, color: borderColor),
+            _buildHoldStatusSegment(
+              items[i].$1,
+              items[i].$2,
+              isSelected: current == items[i].$1,
+              isFirst: i == 0,
+              isLast: i == items.length - 1,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHoldStatusSegment(
+    int status,
+    String label, {
+    required bool isSelected,
+    required bool isFirst,
+    required bool isLast,
+  }) {
+    const radius = Radius.circular(5);
+    return InkWell(
+      onTap: () => controller.clickHoldStatus(status),
+      borderRadius: BorderRadius.horizontal(
+        left: isFirst ? radius : Radius.zero,
+        right: isLast ? radius : Radius.zero,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          // color: isSelected ? Colors.blue.shade400 : null,
+          borderRadius: BorderRadius.horizontal(
+            left: isFirst ? radius : Radius.zero,
+            right: isLast ? radius : Radius.zero,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            height: 1.2,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            color: isSelected ? Colors.blue.shade400 : Colors.grey,
+          ),
+        ),
+      ),
+    );
   }
 
   // 持有收益信息：未填股数时只显示收益率；填写后追加收益额与总市值（正红负绿平默认）

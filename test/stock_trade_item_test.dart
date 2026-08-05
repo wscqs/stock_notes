@@ -56,6 +56,7 @@ void main() {
       cPriceCondition: 0,
       cMarketCapCondition: 0,
       cPeTtmCondition: 0,
+      rHoldStatus: 0,
     );
     await tester.pumpWidget(buildTestableWidget(
       StockTradeItem(trade: trade, stock: stock),

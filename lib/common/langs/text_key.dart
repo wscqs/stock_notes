@@ -103,6 +103,9 @@ class TextKey {
   static const weishibiedaogupiao = 'weishibiedaogupiao';
   static const chiyouchengbenjia = 'chiyouchengbenjia';
   static const chiyougushu = 'chiyougushu';
+  static const suocang = 'suocang'; // 锁仓
+  static const tingmai = 'tingmai'; // 停买
+  static const tingmaichu = 'tingmaichu'; // 停卖
   static const shouyie = 'shouyie';
   static const zongshizhi = 'zongshizhi';
   static const baocunbingcaozu = 'baocunbingcaozu';
@@ -245,6 +248,9 @@ const Map<String, String> zh = {
   TextKey.chiyou: '持有',
   TextKey.chiyouchengbenjia: '持有成本价',
   TextKey.chiyougushu: '持有股数',
+  TextKey.suocang: '锁仓',
+  TextKey.tingmai: '停买',
+  TextKey.tingmaichu: '停卖',
   TextKey.shouyie: '收益额',
   TextKey.zongshizhi: '总市值',
   TextKey.jiaoyi: '交易',
@@ -440,6 +446,9 @@ const Map<String, String> en = {
   TextKey.chiyou: 'Holding',
   TextKey.chiyouchengbenjia: 'Holding cost price',
   TextKey.chiyougushu: 'Holding shares',
+  TextKey.suocang: 'Lock',
+  TextKey.tingmai: 'No Buy',
+  TextKey.tingmaichu: 'No Sell',
   TextKey.shouyie: 'Profit',
   TextKey.zongshizhi: 'Total value',
   TextKey.jiaoyi: 'Trade',

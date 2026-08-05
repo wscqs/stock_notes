@@ -859,6 +859,22 @@ class StockeditController extends BaseController {
     _dbAllDataRefreshUI();
   }
 
+  //持有操作状态：1=锁仓,2=停买,3=停卖；单选，再点选中的取消（回到 0）
+  void clickHoldStatus(int status) {
+    if (!isLocalData.value) {
+      _popSaveAlert(
+          title: TextKey.jilu.tr,
+          onConfirm: () {
+            clickHoldStatus(status);
+          });
+      return;
+    }
+    final current = localStockData.value!.rHoldStatus;
+    final next = current == status ? 0 : status;
+    db.updateStockWithOp(localStockData.value!.copyWith(rHoldStatus: next));
+    _dbAllDataRefreshUI();
+  }
+
   void clickOpRestore() {
     db.updateStockWithOp(localStockData.value!.copyWith(opDelete: false));
     isLocalData.value = true;

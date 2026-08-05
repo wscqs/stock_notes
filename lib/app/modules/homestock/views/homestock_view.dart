@@ -529,6 +529,11 @@ class _HomeStockCellState extends State<HomeStockCell>
                       size: 13,
                       color: Colors.red.shade400,
                     ),
+                    // 持有操作状态小标签（锁仓/停买/停卖），跟随持有标
+                    if (widget.item.rHoldStatus != 0) ...[
+                      kSpaceW(4),
+                      _buildHoldStatusTag(widget.item.rHoldStatus),
+                    ],
                   ],
                   if (yieldRate != null && yieldRateText != null) ...[
                     kSpaceW(4),
@@ -603,6 +608,33 @@ class _HomeStockCellState extends State<HomeStockCell>
           ),
         ),
       ],
+    );
+  }
+
+  // 持有操作状态小标签：1=锁仓, 2=停买, 3=停卖（统一蓝色）
+  Widget _buildHoldStatusTag(int status) {
+    final text = switch (status) {
+      1 => TextKey.suocang.tr,
+      2 => TextKey.tingmai.tr,
+      3 => TextKey.tingmaichu.tr,
+      _ => '',
+    };
+    if (text.isEmpty) return const SizedBox.shrink();
+    final color = Colors.blue.shade400;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
     );
   }
 

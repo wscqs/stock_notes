@@ -46,7 +46,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   //改表要处理合并migration
   @override
@@ -79,6 +79,9 @@ class AppDatabase extends _$AppDatabase {
             await customStatement(
               'UPDATE stock_trades SET open_price = price, open_shares = shares',
             );
+          }
+          if (from <= 7) {
+            await migrator.addColumn(stockItems, stockItems.rHoldStatus);
           }
         },
         onCreate: (migrator) async {

@@ -34,6 +34,8 @@ class StockItems extends Table with TableMixin {
   TextColumn get rBuyPrice => text().nullable()(); //买入成本
   TextColumn get rHoldShares => text().nullable()(); //持有股数
   TextColumn get rNote => text().nullable()(); //笔记（大备注，富文本delta json）
+  IntColumn get rHoldStatus =>
+      integer().withDefault(const Constant(0))(); //持有操作状态：0=无,1=锁仓,2=停买,3=停卖
 
   //条件
   DateTimeColumn get cMeetUpdateAt =>
