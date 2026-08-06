@@ -84,6 +84,13 @@ class StockExtLinks {
           'https://emh5.eastmoney.com/html/detail.html?fc=xxxxxx#/gsds',
       useMarketPrefix: true,
     ),
+    StockExtLink(
+      id: 'fenxi_stockstar',
+      title: '分析研',
+      icon: RemixIcons.file_chart_line,
+      urlTemplate:
+          'https://tool.stockstar.com/search/stock/stockanalyse/xxxxxx',
+    ),
   ];
 
   static const List<String> defaultSelectedIds = [
