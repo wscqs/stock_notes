@@ -632,7 +632,7 @@ class _HomeStockCellState extends State<HomeStockCell>
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w600,
-          color: color,
+          color: color.withValues(alpha: 0.9),
         ),
       ),
     );
