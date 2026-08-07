@@ -4,33 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-股票笔记 (Stock Notes) is a privacy-first, offline Flutter application for stock investors to record and review trading strategies. It supports Android, iOS, Windows, and macOS. All data is stored locally in SQLite; no backend user data service is active.
+股票笔记 (Stock Notes) is a privacy-first, offline Flutter app for stock investors to record and review trading strategies. Platforms: Android, iOS, Windows, macOS. All data lives in local SQLite; there is no backend user data service.
 
 ## Common Commands
 
 ```bash
-# Run the app
-flutter run
+flutter run                  # run the app
+flutter analyze              # lint
+flutter test                 # run tests
+flutter pub get              # install dependencies
 
-# Build for platforms
-flutter build apk
-flutter build ios
-flutter build macos
-flutter build windows
+flutter build apk|ios|macos|windows
 
-# Lint
-flutter analyze
-
-# Run tests
-flutter test
-
-# Install dependencies
-flutter pub get
-
-# Regenerate Drift database code after schema changes
+# Regenerate Drift code after ANY schema change
 dart run build_runner build
 
-# Regenerate app icons / splash screen / package name
+# Asset/config regeneration (configs live in pubspec.yaml)
 dart run flutter_launcher_icons
 dart run flutter_native_splash:create
 dart run package_rename
@@ -38,103 +27,77 @@ dart run package_rename
 
 ## Release Workflow
 
-Releases are cut from the `main` branch and automated via GitHub Actions.
+Releases are cut from `main` and built by GitHub Actions.
 
-1. Bump `version` in `pubspec.yaml` (e.g. `2.3.0+18` → `2.3.1+19`).
-2. Stage release-related changes and commit:
-   ```bash
-   git commit -m "release: v2.3.1" -m "修复Windows关闭还占内存"
-   ```
-3. Create an annotated tag:
-   ```bash
-   git tag -a v2.3.1 -m "修复Windows关闭还占内存"
-   ```
-4. Push the commit and tag:
-   ```bash
-   git push origin main
-   git push origin v2.3.1
-   ```
-5. Create a GitHub Release for the tag (e.g. via `gh release create v2.3.1`).
-   This triggers `.github/workflows/flutter_build.yml`, which builds and uploads:
+1. Bump `version` in `pubspec.yaml` (e.g. `3.1.0+37` → `3.1.1+38` — bump both parts).
+2. Commit: `git commit -m "release: v3.1.1" -m "<变更说明>"`
+3. Tag: `git tag -a v3.1.1 -m "<变更说明>"`
+4. Push: `git push origin main && git push origin v3.1.1`
+5. Create the GitHub Release (`gh release create v3.1.1`). This triggers `.github/workflows/flutter_build.yml`, which builds and uploads:
    - Android APK (`app-release.apk`)
-   - macOS app zip (`macos-stocknote.zip`)
-   - Windows app zip (`windows-stocknote.zip`)
+   - macOS zip (`macos-stocknote.zip`)
+   - Windows zip (`windows-stocknote.zip`)
 
-> **Note:** iOS is supported by the codebase but is **not** part of the automated release builds.
-
-## Testing
-
-- Run tests with `flutter test`.
-- `test/widget_test.dart` currently contains a placeholder smoke test. Replace it with real widget tests as the project grows.
+> iOS is supported by the codebase but is **not** in the automated release builds.
 
 ## Architecture
 
 ### State Management & Routing
-- Uses **GetX** for state management, routing, and dependency injection.
-- Routes are defined centrally in `lib/app/routes/app_pages.dart` (pages) and `app_routes.dart` (paths).
-- Initial route is `Routes.TABS`.
+- **GetX** for state, routing, and DI.
+- Routes are centralized in `lib/app/routes/app_pages.dart` (pages) and `app_routes.dart` (paths). Initial route: `Routes.TABS` (`AppPages.INITIAL`).
 - Controllers extend `BaseController` (`lib/app/modules/base/base_Controller.dart`), which adds `onResume`/`onPause` visibility hooks.
-- Access the global service via `GlobalService.to`.
+- Global service: `GlobalService.to` (`lib/common/globle_service.dart`) — also persists theme mode and language.
 
 ### Module Structure
-- Each feature lives under `lib/app/modules/<name>/` with subfolders:
-  - `bindings/` — wires controller to view
-  - `controllers/` — business logic
-  - `views/` — UI
-- Examples: `homestock`, `homenote`, `stockedit`, `noteedit`, `tabs`, `datesource`, `setting`, `famous`, `tagsedit`.
+Each feature lives under `lib/app/modules/<name>/` with `bindings/`, `controllers/`, `views/`. Main modules:
 
-### Database
-- Uses **Drift** (SQLite) with file-based databases.
-- Schema and DAO-like queries are in `lib/common/database/database.dart`.
-- Generated code is in `database.g.dart`; regenerate with `build_runner` after any schema change.
-- `DatabaseManager` (`lib/common/database/DatabaseManager.dart`) is a GetX controller that manages the database path and supports switching databases for multi-account data.
-- Access the DB in controllers: `Get.find<DatabaseManager>().db`.
-- Tables: `StockItems`, `NoteItems`, `StockItemTags`, `StockTags`.
-- Default tags are seeded on first create: 短期, 中期, 长期, 买, 卖.
+- `tabs` — root tab shell
+- `homestock`, `stockdetail`, `stockedit`, `tradelist`, `tagsedit` — stock tracking, detail, editing, trades, tags
+- `homenote`, `notedetail`, `noteedit`, `notetagsedit`, `stocknote` — notes
+- `datesource`, `setting`, `about`, `famous`, `use`, `splash` — data import, settings, misc
+- `base`, `commonwidget`, `somewidget`, `simplesel` — shared base/widgets
 
-### Data Import / Export & Multi-Account
-- The app supports switching between local database files (multi-account).
-- Database file names must contain `stocknotes_` to be accepted for import.
-- Deep links (`app_links`) are used to handle shared `.db` files; `AppPages.handleDeepLink` routes them to the data source page.
-- `DatabaseManager.switchDatabase(path)` swaps the active database at runtime.
+### Database (Drift / SQLite)
+- **Table definitions**: `lib/common/database/tables.dart`
+- **Queries + migrations + `AppDatabase`**: `lib/common/database/database.dart` (generated: `database.g.dart`)
+- Tables (7): `StockItems`, `NoteItems`, `StockItemTags`, `StockTags`, `StockTrades`, `NoteItemTags`, `NoteTags`. `schemaVersion` is currently 8 — bump it and add a migration branch when changing the schema.
+- Default tags seeded on first create: 短期, 中期, 长期, 买, 卖.
+- `DatabaseManager` (`lib/common/database/DatabaseManager.dart`) is a GetX controller managing the db path and runtime switching (multi-account). Access: `Get.find<DatabaseManager>().db`.
 
-### Stock Data Fetching
-- Real-time stock data is fetched from **Tencent API** (`https://qt.gtimg.cn/q=...`).
-- Supports A-shares (SH/SZ), Hong Kong stocks (HK), US stocks (US), and ETFs/funds.
-- URL building and parsing logic is in `lib/common/https/qs_api.dart` (`buildStockUrl`, `parseTencentStockData`).
-- The response is GBK-encoded; decoded with `fl_charset`.
+### Multi-Account / Data Import
+- Users can switch between local db files. Importable file names must contain `stocknotes_`.
+- Deep links (`app_links`) receive shared `.db` files; `AppPages.handleDeepLink` routes them to the data source page.
+- `DatabaseManager.switchDatabase(path)` swaps the active db at runtime.
+
+### Stock Quotes (only live network path)
+- Real-time data from Tencent API (`https://qt.gtimg.cn/q=...`), GBK-encoded — decode with `fl_charset`.
+- URL building/parsing: `lib/common/https/qs_api.dart` (`buildStockUrl`, `parseTencentStockData`). Supports A-shares (SH/SZ), HK, US, ETFs/funds.
+- `qs_request.dart` / rest of `qs_api.dart` is legacy Dio wrapper code — mostly commented out, do not extend it.
 
 ### Internationalization
-- Uses GetX `Translations` (not `intl` for dynamic switching).
-- Translation keys are centralized in `lib/common/langs/text_key.dart`.
-- Access in UI: `TextKey.someKey.tr`.
-- Supported locales: zh_CN (fallback), en_US.
-- `TranslationLibrary` wires delegates including `FlutterQuillLocalizations.delegate`.
+- GetX `Translations` (no `intl`). Keys centralized in `lib/common/langs/text_key.dart`; use `TextKey.someKey.tr`.
+- Locales: zh_CN (fallback), en_US. `TranslationLibrary` wires delegates including `FlutterQuillLocalizations.delegate`.
 
 ### Theming
-- Themes are in `lib/common/styles/theme_data.dart` (`AppTheme.light` / `AppTheme.dark`).
-- `flex_color_scheme` is used for theme generation.
-- `GlobalService` persists and switches theme mode and language.
+- `lib/common/styles/theme_data.dart` (`AppTheme.light` / `AppTheme.dark`), generated with `flex_color_scheme`.
 
 ### Notes / Rich Text
-- Notes use `flutter_quill` with `flutter_quill_extensions` for embedded images.
-- Images are stored locally; migrating data will lose images.
+- `flutter_quill` + `flutter_quill_extensions` for embedded images.
+- Images are stored locally and are **not** portable — migrating data between devices loses them.
 
-### Extensions
-- Custom Dart extensions live in `lib/common/extension/`:
-  - `String++`, `Color++`, `DateTime++`, `Num++`, `Widget++`, `Image++`, `ScrollController++`
-- Utility classes live in `lib/utils/` (e.g., `qs_cache`, `qs_hud`, `qs_date`, `encrypt_util`).
-
-### Networking Layer
-- `lib/common/https/qs_request.dart` and `qs_api.dart` contain legacy network wrapper code around Dio.
-- Most API methods are commented out; the only active network path is the Tencent stock quote fetch.
+### Extensions & Utils
+- Dart extensions in `lib/common/extension/`: `String++`, `Color++`, `DateTime++`, `Num++`, `Widget++`, `Image++`, `ScrollController++`
+- Utils in `lib/utils/`: `qs_cache`, `qs_hud`, `qs_date`, `encrypt_util`, etc.
 
 ## Important Implementation Details
 
-- **ConditionStatus** (`lib/common/database/database.dart`) uses bitmasks to represent buy/sell/near conditions for price, market cap, and PE ratio:
-  - `nearBuy = 1 << 0`, `nearSell = 1 << 1`, `targetBuy = 1 << 2`, `targetSell = 1 << 3`
-  - `StockItemExt` adds runtime-only `StockItemExtraState` (including `tagList`) via a static map keyed by `id`.
-- **Sorting on home lists**: results are ordered by `opTop` DESC, then by a time column (`updateAt`, `cMeetUpdateAt`, or `cNearUpdateAt`) depending on filter mode.
-- **Slidable cells**: stock list items use `flutter_slidable` for left-swipe actions (hold/top/tag/favorite/delete).
-- **Screen util**: `flutter_screenutil` is initialized with design size `375x812` in `main.dart`.
-- **Dialog/Toast**: uses `flutter_smart_dialog` (observer registered in `GetMaterialApp`).
+- **ConditionStatus** (`database.dart`) is a bitmask for near/target buy/sell conditions: `nearBuy = 1<<0`, `nearSell = 1<<1`, `targetBuy = 1<<2`, `targetSell = 1<<3`. Use the `ConditionStatusExt` getters (`hasNearBuy`, …) instead of raw bit math.
+- **StockItemExt** adds runtime-only state (`StockItemExtraState`, including `tagList`) via a static map keyed by `id` — it is not persisted.
+- **Home list sorting**: `opTop` DESC, then a time column (`updateAt` / `cMeetUpdateAt` / `cNearUpdateAt`) depending on filter mode.
+- **Slidable cells**: stock list items use `flutter_slidable` for swipe actions (hold/top/tag/favorite/delete).
+- **Screen util**: `flutter_screenutil`, design size `375x812`, initialized in `main.dart`.
+- **Dialogs/Toasts**: `flutter_smart_dialog` (observer registered in `GetMaterialApp`).
+
+## Testing
+
+`flutter test`. `test/widget_test.dart` is a placeholder smoke test — replace with real widget tests as features grow.

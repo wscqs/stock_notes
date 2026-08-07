@@ -61,47 +61,55 @@ class _WebViewWidgetState extends State<WebViewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return InAppWebView(
-      initialUrlRequest: widget.webViewType == WebViewType.HTMLTEXT
-          ? URLRequest(
-              url: WebUri(Uri.dataFromString(
-              widget.loadResource,
-              mimeType: 'text/html',
-              encoding: Encoding.getByName('utf-8'),
-            ).toString()))
-          : URLRequest(url: WebUri(widget.loadResource)),
-      onWebViewCreated: (InAppWebViewController controller) {
-        _webViewController = controller;
-        // 调用创建回调
-        if (widget.onWebViewCreated != null) {
-          widget.onWebViewCreated!(controller);
-        }
+    // 夜间模式下避免网页加载前的白屏闪烁：
+    // WebView 设为透明背景，底层用主题的 Scaffold 背景色兜底
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: InAppWebView(
+        initialSettings: InAppWebViewSettings(
+          transparentBackground: true,
+        ),
+        initialUrlRequest: widget.webViewType == WebViewType.HTMLTEXT
+            ? URLRequest(
+                url: WebUri(Uri.dataFromString(
+                widget.loadResource,
+                mimeType: 'text/html',
+                encoding: Encoding.getByName('utf-8'),
+              ).toString()))
+            : URLRequest(url: WebUri(widget.loadResource)),
+        onWebViewCreated: (InAppWebViewController controller) {
+          _webViewController = controller;
+          // 调用创建回调
+          if (widget.onWebViewCreated != null) {
+            widget.onWebViewCreated!(controller);
+          }
 
-        // 设置 JS 通信
-        if (widget.jsChannelMap != null) {
-          widget.jsChannelMap!.forEach((channel, callback) {
-            _webViewController.addJavaScriptHandler(
-                handlerName: channel, callback: callback);
+          // 设置 JS 通信
+          if (widget.jsChannelMap != null) {
+            widget.jsChannelMap!.forEach((channel, callback) {
+              _webViewController.addJavaScriptHandler(
+                  handlerName: channel, callback: callback);
+            });
+          }
+        },
+        onLoadStart: (InAppWebViewController controller, Uri? url) {
+          setState(() {
+            QsHud.showLoading(duration: const Duration(seconds: 45));
           });
-        }
-      },
-      onLoadStart: (InAppWebViewController controller, Uri? url) {
-        setState(() {
-          QsHud.showLoading(duration: const Duration(seconds: 45));
-        });
-      },
-      onLoadStop: (InAppWebViewController controller, Uri? url) {
-        setState(() {
-          QsHud.dismiss(); // 页面停止加载，更新状态为 false
-        });
-      },
-      onProgressChanged: (InAppWebViewController controller, int progress) {
-        // 可以根据 progress 更新加载进度条
-      },
-      onConsoleMessage:
-          (InAppWebViewController controller, ConsoleMessage message) {
-        print(message.message); // 输出控制台信息
-      },
+        },
+        onLoadStop: (InAppWebViewController controller, Uri? url) {
+          setState(() {
+            QsHud.dismiss(); // 页面停止加载，更新状态为 false
+          });
+        },
+        onProgressChanged: (InAppWebViewController controller, int progress) {
+          // 可以根据 progress 更新加载进度条
+        },
+        onConsoleMessage:
+            (InAppWebViewController controller, ConsoleMessage message) {
+          print(message.message); // 输出控制台信息
+        },
+      ),
     );
   }
 
