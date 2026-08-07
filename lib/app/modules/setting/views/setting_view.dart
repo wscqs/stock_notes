@@ -87,6 +87,22 @@ class SettingView extends GetView<SettingController> {
                 }),
                 onPressed: controller.refreshAllStockCodes,
               ),
+              SimpleCell(
+                title: TextKey.lofTaoli.tr,
+                isShowRightArrow: false,
+                rightWidget: Obx(() {
+                  return Switch(
+                    value: GlobalService.to.rxLofEnabled.value,
+                    onChanged: (value) {
+                      GlobalService.to.changeLofEnabled(value);
+                    },
+                  );
+                }),
+                onPressed: () {
+                  GlobalService.to
+                      .changeLofEnabled(!GlobalService.to.rxLofEnabled.value);
+                },
+              ),
             ],
           );
         },

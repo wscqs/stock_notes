@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:stock_notes/app/modules/famous/controllers/famous_data_help.dart';
+import 'package:stock_notes/common/services/lof_service.dart';
 import 'package:stock_notes/common/services/stock_name_service.dart';
 
 import 'app/routes/app_pages.dart';
@@ -28,6 +29,7 @@ main() async {
   final dbManager = DatabaseManager();
   await dbManager.init(); // or provide path
   Get.put(dbManager);
+  Get.put(LofService());
   FamousDataHelp().loadFamous();
   // Get.put(DatabaseManager());
 

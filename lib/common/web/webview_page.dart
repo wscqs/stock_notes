@@ -70,18 +70,19 @@ class _WebViewPageState extends State<WebViewPage> {
               //   ],
               // ),
               // leadingWidth: 100,
-              actions: <Widget>[
-                if (widget.webViewType == WebViewType.URL) ...[
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: _copyUrlToClipboard,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.open_in_browser),
-                    onPressed: _openBrowser,
-                  ),
-                ],
-              ],
+
+              // actions: <Widget>[
+              //   if (widget.webViewType == WebViewType.URL) ...[
+              //     IconButton(
+              //       icon: const Icon(Icons.copy),
+              //       onPressed: _copyUrlToClipboard,
+              //     ),
+              //     IconButton(
+              //       icon: const Icon(Icons.open_in_browser),
+              //       onPressed: _openBrowser,
+              //     ),
+              //   ],
+              // ],
             )
           : null,
       body: SafeArea(

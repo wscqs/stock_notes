@@ -23,6 +23,7 @@ class GlobalService extends GetxService {
   var rxThemeMode = Rx<ThemeMode>(ThemeMode.system);
   Rx<Locale> rxLocale = Rx<Locale>(PlatformDispatcher.instance.locale);
   Rx<double> rxNearBSPoint = 0.03.obs;
+  RxBool rxLofEnabled = false.obs;
 
   //语言
   Locale locale = PlatformDispatcher.instance.locale;
@@ -46,6 +47,7 @@ class GlobalService extends GetxService {
     //初始化主题配置
     _initTheme();
     _initNearBSPoint();
+    _initLofEnabled();
     return this;
   }
 
@@ -129,6 +131,16 @@ class GlobalService extends GetxService {
   Future<void> changeNearBSPoint(double value) async {
     rxNearBSPoint.value = value;
     await sharedPreferences.setDouble("nearBSPoint", value);
+  }
+
+  void _initLofEnabled() {
+    rxLofEnabled.value = sharedPreferences.getBool("lofEnabled") ?? false;
+  }
+
+  // 更改 LOF套利 入口开关
+  Future<void> changeLofEnabled(bool value) async {
+    rxLofEnabled.value = value;
+    await sharedPreferences.setBool("lofEnabled", value);
   }
 
   void refreshAppui() {

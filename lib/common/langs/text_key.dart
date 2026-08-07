@@ -131,6 +131,7 @@ class TextKey {
   static const zanshibuzhichi = 'zanshibuzhichi';
   static const jiazashibai = 'jiazashibai';
   static const linkInvalid = 'linkInvalid';
+  static const lofTaoli = 'lofTaoli';
   static const kaicang = 'kaicang';
   static const pingcang = 'pingcang';
   static const gupiaobucunzai = 'gupiaobucunzai';
@@ -277,6 +278,7 @@ const Map<String, String> zh = {
   TextKey.zanshibuzhichi: '暂不支持该股票',
   TextKey.jiazashibai: '加载失败',
   TextKey.linkInvalid: '链接格式错误',
+  TextKey.lofTaoli: 'LOF套利',
   TextKey.shiyongshuomingall: '''
 股票笔记使用说明
 
@@ -476,6 +478,7 @@ const Map<String, String> en = {
   TextKey.zanshibuzhichi: 'Not supported for this stock',
   TextKey.jiazashibai: 'Load failed',
   TextKey.linkInvalid: 'Invalid link',
+  TextKey.lofTaoli: 'LOF Arbitrage',
   TextKey.shiyongshuomingall: '''
 Stock Notes User Guide
 
