@@ -416,19 +416,22 @@ class StockeditView extends GetView<StockeditController> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Text(TextKey.jiaoyi.tr, style: Get.textTheme.titleLarge),
-                TextButton.icon(
-                  onPressed: () =>
-                      controller.showAllTradesSheet(_buildTradeItemForStock),
-                  icon: const Icon(Icons.list, size: 18),
-                  label: Text(TextKey.liebiao.tr),
-                ),
-              ],
-            ),
+            Text(TextKey.jiaoyi.tr, style: Get.textTheme.titleLarge),
+            Obx(() {
+              if (controller.filteredTrades.isEmpty) return SizedBox();
+              return Row(
+                children: [
+                  TextButton.icon(
+                    onPressed: () =>
+                        controller.showAllTradesSheet(_buildTradeItemForStock),
+                    icon: const Icon(Icons.list, size: 18),
+                    label: Text(TextKey.liebiao.tr),
+                  ),
+                ],
+              );
+            }),
+            kSpaceMax(),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
