@@ -23,7 +23,9 @@ class AboutView extends GetView<AboutController> {
           ClipRRect(
               borderRadius: BorderRadius.circular(8.r),
               child: Image(
-                  image: AssetImage(Assets.imagesIcon), width: 80, height: 80)),
+                  image: AssetImage(Assets.images.icon.path),
+                  width: 80,
+                  height: 80)),
 
           kSpaceH(12.h),
 
