@@ -15,8 +15,8 @@ import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
-import '../../tagsedit/views/tagsedit_view.dart';
 import '../../tabs/controllers/tabs_controller.dart';
+import '../../tagsedit/views/tagsedit_view.dart';
 
 class HomestockController extends BaseController
     with GetTickerProviderStateMixin {
@@ -60,6 +60,8 @@ class HomestockController extends BaseController
   final tags = <StockItemTag>[].obs;
 
   final customScrollController = ScrollController();
+  final tagTabScrollController = ScrollController();
+  final tagTabItemKeys = <String, GlobalKey>{};
 
   final selectedDateSource = "".obs; //name
   final selectedFamous = "".obs;
@@ -113,6 +115,8 @@ class HomestockController extends BaseController
     }
     await _updateDbItemsWithSetTags();
     _updateDbItemsWithSetCondition();
+    // 加载标签数据供 tab 栏使用
+    await getTagsData();
     String query = searchController.text;
     filterItems(query);
   }
@@ -490,6 +494,11 @@ class HomestockController extends BaseController
     );
   }
 
+  //标签页·
+  Future<void> clickPopTagManager() async {
+    // TagseditView.show();
+  }
+
   Future<void> getTagsData() async {
     tags.value = await db.getStockItemTags();
   }
@@ -555,6 +564,45 @@ class HomestockController extends BaseController
     selTags.refresh();
     getDatas();
     SmartDialog.dismiss(status: SmartStatus.attach);
+    // 多选或清空时，tab 高亮"全部"，滚动到"全部"可见
+    if (selTags.length != 1) {
+      _scrollTagTabToCenter(null);
+    }
+  }
+
+  /// 标签 tab 栏点击：单选切换，再次点击取消选中
+  void onTapTagTab(StockItemTag? item) {
+    if (item == null) {
+      // 点击"全部"
+      selTags.clear();
+    } else if (selTags.contains(item)) {
+      selTags.clear();
+    } else {
+      selTags.clear();
+      selTags.add(item);
+    }
+    selTags.refresh();
+    String query = searchController.text;
+    filterItems(query);
+    // 滚动到中间
+    _scrollTagTabToCenter(item);
+  }
+
+  /// 滚动标签 tab 到选中项居中
+  void _scrollTagTabToCenter(StockItemTag? item) {
+    final keyId = item == null ? 'all' : item.id.toString();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final key = tagTabItemKeys[keyId];
+      final context = key?.currentContext;
+      if (context != null) {
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          alignment: 0.5, // 居中
+        );
+      }
+    });
   }
 
   void clickFilterClose() {
@@ -566,6 +614,8 @@ class HomestockController extends BaseController
     selCondition.refresh();
     getDatas();
     SmartDialog.dismiss(status: SmartStatus.attach);
+    // 清空筛选后滚动到"全部" tab
+    _scrollTagTabToCenter(null);
   }
 
   List<StockItem> _updateFilterItemsWithSelTags(List<StockItem> filterItems) {

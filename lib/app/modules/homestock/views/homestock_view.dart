@@ -81,8 +81,9 @@ class HomestockView extends GetView<HomestockController> {
 
   PreferredSize buildSectionTop() {
     return PreferredSize(
-      preferredSize: Size.fromHeight(76 + 30), // 指定 TabBar 高度
+      preferredSize: Size.fromHeight(76 + 30 + 36), // 包含标签 tab 栏高度
       child: Obx(() {
+        final hasTags = controller.tags.isNotEmpty;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -134,9 +135,129 @@ class HomestockView extends GetView<HomestockController> {
                 ],
               ),
             ),
+            // 标签滚动 tab 栏
+            if (hasTags) buildScrollableTagTabBar(),
           ],
         );
       }),
+    );
+  }
+
+  /// 构建标签滚动 tab 栏（参考雪球分组 tab 样式）
+  Widget buildScrollableTagTabBar() {
+    return Container(
+      color: Get.theme.colorScheme.surface,
+      child: Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 38,
+              child: ListView.builder(
+                controller: controller.tagTabScrollController,
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                itemCount: controller.tags.length + 1, // +1 for "全部"
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    // "全部" tab：无选中或多选时高亮
+                    final isSelected = controller.selTags.isEmpty ||
+                        controller.selTags.length > 1;
+                    final key = controller.tagTabItemKeys
+                        .putIfAbsent('all', () => GlobalKey());
+                    return _buildTabItem(
+                      key: key,
+                      label: TextKey.all.tr,
+                      isSelected: isSelected,
+                      onTap: () => controller.onTapTagTab(null),
+                    );
+                  }
+                  final tag = controller.tags[index - 1];
+                  // 多选时单个标签不高亮
+                  final isSelected = controller.selTags.length == 1 &&
+                      controller.selTags.contains(tag);
+                  final key = controller.tagTabItemKeys
+                      .putIfAbsent(tag.id.toString(), () => GlobalKey());
+                  return _buildTabItem(
+                    key: key,
+                    label: tag.name,
+                    isSelected: isSelected,
+                    onTap: () => controller.onTapTagTab(tag),
+                  );
+                },
+              ),
+            ),
+          ),
+          // 右侧固定管理按钮
+          _buildTagManageBtn(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabItem({
+    required GlobalKey key,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: Container(
+        key: key,
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: isSelected ? 15 : 14,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                color: isSelected
+                    // ? Get.theme.colorScheme.primary.withValues(alpha: 0.9)
+                    ? Get.theme.colorScheme.onSurface.withValues(alpha: 0.8)
+                    : Get.theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
+            ),
+            SizedBox(height: 4),
+            Container(
+              width: 8,
+              height: 2,
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Get.theme.colorScheme.onSurface.withValues(alpha: 0.8)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 右侧固定管理按钮（参考雪球）
+  Widget _buildTagManageBtn() {
+    return GestureDetector(
+      onTap: () {
+        controller.clickPopTagManager();
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 8, right: 12, bottom: 4),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.menu_outlined,
+              size: 16,
+              color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.8),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
