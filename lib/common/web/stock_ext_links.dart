@@ -12,6 +12,8 @@ class StockExtLink {
     required this.icon,
     this.isLocalAsset = false,
     this.useMarketPrefix = false,
+    this.useMarketPrefixLower = false,
+    this.useMarketSuffix = false,
   });
 
   /// 唯一标识，用于勾选存储
@@ -31,6 +33,12 @@ class StockExtLink {
 
   /// true 时 xxxxxx 替换为「市场大写前缀+6位数字」（如 SZ300848），否则替换为 6 位数字
   final bool useMarketPrefix;
+
+  /// true 时 xxxxxx 替换为「市场小写前缀+6位数字」（如 sz300848）
+  final bool useMarketPrefixLower;
+
+  /// true 时 xxxxxx 替换为「6位数字.市场大写后缀」（如 300848.SZ）
+  final bool useMarketSuffix;
 }
 
 class StockExtLinks {
@@ -90,6 +98,29 @@ class StockExtLinks {
       icon: RemixIcons.file_chart_line,
       urlTemplate:
           'https://tool.stockstar.com/search/stock/stockanalyse/xxxxxx',
+    ),
+    StockExtLink(
+      id: 'zongping_ths',
+      title: '综评同',
+      icon: RemixIcons.award_line,
+      urlTemplate:
+          'https://vaserviece.10jqka.com.cn/advancediagnosestock/html/xxxxxx/index.html',
+    ),
+    StockExtLink(
+      id: 'zongping_em',
+      title: '综评东',
+      icon: RemixIcons.award_line,
+      urlTemplate:
+          'https://emrnweb.eastmoney.com/znzg/stockDiagnosis?stockCode=xxxxxx',
+      useMarketSuffix: true,
+    ),
+    StockExtLink(
+      id: 'zongping_sina',
+      title: '综评新',
+      icon: RemixIcons.award_line,
+      urlTemplate:
+          'https://finance.sina.cn/app/zg_detail_2023.shtml?symbol=xxxxxx&isBlackTheme=1',
+      useMarketPrefixLower: true,
     ),
   ];
 
@@ -159,7 +190,11 @@ class StockExtLinks {
     }
     final replacement = link.useMarketPrefix
         ? '${stockCode.substring(0, 2).toUpperCase()}$number'
-        : number;
+        : link.useMarketPrefixLower
+            ? '${stockCode.substring(0, 2).toLowerCase()}$number'
+            : link.useMarketSuffix
+                ? '$number.${stockCode.substring(0, 2).toUpperCase()}'
+                : number;
     return link.urlTemplate.replaceAll(_placeholder, replacement);
   }
 

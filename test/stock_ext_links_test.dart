@@ -52,6 +52,30 @@ void main() {
       expect(html, contains('window.APP_STOCK_CODE="300848"'));
       expect(html, contains('fetchStockConcepts'));
     });
+
+    test('综评同替换6位数字代码', () async {
+      final link = StockExtLinks.all.firstWhere((l) => l.id == 'zongping_ths');
+      final url = await StockExtLinks.buildLoadResource(link, 'sz300848');
+      expect(url,
+          'https://vaserviece.10jqka.com.cn/advancediagnosestock/html/300848/index.html');
+    });
+
+    test('综评东使用数字.市场大写后缀格式', () async {
+      final link = StockExtLinks.all.firstWhere((l) => l.id == 'zongping_em');
+      expect(await StockExtLinks.buildLoadResource(link, 'sz300848'),
+          contains('stockCode=300848.SZ'));
+      expect(await StockExtLinks.buildLoadResource(link, 'sh600519'),
+          contains('stockCode=600519.SH'));
+    });
+
+    test('综评新使用市场小写前缀+代码', () async {
+      final link =
+          StockExtLinks.all.firstWhere((l) => l.id == 'zongping_sina');
+      expect(await StockExtLinks.buildLoadResource(link, 'sz300848'),
+          contains('symbol=sz300848'));
+      expect(await StockExtLinks.buildLoadResource(link, 'sh600519'),
+          contains('symbol=sh600519'));
+    });
   });
 
   group('selectedIds', () {
@@ -68,12 +92,12 @@ void main() {
   });
 
   group('all', () {
-    test('包含6个链接且id唯一', () {
-      expect(StockExtLinks.all.length, 6);
+    test('包含10个链接且id唯一', () {
+      expect(StockExtLinks.all.length, 10);
       final ids = StockExtLinks.all.map((l) => l.id).toSet();
-      expect(ids.length, 6);
+      expect(ids.length, 10);
     });
-    test('顺序为k线百/简况/扫雷同/扫雷安/概念同/大事东', () {
+    test('顺序为k线百/简况/扫雷同/扫雷安/概念同/大事东/分析研/综评同/综评东/综评新', () {
       expect(
           StockExtLinks.all.map((l) => l.id).toList(),
           [
@@ -83,6 +107,10 @@ void main() {
             'saolei_essence',
             'gainian_ths',
             'dashi_em',
+            'fenxi_stockstar',
+            'zongping_ths',
+            'zongping_em',
+            'zongping_sina',
           ]);
     });
   });
