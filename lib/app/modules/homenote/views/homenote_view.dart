@@ -43,7 +43,7 @@ class HomenoteView extends GetView<HomenoteController> {
       child: Obx(() {
         return Container(
           color: Get.theme.colorScheme.surface,
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
               IgnorePointer(
@@ -78,6 +78,7 @@ class HomenoteView extends GetView<HomenoteController> {
               child: Icon(
                 Icons.filter_list_outlined,
                 size: 18,
+                color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.8),
               ),
             )),
       );
@@ -293,7 +294,18 @@ class _HomeNoteCellState extends State<HomeNoteCell>
             onLongPress: () {
               controller.longPressCell(widget.item);
             },
-            child: Card(
+            child: Container(
+              margin: const EdgeInsets.only(top: 4, bottom: 8),
+              decoration: BoxDecoration(
+                color: Get.theme.colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0.45),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Get.theme.colorScheme.outlineVariant
+                      .withValues(alpha: 0.2),
+                  width: 0.5,
+                ),
+              ),
               child: InkWell(
                 onTap: () {
                   controller.clickCell(widget.item);

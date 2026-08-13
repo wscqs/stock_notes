@@ -91,7 +91,7 @@ class HomestockView extends GetView<HomestockController> {
             Container(
               color: Get.theme.colorScheme.surface,
               padding:
-                  EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
+                  EdgeInsets.only(left: 16, right: 16, bottom: 12, top: 12),
               child: Row(
                 children: [
                   IgnorePointer(
@@ -720,7 +720,7 @@ class _HomeStockCellState extends State<HomeStockCell>
             children: [
               if (conditionInfo.isNotEmpty) ...[
                 _buildConditionTags(conditionInfo),
-                kSpaceH(2),
+                kSpaceH(4),
               ],
               Text(
                 widget.item.homeCellShowTime(
