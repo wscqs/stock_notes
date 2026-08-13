@@ -46,7 +46,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   //改表要处理合并migration
   @override
@@ -83,17 +83,20 @@ class AppDatabase extends _$AppDatabase {
           if (from <= 7) {
             await migrator.addColumn(stockItems, stockItems.rHoldStatus);
           }
+          if (from <= 8) {
+            await migrator.addColumn(stockItemTags, stockItemTags.sortOrder);
+          }
         },
         onCreate: (migrator) async {
           await migrator.createAll();
           //标签默认加五个。 短期，中期，长期，买，卖
           await batch((batch) {
             batch.insertAll(stockItemTags, [
-              StockItemTagsCompanion.insert(name: '短期'),
-              StockItemTagsCompanion.insert(name: '中期'),
-              StockItemTagsCompanion.insert(name: '长期'),
-              StockItemTagsCompanion.insert(name: '买'),
-              StockItemTagsCompanion.insert(name: '卖'),
+              StockItemTagsCompanion.insert(name: '短期', sortOrder: Value(0)),
+              StockItemTagsCompanion.insert(name: '中期', sortOrder: Value(1)),
+              StockItemTagsCompanion.insert(name: '长期', sortOrder: Value(2)),
+              StockItemTagsCompanion.insert(name: '买', sortOrder: Value(3)),
+              StockItemTagsCompanion.insert(name: '卖', sortOrder: Value(4)),
             ]);
           });
           //笔记标签默认加三个。 股票，复盘，政策
@@ -309,8 +312,25 @@ class AppDatabase extends _$AppDatabase {
         .write(updatedItem);
   }
 
+  Future<void> updateStockItemTagsSortOrder(List<StockItemTag> tags) {
+    return batch((batch) {
+      for (var i = 0; i < tags.length; i++) {
+        batch.update(
+          stockItemTags,
+          StockItemTagsCompanion(sortOrder: Value(i)),
+          where: (tbl) => tbl.id.equals(tags[i].id),
+        );
+      }
+    });
+  }
+
   Future<List<StockItemTag>> getStockItemTags() {
-    return (select(stockItemTags)).get();
+    return (select(stockItemTags)
+          ..orderBy([
+            (tbl) => OrderingTerm.asc(tbl.sortOrder),
+            (tbl) => OrderingTerm.asc(tbl.id),
+          ]))
+        .get();
   }
 
   Future<StockItemTag?> getStockItemTag(String name) {

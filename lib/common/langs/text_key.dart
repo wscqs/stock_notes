@@ -145,6 +145,7 @@ class TextKey {
   static const lishi = 'lishi';
   static const jiaoyilishi = 'jiaoyilishi';
   static const liebiao = 'liebiao';
+  static const guanli = 'guanli';
 }
 
 const Map<String, String> zh = {
@@ -340,6 +341,7 @@ const Map<String, String> zh = {
   TextKey.lishi: '历史',
   TextKey.jiaoyilishi: '交易历史',
   TextKey.liebiao: '列表',
+  TextKey.guanli: '管理',
 };
 
 const Map<String, String> en = {
@@ -540,4 +542,5 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.lishi: 'History',
   TextKey.jiaoyilishi: 'Trade History',
   TextKey.liebiao: 'List',
+  TextKey.guanli: 'Manage',
 };

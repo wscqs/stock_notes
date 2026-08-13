@@ -496,7 +496,7 @@ class HomestockController extends BaseController
 
   //标签页·
   Future<void> clickPopTagManager() async {
-    // TagseditView.show();
+    // TagManagerDialog 在 view 层直接调用
   }
 
   Future<void> getTagsData() async {
@@ -632,5 +632,93 @@ class HomestockController extends BaseController
 
   void pushFamousPage() {
     Get.toNamed(Routes.FAMOUS);
+  }
+
+  // ========== 标签管理 ==========
+
+  /// 删除标签
+  Future<void> deleteTag(StockItemTag tag) async {
+    await db.deleteStockItemTag(tag);
+    await getTagsData();
+    // 如果删除的标签在选中列表中，也要移除
+    selTags.remove(tag);
+    selTags.refresh();
+    getDatas();
+  }
+
+  /// 重命名标签
+  Future<void> renameTag(StockItemTag tag, String newName) async {
+    if (tag.name == newName) return;
+    // 检查重名
+    StockItemTag? hasItem = await db.getStockItemTag(newName);
+    if (hasItem != null) {
+      QsHud.showToast(TextKey.biaoqianmingyicunzai.tr);
+      return;
+    }
+    final companion = StockItemTagsCompanion(
+      id: Value(tag.id),
+      name: Value(newName),
+      sortOrder: Value(tag.sortOrder),
+    );
+    await db.addStockItemTagOnConflictUpdate(companion);
+    await getTagsData();
+    // 更新选中标签中的名称
+    for (var i = 0; i < selTags.length; i++) {
+      if (selTags[i].id == tag.id) {
+        selTags[i] = tags.firstWhere((t) => t.id == tag.id);
+        break;
+      }
+    }
+    selTags.refresh();
+    getDatas();
+  }
+
+  /// 新建标签
+  Future<void> createNewTag(String name) async {
+    if (name.trim().isEmpty) return;
+    StockItemTag? hasItem = await db.getStockItemTag(name.trim());
+    if (hasItem != null) {
+      QsHud.showToast(TextKey.biaoqianmingyicunzai.tr);
+      return;
+    }
+    final sortOrder = tags.length;
+    final companion = StockItemTagsCompanion.insert(
+      name: name.trim(),
+      sortOrder: Value(sortOrder),
+    );
+    await db.addStockItemTag(companion);
+    await getTagsData();
+  }
+
+  /// 上移标签
+  /// 拖拽排序标签
+  Future<void> reorderTag(int oldIndex, int newIndex) async {
+    if (oldIndex == newIndex) return;
+    final list = tags.toList();
+    // ReorderableListView 的 newIndex 在向下移动时需要 -1
+    if (oldIndex < newIndex) newIndex -= 1;
+    final item = list.removeAt(oldIndex);
+    list.insert(newIndex, item);
+    await db.updateStockItemTagsSortOrder(list);
+    await getTagsData();
+  }
+
+  Future<void> moveTagUp(int index) async {
+    if (index <= 0) return;
+    final list = tags.toList();
+    final item = list.removeAt(index);
+    list.insert(index - 1, item);
+    await db.updateStockItemTagsSortOrder(list);
+    await getTagsData();
+  }
+
+  /// 下移标签
+  Future<void> moveTagDown(int index) async {
+    if (index >= tags.length - 1) return;
+    final list = tags.toList();
+    final item = list.removeAt(index);
+    list.insert(index + 1, item);
+    await db.updateStockItemTagsSortOrder(list);
+    await getTagsData();
   }
 }

@@ -11,6 +11,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../../common/database/database.dart';
 import '../../../../common/widget/qs_empty_view.dart';
+import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
 import '../../somewidget/homedrawer_page/view.dart';
 import '../controllers/homestock_controller.dart';
@@ -242,7 +243,7 @@ class HomestockView extends GetView<HomestockController> {
   Widget _buildTagManageBtn() {
     return GestureDetector(
       onTap: () {
-        controller.clickPopTagManager();
+        TagManagerDialog.show(controller);
       },
       child: Container(
         padding: EdgeInsets.only(left: 8, right: 12, bottom: 4),
@@ -940,5 +941,285 @@ class _ConditionTag extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// 标签管理弹窗
+class TagManagerDialog extends StatelessWidget {
+  final HomestockController controller;
+  final _editControllers = <int, TextEditingController>{};
+
+  TagManagerDialog({super.key, required this.controller});
+
+  static void show(HomestockController controller) {
+    Get.bottomSheet(
+      TagManagerDialog(controller: controller),
+      isScrollControlled: true,
+      backgroundColor: Get.theme.colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerMove: (event) {
+        // 下拉手势时关闭键盘
+        if (event.delta.dy > 0) {
+          FocusScope.of(context).unfocus();
+        }
+      },
+      child: Container(
+        height: Get.height * 0.7,
+        decoration: BoxDecoration(
+          color: Get.theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // 顶部导航栏：返回 | 管理 | 新建
+              _buildAppBar(),
+              // 标签列表
+              Expanded(
+                child: Obx(() {
+                  final tags = controller.tags;
+                  if (tags.isEmpty) {
+                    return Center(
+                      child: Text(
+                        TextKey.noData.tr,
+                        style: TextStyle(
+                          color: Get.theme.colorScheme.onSurface
+                              .withValues(alpha: 0.5),
+                        ),
+                      ),
+                    );
+                  }
+                  return ReorderableListView.builder(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    itemCount: tags.length,
+                    onReorder: (oldIndex, newIndex) {
+                      controller.reorderTag(oldIndex, newIndex);
+                    },
+                    itemBuilder: (context, index) {
+                      return _buildTagCell(tags[index], index);
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Get.theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              FocusScope.of(Get.context!).unfocus();
+              _disposeControllers();
+              Get.back();
+            },
+            icon: Icon(Icons.arrow_back_ios_new, size: 20),
+          ),
+          Expanded(
+            child: Text(
+              TextKey.guanli.tr,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              _showCreateTagDialog();
+            },
+            child: Text(TextKey.xinjian.tr),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTagCell(StockItemTag tag, int index) {
+    // 确保每个 tag 有自己的 TextEditingController
+    final editController = _editControllers.putIfAbsent(
+      tag.id,
+      () => TextEditingController(text: tag.name),
+    );
+    // 如果 tag.name 变了（如从其他地方更新），同步 controller
+    if (editController.text != tag.name) {
+      editController.text = tag.name;
+    }
+
+    return Dismissible(
+      key: ValueKey(tag.id),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) async {
+        bool confirmed = false;
+        await showDialog(
+          context: Get.context!,
+          builder: (ctx) => AlertDialog(
+            title: Text(TextKey.querengdelete.tr),
+            content: Text(tag.name),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: Text(TextKey.quxiao.tr),
+              ),
+              TextButton(
+                onPressed: () {
+                  confirmed = true;
+                  Navigator.of(ctx).pop(true);
+                },
+                child: Text(TextKey.queren.tr),
+              ),
+            ],
+          ),
+        );
+        return confirmed;
+      },
+      onDismissed: (direction) {
+        controller.deleteTag(tag);
+        _editControllers.remove(tag.id)?.dispose();
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        color: Colors.red,
+        child: Icon(Icons.delete, color: Colors.white),
+      ),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        decoration: BoxDecoration(
+          color: Get.theme.colorScheme.surfaceContainerHighest
+              .withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            // 删除按钮
+            GestureDetector(
+              onTap: () {
+                QsHud.showConfirmDialog(
+                  title: TextKey.querengdelete.tr,
+                  content: tag.name,
+                  onConfirm: () {
+                    controller.deleteTag(tag);
+                    _editControllers.remove(tag.id)?.dispose();
+                  },
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.all(12),
+                child: Icon(
+                  RemixIcons.subtract_line,
+                  size: 20,
+                  color: Colors.red.shade300,
+                ),
+              ),
+            ),
+            // 标签名（可编辑）
+            Expanded(
+              child: TextField(
+                controller: editController,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Get.theme.colorScheme.onSurface,
+                ),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 8),
+                  hintText: TextKey.biaoqian.tr,
+                  hintStyle: TextStyle(
+                    color:
+                        Get.theme.colorScheme.onSurface.withValues(alpha: 0.3),
+                  ),
+                ),
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    controller.renameTag(tag, value.trim());
+                  }
+                },
+              ),
+            ),
+            // 拖拽排序手柄
+            ReorderableDragStartListener(
+              index: index,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(
+                  Icons.drag_handle,
+                  size: 22,
+                  color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                ),
+              ),
+            ),
+            SizedBox(width: 4),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCreateTagDialog() {
+    final textController = TextEditingController();
+    final focusNode = FocusNode();
+    QsHud.showDialog(AlertDialog(
+      title: Text(TextKey.xingjianbiaoqian.tr),
+      content: TextField(
+        focusNode: focusNode,
+        controller: textController,
+        decoration: InputDecoration(
+          hintText: TextKey.biaoqian.tr,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            QsHud.dismiss();
+          },
+          child: Text(TextKey.quxiao.tr),
+        ),
+        TextButton(
+          onPressed: () {
+            final name = textController.text.trim();
+            if (name.isNotEmpty) {
+              controller.createNewTag(name);
+            }
+            QsHud.dismiss();
+          },
+          child: Text(TextKey.baocun.tr),
+        ),
+      ],
+    ));
+    Future.delayed(const Duration(milliseconds: 100), () {
+      focusNode.requestFocus();
+    });
+  }
+
+  void _disposeControllers() {
+    for (var c in _editControllers.values) {
+      c.dispose();
+    }
+    _editControllers.clear();
   }
 }

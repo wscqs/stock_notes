@@ -2017,8 +2017,16 @@ class $StockItemTagsTable extends StockItemTags
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
   @override
-  List<GeneratedColumn> get $columns => [id, name];
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [id, name, sortOrder];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2038,6 +2046,10 @@ class $StockItemTagsTable extends StockItemTags
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
     return context;
   }
 
@@ -2051,6 +2063,8 @@ class $StockItemTagsTable extends StockItemTags
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
     );
   }
 
@@ -2063,12 +2077,14 @@ class $StockItemTagsTable extends StockItemTags
 class StockItemTag extends DataClass implements Insertable<StockItemTag> {
   final int id;
   final String name;
-  const StockItemTag({required this.id, required this.name});
+  final int sortOrder;
+  const StockItemTag({required this.id, required this.name, this.sortOrder = 0});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    map['sort_order'] = Variable<int>(sortOrder);
     return map;
   }
 
@@ -2076,6 +2092,7 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
     return StockItemTagsCompanion(
       id: Value(id),
       name: Value(name),
+      sortOrder: Value(sortOrder),
     );
   }
 
@@ -2085,6 +2102,7 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
     return StockItemTag(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      sortOrder: serializer.fromJson<int>(json['sort_order']),
     );
   }
   @override
@@ -2093,17 +2111,20 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'sort_order': serializer.toJson<int>(sortOrder),
     };
   }
 
-  StockItemTag copyWith({int? id, String? name}) => StockItemTag(
+  StockItemTag copyWith({int? id, String? name, int? sortOrder}) => StockItemTag(
         id: id ?? this.id,
         name: name ?? this.name,
+        sortOrder: sortOrder ?? this.sortOrder,
       );
   StockItemTag copyWithCompanion(StockItemTagsCompanion data) {
     return StockItemTag(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
     );
   }
 
@@ -2111,44 +2132,51 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
   String toString() {
     return (StringBuffer('StockItemTag(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name);
+  int get hashCode => Object.hash(id, name, sortOrder);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is StockItemTag && other.id == this.id && other.name == this.name);
+      (other is StockItemTag && other.id == this.id && other.name == this.name && other.sortOrder == this.sortOrder);
 }
 
 class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
   final Value<int> id;
   final Value<String> name;
+  final Value<int> sortOrder;
   const StockItemTagsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.sortOrder = const Value.absent(),
   });
   StockItemTagsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    this.sortOrder = const Value(0),
   }) : name = Value(name);
   static Insertable<StockItemTag> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<int>? sortOrder,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (sortOrder != null) 'sort_order': sortOrder,
     });
   }
 
-  StockItemTagsCompanion copyWith({Value<int>? id, Value<String>? name}) {
+  StockItemTagsCompanion copyWith({Value<int>? id, Value<String>? name, Value<int>? sortOrder}) {
     return StockItemTagsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      sortOrder: sortOrder ?? this.sortOrder,
     );
   }
 
@@ -2161,6 +2189,9 @@ class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     return map;
   }
 
@@ -2168,7 +2199,8 @@ class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
   String toString() {
     return (StringBuffer('StockItemTagsCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
@@ -3114,8 +3146,16 @@ class $NoteItemTagsTable extends NoteItemTags
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
   @override
-  List<GeneratedColumn> get $columns => [id, name];
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [id, name, sortOrder];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3134,6 +3174,10 @@ class $NoteItemTagsTable extends NoteItemTags
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
     }
     return context;
   }
@@ -4619,6 +4663,9 @@ class $$StockItemTagsTableFilterComposer
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
   Expression<bool> stockTagsRefs(
       Expression<bool> Function($$StockTagsTableFilterComposer f) f) {
     final $$StockTagsTableFilterComposer composer = $composerBuilder(
@@ -4655,6 +4702,9 @@ class $$StockItemTagsTableOrderingComposer
 
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
 }
 
 class $$StockItemTagsTableAnnotationComposer
@@ -4671,6 +4721,9 @@ class $$StockItemTagsTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
   Expression<T> stockTagsRefs<T extends Object>(
       Expression<T> Function($$StockTagsTableAnnotationComposer a) f) {
@@ -4719,18 +4772,22 @@ class $$StockItemTagsTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
           }) =>
               StockItemTagsCompanion(
             id: id,
             name: name,
+            sortOrder: sortOrder,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
+            Value<int> sortOrder = const Value(0),
           }) =>
               StockItemTagsCompanion.insert(
             id: id,
             name: name,
+            sortOrder: sortOrder,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
