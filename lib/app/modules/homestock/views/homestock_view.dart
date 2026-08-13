@@ -82,7 +82,7 @@ class HomestockView extends GetView<HomestockController> {
 
   PreferredSize buildSectionTop() {
     return PreferredSize(
-      preferredSize: Size.fromHeight(76 + 30 + 36), // 包含标签 tab 栏高度
+      preferredSize: Size.fromHeight(76 + 30 + 38 + 4), // 包含标签 tab 栏高度
       child: Obx(() {
         final hasTags = controller.tags.isNotEmpty;
         return Column(
@@ -108,7 +108,7 @@ class HomestockView extends GetView<HomestockController> {
             ),
             Container(
               color: Get.theme.colorScheme.surface,
-              padding: EdgeInsets.only(left: 20, right: 0, bottom: 12),
+              padding: EdgeInsets.only(left: 20, right: 0, bottom: 4),
               child: Row(
                 children: [
                   Expanded(
@@ -148,6 +148,7 @@ class HomestockView extends GetView<HomestockController> {
   Widget buildScrollableTagTabBar() {
     return Container(
       color: Get.theme.colorScheme.surface,
+      padding: EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
           Expanded(
@@ -242,6 +243,7 @@ class HomestockView extends GetView<HomestockController> {
   /// 右侧固定管理按钮（参考雪球）
   Widget _buildTagManageBtn() {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () {
         TagManagerDialog.show(controller);
       },
@@ -274,6 +276,7 @@ class HomestockView extends GetView<HomestockController> {
               padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
               child: Icon(
                 Icons.filter_list_outlined,
+                color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.8),
                 size: 18,
               ),
             )),
@@ -529,10 +532,10 @@ class _HomeStockCellState extends State<HomeStockCell>
               controller.longPressCell(widget.item);
             },
             child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: const EdgeInsets.only(top: 4, bottom: 8),
               decoration: BoxDecoration(
                 color: Get.theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.4),
+                    .withValues(alpha: 0.45),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: Get.theme.colorScheme.outlineVariant
@@ -548,7 +551,7 @@ class _HomeStockCellState extends State<HomeStockCell>
                 child: Padding(
                   // padding: const EdgeInsets.all(12.0),
                   padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                   child: Obx(() {
                     return Row(
                       children: [
@@ -592,9 +595,10 @@ class _HomeStockCellState extends State<HomeStockCell>
                     child: Text(
                       widget.item.name,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Get.theme.colorScheme.onSurface,
+                        color: Get.theme.colorScheme.onSurface
+                            .withValues(alpha: 0.9),
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -604,15 +608,16 @@ class _HomeStockCellState extends State<HomeStockCell>
                     Text(
                       widget.item.currentPrice!,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.w700,
-                        color: Get.theme.colorScheme.onSurface,
+                        color: Get.theme.colorScheme.onSurface
+                            .withValues(alpha: 0.9),
                       ),
                     ),
                   ],
                 ],
               ),
-              kSpaceH(4),
+              kSpaceH(2),
               // 代码行 + 状态图标
               Row(
                 children: [
@@ -679,7 +684,7 @@ class _HomeStockCellState extends State<HomeStockCell>
                 ],
               ),
               if (widget.item.tagList.isNotEmpty) ...[
-                kSpaceH(6),
+                kSpaceH(4),
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
@@ -689,14 +694,15 @@ class _HomeStockCellState extends State<HomeStockCell>
                           horizontal: 5, vertical: 1.5),
                       decoration: BoxDecoration(
                         color: Get.theme.colorScheme.primaryContainer
-                            .withValues(alpha: 0.35),
+                            .withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Text(
                         tag.name ?? "",
                         style: TextStyle(
                           fontSize: 10,
-                          color: Get.theme.colorScheme.onPrimaryContainer,
+                          color: Get.theme.colorScheme.onPrimaryContainer
+                              .withValues(alpha: 0.8),
                         ),
                       ),
                     );
@@ -714,7 +720,7 @@ class _HomeStockCellState extends State<HomeStockCell>
             children: [
               if (conditionInfo.isNotEmpty) ...[
                 _buildConditionTags(conditionInfo),
-                kSpaceH(4),
+                kSpaceH(2),
               ],
               Text(
                 widget.item.homeCellShowTime(
@@ -723,7 +729,7 @@ class _HomeStockCellState extends State<HomeStockCell>
                 style: TextStyle(
                   fontSize: 11,
                   color: Get.theme.colorScheme.onSurfaceVariant
-                      .withValues(alpha: 0.7),
+                      .withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -765,11 +771,7 @@ class _HomeStockCellState extends State<HomeStockCell>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: lines.asMap().entries.map((entry) {
-        return Padding(
-          padding:
-              EdgeInsets.only(bottom: entry.key < lines.length - 1 ? 0 : 0),
-          child: _buildConditionLine(entry.value),
-        );
+        return _buildConditionLine(entry.value);
       }).toList(),
     );
   }
@@ -779,7 +781,8 @@ class _HomeStockCellState extends State<HomeStockCell>
       TextSpan(
         style: TextStyle(
           fontSize: 11,
-          color: Get.theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
+          color: Get.theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+          height: 1.22,
         ),
         children: line.split('').map((char) {
           if (char == 'B') {
@@ -913,37 +916,6 @@ class SlideAction extends StatelessWidget {
   }
 }
 
-class _ConditionTag extends StatelessWidget {
-  final String text;
-  final Color bgColor;
-  final Color textColor;
-
-  const _ConditionTag({
-    required this.text,
-    required this.bgColor,
-    required this.textColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 9,
-          fontWeight: FontWeight.w600,
-          color: textColor,
-        ),
-      ),
-    );
-  }
-}
-
 /// 标签管理弹窗
 class TagManagerDialog extends StatelessWidget {
   final HomestockController controller;
@@ -964,52 +936,63 @@ class TagManagerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerMove: (event) {
-        // 下拉手势时关闭键盘
-        if (event.delta.dy > 0) {
-          FocusScope.of(context).unfocus();
-        }
-      },
-      child: Container(
-        height: Get.height * 0.7,
-        decoration: BoxDecoration(
-          color: Get.theme.colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // 顶部导航栏：返回 | 管理 | 新建
-              _buildAppBar(),
-              // 标签列表
-              Expanded(
-                child: Obx(() {
-                  final tags = controller.tags;
-                  if (tags.isEmpty) {
-                    return Center(
-                      child: Text(
-                        TextKey.noData.tr,
-                        style: TextStyle(
-                          color: Get.theme.colorScheme.onSurface
-                              .withValues(alpha: 0.5),
+    // 在覆盖 MediaQuery 之前读取键盘高度
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    return MediaQuery(
+      // 将 viewInsets 置零，阻止 bottom sheet 被键盘顶起
+      data: MediaQuery.of(context).copyWith(viewInsets: EdgeInsets.zero),
+      child: Listener(
+        onPointerMove: (event) {
+          // 下拉手势时关闭键盘
+          if (event.delta.dy > 0) {
+            FocusScope.of(context).unfocus();
+          }
+        },
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: Get.height * 0.5,
+          ),
+          decoration: BoxDecoration(
+            color: Get.theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                // 顶部导航栏：返回 | 管理 | 新建
+                _buildAppBar(),
+                // 标签列表
+                Expanded(
+                  child: Obx(() {
+                    final tags = controller.tags;
+                    if (tags.isEmpty) {
+                      return Center(
+                        child: Text(
+                          TextKey.noData.tr,
+                          style: TextStyle(
+                            color: Get.theme.colorScheme.onSurface
+                                .withValues(alpha: 0.5),
+                          ),
                         ),
+                      );
+                    }
+                    return ReorderableListView.builder(
+                      // 底部添加键盘高度内边距，使输入框可滚动到键盘上方
+                      padding: EdgeInsets.only(
+                        bottom: keyboardHeight,
                       ),
+                      itemCount: tags.length,
+                      onReorder: (oldIndex, newIndex) {
+                        controller.reorderTag(oldIndex, newIndex);
+                      },
+                      itemBuilder: (context, index) {
+                        return _buildTagCell(tags[index], index);
+                      },
                     );
-                  }
-                  return ReorderableListView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    itemCount: tags.length,
-                    onReorder: (oldIndex, newIndex) {
-                      controller.reorderTag(oldIndex, newIndex);
-                    },
-                    itemBuilder: (context, index) {
-                      return _buildTagCell(tags[index], index);
-                    },
-                  );
-                }),
-              ),
-            ],
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1039,7 +1022,7 @@ class TagManagerDialog extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              TextKey.guanli.tr,
+              TextKey.guanli.tr + TextKey.biaoqian.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 17,
