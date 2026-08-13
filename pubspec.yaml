@@ -50,7 +50,7 @@ dependencies:
   hive_ce: ^2.19.3
   drift: ^2.33.0 #数据库 github自动打包 cocopods 没最新
   drift_flutter: ^0.3.0
-  sqlite3_flutter_libs: ^0.6.0+eol
+  #sqlite3_flutter_libs: ^0.6.0+eol
   drift_db_viewer: ^2.1.0 #测试看数据
   path_provider: ^2.1.6
   #  isar: ^3.1.0+1
@@ -79,8 +79,8 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.6
   package_rename: ^1.10.0
-  drift_dev: ^2.26.1
-  build_runner: ^2.4.15 #dart run build_runner build
+  drift_dev: ^2.34.0
+  build_runner: ^2.15.1 #dart run build_runner build
 
 flutter:
   uses-material-design: true
