@@ -1,7 +1,7 @@
 name: stock_notes
 description: "Stock Notes"
 publish_to: 'none'
-version: 3.3.0+40
+version: 3.3.0+41
 
 environment:
   sdk: ^3.6.0
@@ -72,6 +72,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+dependency_overrides:
+  meta: ^1.18.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -80,7 +83,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.6
   package_rename: ^1.10.0
-  drift_dev: ^2.34.0
+  drift_dev: ^2.34.5
   build_runner: ^2.15.1 #dart run build_runner build
 
 flutter:

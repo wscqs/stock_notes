@@ -2078,7 +2078,8 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
   final int id;
   final String name;
   final int sortOrder;
-  const StockItemTag({required this.id, required this.name, this.sortOrder = 0});
+  const StockItemTag(
+      {required this.id, required this.name, required this.sortOrder});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2102,7 +2103,7 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
     return StockItemTag(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      sortOrder: serializer.fromJson<int>(json['sort_order']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
     );
   }
   @override
@@ -2111,11 +2112,12 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'sort_order': serializer.toJson<int>(sortOrder),
+      'sortOrder': serializer.toJson<int>(sortOrder),
     };
   }
 
-  StockItemTag copyWith({int? id, String? name, int? sortOrder}) => StockItemTag(
+  StockItemTag copyWith({int? id, String? name, int? sortOrder}) =>
+      StockItemTag(
         id: id ?? this.id,
         name: name ?? this.name,
         sortOrder: sortOrder ?? this.sortOrder,
@@ -2143,7 +2145,10 @@ class StockItemTag extends DataClass implements Insertable<StockItemTag> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is StockItemTag && other.id == this.id && other.name == this.name && other.sortOrder == this.sortOrder);
+      (other is StockItemTag &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.sortOrder == this.sortOrder);
 }
 
 class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
@@ -2158,7 +2163,7 @@ class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
   StockItemTagsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    this.sortOrder = const Value(0),
+    this.sortOrder = const Value.absent(),
   }) : name = Value(name);
   static Insertable<StockItemTag> custom({
     Expression<int>? id,
@@ -2172,7 +2177,8 @@ class StockItemTagsCompanion extends UpdateCompanion<StockItemTag> {
     });
   }
 
-  StockItemTagsCompanion copyWith({Value<int>? id, Value<String>? name, Value<int>? sortOrder}) {
+  StockItemTagsCompanion copyWith(
+      {Value<int>? id, Value<String>? name, Value<int>? sortOrder}) {
     return StockItemTagsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -3207,7 +3213,8 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
   final int id;
   final String name;
   final int sortOrder;
-  const NoteItemTag({required this.id, required this.name, this.sortOrder = 0});
+  const NoteItemTag(
+      {required this.id, required this.name, required this.sortOrder});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3231,7 +3238,7 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
     return NoteItemTag(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      sortOrder: serializer.fromJson<int>(json['sort_order']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
     );
   }
   @override
@@ -3240,7 +3247,7 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'sort_order': serializer.toJson<int>(sortOrder),
+      'sortOrder': serializer.toJson<int>(sortOrder),
     };
   }
 
@@ -3272,7 +3279,10 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is NoteItemTag && other.id == this.id && other.name == this.name && other.sortOrder == this.sortOrder);
+      (other is NoteItemTag &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.sortOrder == this.sortOrder);
 }
 
 class NoteItemTagsCompanion extends UpdateCompanion<NoteItemTag> {
@@ -3287,7 +3297,7 @@ class NoteItemTagsCompanion extends UpdateCompanion<NoteItemTag> {
   NoteItemTagsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    this.sortOrder = const Value(0),
+    this.sortOrder = const Value.absent(),
   }) : name = Value(name);
   static Insertable<NoteItemTag> custom({
     Expression<int>? id,
@@ -3301,7 +3311,8 @@ class NoteItemTagsCompanion extends UpdateCompanion<NoteItemTag> {
     });
   }
 
-  NoteItemTagsCompanion copyWith({Value<int>? id, Value<String>? name, Value<int>? sortOrder}) {
+  NoteItemTagsCompanion copyWith(
+      {Value<int>? id, Value<String>? name, Value<int>? sortOrder}) {
     return NoteItemTagsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -3637,8 +3648,7 @@ final class $$StockItemsTableReferences
   static MultiTypedResultKey<$StockTagsTable, List<StockTag>>
       _stockTagsRefsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.stockTags,
-              aliasName:
-                  $_aliasNameGenerator(db.stockItems.id, db.stockTags.stockId));
+              aliasName: 'stock_items__id__stock_tags__stock_id');
 
   $$StockTagsTableProcessedTableManager get stockTagsRefs {
     final manager = $$StockTagsTableTableManager($_db, $_db.stockTags)
@@ -3650,10 +3660,9 @@ final class $$StockItemsTableReferences
   }
 
   static MultiTypedResultKey<$StockTradesTable, List<StockTrade>>
-      _stockTradesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.stockTrades,
-          aliasName:
-              $_aliasNameGenerator(db.stockItems.id, db.stockTrades.stockId));
+      _stockTradesRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.stockTrades,
+              aliasName: 'stock_items__id__stock_trades__stock_id');
 
   $$StockTradesTableProcessedTableManager get stockTradesRefs {
     final manager = $$StockTradesTableTableManager($_db, $_db.stockTrades)
@@ -4373,7 +4382,7 @@ final class $$NoteItemsTableReferences
   static MultiTypedResultKey<$NoteTagsTable, List<NoteTag>> _noteTagsRefsTable(
           _$AppDatabase db) =>
       MultiTypedResultKey.fromTable(db.noteTags,
-          aliasName: $_aliasNameGenerator(db.noteItems.id, db.noteTags.noteId));
+          aliasName: 'note_items__id__note_tags__note_id');
 
   $$NoteTagsTableProcessedTableManager get noteTagsRefs {
     final manager = $$NoteTagsTableTableManager($_db, $_db.noteTags)
@@ -4640,11 +4649,13 @@ typedef $$StockItemTagsTableCreateCompanionBuilder = StockItemTagsCompanion
     Function({
   Value<int> id,
   required String name,
+  Value<int> sortOrder,
 });
 typedef $$StockItemTagsTableUpdateCompanionBuilder = StockItemTagsCompanion
     Function({
   Value<int> id,
   Value<String> name,
+  Value<int> sortOrder,
 });
 
 final class $$StockItemTagsTableReferences
@@ -4653,10 +4664,9 @@ final class $$StockItemTagsTableReferences
       super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$StockTagsTable, List<StockTag>>
-      _stockTagsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.stockTags,
-          aliasName:
-              $_aliasNameGenerator(db.stockItemTags.id, db.stockTags.tagId));
+      _stockTagsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.stockTags,
+              aliasName: 'stock_item_tags__id__stock_tags__tag_id');
 
   $$StockTagsTableProcessedTableManager get stockTagsRefs {
     final manager = $$StockTagsTableTableManager($_db, $_db.stockTags)
@@ -4802,7 +4812,7 @@ class $$StockItemTagsTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
-            Value<int> sortOrder = const Value(0),
+            Value<int> sortOrder = const Value.absent(),
           }) =>
               StockItemTagsCompanion.insert(
             id: id,
@@ -4870,8 +4880,7 @@ final class $$StockTagsTableReferences
   $$StockTagsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $StockItemsTable _stockIdTable(_$AppDatabase db) =>
-      db.stockItems.createAlias(
-          $_aliasNameGenerator(db.stockTags.stockId, db.stockItems.id));
+      db.stockItems.createAlias('stock_tags__stock_id__stock_items__id');
 
   $$StockItemsTableProcessedTableManager get stockId {
     final $_column = $_itemColumn<int>('stock_id')!;
@@ -4885,8 +4894,7 @@ final class $$StockTagsTableReferences
   }
 
   static $StockItemTagsTable _tagIdTable(_$AppDatabase db) =>
-      db.stockItemTags.createAlias(
-          $_aliasNameGenerator(db.stockTags.tagId, db.stockItemTags.id));
+      db.stockItemTags.createAlias('stock_tags__tag_id__stock_item_tags__id');
 
   $$StockItemTagsTableProcessedTableManager get tagId {
     final $_column = $_itemColumn<int>('tag_id')!;
@@ -5199,8 +5207,7 @@ final class $$StockTradesTableReferences
   $$StockTradesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $StockItemsTable _stockIdTable(_$AppDatabase db) =>
-      db.stockItems.createAlias(
-          $_aliasNameGenerator(db.stockTrades.stockId, db.stockItems.id));
+      db.stockItems.createAlias('stock_trades__stock_id__stock_items__id');
 
   $$StockItemsTableProcessedTableManager get stockId {
     final $_column = $_itemColumn<int>('stock_id')!;
@@ -5582,11 +5589,13 @@ typedef $$NoteItemTagsTableCreateCompanionBuilder = NoteItemTagsCompanion
     Function({
   Value<int> id,
   required String name,
+  Value<int> sortOrder,
 });
 typedef $$NoteItemTagsTableUpdateCompanionBuilder = NoteItemTagsCompanion
     Function({
   Value<int> id,
   Value<String> name,
+  Value<int> sortOrder,
 });
 
 final class $$NoteItemTagsTableReferences
@@ -5596,8 +5605,7 @@ final class $$NoteItemTagsTableReferences
   static MultiTypedResultKey<$NoteTagsTable, List<NoteTag>> _noteTagsRefsTable(
           _$AppDatabase db) =>
       MultiTypedResultKey.fromTable(db.noteTags,
-          aliasName:
-              $_aliasNameGenerator(db.noteItemTags.id, db.noteTags.tagId));
+          aliasName: 'note_item_tags__id__note_tags__tag_id');
 
   $$NoteTagsTableProcessedTableManager get noteTagsRefs {
     final manager = $$NoteTagsTableTableManager($_db, $_db.noteTags)
@@ -5623,6 +5631,9 @@ class $$NoteItemTagsTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
 
   Expression<bool> noteTagsRefs(
       Expression<bool> Function($$NoteTagsTableFilterComposer f) f) {
@@ -5660,6 +5671,9 @@ class $$NoteItemTagsTableOrderingComposer
 
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
 }
 
 class $$NoteItemTagsTableAnnotationComposer
@@ -5676,6 +5690,9 @@ class $$NoteItemTagsTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
   Expression<T> noteTagsRefs<T extends Object>(
       Expression<T> Function($$NoteTagsTableAnnotationComposer a) f) {
@@ -5724,18 +5741,22 @@ class $$NoteItemTagsTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
           }) =>
               NoteItemTagsCompanion(
             id: id,
             name: name,
+            sortOrder: sortOrder,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
+            Value<int> sortOrder = const Value.absent(),
           }) =>
               NoteItemTagsCompanion.insert(
             id: id,
             name: name,
+            sortOrder: sortOrder,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -5797,8 +5818,8 @@ final class $$NoteTagsTableReferences
     extends BaseReferences<_$AppDatabase, $NoteTagsTable, NoteTag> {
   $$NoteTagsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $NoteItemsTable _noteIdTable(_$AppDatabase db) => db.noteItems
-      .createAlias($_aliasNameGenerator(db.noteTags.noteId, db.noteItems.id));
+  static $NoteItemsTable _noteIdTable(_$AppDatabase db) =>
+      db.noteItems.createAlias('note_tags__note_id__note_items__id');
 
   $$NoteItemsTableProcessedTableManager get noteId {
     final $_column = $_itemColumn<int>('note_id')!;
@@ -5811,8 +5832,8 @@ final class $$NoteTagsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $NoteItemTagsTable _tagIdTable(_$AppDatabase db) => db.noteItemTags
-      .createAlias($_aliasNameGenerator(db.noteTags.tagId, db.noteItemTags.id));
+  static $NoteItemTagsTable _tagIdTable(_$AppDatabase db) =>
+      db.noteItemTags.createAlias('note_tags__tag_id__note_item_tags__id');
 
   $$NoteItemTagsTableProcessedTableManager get tagId {
     final $_column = $_itemColumn<int>('tag_id')!;
