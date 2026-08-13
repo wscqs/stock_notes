@@ -299,7 +299,7 @@ class _HomeNoteCellState extends State<HomeNoteCell>
               decoration: BoxDecoration(
                 color: Get.theme.colorScheme.surfaceContainerHighest
                     .withValues(alpha: 0.45),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Get.theme.colorScheme.outlineVariant
                       .withValues(alpha: 0.2),
@@ -311,7 +311,8 @@ class _HomeNoteCellState extends State<HomeNoteCell>
                   controller.clickCell(widget.item);
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   child: Obx(() {
                     return Row(
                       children: [
@@ -375,7 +376,7 @@ class _HomeNoteCellState extends State<HomeNoteCell>
           ],
         ),
         if (widget.item.tagList.isNotEmpty) ...[
-          kSpaceH(6),
+          kSpaceH(4),
           Wrap(
             spacing: 6,
             runSpacing: 4,

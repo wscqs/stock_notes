@@ -536,7 +536,7 @@ class _HomeStockCellState extends State<HomeStockCell>
               decoration: BoxDecoration(
                 color: Get.theme.colorScheme.surfaceContainerHighest
                     .withValues(alpha: 0.45),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Get.theme.colorScheme.outlineVariant
                       .withValues(alpha: 0.2),

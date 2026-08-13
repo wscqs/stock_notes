@@ -46,7 +46,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   //改表要处理合并migration
   @override
@@ -85,6 +85,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from <= 8) {
             await migrator.addColumn(stockItemTags, stockItemTags.sortOrder);
+          }
+          if (from <= 9) {
+            await migrator.addColumn(noteItemTags, noteItemTags.sortOrder);
           }
         },
         onCreate: (migrator) async {

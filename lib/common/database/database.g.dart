@@ -3192,6 +3192,8 @@ class $NoteItemTagsTable extends NoteItemTags
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
     );
   }
 
@@ -3204,12 +3206,14 @@ class $NoteItemTagsTable extends NoteItemTags
 class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
   final int id;
   final String name;
-  const NoteItemTag({required this.id, required this.name});
+  final int sortOrder;
+  const NoteItemTag({required this.id, required this.name, this.sortOrder = 0});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    map['sort_order'] = Variable<int>(sortOrder);
     return map;
   }
 
@@ -3217,6 +3221,7 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
     return NoteItemTagsCompanion(
       id: Value(id),
       name: Value(name),
+      sortOrder: Value(sortOrder),
     );
   }
 
@@ -3226,6 +3231,7 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
     return NoteItemTag(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      sortOrder: serializer.fromJson<int>(json['sort_order']),
     );
   }
   @override
@@ -3234,17 +3240,20 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'sort_order': serializer.toJson<int>(sortOrder),
     };
   }
 
-  NoteItemTag copyWith({int? id, String? name}) => NoteItemTag(
+  NoteItemTag copyWith({int? id, String? name, int? sortOrder}) => NoteItemTag(
         id: id ?? this.id,
         name: name ?? this.name,
+        sortOrder: sortOrder ?? this.sortOrder,
       );
   NoteItemTag copyWithCompanion(NoteItemTagsCompanion data) {
     return NoteItemTag(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
     );
   }
 
@@ -3252,44 +3261,51 @@ class NoteItemTag extends DataClass implements Insertable<NoteItemTag> {
   String toString() {
     return (StringBuffer('NoteItemTag(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name);
+  int get hashCode => Object.hash(id, name, sortOrder);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is NoteItemTag && other.id == this.id && other.name == this.name);
+      (other is NoteItemTag && other.id == this.id && other.name == this.name && other.sortOrder == this.sortOrder);
 }
 
 class NoteItemTagsCompanion extends UpdateCompanion<NoteItemTag> {
   final Value<int> id;
   final Value<String> name;
+  final Value<int> sortOrder;
   const NoteItemTagsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.sortOrder = const Value.absent(),
   });
   NoteItemTagsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    this.sortOrder = const Value(0),
   }) : name = Value(name);
   static Insertable<NoteItemTag> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<int>? sortOrder,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (sortOrder != null) 'sort_order': sortOrder,
     });
   }
 
-  NoteItemTagsCompanion copyWith({Value<int>? id, Value<String>? name}) {
+  NoteItemTagsCompanion copyWith({Value<int>? id, Value<String>? name, Value<int>? sortOrder}) {
     return NoteItemTagsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      sortOrder: sortOrder ?? this.sortOrder,
     );
   }
 
@@ -3302,6 +3318,9 @@ class NoteItemTagsCompanion extends UpdateCompanion<NoteItemTag> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
     return map;
   }
 
@@ -3309,7 +3328,8 @@ class NoteItemTagsCompanion extends UpdateCompanion<NoteItemTag> {
   String toString() {
     return (StringBuffer('NoteItemTagsCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder')
           ..write(')'))
         .toString();
   }
