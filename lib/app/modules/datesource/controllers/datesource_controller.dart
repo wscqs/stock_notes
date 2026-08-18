@@ -165,11 +165,11 @@ class DatesourceController extends GetxController {
   }
 
   Future<void> inputBackup() async {
-    final picked = await FilePicker.platform.pickFiles();
+    final picked = await FilePicker.pickFile();
     if (picked == null) return;
 
-    String filename = picked.files.single.name!;
-    final originalPath = picked.files.single.path!;
+    String filename = picked.name;
+    final originalPath = picked.path!;
     if (!filename.endsWith('.db')) {
       QsHud.showToast(TextKey.errorFile.tr);
       return;
