@@ -19,8 +19,8 @@ dependencies:
   intl: ^0.20.2  # 格式化日期
   crypto: ^3.0.7  # 生成 MD5
   encrypt: ^5.0.3
-  connectivity_plus: ^7.2.0
-  app_links: ^7.0.0 #记住要看文档，深链接需手动关闭
+  connectivity_plus: ^7.3.1
+  app_links: ^7.2.1 #记住要看文档，深链接需手动关闭
 
   #UI
   flex_color_scheme: ^8.4.0 # 主题
@@ -50,7 +50,7 @@ dependencies:
   hive_ce: ^2.19.3
 #  drift: ^2.33.0 #数据库 github自动打包 cocopods 没最新
   drift: ^2.34.3
-  drift_flutter: ^0.3.0
+  drift_flutter: ^0.3.1
   #sqlite3_flutter_libs: ^0.6.0+eol
   drift_db_viewer: ^2.1.0 #测试看数据
   path_provider: ^2.1.6
@@ -59,7 +59,6 @@ dependencies:
   #原生相关
   #  image_gallery_saver: ^2.0.3
   image_picker: ^1.2.3  # 用于从相册选择图片
-  #  share_plus: ^9.0.0
   permission_handler: ^12.0.3  # 用于请求权限
   package_info_plus: ^10.2.1
   device_info_plus: ^13.2.0
