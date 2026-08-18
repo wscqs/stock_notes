@@ -27,12 +27,12 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_smart_dialog: ^5.1.0 #https://xdd666t.github.io/flutter_use/web/index.html?dialogType=AttachDialogBusiness#/smartDialog
   #flutter_inappwebview: ^6.2.0-beta.3 #window有 bug，关闭还占内存
-  zikzak_inappwebview: ^4.5.3
+  zikzak_inappwebview: ^4.10.0
   flutter_slidable: ^4.0.3 #cell滑动事件
   photo_view: ^0.15.0 #图片预览
   dropdown_button2: ^3.1.0
   flutter_auto_size_text: ^5.0.0
-  flutter_quill: ^11.5.0  #https://github.com/fleather-editor/fleather 文字按钮颜色等可以参考
+  flutter_quill: ^11.5.1  #https://github.com/fleather-editor/fleather 文字按钮颜色等可以参考
   flutter_quill_extensions: ^11.0.0  # 用于支持图片等嵌入功能
   #图片预览与保存 https://juejin.cn/post/7295654213618073615?searchId=2024092915095437248644A536B2AA155A
   #readmore: ^3.0.0

@@ -575,10 +575,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_quill
-      sha256: b96bb8525afdeaaea52f5d02f525e05cc34acd176467ab6d6f35d434cf14fde2
+      sha256: "3ee7125b2dd3f3bce3ebdaac722a72f0c8aff3db9aa19053a9d777db12d71c98"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "11.5.0"
+    version: "11.5.1"
   flutter_quill_delta_from_html:
     dependency: transitive
     description:
@@ -1450,6 +1450,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.4.1"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "3a7b5d17422dd0f8d5c6c14feaa5a1c65638b9455f871a96f08437562c046931"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.4.1+2"
   term_glyph:
     dependency: transitive
     description:
@@ -1462,10 +1470,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "8161c84903fd860b26bfdefb7963b3f0b68fee7adea0f59ef805ecca346f0c7a"
+      sha256: "949a932224383300f01be9221c39180316445ecb8e7547f70a41a35bf421fb9e"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.7.10"
+    version: "0.7.11"
   typed_data:
     dependency: transitive
     description:
@@ -1702,74 +1710,74 @@ packages:
     dependency: "direct main"
     description:
       name: zikzak_inappwebview
-      sha256: f8e2f4d02d7f7dc99355ca37c53ffe5581f4122b2b93b9b466c17b5c64884f60
+      sha256: c375c113fbd4a522775f606d41b32813b7e249c6222657eead12c5082803fc1b
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.5.3"
+    version: "4.10.0"
   zikzak_inappwebview_android:
     dependency: transitive
     description:
       name: zikzak_inappwebview_android
-      sha256: "8c18905b99e4412be61e6327b0aebe2557581061e204f49ff444855fc716944e"
+      sha256: "4d2652b36204b7f8db659ff3881d06b5459ea77028d2ff6e8b2e8a965c332ca7"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
   zikzak_inappwebview_internal_annotations:
     dependency: transitive
     description:
       name: zikzak_inappwebview_internal_annotations
-      sha256: "83257fe23922428603ba4f6e6ad0402fdb8f8316039f2009d1bdb68daf8bca77"
+      sha256: "1847400165648caff711a48e024aa0ee0c041bec522640b1bd5fff018e77ea79"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
   zikzak_inappwebview_ios:
     dependency: transitive
     description:
       name: zikzak_inappwebview_ios
-      sha256: "2e5bd1d86be89e162e47a5720a4056edeb7bd180bb6b2d2fd558ac8a391ff4a9"
+      sha256: fefdfafc2d0061dfaa40b451ac07b8c1bf9bc1f3fd3b1ef3aba3712274d5a8ba
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
   zikzak_inappwebview_linux:
     dependency: transitive
     description:
       name: zikzak_inappwebview_linux
-      sha256: "5ac86c500de82aa0cc9e10490b5e55297e1186ad2aee8c1b61ea39675c0eb65e"
+      sha256: ddb58a154aab6832dd2bda2d62e8a059384516af592f2b2b706ffb93deb16ae3
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
   zikzak_inappwebview_macos:
     dependency: transitive
     description:
       name: zikzak_inappwebview_macos
-      sha256: ac67a659d0a2fb02a58b106b1ccccee79b92deab090dafb4b3cdb91ffc1c4a25
+      sha256: bd3a889982ce67774b3c2db4c4915c42eaf1daacc744cf2b5ec0a2dcac9b8a5e
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
   zikzak_inappwebview_platform_interface:
     dependency: transitive
     description:
       name: zikzak_inappwebview_platform_interface
-      sha256: "62136cda706059f4f19a4a38c3a16b3bef0f1eb0d195ea9f0282883ebfb3f7ba"
+      sha256: c495af0b84d4cd9f32952b15c43e8bda0531304987b62f780d08f4d5ec8952b2
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
   zikzak_inappwebview_web:
     dependency: transitive
     description:
       name: zikzak_inappwebview_web
-      sha256: fe57e5d133ccfd1b247b23402d280a7a46120295b04d66eb5525e12ae3f7fb4a
+      sha256: f23e0556167f5498f5e94e9a32ec13fbb6d5338585050993c01bc1e86fed4e38
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
   zikzak_inappwebview_windows:
     dependency: transitive
     description:
       name: zikzak_inappwebview_windows
-      sha256: e0c95a6bded7332b65187d9bcbc9f0bd36505e28e0dafb9a82423ae2fbeac800
+      sha256: fa3c37c017fe8fd8857776a780e481017a0b1888c203aa97db4a7b3de62dad7a
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.7.0"
+    version: "4.10.0"
 sdks:
-  dart: ">=3.11.0 <4.0.0"
-  flutter: ">=3.38.6"
+  dart: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
