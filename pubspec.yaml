@@ -7,11 +7,10 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^1.0.9
   get: ^4.7.3 #路由/状态插件
   #get: ^5.0.0-release-candidate-9.3.2 #中间件有点问题（SplashMiddleware正式版再试看看）
-  #dio: ^5.8.0+1 //web不能运行
-  dio: ^5.10.0
+  dio: ^5.11.0
   visibility_detector: ^0.4.0+2
   fl_charset: ^1.0.2
 
@@ -59,7 +58,7 @@ dependencies:
   #原生相关
   #  image_gallery_saver: ^2.0.3
   image_picker: ^1.2.3  # 用于从相册选择图片
-  permission_handler: ^12.0.3  # 用于请求权限
+  permission_handler: ^12.0.3  # 用于请求权限 （等更高 flutter 版本）
   package_info_plus: ^10.2.1
   device_info_plus: ^13.2.0
   # flutter_udid: ^4.0.0 #设备唯一标识
@@ -77,11 +76,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
-  flutter_launcher_icons: ^0.14.3
-  flutter_native_splash: ^2.4.6
-  package_rename: ^1.10.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.8
+  package_rename: ^1.10.1
   drift_dev: ^2.34.5
   build_runner: ^2.15.1 #dart run build_runner build
 
@@ -163,6 +162,7 @@ package_rename_config:
     app_name: 股票笔记
     package_name: com.cqs.stocknotes
    # copyright_notice: Copyright ©cqs️ 2025 OutdatedGuy. All rights reserved.
+
 flutter_assets_generator:
   output_dir: generated/
   output_filename: assets
