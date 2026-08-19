@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+env:
+  FLUTTER_VERSION: '3.44.9'
+
 jobs:
   build_android:
     runs-on: ubuntu-latest
@@ -11,14 +14,12 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.9'
-
-      - name: Clean Flutter pub
-        run: flutter clean
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
 
       - name: Flutter pub get
         run: flutter pub get
@@ -45,13 +46,16 @@ jobs:
       - name: Build Android APK
         run: flutter build apk --release --target-platform android-arm64
 
+      - name: Rename APK
+        run: mv build/app/outputs/apk/release/app-release.apk build/app/outputs/apk/release/android_stocknote.apk
+
       - name: Upload APK to GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            ${{ github.workspace }}/build/app/outputs/apk/release/app-release.apk
+            ${{ github.workspace }}/build/app/outputs/apk/release/android_stocknote.apk
 
   build_macos:
     runs-on: macos-latest
@@ -59,14 +63,12 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.9'
-
-      - name: Clean Flutter pub
-        run: flutter clean
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
 
       - name: Enable Swift Package Manager
         run: flutter config --enable-swift-package-manager
@@ -74,12 +76,18 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Clean macOS CocoaPods
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: macos/Pods
+          key: pods-${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}-${{ hashFiles('macos/Podfile.lock') }}
+          restore-keys: |
+            pods-${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}-
+
+      - name: Install macOS CocoaPods
         run: |
           cd macos
-          rm -rf Pods Podfile.lock
-          pod repo update
-          pod install
+          pod install --repo-update
           cd ..
 
       - name: Build macOS App
@@ -92,7 +100,7 @@ jobs:
           mv macos-stocknote.zip ${{ github.workspace }}
 
       - name: Upload macOS zip to GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -104,14 +112,12 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.9'
-
-      - name: Clean Flutter pub
-        run: flutter clean
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
 
       - name: Flutter pub get
         run: flutter pub get
@@ -126,7 +132,7 @@ jobs:
           mv windows-stocknote.zip ${{ github.workspace }}
 
       - name: Upload Windows zip to GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
