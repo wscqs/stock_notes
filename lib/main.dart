@@ -51,11 +51,17 @@ main() async {
   runApp(MyApp());
 
   // 首帧渲染完成后再预热本地 A 股 code/name 缓存（约几千条，反序列化较耗时），
-  // 避免与首帧争抢主线程；若本地无缓存则后台异步拉取，不阻塞启动
+  // 避免与首帧争抢主线程；若本地无缓存则后台异步拉取，不阻塞启动；
+  // 若上次更新超过一周，自动后台刷新一次
   WidgetsBinding.instance.addPostFrameCallback((_) {
     Future.delayed(const Duration(milliseconds: 500), () async {
       try {
-        if (StockNameService.cachedStockMap.isEmpty) {
+        final cachedMap = StockNameService.cachedStockMap;
+        final lastUpdate = StockNameService.lastUpdateTime;
+        final needRefresh = cachedMap.isEmpty ||
+            (lastUpdate != null &&
+                DateTime.now().difference(lastUpdate).inDays >= 7);
+        if (needRefresh) {
           await StockNameService.refreshStockMap();
         }
       } catch (e) {
