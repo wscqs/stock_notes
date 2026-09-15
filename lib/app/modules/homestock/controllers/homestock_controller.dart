@@ -36,7 +36,17 @@ class HomestockController extends BaseController
     TextKey.collect.tr,
     TextKey.delete.tr,
   ];
-  final selectedOrderIndex = 0.obs;
+  // 筛选选择本地持久化，下次启动恢复（0=全部,1=持有,2=收藏,3=删除）
+  final selectedOrderIndex =
+      (QsCache.get<int>("homestockSelectedOrderIndexKey") ?? 0)
+          .clamp(0, 3)
+          .obs;
+
+  void changeSelectedOrderIndex(int index) {
+    selectedOrderIndex.value = index;
+    QsCache.set("homestockSelectedOrderIndexKey", index);
+    getDatas();
+  }
 
   final tabsController = Get.find<TabsController>();
   final isOperate = false.obs;

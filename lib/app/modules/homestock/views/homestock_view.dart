@@ -368,9 +368,8 @@ class HomestockView extends GetView<HomestockController> {
                 ))
             .toList(),
         onChanged: (String? value) {
-          controller.selectedOrderIndex.value =
-              controller.order.indexOf(value!);
-          controller.getDatas();
+          controller
+              .changeSelectedOrderIndex(controller.order.indexOf(value!));
         },
         iconStyleData: IconStyleData(
           iconSize: 0,

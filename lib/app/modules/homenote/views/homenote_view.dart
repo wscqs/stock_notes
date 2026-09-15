@@ -135,9 +135,8 @@ class HomenoteView extends GetView<HomenoteController> {
                 ))
             .toList(),
         onChanged: (String? value) {
-          controller.selectedOrderIndex.value =
-              controller.order.indexOf(value!);
-          controller.getDatas();
+          controller
+              .changeSelectedOrderIndex(controller.order.indexOf(value!));
         },
         iconStyleData: IconStyleData(
           iconSize: 0,

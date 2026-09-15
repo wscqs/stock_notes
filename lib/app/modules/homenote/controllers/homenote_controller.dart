@@ -9,6 +9,7 @@ import 'package:stock_notes/common/langs/text_key.dart';
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
 import '../../../../common/event_bus.dart';
+import '../../../../utils/qs_cache.dart';
 import '../../../routes/app_pages.dart';
 import '../../notetagsedit/views/notetagsedit_view.dart';
 import '../../tabs/controllers/tabs_controller.dart';
@@ -31,7 +32,17 @@ class HomenoteController extends BaseController
     TextKey.collect.tr,
     TextKey.delete.tr,
   ];
-  final selectedOrderIndex = 0.obs;
+  // 筛选选择本地持久化，下次启动恢复（0=全部,1=收藏,2=删除）
+  final selectedOrderIndex =
+      (QsCache.get<int>("homenoteSelectedOrderIndexKey") ?? 0)
+          .clamp(0, 2)
+          .obs;
+
+  void changeSelectedOrderIndex(int index) {
+    selectedOrderIndex.value = index;
+    QsCache.set("homenoteSelectedOrderIndexKey", index);
+    getDatas();
+  }
 
   final tabsController = Get.find<TabsController>();
   final isOperate = false.obs;

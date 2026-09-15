@@ -419,7 +419,8 @@ class StockeditView extends GetView<StockeditController> {
           children: [
             Text(TextKey.jiaoyi.tr, style: Get.textTheme.titleLarge),
             Obx(() {
-              if (controller.filteredTrades.isEmpty) return SizedBox();
+              // 只要有交易数据（含历史）就显示列表按钮
+              if (controller.stockTrades.isEmpty) return SizedBox();
               return Row(
                 children: [
                   TextButton.icon(
