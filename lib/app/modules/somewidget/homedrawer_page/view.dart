@@ -88,6 +88,18 @@ class HomedrawerPage extends StatelessWidget {
           ),
           ListTile(
             tileColor: Theme.of(context).colorScheme.surfaceContainer,
+            title: Text('☕ ${TextKey.qinghekafei.tr}'),
+            onTap: () {
+              parentVC.closeDrawer();
+              vc.showCoffeeDialog();
+            },
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
+          ListTile(
+            tileColor: Theme.of(context).colorScheme.surfaceContainer,
             title: Text(TextKey.shujuyuan.tr),
             subtitle: Text(
               TextKey.daorudaochu.tr,

@@ -13,6 +13,7 @@ class $AssetsImagesGen {
   const $AssetsImagesGen();
 
   final AssetGenImage icon = const AssetGenImage('assets/images/icon.png');
+  final AssetGenImage zst = const AssetGenImage('assets/images/zst.jpg');
 }
 
 class $AssetsHtmlGen {

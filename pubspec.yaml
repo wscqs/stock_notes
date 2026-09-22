@@ -69,6 +69,7 @@ dependencies:
   # 如果需要使用国际化，请添加以下依赖
   flutter_localizations:
     sdk: flutter
+  gal: ^2.3.3
 
 #dependency_overrides:
 #  meta: ^1.18.0

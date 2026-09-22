@@ -148,6 +148,11 @@ class TextKey {
   static const jiaoyilishi = 'jiaoyilishi';
   static const liebiao = 'liebiao';
   static const guanli = 'guanli';
+  static const qinghekafei = 'qinghekafei'; // 请喝咖啡
+  static const changanbaocunerweima = 'changanbaocunerweima'; // 长按或截图保存上方二维码
+  static const weixinsaoyisaoqgz = 'weixinsaoyisaoqgz'; // 微信扫一扫，请作者喝杯咖啡
+  static const yibaocundaoxiangce = 'yibaocundaoxiangce'; // 已保存到相册
+  static const xuyaoxiangcequanxian = 'xuyaoxiangcequanxian'; // 需要相册权限才能保存图片
 }
 
 const Map<String, String> zh = {
@@ -346,6 +351,11 @@ const Map<String, String> zh = {
   TextKey.jiaoyilishi: '交易历史',
   TextKey.liebiao: '列表',
   TextKey.guanli: '管理',
+  TextKey.qinghekafei: '请咖啡',
+  TextKey.changanbaocunerweima: '长按或截图保存上方二维码',
+  TextKey.weixinsaoyisaoqgz: '微信扫一扫，请作者喝杯咖啡',
+  TextKey.yibaocundaoxiangce: '已保存到相册',
+  TextKey.xuyaoxiangcequanxian: '需要相册权限才能保存图片',
 };
 
 const Map<String, String> en = {
@@ -549,4 +559,11 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.jiaoyilishi: 'Trade History',
   TextKey.liebiao: 'List',
   TextKey.guanli: 'Manage',
+  TextKey.qinghekafei: 'Buy Coffee',
+  TextKey.changanbaocunerweima:
+      'Long-press or screenshot to save the QR code above',
+  TextKey.weixinsaoyisaoqgz: 'Scan with WeChat to buy the author a coffee',
+  TextKey.yibaocundaoxiangce: 'Saved to Photos',
+  TextKey.xuyaoxiangcequanxian:
+      'Photo library permission is required to save the image',
 };

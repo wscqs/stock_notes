@@ -1,6 +1,10 @@
 import 'dart:io';
+import 'dart:math' as math;
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:gal/gal.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -27,6 +31,105 @@ class HomedrawerVC extends GetxController {
 
   void shareApp() {
     SharePlus.instance.share(ShareParams(text: kAppGithubUrl));
+  }
+
+  /// 请喝咖啡 - 打赏作者弹窗
+  void showCoffeeDialog() {
+    // 桌面端窗口可能很大/很小，图片尺寸按屏幕比例并设上限，弹窗限宽
+    final screenSize = MediaQuery.of(Get.context!).size;
+    final imgSize =
+        math.min(280.0, math.min(screenSize.width * 0.6, screenSize.height * 0.45));
+    QsHud.showDialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 340),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      TextKey.qinghekafei.tr,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 16),
+                    GestureDetector(
+                      onLongPress: saveZstImage,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          'assets/images/zst.jpg',
+                          width: imgSize,
+                          height: imgSize,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      TextKey.changanbaocunerweima.tr,
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      TextKey.weixinsaoyisaoqgz.tr,
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  icon: Icon(Icons.close, size: 22),
+                  onPressed: () {
+                    QsHud.dismiss();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 长按保存赞赏二维码；移动端存相册，桌面端弹系统保存对话框
+  Future<void> saveZstImage() async {
+    try {
+      final data = await rootBundle.load('assets/images/zst.jpg');
+      final bytes = data.buffer.asUint8List();
+      // macOS 沙盒下 PhotoKit 会被 TCC 强杀，桌面端改用系统保存对话框
+      if (Platform.isMacOS || Platform.isWindows) {
+        final uri = await FilePicker.saveFile(
+          dialogTitle: TextKey.baocun.tr,
+          fileName: 'zst.jpg',
+          bytes: bytes,
+          mimeType: 'image/jpeg',
+        );
+        if (uri != null) QsHud.showToast(TextKey.success.tr);
+        return;
+      }
+      final hasAccess = await Gal.hasAccess();
+      if (!hasAccess && !(await Gal.requestAccess())) {
+        QsHud.showToast(TextKey.xuyaoxiangcequanxian.tr);
+        return;
+      }
+      await Gal.putImageBytes(bytes, name: 'zst');
+      QsHud.showToast(TextKey.yibaocundaoxiangce.tr);
+    } catch (_) {
+      QsHud.showToast(TextKey.fails.tr);
+    }
   }
 
   void clickShujuyuan() {
