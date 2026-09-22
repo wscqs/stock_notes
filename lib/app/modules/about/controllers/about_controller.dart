@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../common/langs/text_key.dart';
+import '../../../../common/web/webview_page.dart';
+import '../../../../common/web/webview_widget.dart';
 import '../../../../utils/qs_constants.dart';
 import '../../../../utils/qs_devicepackageinfo.dart';
 
@@ -39,5 +41,14 @@ class AboutController extends GetxController {
 
   void toGithub() {
     launchUrl(_url);
+  }
+
+  /// 意见反馈：应用内 WebView 打开腾讯问卷
+  void toFeedback() {
+    Get.to(() => WebViewPage(
+          loadResource: kFeedbackUrl,
+          webViewType: WebViewType.URL,
+          title: TextKey.yijianfankui.tr,
+        ));
   }
 }

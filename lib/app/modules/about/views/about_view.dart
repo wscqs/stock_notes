@@ -38,13 +38,25 @@ class AboutView extends GetView<AboutController> {
 
           Container(
             padding: EdgeInsets.all(16.r),
-            child: SimpleCell(
-              title: TextKey.guanyu.tr,
-              radius: 8,
-              onPressed: () {
-                controller.toGithub();
-                // controller.toCustomerService();
-              },
+            child: Column(
+              children: [
+                SimpleCell(
+                  title: TextKey.kaiyuandizhi.tr,
+                  radius: 8,
+                  onPressed: () {
+                    controller.toGithub();
+                    // controller.toCustomerService();
+                  },
+                ),
+                kSpaceH(12.h),
+                SimpleCell(
+                  title: TextKey.yijianfankui.tr,
+                  radius: 8,
+                  onPressed: () {
+                    controller.toFeedback();
+                  },
+                ),
+              ],
             ),
           )
           // Text('version:${controller.version}'),

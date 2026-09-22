@@ -1,6 +1,8 @@
 class TextKey {
   static const shezhi = 'shezhi'; // 设置
   static const guanyu = 'guanyu'; // 关于
+  static const yijianfankui = 'yijianfankui'; // 意见反馈
+  static const kaiyuandizhi = 'kaiyuandizhi'; // 开源地址
   static const shensemoshi = 'shensemoshi'; // 深色模式
   static const duoyuyan = 'duoyuyan'; // 多语言
   static const gensuixitong = 'gensuixitong'; // 更随系统
@@ -151,6 +153,8 @@ class TextKey {
 const Map<String, String> zh = {
   TextKey.shezhi: '设置',
   TextKey.guanyu: '关于',
+  TextKey.yijianfankui: '意见反馈',
+  TextKey.kaiyuandizhi: '开源地址',
   TextKey.shensemoshi: '深色模式',
   TextKey.duoyuyan: '多语言',
   TextKey.gensuixitong: '更随系统',
@@ -347,6 +351,8 @@ const Map<String, String> zh = {
 const Map<String, String> en = {
   TextKey.shezhi: 'Setting',
   TextKey.guanyu: 'About',
+  TextKey.yijianfankui: 'Feedback',
+  TextKey.kaiyuandizhi: 'Open Source',
   TextKey.shensemoshi: 'Dark mode',
   TextKey.duoyuyan: 'Multi language',
   TextKey.gensuixitong: 'follow system',

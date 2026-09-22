@@ -265,6 +265,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.9"
+  cupertino_ui:
+    dependency: transitive
+    description:
+      name: cupertino_ui
+      sha256: e9dfe7fac704028f8928cbe4028a0be5e8a709498e8daf8247de99e99a32aef3
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   dart_quill_delta:
     dependency: transitive
     description:
@@ -663,10 +671,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_smart_dialog
-      sha256: "7dd4078681291402ec39861d768787d27a0a9c4cd0912263a6a327654b96f6c1"
+      sha256: "2f50b6b120da18ceb59df42ee057e2f608a1776267203359b832e469c45a406b"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.1.1"
+    version: "5.3.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -713,10 +721,10 @@ packages:
     dependency: "direct main"
     description:
       name: hive_ce
-      sha256: "8e9980e68643afb1e765d3af32b47996552a64e190d03faf622cea07c1294418"
+      sha256: "650b64282b7ea664ea58a08492d2b163ac6dc6d0ef552d0d77aac6678e1518e9"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.19.3"
+    version: "2.20.0"
   hooks:
     dependency: transitive
     description:
@@ -973,6 +981,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.13.0"
+  material_ui:
+    dependency: transitive
+    description:
+      name: material_ui
+      sha256: fbfb53cab6c4629438feeade5f3d305f72944bc9d9f25786b19106d32b80ec45
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.0"
   meta:
     dependency: transitive
     description:
