@@ -53,51 +53,59 @@ class _BottomInputDialogState extends State<BottomInputDialog> {
             BoxShadow(color: Colors.black26, blurRadius: 10.0),
           ],
         ),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 124,
-                    child: TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        hintText: widget.hintText ?? "Please enter content",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey),
+        child: Material(
+          color: Get.theme.colorScheme.surface,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                // mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 124,
+                      child: TextField(
+                        controller: controller,
+                        decoration: InputDecoration(
+                          hintText: widget.hintText ?? "Please enter content",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        keyboardType: TextInputType.text,
+                        focusNode: _focusNode,
+                        maxLines: null, // Allow multi-line input
+                        expands: true,
+                        textAlign: TextAlign.left, // 水平对齐：左对齐
+                        textAlignVertical: TextAlignVertical.top,
+                        maxLength: 60,
                       ),
-                      keyboardType: TextInputType.text,
-                      focusNode: _focusNode,
-                      maxLines: null, // Allow multi-line input
-                      expands: true,
-                      textAlign: TextAlign.left, // 水平对齐：左对齐
-                      textAlignVertical: TextAlignVertical.top,
-                      maxLength: 60,
                     ),
                   ),
-                ),
-                kSpaceW(12),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: ElevatedButton(
-                    child: Text(TextKey.baocun.tr),
-                    onPressed: () {
-                      // 确定操作
-                      String text = controller.text;
-                      widget.onSendPressed?.call(text);
-                    },
-                  ),
-                )
-              ],
-            ),
-          ],
+                  kSpaceW(12),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: ElevatedButton(
+                      child: Text(TextKey.baocun.tr),
+                      onPressed: () {
+                        // 确定操作
+                        String text = controller.text;
+                        widget.onSendPressed?.call(text);
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

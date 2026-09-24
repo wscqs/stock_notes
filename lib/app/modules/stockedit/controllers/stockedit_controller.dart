@@ -273,50 +273,56 @@ class StockeditController extends BaseController {
           ],
         ),
         constraints: const BoxConstraints(maxHeight: 220, maxWidth: 280),
-        child: ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: suggestions.length,
-          itemBuilder: (context, index) {
-            final entry = suggestions[index];
-            return InkWell(
-              key: ValueKey(entry.key),
-              onTap: () {
-                selectSearchSuggestion(entry);
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  border: index != suggestions.length - 1
-                      ? Border(
-                          bottom: BorderSide(
-                            color: theme.dividerColor.withValues(alpha: 0.5),
-                          ),
-                        )
-                      : null,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        entry.value,
-                        style: textTheme.bodyMedium,
-                        overflow: TextOverflow.ellipsis,
+        // SmartDialog 的 Overlay entry 中没有 Material 祖先，InkWell 需要它
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          clipBehavior: Clip.antiAlias,
+          child: ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) {
+              final entry = suggestions[index];
+              return InkWell(
+                key: ValueKey(entry.key),
+                onTap: () {
+                  selectSearchSuggestion(entry);
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    border: index != suggestions.length - 1
+                        ? Border(
+                            bottom: BorderSide(
+                              color: theme.dividerColor.withValues(alpha: 0.5),
+                            ),
+                          )
+                        : null,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          entry.value,
+                          style: textTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      entry.key,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: theme.hintColor,
+                      const SizedBox(width: 8),
+                      Text(
+                        entry.key,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: theme.hintColor,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       );
     });
