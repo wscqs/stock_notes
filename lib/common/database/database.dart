@@ -21,7 +21,8 @@ part 'database.g.dart';
   StockTags,
   StockTrades,
   NoteItemTags,
-  NoteTags
+  NoteTags,
+  MessageItems
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String path) : super(_openConnection(path));
@@ -46,7 +47,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   //改表要处理合并migration
   @override
@@ -88,6 +89,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from <= 9) {
             await migrator.addColumn(noteItemTags, noteItemTags.sortOrder);
+          }
+          if (from <= 10) {
+            await migrator.createTable(messageItems);
           }
         },
         onCreate: (migrator) async {
@@ -409,6 +413,37 @@ class AppDatabase extends _$AppDatabase {
             ));
       }
     });
+  }
+
+  // message（股价提醒消息）
+  Future<int> addMessage(MessageItemsCompanion item) =>
+      messageItems.insertOne(item);
+
+  Future<List<MessageItem>> getMessages() {
+    return (select(messageItems)
+          ..orderBy([
+            (tbl) => OrderingTerm(
+                expression: tbl.createdAt, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  Future<int> getUnreadMessageCount() {
+    final count = messageItems.id.count();
+    final query = selectOnly(messageItems)
+      ..addColumns([count])
+      ..where(messageItems.isRead.equals(false));
+    return query.map((row) => row.read(count) ?? 0).getSingle();
+  }
+
+  Future<void> markAllMessagesRead() {
+    return (update(messageItems)..where((tbl) => tbl.isRead.equals(false)))
+        .write(const MessageItemsCompanion(isRead: Value(true)));
+  }
+
+  Future<void> deleteMessage(MessageItem itemDelete) {
+    return (delete(messageItems)..where((tbl) => tbl.id.equals(itemDelete.id)))
+        .go();
   }
 
   //note

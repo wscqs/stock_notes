@@ -14,6 +14,7 @@ import 'package:stock_notes/common/web/stock_ext_links.dart';
 import 'package:stock_notes/common/web/webview_widget.dart';
 import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
+import 'package:stock_notes/utils/meet_message_helper.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
@@ -586,6 +587,43 @@ class StockeditController extends BaseController {
         cMeetUpdateAt = DateTime.now();
       }
     }
+
+    // 满足买/卖目标跳变时生成提醒消息（价格/市值/市盈三个维度）
+    // 新建股票老条件视为未满足，条件已满足时同样生成
+    final oldItem = localStockData.value;
+    MeetMessageHelper.addMeetMessageIfNeeded(
+      db,
+      oldCondition: oldItem?.cPriceCondition ?? ConditionStatus.none,
+      newCondition: tempItem.priceCondition,
+      condKind: 1,
+      stockCode: serStockData.value.code!,
+      stockName: serStockData.value.name!,
+      currentValue: serStockData.value.currentPrice,
+      buyTarget: pPriceBuyController.text,
+      saleTarget: pPriceSaleController.text,
+    );
+    MeetMessageHelper.addMeetMessageIfNeeded(
+      db,
+      oldCondition: oldItem?.cMarketCapCondition ?? ConditionStatus.none,
+      newCondition: tempItem.marketCapCondition,
+      condKind: 2,
+      stockCode: serStockData.value.code!,
+      stockName: serStockData.value.name!,
+      currentValue: serStockData.value.totalMarketCap,
+      buyTarget: pMarketCapBuyController.text,
+      saleTarget: pMarketCapSaleController.text,
+    );
+    MeetMessageHelper.addMeetMessageIfNeeded(
+      db,
+      oldCondition: oldItem?.cPeTtmCondition ?? ConditionStatus.none,
+      newCondition: tempItem.peTtmCondition,
+      condKind: 3,
+      stockCode: serStockData.value.code!,
+      stockName: serStockData.value.name!,
+      currentValue: serStockData.value.peRatioTtm,
+      buyTarget: pPeTtmBuyController.text,
+      saleTarget: pPeTtmSaleController.text,
+    );
 
     StockItemsCompanion itemCompanion = StockItemsCompanion.insert(
       marketType: serStockData.value.marketType!,

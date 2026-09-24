@@ -7,6 +7,7 @@ import 'package:stock_notes/app/modules/famous/controllers/famous_data_help.dart
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
+import 'package:stock_notes/utils/meet_message_helper.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/database/database.dart';
@@ -69,6 +70,9 @@ class HomestockController extends BaseController
   final selTags = <StockItemTag>[].obs;
   final tags = <StockItemTag>[].obs;
 
+  // 消息入口未读角标
+  final unreadMsgCount = 0.obs;
+
   final customScrollController = ScrollController();
   final tagTabScrollController = ScrollController();
   final tagTabItemKeys = <String, GlobalKey>{};
@@ -127,6 +131,8 @@ class HomestockController extends BaseController
     _updateDbItemsWithSetCondition();
     // 加载标签数据供 tab 栏使用
     await getTagsData();
+    // 消息未读角标
+    unreadMsgCount.value = await db.getUnreadMessageCount();
     String query = searchController.text;
     filterItems(query);
   }
@@ -243,6 +249,16 @@ class HomestockController extends BaseController
     dbSyncSerData(isShowLoading: true);
   }
 
+  void clickMessage() {
+    cancelUIoP();
+    Get.toNamed(Routes.MESSAGELIST)?.then((_) {
+      // 消息页进入时已全部标记已读，返回后刷新角标
+      db.getUnreadMessageCount().then((count) {
+        unreadMsgCount.value = count;
+      });
+    });
+  }
+
   Future<void> dbSyncSerData({bool isShowLoading = false}) async {
     //db里面数据拿到所有的 code 数据数组
     var stockCodes = dbItems.map((item) => item.code).toList();
@@ -269,6 +285,40 @@ class HomestockController extends BaseController
                 totalMarketCap: Value(serItem.totalMarketCap),
                 peRatioTtm: Value(serItem.peRatioTtm));
             tempItem.setConditions();
+            // 满足买/卖目标跳变时生成提醒消息（价格/市值/市盈三个维度）
+            MeetMessageHelper.addMeetMessageIfNeeded(
+              db,
+              oldCondition: item.cPriceCondition,
+              newCondition: tempItem.priceCondition,
+              condKind: 1,
+              stockCode: item.code,
+              stockName: serItem.name!,
+              currentValue: serItem.currentPrice,
+              buyTarget: item.pPriceBuy,
+              saleTarget: item.pPriceSale,
+            );
+            MeetMessageHelper.addMeetMessageIfNeeded(
+              db,
+              oldCondition: item.cMarketCapCondition,
+              newCondition: tempItem.marketCapCondition,
+              condKind: 2,
+              stockCode: item.code,
+              stockName: serItem.name!,
+              currentValue: serItem.totalMarketCap,
+              buyTarget: item.pMarketCapBuy,
+              saleTarget: item.pMarketCapSale,
+            );
+            MeetMessageHelper.addMeetMessageIfNeeded(
+              db,
+              oldCondition: item.cPeTtmCondition,
+              newCondition: tempItem.peTtmCondition,
+              condKind: 3,
+              stockCode: item.code,
+              stockName: serItem.name!,
+              currentValue: serItem.peRatioTtm,
+              buyTarget: item.pPeTtmBuy,
+              saleTarget: item.pPeTtmSale,
+            );
             DateTime cMeetUpdateAt = tempItem.cMeetUpdateAt;
             DateTime cNearUpdateAt = tempItem.cNearUpdateAt;
             if (tempItem.priceCondition.isNear &&

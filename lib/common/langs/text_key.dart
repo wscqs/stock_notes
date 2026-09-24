@@ -153,6 +153,15 @@ class TextKey {
   static const weixinsaoyisaoqgz = 'weixinsaoyisaoqgz'; // 微信扫一扫，请作者喝杯咖啡
   static const yibaocundaoxiangce = 'yibaocundaoxiangce'; // 已保存到相册
   static const xuyaoxiangcequanxian = 'xuyaoxiangcequanxian'; // 需要相册权限才能保存图片
+  static const xiaoxi = 'xiaoxi'; // 消息
+  static const zuixinjia = 'zuixinjia'; // 最新价
+  static const chakanxiangqing = 'chakanxiangqing'; // 查看详情
+  static const msgNiguanzhude = 'msgNiguanzhude'; // 你关注的
+  static const msgYu = 'msgYu'; // 于
+  static const msgDadao = 'msgDadao'; // 达到
+  static const msgDiyuMairuMubiao = 'msgDiyuMairuMubiao'; // 低于买入目标
+  static const msgGaoyuMaichuMubiao = 'msgGaoyuMaichuMubiao'; // 高于卖出目标
+  static const msgLe = 'msgLe'; // 了。
 }
 
 const Map<String, String> zh = {
@@ -356,6 +365,15 @@ const Map<String, String> zh = {
   TextKey.weixinsaoyisaoqgz: '微信扫一扫，请作者喝杯咖啡',
   TextKey.yibaocundaoxiangce: '已保存到相册',
   TextKey.xuyaoxiangcequanxian: '需要相册权限才能保存图片',
+  TextKey.xiaoxi: '消息',
+  TextKey.zuixinjia: '最新价',
+  TextKey.chakanxiangqing: '查看详情',
+  TextKey.msgNiguanzhude: '你关注的',
+  TextKey.msgYu: ' 于 ',
+  TextKey.msgDadao: ' 达到',
+  TextKey.msgDiyuMairuMubiao: '低于买入目标',
+  TextKey.msgGaoyuMaichuMubiao: '高于卖出目标',
+  TextKey.msgLe: '了。',
 };
 
 const Map<String, String> en = {
@@ -566,4 +584,13 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.yibaocundaoxiangce: 'Saved to Photos',
   TextKey.xuyaoxiangcequanxian:
       'Photo library permission is required to save the image',
+  TextKey.xiaoxi: 'Message',
+  TextKey.zuixinjia: 'Latest',
+  TextKey.chakanxiangqing: 'View Detail',
+  TextKey.msgNiguanzhude: 'Your watch ',
+  TextKey.msgYu: ' at ',
+  TextKey.msgDadao: ' reached ',
+  TextKey.msgDiyuMairuMubiao: 'below the buy target ',
+  TextKey.msgGaoyuMaichuMubiao: 'above the sell target ',
+  TextKey.msgLe: '.',
 };

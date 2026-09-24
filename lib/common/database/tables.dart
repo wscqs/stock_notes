@@ -88,6 +88,17 @@ class NoteTags extends Table {
   Set<Column> get primaryKey => {noteId, tagId};
 }
 
+// 股价提醒消息（满足买/卖目标时由行情刷新生成）
+class MessageItems extends Table with TableMixin {
+  TextColumn get stockCode => text()();
+  TextColumn get stockName => text()();
+  IntColumn get msgType => integer()(); // 1=满足买, 2=满足卖
+  IntColumn get condKind => integer()(); // 1=价格, 2=市值, 3=市盈TTM
+  TextColumn get currentValue => text().nullable()();
+  TextColumn get targetValue => text().nullable()();
+  BoolColumn get isRead => boolean().withDefault(const Constant(false))();
+}
+
 class StockTrades extends Table with TableMixin {
   IntColumn get stockId => integer().references(StockItems, #id)();
   IntColumn get tradeType => integer()(); // 0=买, 1=卖

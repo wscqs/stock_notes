@@ -14,6 +14,8 @@ import '../modules/homenote/bindings/homenote_binding.dart';
 import '../modules/homenote/views/homenote_view.dart';
 import '../modules/homestock/bindings/homestock_binding.dart';
 import '../modules/homestock/views/homestock_view.dart';
+import '../modules/messagelist/bindings/messagelist_binding.dart';
+import '../modules/messagelist/views/messagelist_view.dart';
 import '../modules/notedetail/bindings/notedetail_binding.dart';
 import '../modules/notedetail/views/notedetail_view.dart';
 import '../modules/noteedit/bindings/noteedit_binding.dart';
@@ -195,6 +197,11 @@ class AppPages {
       name: _Paths.TRADELIST,
       page: () => const TradelistView(),
       binding: TradelistBinding(),
+    ),
+    GetPage(
+      name: _Paths.MESSAGELIST,
+      page: () => const MessagelistView(),
+      binding: MessagelistBinding(),
     ),
   ];
 }

@@ -19,6 +19,7 @@ abstract class Routes {
   static const DATESOURCE = _Paths.DATESOURCE;
   static const FAMOUS = _Paths.FAMOUS;
   static const TRADELIST = _Paths.TRADELIST;
+  static const MESSAGELIST = _Paths.MESSAGELIST;
 }
 
 abstract class _Paths {
@@ -39,4 +40,5 @@ abstract class _Paths {
   static const DATESOURCE = '/datesource';
   static const FAMOUS = '/famous';
   static const TRADELIST = '/tradelist';
+  static const MESSAGELIST = '/messagelist';
 }

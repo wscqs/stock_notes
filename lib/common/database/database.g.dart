@@ -3541,6 +3541,509 @@ class NoteTagsCompanion extends UpdateCompanion<NoteTag> {
   }
 }
 
+class $MessageItemsTable extends MessageItems
+    with TableInfo<$MessageItemsTable, MessageItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MessageItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<DateTime> updateAt = GeneratedColumn<DateTime>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _stockCodeMeta =
+      const VerificationMeta('stockCode');
+  @override
+  late final GeneratedColumn<String> stockCode = GeneratedColumn<String>(
+      'stock_code', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _stockNameMeta =
+      const VerificationMeta('stockName');
+  @override
+  late final GeneratedColumn<String> stockName = GeneratedColumn<String>(
+      'stock_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _msgTypeMeta =
+      const VerificationMeta('msgType');
+  @override
+  late final GeneratedColumn<int> msgType = GeneratedColumn<int>(
+      'msg_type', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _condKindMeta =
+      const VerificationMeta('condKind');
+  @override
+  late final GeneratedColumn<int> condKind = GeneratedColumn<int>(
+      'cond_kind', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _currentValueMeta =
+      const VerificationMeta('currentValue');
+  @override
+  late final GeneratedColumn<String> currentValue = GeneratedColumn<String>(
+      'current_value', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _targetValueMeta =
+      const VerificationMeta('targetValue');
+  @override
+  late final GeneratedColumn<String> targetValue = GeneratedColumn<String>(
+      'target_value', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _isReadMeta = const VerificationMeta('isRead');
+  @override
+  late final GeneratedColumn<bool> isRead = GeneratedColumn<bool>(
+      'is_read', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_read" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        createdAt,
+        updateAt,
+        stockCode,
+        stockName,
+        msgType,
+        condKind,
+        currentValue,
+        targetValue,
+        isRead
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'message_items';
+  @override
+  VerificationContext validateIntegrity(Insertable<MessageItem> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    if (data.containsKey('stock_code')) {
+      context.handle(_stockCodeMeta,
+          stockCode.isAcceptableOrUnknown(data['stock_code']!, _stockCodeMeta));
+    } else if (isInserting) {
+      context.missing(_stockCodeMeta);
+    }
+    if (data.containsKey('stock_name')) {
+      context.handle(_stockNameMeta,
+          stockName.isAcceptableOrUnknown(data['stock_name']!, _stockNameMeta));
+    } else if (isInserting) {
+      context.missing(_stockNameMeta);
+    }
+    if (data.containsKey('msg_type')) {
+      context.handle(_msgTypeMeta,
+          msgType.isAcceptableOrUnknown(data['msg_type']!, _msgTypeMeta));
+    } else if (isInserting) {
+      context.missing(_msgTypeMeta);
+    }
+    if (data.containsKey('cond_kind')) {
+      context.handle(_condKindMeta,
+          condKind.isAcceptableOrUnknown(data['cond_kind']!, _condKindMeta));
+    } else if (isInserting) {
+      context.missing(_condKindMeta);
+    }
+    if (data.containsKey('current_value')) {
+      context.handle(
+          _currentValueMeta,
+          currentValue.isAcceptableOrUnknown(
+              data['current_value']!, _currentValueMeta));
+    }
+    if (data.containsKey('target_value')) {
+      context.handle(
+          _targetValueMeta,
+          targetValue.isAcceptableOrUnknown(
+              data['target_value']!, _targetValueMeta));
+    }
+    if (data.containsKey('is_read')) {
+      context.handle(_isReadMeta,
+          isRead.isAcceptableOrUnknown(data['is_read']!, _isReadMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MessageItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MessageItem(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_at'])!,
+      stockCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}stock_code'])!,
+      stockName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}stock_name'])!,
+      msgType: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}msg_type'])!,
+      condKind: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}cond_kind'])!,
+      currentValue: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}current_value']),
+      targetValue: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}target_value']),
+      isRead: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_read'])!,
+    );
+  }
+
+  @override
+  $MessageItemsTable createAlias(String alias) {
+    return $MessageItemsTable(attachedDatabase, alias);
+  }
+}
+
+class MessageItem extends DataClass implements Insertable<MessageItem> {
+  final int id;
+  final DateTime createdAt;
+  final DateTime updateAt;
+  final String stockCode;
+  final String stockName;
+  final int msgType;
+  final int condKind;
+  final String? currentValue;
+  final String? targetValue;
+  final bool isRead;
+  const MessageItem(
+      {required this.id,
+      required this.createdAt,
+      required this.updateAt,
+      required this.stockCode,
+      required this.stockName,
+      required this.msgType,
+      required this.condKind,
+      this.currentValue,
+      this.targetValue,
+      required this.isRead});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['update_at'] = Variable<DateTime>(updateAt);
+    map['stock_code'] = Variable<String>(stockCode);
+    map['stock_name'] = Variable<String>(stockName);
+    map['msg_type'] = Variable<int>(msgType);
+    map['cond_kind'] = Variable<int>(condKind);
+    if (!nullToAbsent || currentValue != null) {
+      map['current_value'] = Variable<String>(currentValue);
+    }
+    if (!nullToAbsent || targetValue != null) {
+      map['target_value'] = Variable<String>(targetValue);
+    }
+    map['is_read'] = Variable<bool>(isRead);
+    return map;
+  }
+
+  MessageItemsCompanion toCompanion(bool nullToAbsent) {
+    return MessageItemsCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updateAt: Value(updateAt),
+      stockCode: Value(stockCode),
+      stockName: Value(stockName),
+      msgType: Value(msgType),
+      condKind: Value(condKind),
+      currentValue: currentValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentValue),
+      targetValue: targetValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetValue),
+      isRead: Value(isRead),
+    );
+  }
+
+  factory MessageItem.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MessageItem(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updateAt: serializer.fromJson<DateTime>(json['updateAt']),
+      stockCode: serializer.fromJson<String>(json['stockCode']),
+      stockName: serializer.fromJson<String>(json['stockName']),
+      msgType: serializer.fromJson<int>(json['msgType']),
+      condKind: serializer.fromJson<int>(json['condKind']),
+      currentValue: serializer.fromJson<String?>(json['currentValue']),
+      targetValue: serializer.fromJson<String?>(json['targetValue']),
+      isRead: serializer.fromJson<bool>(json['isRead']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updateAt': serializer.toJson<DateTime>(updateAt),
+      'stockCode': serializer.toJson<String>(stockCode),
+      'stockName': serializer.toJson<String>(stockName),
+      'msgType': serializer.toJson<int>(msgType),
+      'condKind': serializer.toJson<int>(condKind),
+      'currentValue': serializer.toJson<String?>(currentValue),
+      'targetValue': serializer.toJson<String?>(targetValue),
+      'isRead': serializer.toJson<bool>(isRead),
+    };
+  }
+
+  MessageItem copyWith(
+          {int? id,
+          DateTime? createdAt,
+          DateTime? updateAt,
+          String? stockCode,
+          String? stockName,
+          int? msgType,
+          int? condKind,
+          Value<String?> currentValue = const Value.absent(),
+          Value<String?> targetValue = const Value.absent(),
+          bool? isRead}) =>
+      MessageItem(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        updateAt: updateAt ?? this.updateAt,
+        stockCode: stockCode ?? this.stockCode,
+        stockName: stockName ?? this.stockName,
+        msgType: msgType ?? this.msgType,
+        condKind: condKind ?? this.condKind,
+        currentValue:
+            currentValue.present ? currentValue.value : this.currentValue,
+        targetValue: targetValue.present ? targetValue.value : this.targetValue,
+        isRead: isRead ?? this.isRead,
+      );
+  MessageItem copyWithCompanion(MessageItemsCompanion data) {
+    return MessageItem(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updateAt: data.updateAt.present ? data.updateAt.value : this.updateAt,
+      stockCode: data.stockCode.present ? data.stockCode.value : this.stockCode,
+      stockName: data.stockName.present ? data.stockName.value : this.stockName,
+      msgType: data.msgType.present ? data.msgType.value : this.msgType,
+      condKind: data.condKind.present ? data.condKind.value : this.condKind,
+      currentValue: data.currentValue.present
+          ? data.currentValue.value
+          : this.currentValue,
+      targetValue:
+          data.targetValue.present ? data.targetValue.value : this.targetValue,
+      isRead: data.isRead.present ? data.isRead.value : this.isRead,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MessageItem(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('stockCode: $stockCode, ')
+          ..write('stockName: $stockName, ')
+          ..write('msgType: $msgType, ')
+          ..write('condKind: $condKind, ')
+          ..write('currentValue: $currentValue, ')
+          ..write('targetValue: $targetValue, ')
+          ..write('isRead: $isRead')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, createdAt, updateAt, stockCode, stockName,
+      msgType, condKind, currentValue, targetValue, isRead);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MessageItem &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updateAt == this.updateAt &&
+          other.stockCode == this.stockCode &&
+          other.stockName == this.stockName &&
+          other.msgType == this.msgType &&
+          other.condKind == this.condKind &&
+          other.currentValue == this.currentValue &&
+          other.targetValue == this.targetValue &&
+          other.isRead == this.isRead);
+}
+
+class MessageItemsCompanion extends UpdateCompanion<MessageItem> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updateAt;
+  final Value<String> stockCode;
+  final Value<String> stockName;
+  final Value<int> msgType;
+  final Value<int> condKind;
+  final Value<String?> currentValue;
+  final Value<String?> targetValue;
+  final Value<bool> isRead;
+  const MessageItemsCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.stockCode = const Value.absent(),
+    this.stockName = const Value.absent(),
+    this.msgType = const Value.absent(),
+    this.condKind = const Value.absent(),
+    this.currentValue = const Value.absent(),
+    this.targetValue = const Value.absent(),
+    this.isRead = const Value.absent(),
+  });
+  MessageItemsCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    required String stockCode,
+    required String stockName,
+    required int msgType,
+    required int condKind,
+    this.currentValue = const Value.absent(),
+    this.targetValue = const Value.absent(),
+    this.isRead = const Value.absent(),
+  })  : stockCode = Value(stockCode),
+        stockName = Value(stockName),
+        msgType = Value(msgType),
+        condKind = Value(condKind);
+  static Insertable<MessageItem> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updateAt,
+    Expression<String>? stockCode,
+    Expression<String>? stockName,
+    Expression<int>? msgType,
+    Expression<int>? condKind,
+    Expression<String>? currentValue,
+    Expression<String>? targetValue,
+    Expression<bool>? isRead,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updateAt != null) 'update_at': updateAt,
+      if (stockCode != null) 'stock_code': stockCode,
+      if (stockName != null) 'stock_name': stockName,
+      if (msgType != null) 'msg_type': msgType,
+      if (condKind != null) 'cond_kind': condKind,
+      if (currentValue != null) 'current_value': currentValue,
+      if (targetValue != null) 'target_value': targetValue,
+      if (isRead != null) 'is_read': isRead,
+    });
+  }
+
+  MessageItemsCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updateAt,
+      Value<String>? stockCode,
+      Value<String>? stockName,
+      Value<int>? msgType,
+      Value<int>? condKind,
+      Value<String?>? currentValue,
+      Value<String?>? targetValue,
+      Value<bool>? isRead}) {
+    return MessageItemsCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updateAt: updateAt ?? this.updateAt,
+      stockCode: stockCode ?? this.stockCode,
+      stockName: stockName ?? this.stockName,
+      msgType: msgType ?? this.msgType,
+      condKind: condKind ?? this.condKind,
+      currentValue: currentValue ?? this.currentValue,
+      targetValue: targetValue ?? this.targetValue,
+      isRead: isRead ?? this.isRead,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<DateTime>(updateAt.value);
+    }
+    if (stockCode.present) {
+      map['stock_code'] = Variable<String>(stockCode.value);
+    }
+    if (stockName.present) {
+      map['stock_name'] = Variable<String>(stockName.value);
+    }
+    if (msgType.present) {
+      map['msg_type'] = Variable<int>(msgType.value);
+    }
+    if (condKind.present) {
+      map['cond_kind'] = Variable<int>(condKind.value);
+    }
+    if (currentValue.present) {
+      map['current_value'] = Variable<String>(currentValue.value);
+    }
+    if (targetValue.present) {
+      map['target_value'] = Variable<String>(targetValue.value);
+    }
+    if (isRead.present) {
+      map['is_read'] = Variable<bool>(isRead.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MessageItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('stockCode: $stockCode, ')
+          ..write('stockName: $stockName, ')
+          ..write('msgType: $msgType, ')
+          ..write('condKind: $condKind, ')
+          ..write('currentValue: $currentValue, ')
+          ..write('targetValue: $targetValue, ')
+          ..write('isRead: $isRead')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3551,6 +4054,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $StockTradesTable stockTrades = $StockTradesTable(this);
   late final $NoteItemTagsTable noteItemTags = $NoteItemTagsTable(this);
   late final $NoteTagsTable noteTags = $NoteTagsTable(this);
+  late final $MessageItemsTable messageItems = $MessageItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3562,7 +4066,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         stockTags,
         stockTrades,
         noteItemTags,
-        noteTags
+        noteTags,
+        messageItems
       ];
 }
 
@@ -6101,6 +6606,249 @@ typedef $$NoteTagsTableProcessedTableManager = ProcessedTableManager<
     (NoteTag, $$NoteTagsTableReferences),
     NoteTag,
     PrefetchHooks Function({bool noteId, bool tagId})>;
+typedef $$MessageItemsTableCreateCompanionBuilder = MessageItemsCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  required String stockCode,
+  required String stockName,
+  required int msgType,
+  required int condKind,
+  Value<String?> currentValue,
+  Value<String?> targetValue,
+  Value<bool> isRead,
+});
+typedef $$MessageItemsTableUpdateCompanionBuilder = MessageItemsCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  Value<String> stockCode,
+  Value<String> stockName,
+  Value<int> msgType,
+  Value<int> condKind,
+  Value<String?> currentValue,
+  Value<String?> targetValue,
+  Value<bool> isRead,
+});
+
+class $$MessageItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $MessageItemsTable> {
+  $$MessageItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get stockCode => $composableBuilder(
+      column: $table.stockCode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get stockName => $composableBuilder(
+      column: $table.stockName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get msgType => $composableBuilder(
+      column: $table.msgType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get condKind => $composableBuilder(
+      column: $table.condKind, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get currentValue => $composableBuilder(
+      column: $table.currentValue, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get targetValue => $composableBuilder(
+      column: $table.targetValue, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isRead => $composableBuilder(
+      column: $table.isRead, builder: (column) => ColumnFilters(column));
+}
+
+class $$MessageItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MessageItemsTable> {
+  $$MessageItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get stockCode => $composableBuilder(
+      column: $table.stockCode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get stockName => $composableBuilder(
+      column: $table.stockName, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get msgType => $composableBuilder(
+      column: $table.msgType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get condKind => $composableBuilder(
+      column: $table.condKind, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get currentValue => $composableBuilder(
+      column: $table.currentValue,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get targetValue => $composableBuilder(
+      column: $table.targetValue, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isRead => $composableBuilder(
+      column: $table.isRead, builder: (column) => ColumnOrderings(column));
+}
+
+class $$MessageItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MessageItemsTable> {
+  $$MessageItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateAt =>
+      $composableBuilder(column: $table.updateAt, builder: (column) => column);
+
+  GeneratedColumn<String> get stockCode =>
+      $composableBuilder(column: $table.stockCode, builder: (column) => column);
+
+  GeneratedColumn<String> get stockName =>
+      $composableBuilder(column: $table.stockName, builder: (column) => column);
+
+  GeneratedColumn<int> get msgType =>
+      $composableBuilder(column: $table.msgType, builder: (column) => column);
+
+  GeneratedColumn<int> get condKind =>
+      $composableBuilder(column: $table.condKind, builder: (column) => column);
+
+  GeneratedColumn<String> get currentValue => $composableBuilder(
+      column: $table.currentValue, builder: (column) => column);
+
+  GeneratedColumn<String> get targetValue => $composableBuilder(
+      column: $table.targetValue, builder: (column) => column);
+
+  GeneratedColumn<bool> get isRead =>
+      $composableBuilder(column: $table.isRead, builder: (column) => column);
+}
+
+class $$MessageItemsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $MessageItemsTable,
+    MessageItem,
+    $$MessageItemsTableFilterComposer,
+    $$MessageItemsTableOrderingComposer,
+    $$MessageItemsTableAnnotationComposer,
+    $$MessageItemsTableCreateCompanionBuilder,
+    $$MessageItemsTableUpdateCompanionBuilder,
+    (
+      MessageItem,
+      BaseReferences<_$AppDatabase, $MessageItemsTable, MessageItem>
+    ),
+    MessageItem,
+    PrefetchHooks Function()> {
+  $$MessageItemsTableTableManager(_$AppDatabase db, $MessageItemsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MessageItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MessageItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MessageItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            Value<String> stockCode = const Value.absent(),
+            Value<String> stockName = const Value.absent(),
+            Value<int> msgType = const Value.absent(),
+            Value<int> condKind = const Value.absent(),
+            Value<String?> currentValue = const Value.absent(),
+            Value<String?> targetValue = const Value.absent(),
+            Value<bool> isRead = const Value.absent(),
+          }) =>
+              MessageItemsCompanion(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            stockCode: stockCode,
+            stockName: stockName,
+            msgType: msgType,
+            condKind: condKind,
+            currentValue: currentValue,
+            targetValue: targetValue,
+            isRead: isRead,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            required String stockCode,
+            required String stockName,
+            required int msgType,
+            required int condKind,
+            Value<String?> currentValue = const Value.absent(),
+            Value<String?> targetValue = const Value.absent(),
+            Value<bool> isRead = const Value.absent(),
+          }) =>
+              MessageItemsCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            stockCode: stockCode,
+            stockName: stockName,
+            msgType: msgType,
+            condKind: condKind,
+            currentValue: currentValue,
+            targetValue: targetValue,
+            isRead: isRead,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$MessageItemsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $MessageItemsTable,
+    MessageItem,
+    $$MessageItemsTableFilterComposer,
+    $$MessageItemsTableOrderingComposer,
+    $$MessageItemsTableAnnotationComposer,
+    $$MessageItemsTableCreateCompanionBuilder,
+    $$MessageItemsTableUpdateCompanionBuilder,
+    (
+      MessageItem,
+      BaseReferences<_$AppDatabase, $MessageItemsTable, MessageItem>
+    ),
+    MessageItem,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6119,4 +6867,6 @@ class $AppDatabaseManager {
       $$NoteItemTagsTableTableManager(_db, _db.noteItemTags);
   $$NoteTagsTableTableManager get noteTags =>
       $$NoteTagsTableTableManager(_db, _db.noteTags);
+  $$MessageItemsTableTableManager get messageItems =>
+      $$MessageItemsTableTableManager(_db, _db.messageItems);
 }

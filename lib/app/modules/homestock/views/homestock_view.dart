@@ -41,6 +41,18 @@ class HomestockView extends GetView<HomestockController> {
                 onPressed: () => Get.toNamed(Routes.TRADELIST),
               ),
               IconButton(
+                tooltip: TextKey.xiaoxi.tr,
+                onPressed: () => controller.clickMessage(),
+                icon: Obx(() => Badge(
+                      isLabelVisible: controller.unreadMsgCount.value > 0,
+                      // label: Text('${controller.unreadMsgCount.value}'),
+                      child: const Icon(
+                        RemixIcons.notification_3_line,
+                        size: 24,
+                      ),
+                    )),
+              ),
+              IconButton(
                   onPressed: () {
                     controller.clickRefresh();
                   },
@@ -368,8 +380,7 @@ class HomestockView extends GetView<HomestockController> {
                 ))
             .toList(),
         onChanged: (String? value) {
-          controller
-              .changeSelectedOrderIndex(controller.order.indexOf(value!));
+          controller.changeSelectedOrderIndex(controller.order.indexOf(value!));
         },
         iconStyleData: IconStyleData(
           iconSize: 0,
