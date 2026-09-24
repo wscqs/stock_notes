@@ -24,6 +24,8 @@ class GlobalService extends GetxService {
   Rx<Locale> rxLocale = Rx<Locale>(PlatformDispatcher.instance.locale);
   Rx<double> rxNearBSPoint = 0.03.obs;
   RxBool rxLofEnabled = false.obs;
+  // 消息小红点提醒开关（首页消息入口角标）
+  RxBool rxMsgRedDotEnabled = true.obs;
 
   //语言
   Locale locale = PlatformDispatcher.instance.locale;
@@ -48,6 +50,7 @@ class GlobalService extends GetxService {
     _initTheme();
     _initNearBSPoint();
     _initLofEnabled();
+    _initMsgRedDotEnabled();
     return this;
   }
 
@@ -141,6 +144,17 @@ class GlobalService extends GetxService {
   Future<void> changeLofEnabled(bool value) async {
     rxLofEnabled.value = value;
     await sharedPreferences.setBool("lofEnabled", value);
+  }
+
+  void _initMsgRedDotEnabled() {
+    rxMsgRedDotEnabled.value =
+        sharedPreferences.getBool("msgRedDotEnabled") ?? true;
+  }
+
+  // 更改 消息小红点提醒 开关
+  Future<void> changeMsgRedDotEnabled(bool value) async {
+    rxMsgRedDotEnabled.value = value;
+    await sharedPreferences.setBool("msgRedDotEnabled", value);
   }
 
   void refreshAppui() {

@@ -16,6 +16,8 @@ import '../modules/homestock/bindings/homestock_binding.dart';
 import '../modules/homestock/views/homestock_view.dart';
 import '../modules/messagelist/bindings/messagelist_binding.dart';
 import '../modules/messagelist/views/messagelist_view.dart';
+import '../modules/messagesetting/bindings/messagesetting_binding.dart';
+import '../modules/messagesetting/views/messagesetting_view.dart';
 import '../modules/notedetail/bindings/notedetail_binding.dart';
 import '../modules/notedetail/views/notedetail_view.dart';
 import '../modules/noteedit/bindings/noteedit_binding.dart';
@@ -202,6 +204,11 @@ class AppPages {
       name: _Paths.MESSAGELIST,
       page: () => const MessagelistView(),
       binding: MessagelistBinding(),
+    ),
+    GetPage(
+      name: _Paths.MESSAGESETTING,
+      page: () => const MessagesettingView(),
+      binding: MessagesettingBinding(),
     ),
   ];
 }

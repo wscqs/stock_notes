@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
+import 'package:stock_notes/common/globle_service.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/widget/keep_alive_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -44,7 +45,8 @@ class HomestockView extends GetView<HomestockController> {
                 tooltip: TextKey.xiaoxi.tr,
                 onPressed: () => controller.clickMessage(),
                 icon: Obx(() => Badge(
-                      isLabelVisible: controller.unreadMsgCount.value > 0,
+                      isLabelVisible: controller.unreadMsgCount.value > 0 &&
+                          GlobalService.to.rxMsgRedDotEnabled.value,
                       // label: Text('${controller.unreadMsgCount.value}'),
                       child: const Icon(
                         RemixIcons.notification_3_line,

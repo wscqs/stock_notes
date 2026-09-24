@@ -20,6 +20,7 @@ abstract class Routes {
   static const FAMOUS = _Paths.FAMOUS;
   static const TRADELIST = _Paths.TRADELIST;
   static const MESSAGELIST = _Paths.MESSAGELIST;
+  static const MESSAGESETTING = _Paths.MESSAGESETTING;
 }
 
 abstract class _Paths {
@@ -41,4 +42,5 @@ abstract class _Paths {
   static const FAMOUS = '/famous';
   static const TRADELIST = '/tradelist';
   static const MESSAGELIST = '/messagelist';
+  static const MESSAGESETTING = '/messagesetting';
 }

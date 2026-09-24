@@ -4,8 +4,6 @@
 
 **GitHub 开源地址** <https://github.com/wscqs/stock_notes> | **Releases 下载体验** <https://github.com/wscqs/stock_notes/releases>
 
-Android 也可从蒲公英下载 <https://www.pgyer.com/QBbOMfya>
-
 ---
 
 ## 🌟 核心价值
@@ -72,6 +70,7 @@ Android 也可从蒲公英下载 <https://www.pgyer.com/QBbOMfya>
 
 | 版本         | 更新内容                                                                           |
 |------------|--------------------------------------------------------------------------------|
+| **v3.4.0** | 新增顶部消息提醒（根据价格，市值，市盈MMT），及消息页
 | **v3.3.0** | 首页股票新增：标签左右滚动切换功能
 | **v3.2.0** | 增加lof套利web页
 | **v3.1.0** | 股票详情页新增记录持有状态操作按钮：（锁仓，停买，停卖）

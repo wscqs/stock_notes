@@ -162,6 +162,8 @@ class TextKey {
   static const msgDiyuMairuMubiao = 'msgDiyuMairuMubiao'; // 低于买入目标
   static const msgGaoyuMaichuMubiao = 'msgGaoyuMaichuMubiao'; // 高于卖出目标
   static const msgLe = 'msgLe'; // 了。
+  static const xiaoxishezhi = 'xiaoxishezhi'; // 消息设置
+  static const xiaohongdiantixing = 'xiaohongdiantixing'; // 小红点提醒
 }
 
 const Map<String, String> zh = {
@@ -374,6 +376,8 @@ const Map<String, String> zh = {
   TextKey.msgDiyuMairuMubiao: '低于买入目标',
   TextKey.msgGaoyuMaichuMubiao: '高于卖出目标',
   TextKey.msgLe: '了。',
+  TextKey.xiaoxishezhi: '消息设置',
+  TextKey.xiaohongdiantixing: '小红点提醒',
 };
 
 const Map<String, String> en = {
@@ -593,4 +597,6 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.msgDiyuMairuMubiao: 'below the buy target ',
   TextKey.msgGaoyuMaichuMubiao: 'above the sell target ',
   TextKey.msgLe: '.',
+  TextKey.xiaoxishezhi: 'Message Settings',
+  TextKey.xiaohongdiantixing: 'Red Dot Reminder',
 };

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/extension/DateTime++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 import '../../../../common/database/database.dart';
 import '../../../../common/widget/qs_empty_view.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/messagelist_controller.dart';
 
 class MessagelistView extends GetView<MessagelistController> {
@@ -17,6 +19,16 @@ class MessagelistView extends GetView<MessagelistController> {
       appBar: AppBar(
         title: Text(TextKey.xiaoxi.tr),
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: TextKey.xiaoxishezhi.tr,
+            onPressed: () => Get.toNamed(Routes.MESSAGESETTING),
+            icon: const Icon(
+              RemixIcons.settings_3_line,
+              size: 24,
+            ),
+          ),
+        ],
       ),
       body: Obx(() {
         if (controller.messages.isEmpty) {
@@ -156,8 +168,8 @@ class MessagelistView extends GetView<MessagelistController> {
                 Text(
                   controller.msgContent(msg),
                   style: TextStyle(
-                    fontSize: 13,
-                    height: 1.4,
+                    fontSize: 12,
+                    height: 1.3,
                     color:
                         Get.theme.colorScheme.onSurface.withValues(alpha: 0.8),
                   ),
@@ -177,7 +189,7 @@ class MessagelistView extends GetView<MessagelistController> {
                         child: Text(
                           TextKey.chakanxiangqing.tr,
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 12,
                             color: Get.theme.colorScheme.onSurface
                                 .withValues(alpha: 0.5),
                           ),
