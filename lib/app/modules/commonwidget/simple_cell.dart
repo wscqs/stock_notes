@@ -5,6 +5,7 @@ import '../../../common/comment_style.dart';
 class SimpleCell extends StatelessWidget {
   final String? title;
   final String? subTitle;
+  final String? bottomSubTitle; // 标题下方的说明文字（小字灰色）
   final VoidCallback? onPressed;
   final double radius;
   final bool isCheck;
@@ -15,6 +16,7 @@ class SimpleCell extends StatelessWidget {
       {super.key,
       this.title,
       this.subTitle,
+      this.bottomSubTitle,
       this.onPressed,
       this.radius = 0,
       this.isCheck = false,
@@ -33,7 +35,20 @@ class SimpleCell extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(title ?? ""),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title ?? ""),
+                if (bottomSubTitle != null)
+                  Text(
+                    bottomSubTitle!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+              ],
+            ),
             kSpaceMax(),
             Text(subTitle ?? ""),
             kSpaceW(4),

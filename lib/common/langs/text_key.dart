@@ -164,6 +164,10 @@ class TextKey {
   static const msgLe = 'msgLe'; // 了。
   static const xiaoxishezhi = 'xiaoxishezhi'; // 消息设置
   static const xiaohongdiantixing = 'xiaohongdiantixing'; // 小红点提醒
+  static const anchicunguolvtixing = 'anchicunguolvtixing'; // 按持仓过滤提醒
+  static const maichutixingjinchicang = 'maichutixingjinchicang'; // 卖出提醒仅限持仓股票
+  static const xiaoxishuoming = 'xiaoxishuoming'; // 消息说明
+  static const xiaoxishuomingtitle = 'xiaoxishuomingtitle'; // 消息说明（标题）
 }
 
 const Map<String, String> zh = {
@@ -378,6 +382,17 @@ const Map<String, String> zh = {
   TextKey.msgLe: '了。',
   TextKey.xiaoxishezhi: '消息设置',
   TextKey.xiaohongdiantixing: '小红点提醒',
+  TextKey.anchicunguolvtixing: '按持仓过滤提醒',
+  TextKey.maichutixingjinchicang: '卖出提醒仅限持仓股票',
+  TextKey.xiaoxishuomingtitle: '消息说明',
+  TextKey.xiaoxishuoming: '''
+• 当股票的价格、市值或市盈TTM 满足你设置的买入/卖出目标时，会生成一条提醒消息。
+• 同一股票、同一方向、同一维度每天最多提醒一次；条件持续满足时，每天会再次提醒。
+• 「按持仓过滤提醒」开启时，卖出提醒仅对持仓股票生效；买入提醒不受持仓影响。
+• 股票标记为「停买」或「停卖」时，不再生成对应方向的提醒。
+• 「小红点提醒」控制首页消息入口的未读角标。
+• 进入消息页后，所有消息会自动标记为已读。
+''',
 };
 
 const Map<String, String> en = {
@@ -599,4 +614,15 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.msgLe: '.',
   TextKey.xiaoxishezhi: 'Message Settings',
   TextKey.xiaohongdiantixing: 'Red Dot Reminder',
+  TextKey.anchicunguolvtixing: 'Filter by Holdings',
+  TextKey.maichutixingjinchicang: 'Sell reminders only for held stocks',
+  TextKey.xiaoxishuomingtitle: 'About Messages',
+  TextKey.xiaoxishuoming: '''
+• A reminder message is generated when a stock's price, market cap, or PE TTM meets your buy/sell target.
+• At most one message per day for the same stock, direction and dimension; if the condition stays met, you will be reminded again the next day.
+• When "Filter by Holdings" is on, sell reminders only apply to stocks you hold; buy reminders are unaffected.
+• Stocks marked as "stop buying" or "stop selling" will not generate reminders in that direction.
+• "Red Dot Reminder" controls the unread badge on the message entry of the home page.
+• All messages are marked as read when you open the message page.
+''',
 };

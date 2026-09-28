@@ -436,6 +436,26 @@ class AppDatabase extends _$AppDatabase {
     return query.map((row) => row.read(count) ?? 0).getSingle();
   }
 
+  // 当天是否已存在同股票+同方向+同维度的提醒消息（用于每天最多一条去重）
+  Future<bool> hasMessageToday({
+    required String stockCode,
+    required int msgType,
+    required int condKind,
+  }) {
+    final now = DateTime.now();
+    final dayStart = DateTime(now.year, now.month, now.day);
+    final dayEnd = dayStart.add(const Duration(days: 1));
+    final count = messageItems.id.count();
+    final query = selectOnly(messageItems)
+      ..addColumns([count])
+      ..where(messageItems.stockCode.equals(stockCode) &
+          messageItems.msgType.equals(msgType) &
+          messageItems.condKind.equals(condKind) &
+          messageItems.createdAt.isBiggerOrEqualValue(dayStart) &
+          messageItems.createdAt.isSmallerThanValue(dayEnd));
+    return query.map((row) => (row.read(count) ?? 0) > 0).getSingle();
+  }
+
   Future<void> markAllMessagesRead() {
     return (update(messageItems)..where((tbl) => tbl.isRead.equals(false)))
         .write(const MessageItemsCompanion(isRead: Value(true)));

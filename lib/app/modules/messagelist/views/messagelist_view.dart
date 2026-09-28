@@ -13,6 +13,24 @@ import '../controllers/messagelist_controller.dart';
 class MessagelistView extends GetView<MessagelistController> {
   const MessagelistView({super.key});
 
+  // 消息使用说明弹窗
+  void _showMsgUsageDialog() {
+    Get.dialog(AlertDialog(
+      title: Text(TextKey.xiaoxishuomingtitle.tr),
+      content: SingleChildScrollView(
+        child: Text(TextKey.xiaoxishuoming.tr),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(Get.overlayContext!).pop(); // 明确关闭对话框
+          },
+          child: Text(TextKey.queding.tr),
+        ),
+      ],
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +38,14 @@ class MessagelistView extends GetView<MessagelistController> {
         title: Text(TextKey.xiaoxi.tr),
         centerTitle: true,
         actions: [
+          IconButton(
+            tooltip: TextKey.xiaoxishuomingtitle.tr,
+            onPressed: _showMsgUsageDialog,
+            icon: const Icon(
+              RemixIcons.information_line,
+              size: 24,
+            ),
+          ),
           IconButton(
             tooltip: TextKey.xiaoxishezhi.tr,
             onPressed: () => Get.toNamed(Routes.MESSAGESETTING),

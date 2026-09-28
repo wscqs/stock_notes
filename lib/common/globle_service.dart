@@ -26,6 +26,8 @@ class GlobalService extends GetxService {
   RxBool rxLofEnabled = false.obs;
   // 消息小红点提醒开关（首页消息入口角标）
   RxBool rxMsgRedDotEnabled = true.obs;
+  // 按持仓过滤提醒开关（开启时卖提醒仅持仓股票才发）
+  RxBool rxMsgHoldFilterEnabled = true.obs;
 
   //语言
   Locale locale = PlatformDispatcher.instance.locale;
@@ -51,6 +53,7 @@ class GlobalService extends GetxService {
     _initNearBSPoint();
     _initLofEnabled();
     _initMsgRedDotEnabled();
+    _initMsgHoldFilterEnabled();
     return this;
   }
 
@@ -155,6 +158,17 @@ class GlobalService extends GetxService {
   Future<void> changeMsgRedDotEnabled(bool value) async {
     rxMsgRedDotEnabled.value = value;
     await sharedPreferences.setBool("msgRedDotEnabled", value);
+  }
+
+  void _initMsgHoldFilterEnabled() {
+    rxMsgHoldFilterEnabled.value =
+        sharedPreferences.getBool("msgHoldFilterEnabled") ?? true;
+  }
+
+  // 更改 按持仓过滤提醒 开关
+  Future<void> changeMsgHoldFilterEnabled(bool value) async {
+    rxMsgHoldFilterEnabled.value = value;
+    await sharedPreferences.setBool("msgHoldFilterEnabled", value);
   }
 
   void refreshAppui() {

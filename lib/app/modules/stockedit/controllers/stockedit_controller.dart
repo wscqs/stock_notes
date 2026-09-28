@@ -7,6 +7,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value; //Value drift有用
 import 'package:remixicon/remixicon.dart';
 import 'package:stock_notes/common/extension/StockTrade++.dart';
+import 'package:stock_notes/common/globle_service.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/services/stock_name_service.dart';
@@ -597,9 +598,11 @@ class StockeditController extends BaseController {
     // 满足买/卖目标跳变时生成提醒消息（价格/市值/市盈三个维度）
     // 新建股票老条件视为未满足，条件已满足时同样生成
     final oldItem = localStockData.value;
-    MeetMessageHelper.addMeetMessageIfNeeded(
+    final holdFilterEnabled = GlobalService.to.rxMsgHoldFilterEnabled.value;
+    final msgIsHolding = rHoldSharesValid.value;
+    final msgHoldStatus = oldItem?.rHoldStatus ?? 0;
+    await MeetMessageHelper.addMeetMessageIfNeeded(
       db,
-      oldCondition: oldItem?.cPriceCondition ?? ConditionStatus.none,
       newCondition: tempItem.priceCondition,
       condKind: 1,
       stockCode: serStockData.value.code!,
@@ -607,10 +610,12 @@ class StockeditController extends BaseController {
       currentValue: serStockData.value.currentPrice,
       buyTarget: pPriceBuyController.text,
       saleTarget: pPriceSaleController.text,
+      holdFilterEnabled: holdFilterEnabled,
+      isHolding: msgIsHolding,
+      rHoldStatus: msgHoldStatus,
     );
-    MeetMessageHelper.addMeetMessageIfNeeded(
+    await MeetMessageHelper.addMeetMessageIfNeeded(
       db,
-      oldCondition: oldItem?.cMarketCapCondition ?? ConditionStatus.none,
       newCondition: tempItem.marketCapCondition,
       condKind: 2,
       stockCode: serStockData.value.code!,
@@ -618,10 +623,12 @@ class StockeditController extends BaseController {
       currentValue: serStockData.value.totalMarketCap,
       buyTarget: pMarketCapBuyController.text,
       saleTarget: pMarketCapSaleController.text,
+      holdFilterEnabled: holdFilterEnabled,
+      isHolding: msgIsHolding,
+      rHoldStatus: msgHoldStatus,
     );
-    MeetMessageHelper.addMeetMessageIfNeeded(
+    await MeetMessageHelper.addMeetMessageIfNeeded(
       db,
-      oldCondition: oldItem?.cPeTtmCondition ?? ConditionStatus.none,
       newCondition: tempItem.peTtmCondition,
       condKind: 3,
       stockCode: serStockData.value.code!,
@@ -629,6 +636,9 @@ class StockeditController extends BaseController {
       currentValue: serStockData.value.peRatioTtm,
       buyTarget: pPeTtmBuyController.text,
       saleTarget: pPeTtmSaleController.text,
+      holdFilterEnabled: holdFilterEnabled,
+      isHolding: msgIsHolding,
+      rHoldStatus: msgHoldStatus,
     );
 
     StockItemsCompanion itemCompanion = StockItemsCompanion.insert(

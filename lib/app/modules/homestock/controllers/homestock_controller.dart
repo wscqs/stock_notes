@@ -5,6 +5,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/app/modules/famous/controllers/famous_data_help.dart';
 import 'package:stock_notes/common/comment_style.dart';
+import 'package:stock_notes/common/globle_service.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/utils/meet_message_helper.dart';
@@ -39,9 +40,7 @@ class HomestockController extends BaseController
   ];
   // 筛选选择本地持久化，下次启动恢复（0=全部,1=持有,2=收藏,3=删除）
   final selectedOrderIndex =
-      (QsCache.get<int>("homestockSelectedOrderIndexKey") ?? 0)
-          .clamp(0, 3)
-          .obs;
+      (QsCache.get<int>("homestockSelectedOrderIndexKey") ?? 0).clamp(0, 3).obs;
 
   void changeSelectedOrderIndex(int index) {
     selectedOrderIndex.value = index;
@@ -286,9 +285,12 @@ class HomestockController extends BaseController
                 peRatioTtm: Value(serItem.peRatioTtm));
             tempItem.setConditions();
             // 满足买/卖目标跳变时生成提醒消息（价格/市值/市盈三个维度）
-            MeetMessageHelper.addMeetMessageIfNeeded(
+            final holdFilterEnabled =
+                GlobalService.to.rxMsgHoldFilterEnabled.value;
+            final isHolding =
+                (double.tryParse(item.rHoldShares ?? '') ?? 0) > 0;
+            await MeetMessageHelper.addMeetMessageIfNeeded(
               db,
-              oldCondition: item.cPriceCondition,
               newCondition: tempItem.priceCondition,
               condKind: 1,
               stockCode: item.code,
@@ -296,10 +298,12 @@ class HomestockController extends BaseController
               currentValue: serItem.currentPrice,
               buyTarget: item.pPriceBuy,
               saleTarget: item.pPriceSale,
+              holdFilterEnabled: holdFilterEnabled,
+              isHolding: isHolding,
+              rHoldStatus: item.rHoldStatus,
             );
-            MeetMessageHelper.addMeetMessageIfNeeded(
+            await MeetMessageHelper.addMeetMessageIfNeeded(
               db,
-              oldCondition: item.cMarketCapCondition,
               newCondition: tempItem.marketCapCondition,
               condKind: 2,
               stockCode: item.code,
@@ -307,10 +311,12 @@ class HomestockController extends BaseController
               currentValue: serItem.totalMarketCap,
               buyTarget: item.pMarketCapBuy,
               saleTarget: item.pMarketCapSale,
+              holdFilterEnabled: holdFilterEnabled,
+              isHolding: isHolding,
+              rHoldStatus: item.rHoldStatus,
             );
-            MeetMessageHelper.addMeetMessageIfNeeded(
+            await MeetMessageHelper.addMeetMessageIfNeeded(
               db,
-              oldCondition: item.cPeTtmCondition,
               newCondition: tempItem.peTtmCondition,
               condKind: 3,
               stockCode: item.code,
@@ -318,6 +324,9 @@ class HomestockController extends BaseController
               currentValue: serItem.peRatioTtm,
               buyTarget: item.pPeTtmBuy,
               saleTarget: item.pPeTtmSale,
+              holdFilterEnabled: holdFilterEnabled,
+              isHolding: isHolding,
+              rHoldStatus: item.rHoldStatus,
             );
             DateTime cMeetUpdateAt = tempItem.cMeetUpdateAt;
             DateTime cNearUpdateAt = tempItem.cNearUpdateAt;

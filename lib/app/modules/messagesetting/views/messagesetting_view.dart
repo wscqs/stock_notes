@@ -34,6 +34,23 @@ class MessagesettingView extends GetView<MessagesettingController> {
                   !GlobalService.to.rxMsgRedDotEnabled.value);
             },
           ),
+          SimpleCell(
+            title: TextKey.anchicunguolvtixing.tr,
+            bottomSubTitle: TextKey.maichutixingjinchicang.tr,
+            isShowRightArrow: false,
+            rightWidget: Obx(() {
+              return Switch(
+                value: GlobalService.to.rxMsgHoldFilterEnabled.value,
+                onChanged: (value) {
+                  GlobalService.to.changeMsgHoldFilterEnabled(value);
+                },
+              );
+            }),
+            onPressed: () {
+              GlobalService.to.changeMsgHoldFilterEnabled(
+                  !GlobalService.to.rxMsgHoldFilterEnabled.value);
+            },
+          ),
         ],
       ),
     );
