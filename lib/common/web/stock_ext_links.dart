@@ -171,9 +171,11 @@ class StockExtLinks {
     QsCache.set(_cacheKey, ids);
   }
 
-  /// A 股判断：sh/sz 开头且非 sh5xxxxx、sz1xxxxx（基金）
+  /// A 股判断：sh/sz/bj 开头且非 sh5xxxxx、sz1xxxxx（基金）
   static bool isAStock(String code) {
-    return (code.startsWith('sh') || code.startsWith('sz')) &&
+    return (code.startsWith('sh') ||
+            code.startsWith('sz') ||
+            code.startsWith('bj')) &&
         !code.startsWith('sh5') &&
         !code.startsWith('sz1');
   }
