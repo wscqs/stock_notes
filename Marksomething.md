@@ -24,6 +24,11 @@ git rm -r --cached android/app/.cxx/Debug
 git add .
 git commit -m "Update .gitignore to exclude unpackage except res"
 
+
+# 推送
+cd /Users/cqs/Documents/flutter/stock_notes && git tag -a v3.4.2 -m "股票详情优化显示北交所股票链接"
+cd /Users/cqs/Documents/flutter/stock_notes && git push origin v3.4.2
+cd /Users/cqs/Documents/flutter/stock_notes && gh release create v3.4.2 --title "v3.4.2" --notes "股票详情优化显示北交所股票链接"
 ## 包名 com.wlsp.carrotcards
 
 ## 打包flutter

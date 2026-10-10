@@ -152,6 +152,8 @@ class QsApi {
         marketType = 'sh';
       } else if (code.startsWith('sz')) {
         marketType = 'sz';
+      } else if (code.startsWith('bj')) {
+        marketType = 'bj';
       } else if (code.startsWith('hk')) {
         marketType = 'hk';
       } else if (code.startsWith('us')) {
@@ -177,7 +179,7 @@ class QsApi {
         stock["total_market_cap"] =
             formatNumber(parts.length > 45 ? parts[45] : null);
         stock["pb_ratio"] = formatNumber(parts.length > 51 ? parts[51] : null);
-      } else if (code.startsWith('sh') || code.startsWith('sz')) {
+      } else if (code.startsWith('sh') || code.startsWith('sz') || code.startsWith('bj')) {
         // A股
         stock["pe_ratio_ttm"] =
             formatNumber(parts.length > 39 ? parts[39] : null);
