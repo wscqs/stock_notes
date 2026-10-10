@@ -277,7 +277,7 @@ class NoteeditController extends GetxController {
 
   Future<void> save({bool isBack = true}) async {
     //键盘隐藏
-    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    FocusManager.instance.primaryFocus?.unfocus();
     editorFocusNode.unfocus(); //这行有监听，所以一定要关闭
     final db = Get.find<DatabaseManager>().db;
     String title = titleController.text;
@@ -319,7 +319,7 @@ class NoteeditController extends GetxController {
     } else {
       //延迟 1 秒
       Future.delayed(500.milliseconds, () {
-        FocusScope.of(Get.context!).requestFocus(FocusNode());
+        FocusManager.instance.primaryFocus?.unfocus();
       });
     }
   }

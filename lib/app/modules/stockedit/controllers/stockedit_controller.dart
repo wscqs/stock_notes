@@ -461,7 +461,7 @@ class StockeditController extends BaseController {
     //   return;
     // }
     //键盘隐藏
-    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    FocusManager.instance.primaryFocus?.unfocus();
     QsHud.showLoading();
     var testQTRequest = await QsApi.instance()
         .requestStockData(stockCodes: [stockNum.toString()]);
@@ -491,7 +491,7 @@ class StockeditController extends BaseController {
 
   Future<void> firstSaveDbAndRefreshUI() async {
     //键盘隐藏
-    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    FocusManager.instance.primaryFocus?.unfocus();
     if (serStockData.value.code != null) {
       //本地看看有没有，有就直接变修改本地数据
       if (!isLocalData.value) {
@@ -567,7 +567,7 @@ class StockeditController extends BaseController {
 
   Future<void> save({bool isBack = true}) async {
     //键盘隐藏
-    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    FocusManager.instance.primaryFocus?.unfocus();
     if (serStockData.value.code == null || serStockData.value.code!.isEmpty) {
       QsHud.showToast(TextKey.shurugupiaotishi.tr);
       return;
@@ -687,6 +687,7 @@ class StockeditController extends BaseController {
   }
 
   void _popSaveAlert({String title = "", VoidCallback? onConfirm}) {
+    FocusManager.instance.primaryFocus?.unfocus();
     QsHud.showConfirmDialog(
         title: title,
         content: TextKey.cicaozuoxubaocun.tr,
@@ -1113,6 +1114,7 @@ class StockeditController extends BaseController {
   }
 
   void deleteTrade(StockTrade trade) {
+    FocusManager.instance.primaryFocus?.unfocus();
     QsHud.showConfirmDialog(
       title: TextKey.querengdelete.tr,
       content: "",

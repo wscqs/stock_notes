@@ -149,7 +149,7 @@ class StocknoteController extends GetxController {
 
   Future<void> save({bool isBack = true}) async {
     //键盘隐藏
-    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    FocusManager.instance.primaryFocus?.unfocus();
     final stock = stockData.value;
     if (stock == null) {
       if (isBack) Get.back();
