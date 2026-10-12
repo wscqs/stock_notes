@@ -122,6 +122,13 @@ class StockExtLinks {
           'https://finance.sina.cn/app/zg_detail_2023.shtml?symbol=xxxxxx&isBlackTheme=1',
       useMarketPrefixLower: true,
     ),
+    StockExtLink(
+      id: 'caiwu_ths',
+      title: '财务同',
+      icon: RemixIcons.money_cny_circle_line,
+      urlTemplate:
+          'https://basic.10jqka.com.cn/astockph/briefinfo/financen.html?code=xxxxxx',
+    ),
   ];
 
   static const List<String> defaultSelectedIds = [

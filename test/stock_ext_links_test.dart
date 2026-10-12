@@ -76,6 +76,13 @@ void main() {
       expect(await StockExtLinks.buildLoadResource(link, 'sh600519'),
           contains('symbol=sh600519'));
     });
+
+    test('财务同替换6位数字代码', () async {
+      final link = StockExtLinks.all.firstWhere((l) => l.id == 'caiwu_ths');
+      final url = await StockExtLinks.buildLoadResource(link, 'sz300848');
+      expect(url,
+          'https://basic.10jqka.com.cn/astockph/briefinfo/financen.html?code=300848');
+    });
   });
 
   group('selectedIds', () {
@@ -92,12 +99,12 @@ void main() {
   });
 
   group('all', () {
-    test('包含10个链接且id唯一', () {
-      expect(StockExtLinks.all.length, 10);
+    test('包含11个链接且id唯一', () {
+      expect(StockExtLinks.all.length, 11);
       final ids = StockExtLinks.all.map((l) => l.id).toSet();
-      expect(ids.length, 10);
+      expect(ids.length, 11);
     });
-    test('顺序为k线百/简况/扫雷同/扫雷安/概念同/大事东/分析研/综评同/综评东/综评新', () {
+    test('顺序为k线百/简况/扫雷同/扫雷安/概念同/大事东/分析研/综评同/综评东/综评新/财务同', () {
       expect(
           StockExtLinks.all.map((l) => l.id).toList(),
           [
@@ -111,6 +118,7 @@ void main() {
             'zongping_ths',
             'zongping_em',
             'zongping_sina',
+            'caiwu_ths',
           ]);
     });
   });
