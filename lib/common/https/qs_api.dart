@@ -187,12 +187,12 @@ class QsApi {
             formatNumber(parts.length > 45 ? parts[45] : null);
         stock["pb_ratio"] = formatNumber(parts.length > 46 ? parts[46] : null);
       } else if (code.startsWith('hk')) {
-        // 港股
+        // 港股：腾讯港股接口字段与A股不同，市盈率在57，市净率在58
         stock["pe_ratio_ttm"] =
-            formatNumber(parts.length > 39 ? parts[39] : null);
+            formatNumber(parts.length > 57 ? parts[57] : null);
         stock["total_market_cap"] =
             formatNumber(parts.length > 45 ? parts[45] : null);
-        //stock["pb_ratio"] = parts.length > 46 ? parts[46] : null;//没有
+        stock["pb_ratio"] = formatNumber(parts.length > 58 ? parts[58] : null);
       }
 
       result.add(stock);
