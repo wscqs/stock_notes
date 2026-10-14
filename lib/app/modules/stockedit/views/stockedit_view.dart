@@ -654,37 +654,118 @@ class StockeditView extends GetView<StockeditController> {
   Widget _buildStockInfoWithAlias() {
     final data = controller.serStockData.value;
     final alias = controller.stockAlias.value;
-    String orDash(String? value) => value ?? "-";
-    final aliasSuffix = (alias.isNotEmpty) ? "（$alias）" : "";
+    final theme = Get.theme;
+    final colorScheme = theme.colorScheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+    String fmt(String? value) {
+      if (value == null || value.isEmpty || value == '0' || value == '0.0') {
+        return '--';
+      }
+      return value;
+    }
+
+    Widget infoItem(String label, String value, {bool fullWidth = false}) {
+      return SizedBox(
+        width: fullWidth ? double.infinity : null,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              child: Text(
-                "${TextKey.gupiaomingcheng.tr}：${orDash(data.name)}$aliasSuffix",
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            Text(
+              '$label：',
+              style: TextStyle(
+                fontSize: 12,
+                color: theme.hintColor,
               ),
             ),
-            InkWell(
-              onTap: controller.showAliasDialog,
-              child: const Padding(
-                padding: EdgeInsets.only(left: 4, right: 8, top: 4, bottom: 6),
-                child: Icon(Icons.edit_attributes_outlined, size: 15),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
         ),
-        Text("${TextKey.gupiaodaima.tr}：${orDash(data.code)}"),
-        Text("${TextKey.shijia.tr}：${orDash(data.currentPrice)}"),
-        Text("${TextKey.shiyinglv.tr}：${orDash(data.peRatioTtm)}"),
-        Text("${TextKey.shijinglv.tr}：${orDash(data.pbRatio)}"),
-        Text("${TextKey.zongshizhi.tr}：${orDash(data.totalMarketCap)}"),
-      ],
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 名称 + 别名标签 + 编辑按钮
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 4,
+            children: [
+              Text(
+                fmt(data.name),
+                style: Get.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ) ??
+                    const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              if (alias.isNotEmpty)
+                Text(
+                  "($alias)",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+              InkWell(
+                onTap: controller.showAliasDialog,
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  child: const Icon(
+                    Icons.edit_attributes_outlined,
+                    size: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // 代码
+          infoItem(TextKey.gupiaodaima.tr, fmt(data.code)),
+          const SizedBox(height: 8),
+          // 市价 / 市值
+          Row(
+            children: [
+              Expanded(
+                child: infoItem(TextKey.shijia.tr, fmt(data.currentPrice)),
+              ),
+              Expanded(
+                child:
+                    infoItem(TextKey.zongshizhi.tr, fmt(data.totalMarketCap)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // 市盈率 / 市净率
+          Row(
+            children: [
+              Expanded(
+                child: infoItem(TextKey.shiyinglv.tr, fmt(data.peRatioTtm)),
+              ),
+              Expanded(
+                child: infoItem(TextKey.shijinglv.tr, fmt(data.pbRatio)),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
