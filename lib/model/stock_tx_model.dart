@@ -73,9 +73,11 @@ class StockTxModel {
   }
 
   //股票页面使用
-  String showAllInfo() {
+  String showAllInfo({String? alias}) {
     String orDash(String? value) => value ?? "-";
-    return "股票名称：${orDash(name)}\n股票代码：${orDash(code)}\n 市价：${orDash(currentPrice)}\n市盈率：${orDash(peRatioTtm)}\n市净率：${orDash(pbRatio)}\n总市值：${orDash(totalMarketCap)}";
+    final aliasSuffix =
+        (alias != null && alias.isNotEmpty) ? "（$alias）" : "";
+    return "股票名称：${orDash(name)}$aliasSuffix\n股票代码：${orDash(code)}\n 市价：${orDash(currentPrice)}\n市盈率：${orDash(peRatioTtm)}\n市净率：${orDash(pbRatio)}\n总市值：${orDash(totalMarketCap)}";
   }
 }
 

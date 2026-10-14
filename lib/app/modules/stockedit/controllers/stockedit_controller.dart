@@ -55,6 +55,7 @@ class StockeditController extends BaseController {
   final localStockData = Rxn<StockItem>();
   final isLocalData = false.obs;
   final searchSuggestions = <MapEntry<String, String>>[].obs;
+  final stockAlias = "".obs; //股票别名
 
   //针对卖买，计算收益率
   final pPriceYieldRate = 0.0.obs;
@@ -151,6 +152,7 @@ class StockeditController extends BaseController {
       rHoldSharesController.text = localStockData.value?.rHoldShares ?? "";
       rAllRemarkController.text = localStockData.value?.rAllRemark ?? "";
       rEventRemarkController.text = localStockData.value?.rEventRemark ?? "";
+      stockAlias.value = localStockData.value?.alias ?? "";
 
       if ((serStockData.value.code ?? "").isEmpty) {
         serStockData.value = StockTxModel(
@@ -180,6 +182,7 @@ class StockeditController extends BaseController {
       pPeTtmRemarkController.text = "";
       rAllRemarkController.text = "";
       rEventRemarkController.text = "";
+      stockAlias.value = "";
     }
   }
 
@@ -648,6 +651,7 @@ class StockeditController extends BaseController {
       currentPrice: Value(serStockData.value.currentPrice),
       totalMarketCap: Value(serStockData.value.totalMarketCap),
       peRatioTtm: Value(serStockData.value.peRatioTtm),
+      alias: Value(stockAlias.value.isEmpty ? null : stockAlias.value),
       pPriceBuy: Value(pPriceBuyController.text),
       pPriceSale: Value(pPriceSaleController.text),
       pPriceRemark: Value(pPriceRemarkController.text),
@@ -965,6 +969,67 @@ class StockeditController extends BaseController {
     }
     FocusManager.instance.primaryFocus?.unfocus();
     TagseditView.show(localStockData.value!);
+  }
+
+  /// 编辑别名弹窗：输入别名（不超过10字），确定后保存并刷新显示
+  void showAliasDialog() {
+    if (!isLocalData.value) {
+      _popSaveAlert(
+          title: TextKey.bianjibieming.tr,
+          onConfirm: () {
+            showAliasDialog();
+          });
+      return;
+    }
+    FocusManager.instance.primaryFocus?.unfocus();
+    final aliasController = TextEditingController(text: stockAlias.value);
+    Get.dialog(
+      AlertDialog(
+        title: Text(TextKey.bianjibieming.tr,
+            style: const TextStyle(fontSize: 20)),
+        content: TextField(
+          controller: aliasController,
+          maxLength: 10,
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: TextKey.bieming.tr,
+            hintText: TextKey.biemingbuchaoguo10zi.tr,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(TextKey.quxiao.tr),
+          ),
+          TextButton(
+            onPressed: () {
+              final alias = aliasController.text.trim();
+              if (alias.length > 10) {
+                QsHud.showToast(TextKey.biemingbuchaoguo10zi.tr);
+                return;
+              }
+              Get.back();
+              _saveAlias(alias);
+            },
+            child: Text(TextKey.queding.tr),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 保存别名到数据库并刷新本地状态
+  Future<void> _saveAlias(String alias) async {
+    final id = localStockData.value!.id;
+    await db.updateStockAlias(id, alias.isEmpty ? null : alias);
+    stockAlias.value = alias;
+    //同步刷新 localStockData，避免返回后再进来丢失
+    final item = await db.getStockItemWithTagsByCode(localStockData.value!.code!);
+    if (item != null) {
+      localStockData.value = item;
+    }
+    QsHud.showToast(TextKey.baocun.tr + TextKey.success.tr);
   }
 
   //笔记（大备注）：未保存股票时先提示保存

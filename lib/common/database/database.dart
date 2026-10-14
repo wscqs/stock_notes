@@ -47,7 +47,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   //改表要处理合并migration
   @override
@@ -92,6 +92,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from <= 10) {
             await migrator.createTable(messageItems);
+          }
+          if (from <= 11) {
+            await migrator.addColumn(stockItems, stockItems.alias);
           }
         },
         onCreate: (migrator) async {
@@ -157,6 +160,13 @@ class AppDatabase extends _$AppDatabase {
     return (update(stockItems)..where((tbl) => tbl.id.equals(id))).write(
         StockItemsCompanion(
             rNote: Value(content), updateAt: Value(DateTime.now())));
+  }
+
+  //更新股票别名，改动 updateAt；alias 传 null/空表示清空
+  Future<void> updateStockAlias(int id, String? alias) {
+    return (update(stockItems)..where((tbl) => tbl.id.equals(id))).write(
+        StockItemsCompanion(
+            alias: Value(alias), updateAt: Value(DateTime.now())));
   }
 
   Future<void> updateStock(

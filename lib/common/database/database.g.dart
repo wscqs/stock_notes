@@ -50,6 +50,11 @@ class $StockItemsTable extends StockItems
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
       'code', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _aliasMeta = const VerificationMeta('alias');
+  @override
+  late final GeneratedColumn<String> alias = GeneratedColumn<String>(
+      'alias', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _currentPriceMeta =
       const VerificationMeta('currentPrice');
   @override
@@ -257,6 +262,7 @@ class $StockItemsTable extends StockItems
         marketType,
         name,
         code,
+        alias,
         currentPrice,
         peRatioTtm,
         totalMarketCap,
@@ -327,6 +333,10 @@ class $StockItemsTable extends StockItems
           _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
     } else if (isInserting) {
       context.missing(_codeMeta);
+    }
+    if (data.containsKey('alias')) {
+      context.handle(
+          _aliasMeta, alias.isAcceptableOrUnknown(data['alias']!, _aliasMeta));
     }
     if (data.containsKey('current_price')) {
       context.handle(
@@ -511,6 +521,8 @@ class $StockItemsTable extends StockItems
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}code'])!,
+      alias: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}alias']),
       currentPrice: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}current_price']),
       peRatioTtm: attachedDatabase.typeMapping
@@ -585,6 +597,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
   final String marketType;
   final String name;
   final String code;
+  final String? alias;
   final String? currentPrice;
   final String? peRatioTtm;
   final String? totalMarketCap;
@@ -621,6 +634,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       required this.marketType,
       required this.name,
       required this.code,
+      this.alias,
       this.currentPrice,
       this.peRatioTtm,
       this.totalMarketCap,
@@ -659,6 +673,9 @@ class StockItem extends DataClass implements Insertable<StockItem> {
     map['market_type'] = Variable<String>(marketType);
     map['name'] = Variable<String>(name);
     map['code'] = Variable<String>(code);
+    if (!nullToAbsent || alias != null) {
+      map['alias'] = Variable<String>(alias);
+    }
     if (!nullToAbsent || currentPrice != null) {
       map['current_price'] = Variable<String>(currentPrice);
     }
@@ -737,6 +754,8 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       marketType: Value(marketType),
       name: Value(name),
       code: Value(code),
+      alias:
+          alias == null && nullToAbsent ? const Value.absent() : Value(alias),
       currentPrice: currentPrice == null && nullToAbsent
           ? const Value.absent()
           : Value(currentPrice),
@@ -816,6 +835,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       marketType: serializer.fromJson<String>(json['marketType']),
       name: serializer.fromJson<String>(json['name']),
       code: serializer.fromJson<String>(json['code']),
+      alias: serializer.fromJson<String?>(json['alias']),
       currentPrice: serializer.fromJson<String?>(json['currentPrice']),
       peRatioTtm: serializer.fromJson<String?>(json['peRatioTtm']),
       totalMarketCap: serializer.fromJson<String?>(json['totalMarketCap']),
@@ -858,6 +878,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
       'marketType': serializer.toJson<String>(marketType),
       'name': serializer.toJson<String>(name),
       'code': serializer.toJson<String>(code),
+      'alias': serializer.toJson<String?>(alias),
       'currentPrice': serializer.toJson<String?>(currentPrice),
       'peRatioTtm': serializer.toJson<String?>(peRatioTtm),
       'totalMarketCap': serializer.toJson<String?>(totalMarketCap),
@@ -897,6 +918,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           String? marketType,
           String? name,
           String? code,
+          Value<String?> alias = const Value.absent(),
           Value<String?> currentPrice = const Value.absent(),
           Value<String?> peRatioTtm = const Value.absent(),
           Value<String?> totalMarketCap = const Value.absent(),
@@ -933,6 +955,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         marketType: marketType ?? this.marketType,
         name: name ?? this.name,
         code: code ?? this.code,
+        alias: alias.present ? alias.value : this.alias,
         currentPrice:
             currentPrice.present ? currentPrice.value : this.currentPrice,
         peRatioTtm: peRatioTtm.present ? peRatioTtm.value : this.peRatioTtm,
@@ -981,6 +1004,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           data.marketType.present ? data.marketType.value : this.marketType,
       name: data.name.present ? data.name.value : this.name,
       code: data.code.present ? data.code.value : this.code,
+      alias: data.alias.present ? data.alias.value : this.alias,
       currentPrice: data.currentPrice.present
           ? data.currentPrice.value
           : this.currentPrice,
@@ -1056,6 +1080,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           ..write('marketType: $marketType, ')
           ..write('name: $name, ')
           ..write('code: $code, ')
+          ..write('alias: $alias, ')
           ..write('currentPrice: $currentPrice, ')
           ..write('peRatioTtm: $peRatioTtm, ')
           ..write('totalMarketCap: $totalMarketCap, ')
@@ -1097,6 +1122,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
         marketType,
         name,
         code,
+        alias,
         currentPrice,
         peRatioTtm,
         totalMarketCap,
@@ -1137,6 +1163,7 @@ class StockItem extends DataClass implements Insertable<StockItem> {
           other.marketType == this.marketType &&
           other.name == this.name &&
           other.code == this.code &&
+          other.alias == this.alias &&
           other.currentPrice == this.currentPrice &&
           other.peRatioTtm == this.peRatioTtm &&
           other.totalMarketCap == this.totalMarketCap &&
@@ -1175,6 +1202,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
   final Value<String> marketType;
   final Value<String> name;
   final Value<String> code;
+  final Value<String?> alias;
   final Value<String?> currentPrice;
   final Value<String?> peRatioTtm;
   final Value<String?> totalMarketCap;
@@ -1211,6 +1239,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     this.marketType = const Value.absent(),
     this.name = const Value.absent(),
     this.code = const Value.absent(),
+    this.alias = const Value.absent(),
     this.currentPrice = const Value.absent(),
     this.peRatioTtm = const Value.absent(),
     this.totalMarketCap = const Value.absent(),
@@ -1248,6 +1277,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     required String marketType,
     required String name,
     required String code,
+    this.alias = const Value.absent(),
     this.currentPrice = const Value.absent(),
     this.peRatioTtm = const Value.absent(),
     this.totalMarketCap = const Value.absent(),
@@ -1287,6 +1317,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     Expression<String>? marketType,
     Expression<String>? name,
     Expression<String>? code,
+    Expression<String>? alias,
     Expression<String>? currentPrice,
     Expression<String>? peRatioTtm,
     Expression<String>? totalMarketCap,
@@ -1324,6 +1355,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       if (marketType != null) 'market_type': marketType,
       if (name != null) 'name': name,
       if (code != null) 'code': code,
+      if (alias != null) 'alias': alias,
       if (currentPrice != null) 'current_price': currentPrice,
       if (peRatioTtm != null) 'pe_ratio_ttm': peRatioTtm,
       if (totalMarketCap != null) 'total_market_cap': totalMarketCap,
@@ -1364,6 +1396,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       Value<String>? marketType,
       Value<String>? name,
       Value<String>? code,
+      Value<String?>? alias,
       Value<String?>? currentPrice,
       Value<String?>? peRatioTtm,
       Value<String?>? totalMarketCap,
@@ -1400,6 +1433,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
       marketType: marketType ?? this.marketType,
       name: name ?? this.name,
       code: code ?? this.code,
+      alias: alias ?? this.alias,
       currentPrice: currentPrice ?? this.currentPrice,
       peRatioTtm: peRatioTtm ?? this.peRatioTtm,
       totalMarketCap: totalMarketCap ?? this.totalMarketCap,
@@ -1452,6 +1486,9 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (alias.present) {
+      map['alias'] = Variable<String>(alias.value);
     }
     if (currentPrice.present) {
       map['current_price'] = Variable<String>(currentPrice.value);
@@ -1552,6 +1589,7 @@ class StockItemsCompanion extends UpdateCompanion<StockItem> {
           ..write('marketType: $marketType, ')
           ..write('name: $name, ')
           ..write('code: $code, ')
+          ..write('alias: $alias, ')
           ..write('currentPrice: $currentPrice, ')
           ..write('peRatioTtm: $peRatioTtm, ')
           ..write('totalMarketCap: $totalMarketCap, ')
@@ -4078,6 +4116,7 @@ typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
   required String marketType,
   required String name,
   required String code,
+  Value<String?> alias,
   Value<String?> currentPrice,
   Value<String?> peRatioTtm,
   Value<String?> totalMarketCap,
@@ -4115,6 +4154,7 @@ typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
   Value<String> marketType,
   Value<String> name,
   Value<String> code,
+  Value<String?> alias,
   Value<String?> currentPrice,
   Value<String?> peRatioTtm,
   Value<String?> totalMarketCap,
@@ -4205,6 +4245,9 @@ class $$StockItemsTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get alias => $composableBuilder(
+      column: $table.alias, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get currentPrice => $composableBuilder(
       column: $table.currentPrice, builder: (column) => ColumnFilters(column));
@@ -4368,6 +4411,9 @@ class $$StockItemsTableOrderingComposer
   ColumnOrderings<String> get code => $composableBuilder(
       column: $table.code, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get alias => $composableBuilder(
+      column: $table.alias, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get currentPrice => $composableBuilder(
       column: $table.currentPrice,
       builder: (column) => ColumnOrderings(column));
@@ -4496,6 +4542,9 @@ class $$StockItemsTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get alias =>
+      $composableBuilder(column: $table.alias, builder: (column) => column);
 
   GeneratedColumn<String> get currentPrice => $composableBuilder(
       column: $table.currentPrice, builder: (column) => column);
@@ -4656,6 +4705,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             Value<String> marketType = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String> code = const Value.absent(),
+            Value<String?> alias = const Value.absent(),
             Value<String?> currentPrice = const Value.absent(),
             Value<String?> peRatioTtm = const Value.absent(),
             Value<String?> totalMarketCap = const Value.absent(),
@@ -4693,6 +4743,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             marketType: marketType,
             name: name,
             code: code,
+            alias: alias,
             currentPrice: currentPrice,
             peRatioTtm: peRatioTtm,
             totalMarketCap: totalMarketCap,
@@ -4730,6 +4781,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             required String marketType,
             required String name,
             required String code,
+            Value<String?> alias = const Value.absent(),
             Value<String?> currentPrice = const Value.absent(),
             Value<String?> peRatioTtm = const Value.absent(),
             Value<String?> totalMarketCap = const Value.absent(),
@@ -4767,6 +4819,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
             marketType: marketType,
             name: name,
             code: code,
+            alias: alias,
             currentPrice: currentPrice,
             peRatioTtm: peRatioTtm,
             totalMarketCap: totalMarketCap,
@@ -4799,7 +4852,7 @@ class $$StockItemsTableTableManager extends RootTableManager<
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
-                    e.readTable(table),
+                    e.readTable<$StockItemsTable, StockItem>(table),
                     $$StockItemsTableReferences(db, table, e)
                   ))
               .toList(),
@@ -5107,7 +5160,7 @@ class $$NoteItemsTableTableManager extends RootTableManager<
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
-                    e.readTable(table),
+                    e.readTable<$NoteItemsTable, NoteItem>(table),
                     $$NoteItemsTableReferences(db, table, e)
                   ))
               .toList(),
@@ -5326,7 +5379,7 @@ class $$StockItemTagsTableTableManager extends RootTableManager<
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
-                    e.readTable(table),
+                    e.readTable<$StockItemTagsTable, StockItemTag>(table),
                     $$StockItemTagsTableReferences(db, table, e)
                   ))
               .toList(),
@@ -5607,7 +5660,7 @@ class $$StockTagsTableTableManager extends RootTableManager<
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
-                    e.readTable(table),
+                    e.readTable<$StockTagsTable, StockTag>(table),
                     $$StockTagsTableReferences(db, table, e)
                   ))
               .toList(),
@@ -6036,7 +6089,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
-                    e.readTable(table),
+                    e.readTable<$StockTradesTable, StockTrade>(table),
                     $$StockTradesTableReferences(db, table, e)
                   ))
               .toList(),
@@ -6265,7 +6318,7 @@ class $$NoteItemTagsTableTableManager extends RootTableManager<
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
-                    e.readTable(table),
+                    e.readTable<$NoteItemTagsTable, NoteItemTag>(table),
                     $$NoteItemTagsTableReferences(db, table, e)
                   ))
               .toList(),
@@ -6545,8 +6598,10 @@ class $$NoteTagsTableTableManager extends RootTableManager<
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$NoteTagsTableReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$NoteTagsTable, NoteTag>(table),
+                    $$NoteTagsTableReferences(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: ({noteId = false, tagId = false}) {
             return PrefetchHooks(
@@ -6828,7 +6883,11 @@ class $$MessageItemsTableTableManager extends RootTableManager<
             isRead: isRead,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable<$MessageItemsTable, MessageItem>(table),
+                    BaseReferences<_$AppDatabase, $MessageItemsTable,
+                        MessageItem>(db, table, e)
+                  ))
               .toList(),
           prefetchHooksCallback: null,
         ));

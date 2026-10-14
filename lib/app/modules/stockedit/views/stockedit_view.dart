@@ -693,7 +693,24 @@ class StockeditView extends GetView<StockeditController> {
         ),
         kSpaceH(8),
         (controller.serStockData.value.code != null)
-            ? Text(controller.serStockData.value.showAllInfo())
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.serStockData.value
+                        .showAllInfo(alias: controller.stockAlias.value),
+                  ),
+                  InkWell(
+                    onTap: controller.showAliasDialog,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8.0, right: 8.0, bottom: 16),
+                      child:
+                          const Icon(Icons.edit_attributes_outlined, size: 15),
+                    ),
+                  ),
+                ],
+              )
             : Text(TextKey.no.tr, style: TextStyle(color: Colors.grey)),
         if ((controller.localStockData.value?.tagList.length ?? 0) > 0)
           Padding(

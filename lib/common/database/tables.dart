@@ -6,6 +6,7 @@ class StockItems extends Table with TableMixin {
   TextColumn get marketType => text()();
   TextColumn get name => text()();
   TextColumn get code => text()();
+  TextColumn get alias => text().nullable()(); //股票别名
   TextColumn get currentPrice => text().nullable()();
   TextColumn get peRatioTtm => text().nullable()();
   TextColumn get totalMarketCap => text().nullable()();

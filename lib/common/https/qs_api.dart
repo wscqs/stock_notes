@@ -18,6 +18,7 @@ class QsApi {
     return _instance ??= QsApi._();
   }
 
+  //hq.sinajs.cn数据源新浪的没有PE/PB/市值
   //https://xueqiu.com 下面地址需要 cookie 才能访问，后续再用吧（比腾讯多股息率）,用腾讯
   //https://stock.xueqiu.com/v5/stock/quote.json?symbol=SZ000001&extend=detail
   //https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=SZ000001,SZ399001&extend=detail
@@ -179,7 +180,9 @@ class QsApi {
         stock["total_market_cap"] =
             formatNumber(parts.length > 45 ? parts[45] : null);
         stock["pb_ratio"] = formatNumber(parts.length > 51 ? parts[51] : null);
-      } else if (code.startsWith('sh') || code.startsWith('sz') || code.startsWith('bj')) {
+      } else if (code.startsWith('sh') ||
+          code.startsWith('sz') ||
+          code.startsWith('bj')) {
         // A股
         stock["pe_ratio_ttm"] =
             formatNumber(parts.length > 39 ? parts[39] : null);

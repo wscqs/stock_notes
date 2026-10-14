@@ -168,6 +168,9 @@ class TextKey {
   static const maichutixingjinchicang = 'maichutixingjinchicang'; // 卖出提醒仅限持仓股票
   static const xiaoxishuoming = 'xiaoxishuoming'; // 消息说明
   static const xiaoxishuomingtitle = 'xiaoxishuomingtitle'; // 消息说明（标题）
+  static const bianjibieming = 'bianjibieming'; // 编辑别名
+  static const bieming = 'bieming'; // 别名
+  static const biemingbuchaoguo10zi = 'biemingbuchaoguo10zi'; // 别名不超过10字
 }
 
 const Map<String, String> zh = {
@@ -393,6 +396,9 @@ const Map<String, String> zh = {
 • 「小红点提醒」控制首页消息入口的未读角标。
 • 进入消息页后，所有消息会自动标记为已读。
 ''',
+  TextKey.bianjibieming: '编辑别名',
+  TextKey.bieming: '别名',
+  TextKey.biemingbuchaoguo10zi: '别名不超过10字',
 };
 
 const Map<String, String> en = {
@@ -625,4 +631,7 @@ A privacy-first, offline investment journaling and review app. All data is store
 • "Red Dot Reminder" controls the unread badge on the message entry of the home page.
 • All messages are marked as read when you open the message page.
 ''',
+  TextKey.bianjibieming: 'Edit Alias',
+  TextKey.bieming: 'Alias',
+  TextKey.biemingbuchaoguo10zi: 'Alias cannot exceed 10 characters',
 };
