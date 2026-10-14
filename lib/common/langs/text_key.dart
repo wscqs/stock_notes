@@ -16,6 +16,7 @@ class TextKey {
   static const quxiao = 'quxiao';
   static const lianxi = 'lianxi';
   static const gupiao = 'gupiao';
+  static const gupiaomingcheng = 'gupiaomingcheng';
   static const gupiaodaima = 'gupiaodaima';
   static const biji = 'biji';
   static const baocun = 'baochun';
@@ -28,6 +29,9 @@ class TextKey {
   static const liyou = 'liyou';
   static const shizhi = 'shizhi';
   static const shiyin = 'shiyin';
+  static const shiyinglv = 'shiyinglv';
+  static const shijinglv = 'shijinglv';
+  static const shijia = 'shijia';
   static const beizui = 'beizui';
   static const shijian = 'shijian';
   static const jilu = 'jilu';
@@ -191,7 +195,8 @@ const Map<String, String> zh = {
   TextKey.quxiao: '取消',
   TextKey.lianxi: '联系',
   TextKey.gupiao: '股票',
-  TextKey.gupiaodaima: '股票代码',
+  TextKey.gupiaomingcheng: '名称',
+  TextKey.gupiaodaima: '代码',
   TextKey.biji: '笔记',
   TextKey.baocun: '保存',
   TextKey.wancheng: '完成',
@@ -203,6 +208,9 @@ const Map<String, String> zh = {
   TextKey.liyou: '理由',
   TextKey.shizhi: '市值',
   TextKey.shiyin: '市盈(MMT)',
+  TextKey.shiyinglv: '市盈率',
+  TextKey.shijinglv: '市净率',
+  TextKey.shijia: '市价',
   TextKey.beizui: '备注',
   TextKey.shijian: '事件',
   TextKey.jilu: '记录',
@@ -419,6 +427,7 @@ const Map<String, String> en = {
   TextKey.quxiao: 'Cancel',
   TextKey.lianxi: 'Contact',
   TextKey.gupiao: 'Stock',
+  TextKey.gupiaomingcheng: 'Name',
   TextKey.gupiaodaima: 'Code',
   TextKey.biji: 'Note',
   TextKey.baocun: 'Save',
@@ -431,6 +440,9 @@ const Map<String, String> en = {
   TextKey.liyou: 'Reason',
   TextKey.shizhi: 'Market value',
   TextKey.shiyin: 'P/E(MMT)',
+  TextKey.shiyinglv: 'P/E Ratio',
+  TextKey.shijinglv: 'P/B Ratio',
+  TextKey.shijia: 'Price',
   TextKey.beizui: 'Remarks',
   TextKey.shijian: 'Event',
   TextKey.jilu: 'Record',

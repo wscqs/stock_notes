@@ -651,6 +651,43 @@ class StockeditView extends GetView<StockeditController> {
     );
   }
 
+  Widget _buildStockInfoWithAlias() {
+    final data = controller.serStockData.value;
+    final alias = controller.stockAlias.value;
+    String orDash(String? value) => value ?? "-";
+    final aliasSuffix = (alias.isNotEmpty) ? "（$alias）" : "";
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(
+                "${TextKey.gupiaomingcheng.tr}：${orDash(data.name)}$aliasSuffix",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            InkWell(
+              onTap: controller.showAliasDialog,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 4, right: 8, top: 4, bottom: 6),
+                child: Icon(Icons.edit_attributes_outlined, size: 15),
+              ),
+            ),
+          ],
+        ),
+        Text("${TextKey.gupiaodaima.tr}：${orDash(data.code)}"),
+        Text("${TextKey.shijia.tr}：${orDash(data.currentPrice)}"),
+        Text("${TextKey.shiyinglv.tr}：${orDash(data.peRatioTtm)}"),
+        Text("${TextKey.shijinglv.tr}：${orDash(data.pbRatio)}"),
+        Text("${TextKey.zongshizhi.tr}：${orDash(data.totalMarketCap)}"),
+      ],
+    );
+  }
+
   Widget _gupiaoinfo() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -693,24 +730,7 @@ class StockeditView extends GetView<StockeditController> {
         ),
         kSpaceH(8),
         (controller.serStockData.value.code != null)
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    controller.serStockData.value
-                        .showAllInfo(alias: controller.stockAlias.value),
-                  ),
-                  InkWell(
-                    onTap: controller.showAliasDialog,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8.0, right: 8.0, bottom: 16),
-                      child:
-                          const Icon(Icons.edit_attributes_outlined, size: 15),
-                    ),
-                  ),
-                ],
-              )
+            ? _buildStockInfoWithAlias()
             : Text(TextKey.no.tr, style: TextStyle(color: Colors.grey)),
         if ((controller.localStockData.value?.tagList.length ?? 0) > 0)
           Padding(
