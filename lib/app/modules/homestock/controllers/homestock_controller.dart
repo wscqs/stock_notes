@@ -380,7 +380,9 @@ class HomestockController extends BaseController
     } else {
       filterItems = dbItems
           .where((item) =>
-              item.name.contains(query) || item.code.contains(query)) // 搜索逻辑
+              item.name.contains(query) ||
+              item.code.contains(query) ||
+              (item.alias?.contains(query) ?? false)) // 搜索逻辑：名称/代码/别名
           .toList();
     }
 

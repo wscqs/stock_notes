@@ -605,7 +605,9 @@ class _HomeStockCellState extends State<HomeStockCell>
                 children: [
                   Flexible(
                     child: Text(
-                      widget.item.name,
+                      (widget.item.alias?.isNotEmpty == true)
+                          ? widget.item.alias!
+                          : widget.item.name,
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
@@ -635,7 +637,9 @@ class _HomeStockCellState extends State<HomeStockCell>
                 children: [
                   Flexible(
                     child: Text(
-                      widget.item.code ?? "",
+                      (widget.item.alias?.isNotEmpty == true)
+                          ? "${widget.item.code ?? ""} ${widget.item.name}"
+                          : widget.item.code ?? "",
                       style: TextStyle(
                         fontSize: 12,
                         color: Get.theme.colorScheme.onSurfaceVariant,
