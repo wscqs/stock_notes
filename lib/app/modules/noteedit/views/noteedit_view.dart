@@ -83,6 +83,110 @@ class NoteeditView extends GetView<NoteeditController> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         buildTitleTextField(),
+                                        if ((controller.localData.value
+                                                    ?.assetList.length ??
+                                                0) >
+                                            0)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 16, right: 16, bottom: 2),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Wrap(
+                                                        spacing: 12,
+                                                        runSpacing: 4,
+                                                        children: controller
+                                                            .localData
+                                                            .value!
+                                                            .assetList
+                                                            .map((asset) {
+                                                          final rate =
+                                                              asset.profitRate;
+                                                          final color = rate ==
+                                                                  null
+                                                              ? null
+                                                              : rate > 0
+                                                                  ? Colors.red
+                                                                  : Colors
+                                                                      .green;
+                                                          return Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .account_balance_wallet_outlined,
+                                                                size: 12,
+                                                              ),
+                                                              SizedBox(
+                                                                width: 4,
+                                                              ),
+                                                              Text(
+                                                                asset.name,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 8),
+                                                              _buildAssetInfoColumn(
+                                                                label: TextKey
+                                                                    .mairujiage
+                                                                    .tr,
+                                                                value: asset
+                                                                        .buyAmountText
+                                                                        .isEmpty
+                                                                    ? '-'
+                                                                    : asset
+                                                                        .buyAmountText,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 12),
+                                                              _buildAssetInfoColumn(
+                                                                label: TextKey
+                                                                    .maichujiage
+                                                                    .tr,
+                                                                value: asset
+                                                                        .sellAmountText
+                                                                        .isEmpty
+                                                                    ? '-'
+                                                                    : asset
+                                                                        .sellAmountText,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 12),
+                                                              _buildAssetInfoColumn(
+                                                                label: TextKey
+                                                                    .shouyilv
+                                                                    .tr,
+                                                                value: asset
+                                                                        .profitRateText ??
+                                                                    '-',
+                                                                valueColor:
+                                                                    color,
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         if ((controller.localData.value?.tagList
                                                     .length ??
                                                 0) >
@@ -108,47 +212,6 @@ class NoteeditView extends GetView<NoteeditController> {
                                                     style: const TextStyle(
                                                         fontSize: 12),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        if ((controller.localData.value
-                                                    ?.assetList.length ??
-                                                0) >
-                                            0)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 16, right: 16, bottom: 4),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    const Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 4, top: 2),
-                                                      child: Icon(
-                                                        Icons
-                                                            .account_balance_wallet,
-                                                        size: 12,
-                                                      ),
-                                                    ),
-                                                    ...controller.localData.value!
-                                                        .assetList
-                                                        .map((asset) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets.only(
-                                                                right: 8),
-                                                        child: Text(
-                                                          '${asset.name} ${asset.buyAmountText} ${asset.sellAmountText} ${asset.profitRateText ?? '-'}',
-                                                          style: const TextStyle(
-                                                              fontSize: 12),
-                                                        ),
-                                                      );
-                                                    })
-                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -480,6 +543,33 @@ class NoteeditView extends GetView<NoteeditController> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAssetInfoColumn({
+    required String label,
+    required String value,
+    Color? valueColor,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.grey.withValues(alpha: 0.7),
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12,
+            color: valueColor,
+          ),
+        ),
+      ],
     );
   }
 }

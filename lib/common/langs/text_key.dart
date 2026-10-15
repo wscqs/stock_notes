@@ -115,8 +115,8 @@ class TextKey {
   static const zongshizhi = 'zongshizhi';
   static const zichan = 'zichan';
   static const zichanming = 'zichanming';
-  static const mairue = 'mairue';
-  static const maichue = 'maichue';
+  static const mairujiage = 'mairujiage';
+  static const maichujiage = 'maichujiage';
   static const baocunbingcaozu = 'baocunbingcaozu';
   static const jiaoyi = 'jiaoyi';
   static const jiaoyijilu = 'jiaoyijilu';
@@ -294,8 +294,8 @@ const Map<String, String> zh = {
   TextKey.zongshizhi: '总市值',
   TextKey.zichan: '资产',
   TextKey.zichanming: '资产名',
-  TextKey.mairue: '买入额',
-  TextKey.maichue: '卖出额',
+  TextKey.mairujiage: '买入价格',
+  TextKey.maichujiage: '卖出价格',
   TextKey.jiaoyi: '交易',
   TextKey.jiaoyijilu: '交易记录',
   TextKey.gengduo: '更多',
@@ -533,8 +533,8 @@ const Map<String, String> en = {
   TextKey.zongshizhi: 'Total value',
   TextKey.zichan: 'Asset',
   TextKey.zichanming: 'Asset Name',
-  TextKey.mairue: 'Buy Amount',
-  TextKey.maichue: 'Sell Amount',
+  TextKey.mairujiage: 'Buy Price',
+  TextKey.maichujiage: 'Sell Price',
   TextKey.jiaoyi: 'Trade',
   TextKey.jiaoyijilu: 'Trade Records',
   TextKey.gengduo: 'More',
