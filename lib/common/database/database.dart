@@ -761,14 +761,19 @@ extension NoteItemExt on NoteItem {
 
 extension NoteAssetExt on NoteAsset {
   double? get profit {
-    final buy = double.tryParse(buyAmount ?? '');
-    final sell = double.tryParse(sellAmount ?? '');
+    final buyText = buyAmount ?? '';
+    final sellText = sellAmount ?? '';
+    if (buyText.isEmpty && sellText.isEmpty) return null;
+    final buy = double.tryParse(buyText);
     if (buy == null) return null;
-    return (sell ?? 0) - buy;
+    final sell = double.tryParse(sellText) ?? 0;
+    return sell - buy;
   }
 
   double? get profitRate {
-    final buy = double.tryParse(buyAmount ?? '');
+    final buyText = buyAmount ?? '';
+    if (buyText.isEmpty) return null;
+    final buy = double.tryParse(buyText);
     if (buy == null || buy == 0) return null;
     final p = profit;
     if (p == null) return null;

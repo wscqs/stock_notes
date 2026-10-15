@@ -286,14 +286,21 @@ class NoteeditController extends GetxController {
     final profitRateText = ''.obs;
 
     void updateProfit() {
-      final buy = double.tryParse(buyController.text);
-      final sell = double.tryParse(sellController.text);
+      final buyText = buyController.text.trim();
+      final sellText = sellController.text.trim();
+      final buy = double.tryParse(buyText.isEmpty ? '0' : buyText);
+      final sell = double.tryParse(sellText.isEmpty ? '0' : sellText) ?? 0;
+      if (buyText.isEmpty && sellText.isEmpty) {
+        profitText.value = '-';
+        profitRateText.value = '-';
+        return;
+      }
       if (buy == null) {
         profitText.value = '-';
         profitRateText.value = '-';
         return;
       }
-      final profit = (sell ?? 0) - buy;
+      final profit = sell - buy;
       profitText.value = profit.toStringAsFixed(2);
       if (buy == 0) {
         profitRateText.value = '-';

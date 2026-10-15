@@ -22,8 +22,22 @@ void main() {
       expect(asset.profitRateText, '+20.0%');
     });
 
-    test('empty buy amount returns null profit and rate', () {
+    test('only buy amount calculates profit against zero sell', () {
+      final asset = makeAsset(buyAmount: '1000');
+      expect(asset.profit, -1000.0);
+      expect(asset.profitRate, -1.0);
+      expect(asset.profitRateText, '-100.0%');
+    });
+
+    test('only sell amount with empty buy returns null', () {
       final asset = makeAsset(sellAmount: '1200');
+      expect(asset.profit, isNull);
+      expect(asset.profitRate, isNull);
+      expect(asset.profitRateText, isNull);
+    });
+
+    test('empty buy and sell amounts return null', () {
+      final asset = makeAsset();
       expect(asset.profit, isNull);
       expect(asset.profitRate, isNull);
       expect(asset.profitRateText, isNull);
