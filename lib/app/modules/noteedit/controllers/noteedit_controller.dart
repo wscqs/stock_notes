@@ -97,7 +97,7 @@ class NoteeditController extends GetxController {
               Get.back();
             },
             child: Text(TextKey.bu.tr + TextKey.baocun.tr),
-          ),
+            ),
           TextButton(
             onPressed: () {
               save();
@@ -105,10 +105,10 @@ class NoteeditController extends GetxController {
               Get.back();
             },
             child: Text(TextKey.baocun.tr),
-          ),
+            ),
         ],
       ),
-    );
+      );
     return false;
   }
 
@@ -315,92 +315,92 @@ class NoteeditController extends GetxController {
         final keyboardHeight = MediaQuery.of(_).viewInsets.bottom;
         return Padding(
           padding: EdgeInsets.only(bottom: keyboardHeight),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Get.theme.colorScheme.surface,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
-            ),
-            padding: const EdgeInsets.all(16),
+          child: Material(
+            color: Get.theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration:
-                        InputDecoration(labelText: TextKey.zichanming.tr),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: buyController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: TextKey.mairue.tr),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: sellController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: TextKey.maichue.tr),
-                  ),
-                  const SizedBox(height: 16),
-                  Obx(() => Row(
-                        children: [
-                          Expanded(
-                              child: Text(
-                                  '${TextKey.shouyie.tr}: ${profitText.value}')),
-                          Expanded(
-                              child: Text(
-                                  '${TextKey.shouyilv.tr}: ${profitRateText.value}')),
-                        ],
-                      )),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => SmartDialog.dismiss(),
-                          child: Text(TextKey.quxiao.tr),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      decoration:
+                          InputDecoration(labelText: TextKey.zichanming.tr),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: buyController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(labelText: TextKey.mairue.tr),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: sellController,
+                      keyboardType: TextInputType.number,
+                      decoration:
+                          InputDecoration(labelText: TextKey.maichue.tr),
+                    ),
+                    const SizedBox(height: 16),
+                    Obx(() => Row(
+                          children: [
+                            Expanded(
+                                child: Text(
+                                    '${TextKey.shouyie.tr}: ${profitText.value}')),
+                            Expanded(
+                                child: Text(
+                                    '${TextKey.shouyilv.tr}: ${profitRateText.value}')),
+                          ],
+                        )),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () => SmartDialog.dismiss(),
+                            child: Text(TextKey.quxiao.tr),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final name = nameController.text.trim();
-                            if (name.isEmpty) {
-                              QsHud.showToast(
-                                  TextKey.qingshuru.tr + TextKey.zichanming.tr);
-                              return;
-                            }
-                            final db = Get.find<DatabaseManager>().db;
-                            final companion = NoteAssetsCompanion(
-                              noteId: Value(localData.value!.id),
-                              name: Value(name),
-                              buyAmount: Value(
-                                  buyController.text.trim().isEmpty
-                                      ? null
-                                      : buyController.text.trim()),
-                              sellAmount: Value(
-                                  sellController.text.trim().isEmpty
-                                      ? null
-                                      : sellController.text.trim()),
-                            );
-                            if (asset != null) {
-                              await db.updateNoteAsset(
-                                  companion.copyWith(id: Value(asset.id)));
-                            } else {
-                              await db.addNoteAsset(companion);
-                            }
-                            await refreshAssets();
-                            SmartDialog.dismiss();
-                          },
-                          child: Text(TextKey.baocun.tr),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final name = nameController.text.trim();
+                              if (name.isEmpty) {
+                                QsHud.showToast(TextKey.qingshuru.tr +
+                                    TextKey.zichanming.tr);
+                                return;
+                              }
+                              final db = Get.find<DatabaseManager>().db;
+                              final companion = NoteAssetsCompanion(
+                                noteId: Value(localData.value!.id),
+                                name: Value(name),
+                                buyAmount: Value(
+                                    buyController.text.trim().isEmpty
+                                        ? null
+                                        : buyController.text.trim()),
+                                sellAmount: Value(
+                                    sellController.text.trim().isEmpty
+                                        ? null
+                                        : sellController.text.trim()),
+                              );
+                              if (asset != null) {
+                                await db.updateNoteAsset(
+                                    companion.copyWith(id: Value(asset.id)));
+                              } else {
+                                await db.addNoteAsset(companion);
+                              }
+                              await refreshAssets();
+                              SmartDialog.dismiss();
+                            },
+                            child: Text(TextKey.baocun.tr),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -519,10 +519,10 @@ class NoteeditController extends GetxController {
                 );
               }
             },
-          ),
-        );
-      },
-    );
+            ),
+          );
+        },
+      );
   }
 
   String colorToHex(Color color) =>
@@ -585,7 +585,7 @@ class NoteeditController extends GetxController {
       key: contentKey,
       subject: subject,
       filePrefix: prefix,
-    );
+      );
   }
 
   Color _fromHex(String hex) {
@@ -670,6 +670,6 @@ class _ColorSelectorRowState extends State<ColorSelectorRow> {
           );
         }).toList(),
       ),
-    );
+      );
   }
 }
