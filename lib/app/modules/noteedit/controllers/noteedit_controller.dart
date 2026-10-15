@@ -275,7 +275,99 @@ class NoteeditController extends GetxController {
           });
       return;
     }
-    showAssetEditDialog();
+    if (localData.value!.assetList.isNotEmpty) {
+      showAssetListDialog();
+    } else {
+      showAssetEditDialog();
+    }
+  }
+
+  void showAssetListDialog() {
+    SmartDialog.show(
+      alignment: Alignment.bottomCenter,
+      animationTime: 0.milliseconds,
+      builder: (_) {
+        final keyboardHeight = MediaQuery.of(_).viewInsets.bottom;
+        return Padding(
+          padding: EdgeInsets.only(bottom: keyboardHeight),
+          child: Material(
+            color: Get.theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          TextKey.zichan.tr,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            SmartDialog.dismiss();
+                            showAssetEditDialog();
+                          },
+                          icon: const Icon(Icons.add, size: 18),
+                          label: Text(TextKey.xinzengzichan.tr),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    ...localData.value!.assetList.map((asset) {
+                      return ListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(asset.name),
+                        subtitle: Text(
+                            '${TextKey.mairue.tr}: ${asset.buyAmountText}  ${TextKey.maichue.tr}: ${asset.sellAmountText}  ${TextKey.shouyilv.tr}: ${asset.profitRateText ?? '-'}'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, size: 18),
+                              onPressed: () {
+                                SmartDialog.dismiss();
+                                showAssetEditDialog(asset: asset);
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete,
+                                  size: 18, color: Get.theme.colorScheme.error),
+                              onPressed: () async {
+                                final db = Get.find<DatabaseManager>().db;
+                                await db.deleteNoteAsset(asset);
+                                await refreshAssets();
+                                if (localData.value!.assetList.isEmpty) {
+                                  SmartDialog.dismiss();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () => SmartDialog.dismiss(),
+                        child: Text(TextKey.quxiao.tr),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void showAssetEditDialog({NoteAsset? asset}) {
