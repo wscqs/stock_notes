@@ -112,6 +112,47 @@ class NoteeditView extends GetView<NoteeditController> {
                                               ],
                                             ),
                                           ),
+                                        if ((controller.localData.value
+                                                    ?.assetList.length ??
+                                                0) >
+                                            0)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 16, right: 16, bottom: 4),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    const Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: 4, top: 2),
+                                                      child: Icon(
+                                                        Icons
+                                                            .account_balance_wallet,
+                                                        size: 12,
+                                                      ),
+                                                    ),
+                                                    ...controller.localData.value!
+                                                        .assetList
+                                                        .map((asset) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                right: 8),
+                                                        child: Text(
+                                                          '${asset.name} ${asset.buyAmountText} ${asset.sellAmountText} ${asset.profitRateText ?? '-'}',
+                                                          style: const TextStyle(
+                                                              fontSize: 12),
+                                                        ),
+                                                      );
+                                                    })
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               left: 16,
@@ -359,6 +400,14 @@ class NoteeditView extends GetView<NoteeditController> {
           label: TextKey.biaoqian.tr,
           color: (local?.tagList.length ?? 0) > 0 ? Colors.blue : null,
           onTap: canOperate ? controller.clickPushTag : null,
+        ),
+        _buildBottomActionItem(
+          icon: (local?.assetList.length ?? 0) > 0
+              ? Icons.account_balance_wallet
+              : Icons.account_balance_wallet_outlined,
+          label: TextKey.zichan.tr,
+          color: (local?.assetList.length ?? 0) > 0 ? Colors.green : null,
+          onTap: canOperate ? controller.clickPushAsset : null,
         ),
         _buildBottomActionItem(
           icon: (local?.opCollect ?? false)
