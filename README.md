@@ -100,11 +100,11 @@
 
 ## 📸 应用截图
 
-| ![](https://cdn-app-screenshot.pgyer.com/4/9/2/4/e/4924e651250a4fc25e902b3254bd15ec) | ![](https://cdn-app-screenshot.pgyer.com/1/9/9/a/7/199a794af37543c18ad07fdddc3d3285) | ![](https://cdn-app-screenshot.pgyer.com/8/a/1/b/4/8a1b45edff9295b61a5f50c6cb716ea9) |
+| ![](screenshots/screenshot_01.png) | ![](screenshots/screenshot_02.png) | ![](screenshots/screenshot_03.png) |
 | :--: | :--: | :--: |
 
-| ![](https://cdn-app-screenshot.pgyer.com/8/d/b/4/e/8db4ee792c9df0498660035ee5b93197) | ![](https://cdn-app-screenshot.pgyer.com/a/c/c/0/9/acc09790ed897342c6f1031fc47230df) | ![](https://cdn-app-screenshot.pgyer.com/f/f/9/2/a/ff92aadcf89d3912754b7b56e03e4e7d) |
+| ![](screenshots/screenshot_04.png) | ![](screenshots/screenshot_05.png) | ![](screenshots/screenshot_06.png) |
 | :--: | :--: | :--: |
 
-| ![](https://cdn-app-screenshot.pgyer.com/5/3/3/f/9/533f980ef97aaefa07c385fee12795a8) | ![](https://cdn-app-screenshot.pgyer.com/c/6/c/8/2/c6c82dd618fbae8b3e4ea14fd5a9fbf8) | ![](https://cdn-app-screenshot.pgyer.com/8/5/2/7/8/8527873ca56e8e577c715410bfc2b307) |
+| ![](screenshots/screenshot_07.png) | ![](screenshots/screenshot_08.png) | ![](screenshots/screenshot_09.png) |
 | :--: | :--: | :--: |
