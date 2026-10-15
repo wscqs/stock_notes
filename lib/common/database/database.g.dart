@@ -4082,6 +4082,384 @@ class MessageItemsCompanion extends UpdateCompanion<MessageItem> {
   }
 }
 
+class $NoteAssetsTable extends NoteAssets
+    with TableInfo<$NoteAssetsTable, NoteAsset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoteAssetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<DateTime> updateAt = GeneratedColumn<DateTime>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _noteIdMeta = const VerificationMeta('noteId');
+  @override
+  late final GeneratedColumn<int> noteId = GeneratedColumn<int>(
+      'note_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES note_items (id)'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _buyAmountMeta =
+      const VerificationMeta('buyAmount');
+  @override
+  late final GeneratedColumn<String> buyAmount = GeneratedColumn<String>(
+      'buy_amount', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _sellAmountMeta =
+      const VerificationMeta('sellAmount');
+  @override
+  late final GeneratedColumn<String> sellAmount = GeneratedColumn<String>(
+      'sell_amount', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, createdAt, updateAt, noteId, name, buyAmount, sellAmount];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'note_assets';
+  @override
+  VerificationContext validateIntegrity(Insertable<NoteAsset> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    if (data.containsKey('note_id')) {
+      context.handle(_noteIdMeta,
+          noteId.isAcceptableOrUnknown(data['note_id']!, _noteIdMeta));
+    } else if (isInserting) {
+      context.missing(_noteIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('buy_amount')) {
+      context.handle(_buyAmountMeta,
+          buyAmount.isAcceptableOrUnknown(data['buy_amount']!, _buyAmountMeta));
+    }
+    if (data.containsKey('sell_amount')) {
+      context.handle(
+          _sellAmountMeta,
+          sellAmount.isAcceptableOrUnknown(
+              data['sell_amount']!, _sellAmountMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoteAsset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoteAsset(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_at'])!,
+      noteId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}note_id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      buyAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}buy_amount']),
+      sellAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sell_amount']),
+    );
+  }
+
+  @override
+  $NoteAssetsTable createAlias(String alias) {
+    return $NoteAssetsTable(attachedDatabase, alias);
+  }
+}
+
+class NoteAsset extends DataClass implements Insertable<NoteAsset> {
+  final int id;
+  final DateTime createdAt;
+  final DateTime updateAt;
+  final int noteId;
+  final String name;
+  final String? buyAmount;
+  final String? sellAmount;
+  const NoteAsset(
+      {required this.id,
+      required this.createdAt,
+      required this.updateAt,
+      required this.noteId,
+      required this.name,
+      this.buyAmount,
+      this.sellAmount});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['update_at'] = Variable<DateTime>(updateAt);
+    map['note_id'] = Variable<int>(noteId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || buyAmount != null) {
+      map['buy_amount'] = Variable<String>(buyAmount);
+    }
+    if (!nullToAbsent || sellAmount != null) {
+      map['sell_amount'] = Variable<String>(sellAmount);
+    }
+    return map;
+  }
+
+  NoteAssetsCompanion toCompanion(bool nullToAbsent) {
+    return NoteAssetsCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updateAt: Value(updateAt),
+      noteId: Value(noteId),
+      name: Value(name),
+      buyAmount: buyAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(buyAmount),
+      sellAmount: sellAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sellAmount),
+    );
+  }
+
+  factory NoteAsset.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoteAsset(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updateAt: serializer.fromJson<DateTime>(json['updateAt']),
+      noteId: serializer.fromJson<int>(json['noteId']),
+      name: serializer.fromJson<String>(json['name']),
+      buyAmount: serializer.fromJson<String?>(json['buyAmount']),
+      sellAmount: serializer.fromJson<String?>(json['sellAmount']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updateAt': serializer.toJson<DateTime>(updateAt),
+      'noteId': serializer.toJson<int>(noteId),
+      'name': serializer.toJson<String>(name),
+      'buyAmount': serializer.toJson<String?>(buyAmount),
+      'sellAmount': serializer.toJson<String?>(sellAmount),
+    };
+  }
+
+  NoteAsset copyWith(
+          {int? id,
+          DateTime? createdAt,
+          DateTime? updateAt,
+          int? noteId,
+          String? name,
+          Value<String?> buyAmount = const Value.absent(),
+          Value<String?> sellAmount = const Value.absent()}) =>
+      NoteAsset(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        updateAt: updateAt ?? this.updateAt,
+        noteId: noteId ?? this.noteId,
+        name: name ?? this.name,
+        buyAmount: buyAmount.present ? buyAmount.value : this.buyAmount,
+        sellAmount: sellAmount.present ? sellAmount.value : this.sellAmount,
+      );
+  NoteAsset copyWithCompanion(NoteAssetsCompanion data) {
+    return NoteAsset(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updateAt: data.updateAt.present ? data.updateAt.value : this.updateAt,
+      noteId: data.noteId.present ? data.noteId.value : this.noteId,
+      name: data.name.present ? data.name.value : this.name,
+      buyAmount: data.buyAmount.present ? data.buyAmount.value : this.buyAmount,
+      sellAmount:
+          data.sellAmount.present ? data.sellAmount.value : this.sellAmount,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteAsset(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('noteId: $noteId, ')
+          ..write('name: $name, ')
+          ..write('buyAmount: $buyAmount, ')
+          ..write('sellAmount: $sellAmount')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, createdAt, updateAt, noteId, name, buyAmount, sellAmount);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoteAsset &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updateAt == this.updateAt &&
+          other.noteId == this.noteId &&
+          other.name == this.name &&
+          other.buyAmount == this.buyAmount &&
+          other.sellAmount == this.sellAmount);
+}
+
+class NoteAssetsCompanion extends UpdateCompanion<NoteAsset> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updateAt;
+  final Value<int> noteId;
+  final Value<String> name;
+  final Value<String?> buyAmount;
+  final Value<String?> sellAmount;
+  const NoteAssetsCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.noteId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.buyAmount = const Value.absent(),
+    this.sellAmount = const Value.absent(),
+  });
+  NoteAssetsCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    required int noteId,
+    required String name,
+    this.buyAmount = const Value.absent(),
+    this.sellAmount = const Value.absent(),
+  })  : noteId = Value(noteId),
+        name = Value(name);
+  static Insertable<NoteAsset> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updateAt,
+    Expression<int>? noteId,
+    Expression<String>? name,
+    Expression<String>? buyAmount,
+    Expression<String>? sellAmount,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updateAt != null) 'update_at': updateAt,
+      if (noteId != null) 'note_id': noteId,
+      if (name != null) 'name': name,
+      if (buyAmount != null) 'buy_amount': buyAmount,
+      if (sellAmount != null) 'sell_amount': sellAmount,
+    });
+  }
+
+  NoteAssetsCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updateAt,
+      Value<int>? noteId,
+      Value<String>? name,
+      Value<String?>? buyAmount,
+      Value<String?>? sellAmount}) {
+    return NoteAssetsCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updateAt: updateAt ?? this.updateAt,
+      noteId: noteId ?? this.noteId,
+      name: name ?? this.name,
+      buyAmount: buyAmount ?? this.buyAmount,
+      sellAmount: sellAmount ?? this.sellAmount,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<DateTime>(updateAt.value);
+    }
+    if (noteId.present) {
+      map['note_id'] = Variable<int>(noteId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (buyAmount.present) {
+      map['buy_amount'] = Variable<String>(buyAmount.value);
+    }
+    if (sellAmount.present) {
+      map['sell_amount'] = Variable<String>(sellAmount.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoteAssetsCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('noteId: $noteId, ')
+          ..write('name: $name, ')
+          ..write('buyAmount: $buyAmount, ')
+          ..write('sellAmount: $sellAmount')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4093,6 +4471,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $NoteItemTagsTable noteItemTags = $NoteItemTagsTable(this);
   late final $NoteTagsTable noteTags = $NoteTagsTable(this);
   late final $MessageItemsTable messageItems = $MessageItemsTable(this);
+  late final $NoteAssetsTable noteAssets = $NoteAssetsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4105,7 +4484,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         stockTrades,
         noteItemTags,
         noteTags,
-        messageItems
+        messageItems,
+        noteAssets
       ];
 }
 
@@ -4950,6 +5330,20 @@ final class $$NoteItemsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$NoteAssetsTable, List<NoteAsset>>
+      _noteAssetsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.noteAssets,
+              aliasName: 'note_items__id__note_assets__note_id');
+
+  $$NoteAssetsTableProcessedTableManager get noteAssetsRefs {
+    final manager = $$NoteAssetsTableTableManager($_db, $_db.noteAssets)
+        .filter((f) => f.noteId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_noteAssetsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$NoteItemsTableFilterComposer
@@ -4998,6 +5392,27 @@ class $$NoteItemsTableFilterComposer
             $$NoteTagsTableFilterComposer(
               $db: $db,
               $table: $db.noteTags,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> noteAssetsRefs(
+      Expression<bool> Function($$NoteAssetsTableFilterComposer f) f) {
+    final $$NoteAssetsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.noteAssets,
+        getReferencedColumn: (t) => t.noteId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NoteAssetsTableFilterComposer(
+              $db: $db,
+              $table: $db.noteAssets,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -5094,6 +5509,27 @@ class $$NoteItemsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> noteAssetsRefs<T extends Object>(
+      Expression<T> Function($$NoteAssetsTableAnnotationComposer a) f) {
+    final $$NoteAssetsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.noteAssets,
+        getReferencedColumn: (t) => t.noteId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NoteAssetsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.noteAssets,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$NoteItemsTableTableManager extends RootTableManager<
@@ -5107,7 +5543,7 @@ class $$NoteItemsTableTableManager extends RootTableManager<
     $$NoteItemsTableUpdateCompanionBuilder,
     (NoteItem, $$NoteItemsTableReferences),
     NoteItem,
-    PrefetchHooks Function({bool noteTagsRefs})> {
+    PrefetchHooks Function({bool noteTagsRefs, bool noteAssetsRefs})> {
   $$NoteItemsTableTableManager(_$AppDatabase db, $NoteItemsTable table)
       : super(TableManagerState(
           db: db,
@@ -5164,10 +5600,14 @@ class $$NoteItemsTableTableManager extends RootTableManager<
                     $$NoteItemsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({noteTagsRefs = false}) {
+          prefetchHooksCallback: (
+              {noteTagsRefs = false, noteAssetsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (noteTagsRefs) db.noteTags],
+              explicitlyWatchedTables: [
+                if (noteTagsRefs) db.noteTags,
+                if (noteAssetsRefs) db.noteAssets
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
@@ -5180,6 +5620,19 @@ class $$NoteItemsTableTableManager extends RootTableManager<
                         managerFromTypedResult: (p0) =>
                             $$NoteItemsTableReferences(db, table, p0)
                                 .noteTagsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.noteId == item.id),
+                        typedResults: items),
+                  if (noteAssetsRefs)
+                    await $_getPrefetchedData<NoteItem, $NoteItemsTable,
+                            NoteAsset>(
+                        currentTable: table,
+                        referencedTable:
+                            $$NoteItemsTableReferences._noteAssetsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$NoteItemsTableReferences(db, table, p0)
+                                .noteAssetsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.noteId == item.id),
@@ -5202,7 +5655,7 @@ typedef $$NoteItemsTableProcessedTableManager = ProcessedTableManager<
     $$NoteItemsTableUpdateCompanionBuilder,
     (NoteItem, $$NoteItemsTableReferences),
     NoteItem,
-    PrefetchHooks Function({bool noteTagsRefs})>;
+    PrefetchHooks Function({bool noteTagsRefs, bool noteAssetsRefs})>;
 typedef $$StockItemTagsTableCreateCompanionBuilder = StockItemTagsCompanion
     Function({
   Value<int> id,
@@ -6908,6 +7361,302 @@ typedef $$MessageItemsTableProcessedTableManager = ProcessedTableManager<
     ),
     MessageItem,
     PrefetchHooks Function()>;
+typedef $$NoteAssetsTableCreateCompanionBuilder = NoteAssetsCompanion Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  required int noteId,
+  required String name,
+  Value<String?> buyAmount,
+  Value<String?> sellAmount,
+});
+typedef $$NoteAssetsTableUpdateCompanionBuilder = NoteAssetsCompanion Function({
+  Value<int> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updateAt,
+  Value<int> noteId,
+  Value<String> name,
+  Value<String?> buyAmount,
+  Value<String?> sellAmount,
+});
+
+final class $$NoteAssetsTableReferences
+    extends BaseReferences<_$AppDatabase, $NoteAssetsTable, NoteAsset> {
+  $$NoteAssetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $NoteItemsTable _noteIdTable(_$AppDatabase db) =>
+      db.noteItems.createAlias('note_assets__note_id__note_items__id');
+
+  $$NoteItemsTableProcessedTableManager get noteId {
+    final $_column = $_itemColumn<int>('note_id')!;
+
+    final manager = $$NoteItemsTableTableManager($_db, $_db.noteItems)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_noteIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$NoteAssetsTableFilterComposer
+    extends Composer<_$AppDatabase, $NoteAssetsTable> {
+  $$NoteAssetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get buyAmount => $composableBuilder(
+      column: $table.buyAmount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get sellAmount => $composableBuilder(
+      column: $table.sellAmount, builder: (column) => ColumnFilters(column));
+
+  $$NoteItemsTableFilterComposer get noteId {
+    final $$NoteItemsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.noteId,
+        referencedTable: $db.noteItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NoteItemsTableFilterComposer(
+              $db: $db,
+              $table: $db.noteItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$NoteAssetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $NoteAssetsTable> {
+  $$NoteAssetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updateAt => $composableBuilder(
+      column: $table.updateAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get buyAmount => $composableBuilder(
+      column: $table.buyAmount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get sellAmount => $composableBuilder(
+      column: $table.sellAmount, builder: (column) => ColumnOrderings(column));
+
+  $$NoteItemsTableOrderingComposer get noteId {
+    final $$NoteItemsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.noteId,
+        referencedTable: $db.noteItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NoteItemsTableOrderingComposer(
+              $db: $db,
+              $table: $db.noteItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$NoteAssetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NoteAssetsTable> {
+  $$NoteAssetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateAt =>
+      $composableBuilder(column: $table.updateAt, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get buyAmount =>
+      $composableBuilder(column: $table.buyAmount, builder: (column) => column);
+
+  GeneratedColumn<String> get sellAmount => $composableBuilder(
+      column: $table.sellAmount, builder: (column) => column);
+
+  $$NoteItemsTableAnnotationComposer get noteId {
+    final $$NoteItemsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.noteId,
+        referencedTable: $db.noteItems,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NoteItemsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.noteItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$NoteAssetsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $NoteAssetsTable,
+    NoteAsset,
+    $$NoteAssetsTableFilterComposer,
+    $$NoteAssetsTableOrderingComposer,
+    $$NoteAssetsTableAnnotationComposer,
+    $$NoteAssetsTableCreateCompanionBuilder,
+    $$NoteAssetsTableUpdateCompanionBuilder,
+    (NoteAsset, $$NoteAssetsTableReferences),
+    NoteAsset,
+    PrefetchHooks Function({bool noteId})> {
+  $$NoteAssetsTableTableManager(_$AppDatabase db, $NoteAssetsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoteAssetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoteAssetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoteAssetsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            Value<int> noteId = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> buyAmount = const Value.absent(),
+            Value<String?> sellAmount = const Value.absent(),
+          }) =>
+              NoteAssetsCompanion(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            noteId: noteId,
+            name: name,
+            buyAmount: buyAmount,
+            sellAmount: sellAmount,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updateAt = const Value.absent(),
+            required int noteId,
+            required String name,
+            Value<String?> buyAmount = const Value.absent(),
+            Value<String?> sellAmount = const Value.absent(),
+          }) =>
+              NoteAssetsCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            updateAt: updateAt,
+            noteId: noteId,
+            name: name,
+            buyAmount: buyAmount,
+            sellAmount: sellAmount,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$NoteAssetsTable, NoteAsset>(table),
+                    $$NoteAssetsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({noteId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (noteId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.noteId,
+                    referencedTable:
+                        $$NoteAssetsTableReferences._noteIdTable(db),
+                    referencedColumn:
+                        $$NoteAssetsTableReferences._noteIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$NoteAssetsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $NoteAssetsTable,
+    NoteAsset,
+    $$NoteAssetsTableFilterComposer,
+    $$NoteAssetsTableOrderingComposer,
+    $$NoteAssetsTableAnnotationComposer,
+    $$NoteAssetsTableCreateCompanionBuilder,
+    $$NoteAssetsTableUpdateCompanionBuilder,
+    (NoteAsset, $$NoteAssetsTableReferences),
+    NoteAsset,
+    PrefetchHooks Function({bool noteId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6928,4 +7677,6 @@ class $AppDatabaseManager {
       $$NoteTagsTableTableManager(_db, _db.noteTags);
   $$MessageItemsTableTableManager get messageItems =>
       $$MessageItemsTableTableManager(_db, _db.messageItems);
+  $$NoteAssetsTableTableManager get noteAssets =>
+      $$NoteAssetsTableTableManager(_db, _db.noteAssets);
 }

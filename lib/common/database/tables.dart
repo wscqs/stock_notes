@@ -116,6 +116,13 @@ class StockTrades extends Table with TableMixin {
   TextColumn get planSalePrice => text().nullable()();
 }
 
+class NoteAssets extends Table with TableMixin {
+  IntColumn get noteId => integer().references(NoteItems, #id)();
+  TextColumn get name => text()();
+  TextColumn get buyAmount => text().nullable()();
+  TextColumn get sellAmount => text().nullable()();
+}
+
 // class TodoItems extends Table with TableMixin {
 //   TextColumn get title => text().withLength(min: 6, max: 32)();
 //   TextColumn get content => text().named('body')();

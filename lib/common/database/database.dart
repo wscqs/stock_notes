@@ -22,7 +22,8 @@ part 'database.g.dart';
   StockTrades,
   NoteItemTags,
   NoteTags,
-  MessageItems
+  MessageItems,
+  NoteAssets
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(String path) : super(_openConnection(path));
@@ -47,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   //改表要处理合并migration
   @override
@@ -95,6 +96,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from <= 11) {
             await migrator.addColumn(stockItems, stockItems.alias);
+          }
+          if (from <= 12) {
+            await migrator.createTable(noteAssets);
           }
         },
         onCreate: (migrator) async {
@@ -476,6 +480,24 @@ class AppDatabase extends _$AppDatabase {
         .go();
   }
 
+  //note_assets
+  Future<List<NoteAsset>> getNoteAssetsByNoteId(int noteId) {
+    return (select(noteAssets)..where((tbl) => tbl.noteId.equals(noteId)))
+        .get();
+  }
+
+  Future<int> addNoteAsset(NoteAssetsCompanion item) =>
+      noteAssets.insertOne(item);
+
+  Future<void> deleteNoteAsset(NoteAsset itemDelete) {
+    return (delete(noteAssets)..where((tbl) => tbl.id.equals(itemDelete.id)))
+        .go();
+  }
+
+  Future<void> updateNoteAsset(NoteAssetsCompanion itemUpdate) {
+    return update(noteAssets).replace(itemUpdate);
+  }
+
   //note
   Future<int> addNote(NoteItemsCompanion item) => noteItems.insertOne(item);
   Future<void> addNoteOnConflictUpdate(NoteItemsCompanion item) {
@@ -708,10 +730,13 @@ StockItemExtraState _getExtra(int id) {
 //Note
 class NoteItemExtraState {
   List<NoteItemTag> tagList;
+  List<NoteAsset> assetList;
 
   NoteItemExtraState({
     List<NoteItemTag>? tagList,
-  }) : tagList = tagList ?? [];
+    List<NoteAsset>? assetList,
+  })  : tagList = tagList ?? [],
+        assetList = assetList ?? [];
 }
 
 final Map<int, NoteItemExtraState> _noteItemExtras = {};
@@ -725,6 +750,9 @@ extension NoteItemExt on NoteItem {
 
   List<NoteItemTag> get tagList => extra.tagList;
   set tagList(List<NoteItemTag> value) => extra.tagList = value;
+
+  List<NoteAsset> get assetList => extra.assetList;
+  set assetList(List<NoteAsset> value) => extra.assetList = value;
 
   String? homeCellShowTagNames() {
     return tagList.map((e) => e.name).join(" · ");
