@@ -605,6 +605,23 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
+  Future<List<NoteItem>> getNoteItemsWithAssetsByNoteItems(
+      List<NoteItem> items) async {
+    if (items.isEmpty) return [];
+    final noteIds = items.map((e) => e.id).toList();
+    final assets = await (select(noteAssets)
+          ..where((tbl) => tbl.noteId.isIn(noteIds)))
+        .get();
+    final assetMap = <int, List<NoteAsset>>{};
+    for (final asset in assets) {
+      assetMap.putIfAbsent(asset.noteId, () => []).add(asset);
+    }
+    for (final item in items) {
+      item.assetList = assetMap[item.id] ?? [];
+    }
+    return items;
+  }
+
   // stock_trades
   Future<void> addStockTrade(StockTradesCompanion item) =>
       stockTrades.insertOne(item);

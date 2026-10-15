@@ -79,6 +79,7 @@ class HomenoteController extends BaseController
     }
     dbItems.value =
         await db.getNoteItemsWithTagsByNoteItems(List.from(dbItems));
+    dbItems.value = await db.getNoteItemsWithAssetsByNoteItems(List.from(dbItems));
     String query = searchController.text;
     filterItems(query);
   }

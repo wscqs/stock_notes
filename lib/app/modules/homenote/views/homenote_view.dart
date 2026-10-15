@@ -135,8 +135,7 @@ class HomenoteView extends GetView<HomenoteController> {
                 ))
             .toList(),
         onChanged: (String? value) {
-          controller
-              .changeSelectedOrderIndex(controller.order.indexOf(value!));
+          controller.changeSelectedOrderIndex(controller.order.indexOf(value!));
         },
         iconStyleData: IconStyleData(
           iconSize: 0,
@@ -374,6 +373,10 @@ class _HomeNoteCellState extends State<HomeNoteCell>
               ),
           ],
         ),
+        if (widget.item.assetList.isNotEmpty) ...[
+          kSpaceH(2),
+          buildAssetRow(),
+        ],
         if (widget.item.tagList.isNotEmpty) ...[
           kSpaceH(4),
           Wrap(
@@ -399,6 +402,71 @@ class _HomeNoteCellState extends State<HomeNoteCell>
             }).toList(),
           ),
         ],
+      ],
+    );
+  }
+
+  Widget buildAssetRow() {
+    final asset = widget.item.assetList.first;
+    final rate = asset.profitRate;
+    final color = rate == null
+        ? null
+        : rate > 0
+            ? Colors.red
+            : Colors.green;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      spacing: 8,
+      children: [
+        Icon(
+          Icons.account_balance_wallet_outlined,
+          size: 12,
+        ),
+        Text(
+          asset.name,
+          style: const TextStyle(fontSize: 12),
+        ),
+        _buildAssetInfoColumn(
+          label: TextKey.mairujiage.tr,
+          value: asset.buyAmountText.isEmpty ? '-' : asset.buyAmountText,
+        ),
+        _buildAssetInfoColumn(
+          label: TextKey.maichujiage.tr,
+          value: asset.sellAmountText.isEmpty ? '-' : asset.sellAmountText,
+        ),
+        _buildAssetInfoColumn(
+          label: TextKey.shouyilv.tr,
+          value: asset.profitRateText ?? '-',
+          valueColor: color,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAssetInfoColumn({
+    required String label,
+    required String value,
+    Color? valueColor,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            color: Colors.grey.withValues(alpha: 0.7),
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12,
+            color: valueColor,
+          ),
+        ),
       ],
     );
   }
