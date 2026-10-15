@@ -759,6 +759,33 @@ extension NoteItemExt on NoteItem {
   }
 }
 
+extension NoteAssetExt on NoteAsset {
+  double? get profit {
+    final buy = double.tryParse(buyAmount ?? '');
+    final sell = double.tryParse(sellAmount ?? '');
+    if (buy == null) return null;
+    return (sell ?? 0) - buy;
+  }
+
+  double? get profitRate {
+    final buy = double.tryParse(buyAmount ?? '');
+    if (buy == null || buy == 0) return null;
+    final p = profit;
+    if (p == null) return null;
+    return p / buy;
+  }
+
+  String? get profitRateText {
+    final rate = profitRate;
+    if (rate == null) return null;
+    final sign = rate > 0 ? '+' : '';
+    return '$sign${(rate * 100).toStringAsFixed(1)}%';
+  }
+
+  String get buyAmountText => buyAmount ?? '';
+  String get sellAmountText => sellAmount ?? '';
+}
+
 extension StockItemExt on StockItem {
   StockItemExtraState get extra => _getExtra(id);
 
