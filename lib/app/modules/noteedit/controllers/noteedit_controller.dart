@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io' as io show Directory, File;
 
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -143,6 +143,7 @@ class NoteeditController extends GetxController {
       isLocalData.value = true;
       _dealHasLocalDataRefreshUI();
       refreshTags();
+      refreshAssets();
     } else {
       //新建
       Future.delayed(500.milliseconds, () {
@@ -222,6 +223,15 @@ class NoteeditController extends GetxController {
     }
   }
 
+  Future<void> refreshAssets() async {
+    if (isLocalData.value) {
+      final db = Get.find<DatabaseManager>().db;
+      final assets = await db.getNoteAssetsByNoteId(localData.value!.id);
+      localData.value!.assetList = assets;
+      localData.refresh();
+    }
+  }
+
   //标签
   void clickPushTag() {
     if (!isLocalData.value) {
@@ -248,6 +258,155 @@ class NoteeditController extends GetxController {
         localData.value!.copyWith(opCollect: !localData.value!.opCollect);
     localData.refresh();
     db.updateNoteWithOp(localData.value!);
+  }
+
+  //资产
+  void clickPushAsset() {
+    if (!isLocalData.value) {
+      QsHud.showConfirmDialog(
+          title: TextKey.zichan.tr,
+          content: TextKey.cicaozuoxubaocun.tr,
+          confirmText: TextKey.baocunbingcaozu.tr,
+          onConfirm: () async {
+            await save(isBack: false);
+            if (isLocalData.value) {
+              clickPushAsset();
+            }
+          });
+      return;
+    }
+    showAssetEditDialog();
+  }
+
+  void showAssetEditDialog({NoteAsset? asset}) {
+    final nameController = TextEditingController(text: asset?.name ?? '');
+    final buyController = TextEditingController(text: asset?.buyAmount ?? '');
+    final sellController = TextEditingController(text: asset?.sellAmount ?? '');
+    final profitText = ''.obs;
+    final profitRateText = ''.obs;
+
+    void updateProfit() {
+      final buy = double.tryParse(buyController.text);
+      final sell = double.tryParse(sellController.text);
+      if (buy == null) {
+        profitText.value = '-';
+        profitRateText.value = '-';
+        return;
+      }
+      final profit = (sell ?? 0) - buy;
+      profitText.value = profit.toStringAsFixed(2);
+      if (buy == 0) {
+        profitRateText.value = '-';
+      } else {
+        final rate = profit / buy;
+        final sign = rate > 0 ? '+' : '';
+        profitRateText.value = '$sign${(rate * 100).toStringAsFixed(1)}%';
+      }
+    }
+
+    updateProfit();
+    buyController.addListener(updateProfit);
+    sellController.addListener(updateProfit);
+
+    SmartDialog.show(
+      alignment: Alignment.bottomCenter,
+      animationTime: 0.milliseconds,
+      builder: (_) {
+        final keyboardHeight = MediaQuery.of(_).viewInsets.bottom;
+        return Padding(
+          padding: EdgeInsets.only(bottom: keyboardHeight),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Get.theme.colorScheme.surface,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration:
+                        InputDecoration(labelText: TextKey.zichanming.tr),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: buyController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: TextKey.mairue.tr),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: sellController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: TextKey.maichue.tr),
+                  ),
+                  const SizedBox(height: 16),
+                  Obx(() => Row(
+                        children: [
+                          Expanded(
+                              child: Text(
+                                  '${TextKey.shouyie.tr}: ${profitText.value}')),
+                          Expanded(
+                              child: Text(
+                                  '${TextKey.shouyilv.tr}: ${profitRateText.value}')),
+                        ],
+                      )),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => SmartDialog.dismiss(),
+                          child: Text(TextKey.quxiao.tr),
+                        ),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final name = nameController.text.trim();
+                            if (name.isEmpty) {
+                              QsHud.showToast(
+                                  TextKey.qingshuru.tr + TextKey.zichanming.tr);
+                              return;
+                            }
+                            final db = Get.find<DatabaseManager>().db;
+                            final companion = NoteAssetsCompanion(
+                              noteId: Value(localData.value!.id),
+                              name: Value(name),
+                              buyAmount: Value(
+                                  buyController.text.trim().isEmpty
+                                      ? null
+                                      : buyController.text.trim()),
+                              sellAmount: Value(
+                                  sellController.text.trim().isEmpty
+                                      ? null
+                                      : sellController.text.trim()),
+                            );
+                            if (asset != null) {
+                              await db.updateNoteAsset(
+                                  companion.copyWith(id: Value(asset.id)));
+                            } else {
+                              await db.addNoteAsset(companion);
+                            }
+                            await refreshAssets();
+                            SmartDialog.dismiss();
+                          },
+                          child: Text(TextKey.baocun.tr),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   //删除（已在删除列表则真正删除）
