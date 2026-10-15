@@ -401,12 +401,20 @@ class NoteeditController extends GetxController {
                             child: ElevatedButton(
                               onPressed: () async {
                                 final name = nameController.text.trim();
+                                final db = Get.find<DatabaseManager>().db;
                                 if (name.isEmpty) {
-                                  QsHud.showToast(TextKey.qingshuru.tr +
-                                      TextKey.zichanming.tr);
+                                  if (asset != null) {
+                                    await db.deleteNoteAsset(asset);
+                                    await refreshAssets();
+                                    SmartDialog.dismiss();
+                                    QsHud.showToast(TextKey.delete.tr +
+                                        TextKey.success.tr);
+                                  } else {
+                                    QsHud.showToast(TextKey.qingshuru.tr +
+                                        TextKey.zichanming.tr);
+                                  }
                                   return;
                                 }
-                                final db = Get.find<DatabaseManager>().db;
                                 final companion = NoteAssetsCompanion(
                                   noteId: Value(localData.value!.id),
                                   name: Value(name),

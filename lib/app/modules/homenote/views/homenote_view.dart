@@ -414,33 +414,57 @@ class _HomeNoteCellState extends State<HomeNoteCell>
         : rate > 0
             ? Colors.red
             : Colors.green;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      spacing: 8,
-      children: [
-        Icon(
-          Icons.account_balance_wallet_outlined,
-          size: 12,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Get.theme.colorScheme.surfaceContainerHighest
+            .withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Get.theme.colorScheme.outlineVariant
+              .withValues(alpha: 0.15),
+          width: 0.5,
         ),
-        Text(
-          asset.name,
-          style: const TextStyle(fontSize: 12),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.account_balance_wallet_outlined,
+              size: 14,
+              color: Get.theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                asset.name,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(width: 1, color: Get.theme.colorScheme.outlineVariant.withValues(alpha: 0.3)),
+            const SizedBox(width: 12),
+            _buildAssetInfoColumn(
+              label: TextKey.mairujiage.tr,
+              value: asset.buyAmountText.isEmpty ? '-' : asset.buyAmountText,
+            ),
+            const SizedBox(width: 16),
+            _buildAssetInfoColumn(
+              label: TextKey.maichujiage.tr,
+              value: asset.sellAmountText.isEmpty ? '-' : asset.sellAmountText,
+            ),
+            const SizedBox(width: 16),
+            _buildAssetInfoColumn(
+              label: TextKey.shouyilv.tr,
+              value: asset.profitRateText ?? '-',
+              valueColor: color,
+            ),
+          ],
         ),
-        _buildAssetInfoColumn(
-          label: TextKey.mairujiage.tr,
-          value: asset.buyAmountText.isEmpty ? '-' : asset.buyAmountText,
-        ),
-        _buildAssetInfoColumn(
-          label: TextKey.maichujiage.tr,
-          value: asset.sellAmountText.isEmpty ? '-' : asset.sellAmountText,
-        ),
-        _buildAssetInfoColumn(
-          label: TextKey.shouyilv.tr,
-          value: asset.profitRateText ?? '-',
-          valueColor: color,
-        ),
-      ],
+      ),
     );
   }
 
@@ -452,19 +476,22 @@ class _HomeNoteCellState extends State<HomeNoteCell>
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           label,
           style: TextStyle(
-            fontSize: 10,
+            fontSize: 9,
             color: Colors.grey.withValues(alpha: 0.7),
           ),
         ),
+        const SizedBox(height: 2),
         Text(
           value,
           style: TextStyle(
             fontSize: 12,
-            color: valueColor,
+            fontWeight: FontWeight.w500,
+            color: valueColor ?? Get.theme.colorScheme.onSurface,
           ),
         ),
       ],
