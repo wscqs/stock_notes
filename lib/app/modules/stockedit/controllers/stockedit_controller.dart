@@ -16,6 +16,7 @@ import 'package:stock_notes/common/web/webview_widget.dart';
 import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/meet_message_helper.dart';
+import 'package:stock_notes/utils/qs_cache.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 import 'package:stock_notes/utils/qs_link_opener.dart';
 import 'package:stock_notes/utils/share_image_util.dart';
@@ -1101,6 +1102,21 @@ class StockeditController extends BaseController {
 
   final tradeListFilter = 'trade'.obs; // 'all' | 'trade' | 'history'
 
+  static const _tradeListFilterKey = 'stockedit_trade_list_filter';
+
+  String get _savedTradeListFilter {
+    final saved = QsCache.get<String>(_tradeListFilterKey);
+    if (saved != null && (saved == 'all' || saved == 'trade' || saved == 'history')) {
+      return saved;
+    }
+    return 'trade';
+  }
+
+  void _setTradeListFilter(String value) {
+    tradeListFilter.value = value;
+    QsCache.set(_tradeListFilterKey, value);
+  }
+
   List<StockTrade> get filteredTrades {
     switch (tradeListFilter.value) {
       case 'all':
@@ -1233,7 +1249,7 @@ class StockeditController extends BaseController {
 
   void showAllTradesSheet(Widget Function(StockTrade) buildTradeItem) {
     FocusManager.instance.primaryFocus?.unfocus();
-    tradeListFilter.value = 'trade';
+    tradeListFilter.value = _savedTradeListFilter;
     Get.bottomSheet(
       Container(
         height: Get.height * 0.7,
@@ -1278,7 +1294,7 @@ class StockeditController extends BaseController {
                           final isSelected = tradeListFilter.value == value;
                           return TextButton(
                             onPressed: () {
-                              tradeListFilter.value = value;
+                              _setTradeListFilter(value);
                             },
                             style: TextButton.styleFrom(
                               minimumSize: Size.zero,

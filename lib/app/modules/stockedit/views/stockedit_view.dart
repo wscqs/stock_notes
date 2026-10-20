@@ -160,6 +160,18 @@ class StockeditView extends GetView<StockeditController> {
                 kSpaceW(12),
                 _buildHoldStatusBar(),
               ],
+              kSpaceMax(),
+              Tooltip(
+                message: TextKey.cunrutradingTooltip.tr,
+                child: IconButton(
+                  icon: Icon(Remix.git_repository_commits_line),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(), // ← 关键，去掉最小尺寸约束
+                  iconSize: 18,
+                  onPressed: controller.saveHoldingToTrade,
+                  color: Colors.grey.withValues(alpha: 0.5),
+                ),
+              ),
             ],
           ),
           kSpaceH(16),
@@ -187,13 +199,6 @@ class StockeditView extends GetView<StockeditController> {
                 ),
               ],
               kSpaceW(4),
-              Tooltip(
-                message: TextKey.cunrutradingTooltip.tr,
-                child: IconButton(
-                  icon: const Icon(Icons.savings_outlined),
-                  onPressed: controller.saveHoldingToTrade,
-                ),
-              ),
               if (controller.rBuyPriceYieldRate.value != 0.00001) ...[
                 kSpaceW(12),
                 Expanded(child: _buildHoldYieldInfo()),
