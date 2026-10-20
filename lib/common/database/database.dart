@@ -853,6 +853,25 @@ extension StockItemExt on StockItem {
   double? pMarketCapSalePoints() => _calcPoint(pMarketCapSale, totalMarketCap);
   double? pPeTtmSalePoints() => _calcPoint(pPeTtmSale, peRatioTtm);
 
+  /// 持有收益额：仅当标记为持有且输入了成本价、股数、现价时才计算。
+  double? get holdingProfit {
+    if (!opBuy) return null;
+    final buyPrice = double.tryParse(rBuyPrice ?? '');
+    final shares = double.tryParse(rHoldShares ?? '');
+    final price = double.tryParse(currentPrice ?? '');
+    if (buyPrice == null || buyPrice == 0 || shares == null || shares == 0 || price == null) {
+      return null;
+    }
+    return (price - buyPrice) * shares;
+  }
+
+  String? get holdingProfitText {
+    final p = holdingProfit;
+    if (p == null) return null;
+    final sign = p > 0 ? '+' : '';
+    return '$sign${p.toStringAsFixed(0)}';
+  }
+
   /// 持有收益率：仅当标记为持有且输入了成本价时才计算。
   double? get holdingYieldRate {
     if (!opBuy) return null;

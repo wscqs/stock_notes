@@ -178,6 +178,13 @@ class TextKey {
   static const bianjibieming = 'bianjibieming'; // 编辑别名
   static const bieming = 'bieming'; // 别名
   static const biemingbuchaoguo10zi = 'biemingbuchaoguo10zi'; // 别名不超过10字
+
+  // 首页排序
+  static const paixuBianjiRiqi = 'paixuBianjiRiqi'; // 编辑日期
+  static const paixuGupiaoJiage = 'paixuGupiaoJiage'; // 股票价格
+  static const paixuShouyilv = 'paixuShouyilv'; // 收益率
+  static const paixuShouyie = 'paixuShouyie'; // 收益额
+  static const paixuGupiaoDaima = 'paixuGupiaoDaima'; // 股票代码
 }
 
 const Map<String, String> zh = {
@@ -413,6 +420,13 @@ const Map<String, String> zh = {
   TextKey.bianjibieming: '编辑别名',
   TextKey.bieming: '别名',
   TextKey.biemingbuchaoguo10zi: '别名不超过10字',
+
+  // 首页排序
+  TextKey.paixuBianjiRiqi: '编辑日期',
+  TextKey.paixuGupiaoJiage: '股票价格',
+  TextKey.paixuShouyilv: '收益率',
+  TextKey.paixuShouyie: '收益额',
+  TextKey.paixuGupiaoDaima: '股票代码',
 };
 
 const Map<String, String> en = {
@@ -655,4 +669,11 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.bianjibieming: 'Edit Alias',
   TextKey.bieming: 'Alias',
   TextKey.biemingbuchaoguo10zi: 'Alias cannot exceed 10 characters',
+
+  // Home sort
+  TextKey.paixuBianjiRiqi: 'Edit Date',
+  TextKey.paixuGupiaoJiage: 'Stock Price',
+  TextKey.paixuShouyilv: 'Yield',
+  TextKey.paixuShouyie: 'Profit',
+  TextKey.paixuGupiaoDaima: 'Code',
 };

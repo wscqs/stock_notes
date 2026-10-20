@@ -42,10 +42,119 @@ class HomestockController extends BaseController
   final selectedOrderIndex =
       (QsCache.get<int>("homestockSelectedOrderIndexKey") ?? 0).clamp(0, 3).obs;
 
+  // 排序相关（参考交易记录页）
+  List<String> sortOptions = [
+    TextKey.paixuBianjiRiqi.tr,
+    TextKey.paixuGupiaoJiage.tr,
+    TextKey.paixuShouyilv.tr,
+    TextKey.paixuShouyie.tr,
+    TextKey.paixuGupiaoDaima.tr,
+  ];
+  // 排序选择本地持久化（0=编辑日期,1=股票价格,2=收益率,3=收益额,4=股票代码）
+  final selectedSortIndex =
+      (QsCache.get<int>("homestockSelectedSortIndexKey") ?? 0).clamp(0, 4).obs;
+  final sortAscending =
+      (QsCache.get<bool>("homestockSortAscendingKey") ?? false).obs;
+  // 各排序字段默认方向：日期降序、价格降序、收益率降序、收益额降序、代码升序
+  final List<bool> _defaultSortAscending = [false, false, false, false, true];
+
   void changeSelectedOrderIndex(int index) {
     selectedOrderIndex.value = index;
     QsCache.set("homestockSelectedOrderIndexKey", index);
     getDatas();
+  }
+
+  void _refreshSortOptions() {
+    sortOptions = [
+      TextKey.paixuBianjiRiqi.tr,
+      TextKey.paixuGupiaoJiage.tr,
+      TextKey.paixuShouyilv.tr,
+      TextKey.paixuShouyie.tr,
+      TextKey.paixuGupiaoDaima.tr,
+    ];
+    selectedSortIndex.refresh();
+  }
+
+  /// 切换排序字段
+  void onSortChanged(int index) {
+    selectedSortIndex.value = index;
+    sortAscending.value = _defaultSortAscending[index];
+    _persistSortState();
+    filterItems(searchController.text);
+  }
+
+  /// 切换排序方向
+  void toggleSortDirection() {
+    sortAscending.toggle();
+    _persistSortState();
+    filterItems(searchController.text);
+  }
+
+  void _persistSortState() {
+    QsCache.set("homestockSelectedSortIndexKey", selectedSortIndex.value);
+    QsCache.set("homestockSortAscendingKey", sortAscending.value);
+  }
+
+  /// 对列表进行排序（收益率/收益额优先把持有中排前面）
+  List<StockItem> _sortStockItems(List<StockItem> list) {
+    final index = selectedSortIndex.value;
+    final ascending = sortAscending.value;
+
+    int compareHolding(StockItem a, StockItem b) {
+      final holdA = a.opBuy ? 1 : 0;
+      final holdB = b.opBuy ? 1 : 0;
+      // 持有中排前面
+      if (holdA != holdB) return holdB - holdA;
+      return 0;
+    }
+
+    switch (index) {
+      case 0: // 编辑日期
+        list.sort((a, b) => ascending
+            ? a.updateAt.compareTo(b.updateAt)
+            : b.updateAt.compareTo(a.updateAt));
+        break;
+      case 1: // 股票价格
+        list.sort((a, b) {
+          final pa = double.tryParse(a.currentPrice ?? '');
+          final pb = double.tryParse(b.currentPrice ?? '');
+          if (pa == null && pb == null) return 0;
+          if (pa == null) return 1;
+          if (pb == null) return -1;
+          return ascending ? pa.compareTo(pb) : pb.compareTo(pa);
+        });
+        break;
+      case 2: // 收益率
+        list.sort((a, b) {
+          final holdCompare = compareHolding(a, b);
+          if (holdCompare != 0) return holdCompare;
+          final ra = a.holdingYieldRate;
+          final rb = b.holdingYieldRate;
+          if (ra == null && rb == null) return 0;
+          if (ra == null) return 1;
+          if (rb == null) return -1;
+          return ascending ? ra.compareTo(rb) : rb.compareTo(ra);
+        });
+        break;
+      case 3: // 收益额
+        list.sort((a, b) {
+          final holdCompare = compareHolding(a, b);
+          if (holdCompare != 0) return holdCompare;
+          final pa = a.holdingProfit;
+          final pb = b.holdingProfit;
+          if (pa == null && pb == null) return 0;
+          if (pa == null) return 1;
+          if (pb == null) return -1;
+          return ascending ? pa.compareTo(pb) : pb.compareTo(pa);
+        });
+        break;
+      case 4: // 股票代码
+        list.sort((a, b) => ascending
+            ? a.code.compareTo(b.code)
+            : b.code.compareTo(a.code));
+        break;
+    }
+    return list;
   }
 
   final tabsController = Get.find<TabsController>();
@@ -154,6 +263,7 @@ class HomestockController extends BaseController
       TextKey.delete.tr,
     ];
     selectedOrderIndex.refresh();
+    _refreshSortOptions();
     segments = <String, String>{
       "all": TextKey.all.tr,
       "bug": TextKey.buy.tr,
@@ -393,6 +503,8 @@ class HomestockController extends BaseController
     if (selTags.isNotEmpty) {
       filterItems = _updateFilterItemsWithSelTags(filterItems);
     }
+
+    filterItems = _sortStockItems(filterItems);
     items.value = filterItems;
   }
 

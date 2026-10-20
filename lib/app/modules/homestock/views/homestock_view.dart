@@ -117,6 +117,8 @@ class HomestockView extends GetView<HomestockController> {
                   ),
                   kSpaceW(8),
                   Expanded(child: buildTopSearch()),
+                  kSpaceW(8),
+                  _buildSortButton(),
                 ],
               ),
             ),
@@ -345,6 +347,95 @@ class HomestockView extends GetView<HomestockController> {
               fontSize: 13,
               fontWeight: FontWeight.bold),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSortButton() {
+    return Container(
+      height: 44,
+      padding: const EdgeInsets.only(left: 8),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Get.theme.colorScheme.outline.withValues(alpha: 0.4),
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildSortFieldSelector(),
+          Container(
+            width: 0.5,
+            height: 20,
+            color: Get.theme.colorScheme.outline.withValues(alpha: 0.3),
+          ),
+          _buildSortDirectionButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSortFieldSelector() {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<int>(
+        isExpanded: false,
+        customButton: Container(
+          width: 64,
+          height: 44,
+          alignment: Alignment.center,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Obx(() => Text(
+                  controller.sortOptions[controller.selectedSortIndex.value],
+                  style: const TextStyle(fontSize: 14),
+                )),
+          ),
+        ),
+        items: controller.sortOptions
+            .asMap()
+            .entries
+            .map((entry) => DropdownItem<int>(
+                  value: entry.key,
+                  height: 44,
+                  child: Text(
+                    entry.value,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ))
+            .toList(),
+        onChanged: (int? value) {
+          if (value != null) {
+            controller.onSortChanged(value);
+          }
+        },
+        buttonStyleData: const ButtonStyleData(
+          width: 64,
+          height: 44,
+          padding: EdgeInsets.zero,
+        ),
+        dropdownStyleData: const DropdownStyleData(
+          width: 100,
+          offset: Offset(-8, 0),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSortDirectionButton() {
+    return InkWell(
+      onTap: controller.toggleSortDirection,
+      child: Container(
+        width: 40,
+        height: 44,
+        alignment: Alignment.center,
+        child: Obx(() => Icon(
+              controller.sortAscending.value
+                  ? Icons.arrow_upward
+                  : Icons.arrow_downward,
+              size: 18,
+              color: Get.theme.colorScheme.onSurface,
+            )),
       ),
     );
   }
@@ -588,8 +679,13 @@ class _HomeStockCellState extends State<HomeStockCell>
 
   Widget buildContents() {
     final conditionInfo = widget.item.showCellConditionInfo() ?? "";
+    final isProfitSort = controller.selectedSortIndex.value == 3;
     final yieldRate = widget.item.holdingYieldRate;
     final yieldRateText = widget.item.holdingYieldRateText;
+    final profit = widget.item.holdingProfit;
+    final profitText = widget.item.holdingProfitText;
+    final showValue = isProfitSort ? profit : yieldRate;
+    final showText = isProfitSort ? profitText : yieldRateText;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -678,17 +774,17 @@ class _HomeStockCellState extends State<HomeStockCell>
                       _buildHoldStatusTag(widget.item.rHoldStatus),
                     ],
                   ],
-                  if (yieldRate != null && yieldRateText != null) ...[
+                  if (showValue != null && showText != null) ...[
                     kSpaceW(4),
                     Flexible(
                       child: Text(
-                        yieldRateText,
+                        showText,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: yieldRate > 0
+                          color: showValue > 0
                               ? Colors.red
-                              : yieldRate < 0
+                              : showValue < 0
                                   ? Colors.green
                                   : Colors.grey,
                         ),
