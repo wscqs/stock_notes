@@ -1133,15 +1133,44 @@ class StockeditController extends BaseController {
     _showTradeDialog();
   }
 
+  /// 将持有记录存入交易列表：弹出新增交易弹窗，默认买、成本价、股数、备注
+  void saveHoldingToTrade() {
+    if (!isLocalData.value) {
+      _popSaveAlert(
+          title: TextKey.cunrutrading.tr,
+          onConfirm: () {
+            saveHoldingToTrade();
+          });
+      return;
+    }
+    FocusManager.instance.primaryFocus?.unfocus();
+    _showTradeDialog(
+      defaultTradeType: 0,
+      defaultOpenPrice: rBuyPriceController.text.trim(),
+      defaultOpenShares: rHoldSharesController.text.trim(),
+      defaultRemark: rAllRemarkController.text.trim(),
+    );
+  }
+
   void editTrade(StockTrade trade) {
     _showTradeDialog(existingTrade: trade);
   }
 
-  void _showTradeDialog({StockTrade? existingTrade}) {
+  void _showTradeDialog({
+    StockTrade? existingTrade,
+    String? defaultOpenPrice,
+    String? defaultOpenShares,
+    String? defaultRemark,
+    int? defaultTradeType,
+  }) {
     StockTradeDialog.show(
       context: Get.context!,
       existingTrade: existingTrade,
       currentPrice: serStockData.value.currentPrice ?? '',
+      defaultOpenPrice: defaultOpenPrice,
+      defaultOpenShares: defaultOpenShares,
+      defaultRemark: defaultRemark,
+      defaultTradeType: defaultTradeType,
       onSaved: (companion) {
         if (existingTrade != null) {
           _doUpdateTrade(companion);

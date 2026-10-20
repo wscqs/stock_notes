@@ -186,6 +186,14 @@ class StockeditView extends GetView<StockeditController> {
                   ),
                 ),
               ],
+              kSpaceW(4),
+              Tooltip(
+                message: TextKey.cunrutradingTooltip.tr,
+                child: IconButton(
+                  icon: const Icon(Icons.savings_outlined),
+                  onPressed: controller.saveHoldingToTrade,
+                ),
+              ),
               if (controller.rBuyPriceYieldRate.value != 0.00001) ...[
                 kSpaceW(12),
                 Expanded(child: _buildHoldYieldInfo()),

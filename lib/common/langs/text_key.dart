@@ -185,6 +185,9 @@ class TextKey {
   static const paixuShouyilv = 'paixuShouyilv'; // 收益率
   static const paixuShouyie = 'paixuShouyie'; // 收益额
   static const paixuGupiaoDaima = 'paixuGupiaoDaima'; // 股票代码
+
+  static const cunrutrading = 'cunrutrading'; // 存入交易
+  static const cunrutradingTooltip = 'cunrutradingTooltip'; // 将持有记录存入交易列表
 }
 
 const Map<String, String> zh = {
@@ -294,6 +297,8 @@ const Map<String, String> zh = {
   TextKey.chiyou: '持有',
   TextKey.chiyouchengbenjia: '持有成本价',
   TextKey.chiyougushu: '持有股数',
+  TextKey.cunrutrading: '存入交易',
+  TextKey.cunrutradingTooltip: '将持有记录存入交易列表',
   TextKey.suocang: '锁仓',
   TextKey.tingmai: '停买',
   TextKey.tingmaichu: '停卖',
@@ -540,6 +545,8 @@ const Map<String, String> en = {
   TextKey.chiyou: 'Holding',
   TextKey.chiyouchengbenjia: 'Holding cost price',
   TextKey.chiyougushu: 'Holding shares',
+  TextKey.cunrutrading: 'Save to trades',
+  TextKey.cunrutradingTooltip: 'Save holding record to trade list',
   TextKey.suocang: 'Lock',
   TextKey.tingmai: 'No Buy',
   TextKey.tingmaichu: 'No Sell',

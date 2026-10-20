@@ -10,11 +10,19 @@ class StockTradeDialog {
     required BuildContext context,
     required StockTrade? existingTrade,
     required String currentPrice,
+    String? defaultOpenPrice,
+    String? defaultOpenShares,
+    String? defaultRemark,
+    int? defaultTradeType,
     required void Function(StockTradesCompanion companion) onSaved,
   }) {
     Get.dialog(_StockTradeDialogContent(
       existingTrade: existingTrade,
       currentPrice: currentPrice,
+      defaultOpenPrice: defaultOpenPrice,
+      defaultOpenShares: defaultOpenShares,
+      defaultRemark: defaultRemark,
+      defaultTradeType: defaultTradeType,
       onSaved: onSaved,
     ));
   }
@@ -23,11 +31,19 @@ class StockTradeDialog {
 class _StockTradeDialogContent extends StatefulWidget {
   final StockTrade? existingTrade;
   final String currentPrice;
+  final String? defaultOpenPrice;
+  final String? defaultOpenShares;
+  final String? defaultRemark;
+  final int? defaultTradeType;
   final void Function(StockTradesCompanion companion) onSaved;
 
   const _StockTradeDialogContent({
     required this.existingTrade,
     required this.currentPrice,
+    this.defaultOpenPrice,
+    this.defaultOpenShares,
+    this.defaultRemark,
+    this.defaultTradeType,
     required this.onSaved,
   });
 
@@ -52,15 +68,21 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
   @override
   void initState() {
     super.initState();
-    tradeType = (widget.existingTrade?.tradeType ?? 0).obs;
+    tradeType = (widget.existingTrade?.tradeType ??
+            widget.defaultTradeType ??
+            0)
+        .obs;
     tradeDate = (widget.existingTrade?.tradeDate ?? DateTime.now()).obs;
     openPriceController = TextEditingController(
-      text:
-          widget.existingTrade?.openPrice ?? widget.existingTrade?.price ?? '',
+      text: widget.existingTrade?.openPrice ??
+          widget.existingTrade?.price ??
+          widget.defaultOpenPrice ??
+          '',
     );
     openSharesController = TextEditingController(
       text: widget.existingTrade?.openShares ??
           widget.existingTrade?.shares ??
+          widget.defaultOpenShares ??
           '',
     );
     closePriceController = TextEditingController(
@@ -76,7 +98,7 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
       text: widget.existingTrade?.planSalePrice ?? '',
     );
     tradeRemarkController = TextEditingController(
-      text: widget.existingTrade?.remark ?? '',
+      text: widget.existingTrade?.remark ?? widget.defaultRemark ?? '',
     );
     planBuyPoints = 0.0.obs;
     planSalePoints = 0.0.obs;
