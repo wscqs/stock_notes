@@ -9,7 +9,7 @@ env:
 
 jobs:
   build_android:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
 
@@ -77,7 +77,7 @@ jobs:
         run: flutter pub get
 
       - name: Cache CocoaPods
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: macos/Pods
           key: pods-${{ runner.os }}-flutter-${{ env.FLUTTER_VERSION }}-${{ hashFiles('macos/Podfile.lock') }}
