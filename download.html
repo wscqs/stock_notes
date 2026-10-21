@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>下载 - 股票笔记 · 做有计划的交易</title>
+<meta name="description" content="下载股票笔记：给交易加一道纪律。买卖条件自动追踪，条件达成主动提醒，纯本地存储无需注册。">
+<meta name="theme-color" content="#0a0e17">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="assets/icon-512.png">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="assets/icon-192.png" alt="" width="36" height="36"></span>
+      <span class="brand-text">股票笔记<em>Stock Note</em></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html#method">怎么做</a>
+      <a href="index.html#features">功能</a>
+      <a href="index.html#screenshots">截图</a>
+      <a href="https://github.com/wscqs/stock_notes" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+    <a class="btn btn-primary btn-sm nav-cta" href="download.html">立即下载</a>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<section class="dl-hero">
+  <div class="wrap">
+    <span class="sec-tag">立即下载</span>
+    <h1>下载股票笔记</h1>
+    <p>始终提供最新版本。给交易加一道纪律，免费下载安装，无需注册，30 秒开始记录你的第一份计划。</p>
+
+    <div class="ver-bar">
+      <span class="ver-tag">当前版本</span>
+      <strong class="ver-no" data-ver>3.7.1</strong>
+      <span class="ver-date" data-ver-date>2026-10-21 更新</span>
+    </div>
+
+    <div class="dl-grid">
+
+      <!-- Android -->
+      <div class="dl-card primary">
+        <div class="dl-ic">🤖</div>
+        <h3>Android</h3>
+        <div class="dl-size">APK · <span data-size="android">28.0</span> MB · 支持 Android 8.0+</div>
+        <a class="btn btn-primary" href="downloads/stocknote-android.apk" download="stocknote-android.apk" data-apk data-platform="android">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          直接下载 APK
+        </a>
+        <div class="dl-note" data-note="android">本站托管，点击即刻下载，无需跳转</div>
+        <a class="dl-alt" href="https://github.com/wscqs/stock_notes/releases/latest/download/android_stocknote.apk" data-release-link="android" target="_blank" rel="noopener">备用源 · GitHub Releases ↗</a>
+      </div>
+
+      <!-- Windows -->
+      <div class="dl-card">
+        <div class="dl-ic">🪟</div>
+        <h3>Windows</h3>
+        <div class="dl-size">ZIP · <span data-size="windows">17.0</span> MB · 64 位</div>
+        <a class="btn btn-ghost" href="downloads/stocknote-windows.zip" download="stocknote-windows.zip" data-dl data-platform="windows">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          直接下载 ZIP
+        </a>
+        <div class="dl-note">解压后运行 stocknote.exe</div>
+        <a class="dl-alt" href="https://github.com/wscqs/stock_notes/releases/latest/download/windows-stocknote.zip" data-release-link="windows" target="_blank" rel="noopener">备用源 · GitHub Releases ↗</a>
+      </div>
+
+      <!-- macOS -->
+      <div class="dl-card">
+        <div class="dl-ic">🖥️</div>
+        <h3>macOS</h3>
+        <div class="dl-size">ZIP · <span data-size="macos">25.9</span> MB · 需手动放行</div>
+        <a class="btn btn-ghost" href="downloads/stocknote-macos.zip" download="stocknote-macos.zip" data-dl data-platform="macos">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          直接下载 ZIP
+        </a>
+        <div class="dl-note">首次打开需在「系统设置 → 隐私与安全性」中允许</div>
+        <a class="dl-alt" href="https://github.com/wscqs/stock_notes/releases/latest/download/macos-stocknote.zip" data-release-link="macos" target="_blank" rel="noopener">备用源 · GitHub Releases ↗</a>
+      </div>
+
+    </div>
+
+    <!-- 微信内置浏览器无法直接下载安装包，引导到系统浏览器 -->
+    <div class="wx-tip" id="wxTip" hidden>
+      <svg viewBox="0 0 24 24" class="ic"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v5M12 16h.01"/></svg>
+      <p>
+        当前在微信内置浏览器中，<strong>无法直接下载安装包</strong>。
+        请点击右上角「···」选择<strong>「在浏览器中打开」</strong>，再点击上方下载按钮。
+      </p>
+    </div>
+
+    <div class="wrap-narrow" style="margin:0 auto">
+      <div class="sec-head" style="text-align:left;margin-bottom:22px">
+        <span class="sec-tag">上手三步</span>
+        <h2 style="font-size:26px">装好之后这样做</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div>
+            <h3>添加你的第一只股票</h3>
+            <p>搜索代码或中文名称添加，进入详情页，按价格、市值、市盈率分别设定买入价与卖出价，并写清楚你的判断理由。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">2</div>
+          <div>
+            <h3>设好提醒阈值，然后别管它</h3>
+            <p>在设置里调整临近触发的阈值比例。之后正常生活工作，条件达成时应用会主动推送提醒给你。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div>
+            <h3>交易后回来补一笔记录</h3>
+            <p>在交易记录模块登记这笔买卖，并在笔记里写下复盘结论。三个月后回看，这会是你最有价值的东西。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-head" style="text-align:left;margin-bottom:18px">
+        <span class="sec-tag">其他获取渠道</span>
+        <h2 style="font-size:26px">备用下载源</h2>
+      </div>
+      <div class="dl-grid">
+        <div class="dl-card" style="text-align:left">
+          <h3>GitHub Releases</h3>
+          <p style="font-size:14px;color:var(--txt-2);margin:0 0 16px;line-height:1.75">官方发布页，包含全部历史版本与各平台安装包。</p>
+          <a class="btn btn-ghost btn-block" href="https://github.com/wscqs/stock_notes/releases" target="_blank" rel="noopener">打开 Releases</a>
+        </div>
+        <div class="dl-card" style="text-align:left">
+          <h3>自行编译</h3>
+          <p style="font-size:14px;color:var(--txt-2);margin:0 0 16px;line-height:1.75">Flutter 项目，克隆仓库后用 flutter build apk 自行构建。</p>
+          <a class="btn btn-ghost btn-block" href="https://github.com/wscqs/stock_notes" target="_blank" rel="noopener">查看源码</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark"><img src="assets/icon-192.png" alt="" width="36" height="36"></span>
+      <div>
+        <strong>股票笔记</strong>
+        <span>做有计划的交易 · 本地化股票复盘助手 · Flutter 多平台开源</span>
+      </div>
+    </div>
+    <nav class="footer-links">
+      <a href="index.html">返回首页</a>
+      <a href="index.html#method">交易闭环</a>
+      <a href="https://github.com/wscqs/stock_notes" target="_blank" rel="noopener">源码仓库</a>
+      <a href="https://github.com/wscqs/stock_notes/releases" target="_blank" rel="noopener">发布记录</a>
+      <a href="https://github.com/wscqs/stock_notes/issues" target="_blank" rel="noopener">问题反馈</a>
+    </nav>
+  </div>
+  <div class="wrap footer-note">
+    <p>本站为非官方社区站点，项目版权归原作者所有。本应用仅用于个人交易记录与复盘管理，行情数据仅供参考，不构成任何投资建议。</p>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

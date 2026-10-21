@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>股票笔记 - 做有计划的交易</title>
+<meta name="description" content="股票笔记：把买入理由、卖出条件写下来，让交易有计划、有纪律、有复盘。买卖条件自动追踪，条件达成主动提醒，纯本地存储无需注册。Flutter 多平台开源。">
+<meta name="keywords" content="股票笔记,有计划的交易,交易计划,复盘,买卖条件,交易纪律,股票,Flutter,开源,Android,交易记录">
+<meta name="theme-color" content="#0a0e17">
+<link rel="canonical" href="https://wscqs.github.io/stock_notes/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="股票笔记 - 做有计划的交易">
+<meta property="og:description" content="写下买入理由，设定卖出条件，让纪律替你做决定。">
+<meta property="og:image" content="assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="assets/icon-512.png">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- ===== 导航 ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark"><img src="assets/icon-192.png" alt="" width="36" height="36"></span>
+      <span class="brand-text">股票笔记<em>Stock Note</em></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#method">怎么做</a>
+      <a href="#features">功能</a>
+      <a href="#screenshots">截图</a>
+      <a href="https://github.com/wscqs/stock_notes" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+    <a class="btn btn-primary btn-sm nav-cta" href="download.html" data-download>立即下载</a>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="grid-lines"></div>
+    <div class="glow glow-red"></div>
+    <div class="glow glow-cyan"></div>
+  </div>
+
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <span class="badge">
+        <span class="badge-dot"></span>
+        最新版 · 开源免费
+      </span>
+
+      <h1>
+        做有<span class="grad">计划</span>的交易
+      </h1>
+
+      <p class="lede">
+        买入前写下理由，卖出前定好条件。价格、市值、市盈率任一触达目标，
+        应用主动提醒你——不靠盯盘，不靠情绪，<strong>按你写下的计划执行</strong>。
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="download.html" data-download>
+          <svg viewBox="0 0 24 24" class="ic"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          下载最新版
+          <span class="btn-sub" id="heroSize">27.6 MB</span>
+        </a>
+        <a class="btn btn-ghost btn-lg" href="https://github.com/wscqs/stock_notes" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 004 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 008.5 18.6V22"/></svg>
+          在 GitHub 上查看
+        </a>
+      </div>
+
+      <ul class="hero-meta">
+        <li><strong>3</strong><span>步交易闭环</span></li>
+        <li><strong>3</strong><span>维条件监控</span></li>
+        <li><strong>0</strong><span>需注册账号</span></li>
+        <li><strong>88</strong><span>GitHub Stars</span></li>
+      </ul>
+    </div>
+
+    <div class="hero-visual">
+      <div class="phone">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <img src="assets/screen_01.png" alt="股票笔记应用主界面：股票列表、条件筛选与标签" width="1080" height="2400">
+          </div>
+        </div>
+        <div class="phone-glow" aria-hidden="true"></div>
+      </div>
+
+      <div class="float-card fc-1" aria-hidden="true">
+        <span class="fc-tag buy">满足买入</span>
+        <div class="fc-row"><span>美瑞新材</span><b class="up">10.24</b></div>
+        <div class="fc-meta">低于目标价 13.0</div>
+      </div>
+
+      <div class="float-card fc-2" aria-hidden="true">
+        <span class="fc-tag sell">临近卖出</span>
+        <div class="fc-row"><span>港股创新药ETF</span><b class="down">1.223</b></div>
+        <div class="fc-meta">市盈率满足</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 信任条 ===== -->
+<section class="strip">
+  <div class="wrap strip-inner">
+    <div class="strip-item"><svg viewBox="0 0 24 24" class="ic"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>写下买入理由</div>
+    <div class="strip-item"><svg viewBox="0 0 24 24" class="ic"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>设定卖出条件</div>
+    <div class="strip-item"><svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>条件达成提醒</div>
+    <div class="strip-item"><svg viewBox="0 0 24 24" class="ic"><path d="M4 7v10h16V7"/><path d="M2 7l2-3m2 3L4 4m12 3l2-3m-2 3l2 3"/></svg>数据本地存储</div>
+    <div class="strip-item"><svg viewBox="0 0 24 24" class="ic"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>无需注册登录</div>
+  </div>
+</section>
+
+<!-- ===== 微信内置浏览器提示 ===== -->
+<div class="wx-tip wx-tip-bar" id="wxTip" hidden>
+  <svg viewBox="0 0 24 24" class="ic"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v5M12 16h.01"/></svg>
+  <p>
+    当前在微信内置浏览器中，<strong>无法直接下载安装包</strong>。
+    请点击右上角「···」选择<strong>「在浏览器中打开」</strong>。
+  </p>
+</div>
+
+<!-- ===== 方法论：交易闭环 ===== -->
+<section class="section method" id="method">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-tag">交易闭环</span>
+      <h2>有计划的交易，是三步的事</h2>
+      <p class="sec-sub">
+        多数亏损来自冲动买入、忘记卖出、事后遗忘。
+        股票笔记把这三个问题拆解成一条可重复的闭环，让每一次决策都有据可依。
+      </p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="fs-num">01</div>
+        <div class="fs-ic ic-red">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
+        </div>
+        <h3>买入前 · 写下计划</h3>
+        <p>
+          为每只股票分别设定<strong>买入价、卖出价</strong>，可按价格、市值、市盈率三个维度独立设定。
+          每一笔计划都要填理由——<strong>为什么买、凭什么判断低估</strong>。
+        </p>
+        <div class="fs-tag">避免：凭感觉买入</div>
+      </div>
+
+      <div class="flow-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14m0 0l-5-5m5 5l-5 5"/></svg>
+      </div>
+
+      <div class="flow-step">
+        <div class="fs-num">02</div>
+        <div class="fs-ic ic-amber">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        </div>
+        <h3>持有中 · 交给纪律</h3>
+        <p>
+          不用天天盯盘。应用持续比对当前行情与你设定的条件，
+          <strong>满足买入 / 满足卖出 / 临近触发</strong> 三种状态实时标记，条件达成主动推送提醒。
+        </p>
+        <div class="fs-tag">避免：忘记卖出、追涨杀跌</div>
+      </div>
+
+      <div class="flow-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14m0 0l-5-5m5 5l-5 5"/></svg>
+      </div>
+
+      <div class="flow-step">
+        <div class="fs-num">03</div>
+        <div class="fs-ic ic-green">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>
+        </div>
+        <h3>交易后 · 复盘沉淀</h3>
+        <p>
+          每一笔买入、卖出、备注都进交易流水。持有成本价与股数自动计算盈亏，
+          富文本笔记支持图文与标签，<strong>把这次的判断逻辑留下</strong>，下次直接复用。
+        </p>
+        <div class="fs-tag">避免：赚不知道为什么赚</div>
+      </div>
+    </div>
+
+    <div class="loop-note">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 3v6h-6"/></svg>
+      <p>
+        三个月后回看这些记录，你会清楚知道自己<strong>哪类判断有效、哪类是情绪</strong>。
+        这才是复盘真正的价值——不是记住赚过钱，而是学会怎么赚。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 核心能力 ===== -->
+<section class="section section-alt" id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-tag">支撑闭环的能力</span>
+      <h2>每个环节，都有对应的工具</h2>
+      <p class="sec-sub">从计划制定到条件监控，再到记录复盘，全部在同一应用内完成。</p>
+    </div>
+
+    <div class="grid grid-3">
+      <article class="card">
+        <div class="card-ic ic-red">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+        </div>
+        <span class="card-phase">定计划</span>
+        <h3>三维买卖计划</h3>
+        <p>价格、市值、市盈率可分别设定买入价与卖出价，实时显示与当前值的差距百分比（如买 1.6%、卖 2.4%），并为每条计划填写独立理由。</p>
+      </article>
+
+      <article class="card">
+        <div class="card-ic ic-green">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M3 7l6 6 4-4 8 8"/><path d="M21 11V17h-6"/></svg>
+        </div>
+        <span class="card-phase">守纪律</span>
+        <h3>条件达成主动提醒</h3>
+        <p>按价格、市值、市盈率三维度比对当前行情，「满足买入」「满足卖出」「临近触发」状态实时标记，条件达成即刻推送，不用手动翻盘。</p>
+      </article>
+
+      <article class="card">
+        <div class="card-ic ic-amber">
+          <svg viewBox="0 0 24 24" class="ic"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <span class="card-phase">守纪律</span>
+        <h3>临近阈值与距离显示</h3>
+        <p>不必等到条件达成才知道。阈值可自定义（±3% 可调），实时显示距离目标还有多远，让你提前判断是否需要调整计划。</p>
+      </article>
+
+      <article class="card">
+        <div class="card-ic ic-blue">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>
+        </div>
+        <span class="card-phase">会复盘</span>
+        <h3>逐笔交易流水</h3>
+        <p>每一笔买入 / 卖出 / 备注都留痕，形成完整交易记录。持有成本价与股数辅助盈亏判断，状态支持锁仓、停买、停卖。</p>
+      </article>
+
+      <article class="card">
+        <div class="card-ic ic-purple">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
+        </div>
+        <span class="card-phase">会复盘</span>
+        <h3>笔记沉淀判断逻辑</h3>
+        <p>富文本全屏笔记支持图文混排、标签归类、关联已记录的股票。把「为什么买」写下来，下次同类机会直接复用。</p>
+      </article>
+
+      <article class="card">
+        <div class="card-ic ic-cyan">
+          <svg viewBox="0 0 24 24" class="ic"><path d="M4 7v10h16V7"/><path d="M2 7l2-3m2 3L4 4m12 3l2-3m-2 3l2 3"/></svg>
+        </div>
+        <span class="card-phase">长期沉淀</span>
+        <h3>计划库与检索</h3>
+        <p>按标签（短期/中期/长期、买/卖）归类不同策略组合，支持关键词、状态、条件四重过滤。数据可导出为 .db 分享给好友学习。</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 截图 ===== -->
+<section class="section" id="screenshots">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-tag">界面预览</span>
+      <h2>从计划到复盘，都在这里</h2>
+      <p class="sec-sub">买卖计划、条件提醒、交易流水、富文本笔记，全部为应用实际运行界面。</p>
+    </div>
+
+    <div class="shots" id="shots">
+      <figure class="shot"><img loading="lazy" src="assets/screen_04.png" alt="股票详情页：价格、市值、市盈率三维买卖计划与理由记录" width="1080" height="2400"><figcaption>① 定计划 · 三维买卖条件与理由</figcaption></figure>
+      <figure class="shot"><img loading="lazy" src="assets/screen_01.png" alt="首页股票列表：支持条件筛选、标签切换与快捷操作" width="1080" height="2400"><figcaption>② 看状态 · 条件达成实时标记</figcaption></figure>
+      <figure class="shot"><img loading="lazy" src="assets/screen_03.png" alt="消息提醒页：按价格、市值、市盈率推送条件达成通知" width="1080" height="2400"><figcaption>③ 守纪律 · 条件达成主动推送</figcaption></figure>
+      <figure class="shot"><img loading="lazy" src="assets/screen_06.png" alt="设置页：深色模式、多语言、临近买卖点阈值配置" width="1080" height="2400"><figcaption>阈值配置 · 临近触发提醒</figcaption></figure>
+      <figure class="shot"><img loading="lazy" src="assets/screen_07.png" alt="笔记编辑页：富文本编辑与格式工具栏" width="1080" height="2400"><figcaption>④ 会复盘 · 判断逻辑沉淀</figcaption></figure>
+      <figure class="shot"><img loading="lazy" class="desktop" src="assets/screen_08.png" alt="数据源管理页：数据库导入导出与多账号切换" width="658" height="1256"><figcaption>计划库 · 导入导出与多账号</figcaption></figure>
+      <figure class="shot"><img loading="lazy" src="assets/screen_02.png" alt="批量选择模式：长按列表进入多选管理" width="1080" height="2400"><figcaption>批量管理 · 长按进入多选</figcaption></figure>
+      <figure class="shot"><img loading="lazy" src="assets/screen_05.png" alt="系统搜索中直接唤起股票笔记应用" width="1080" height="2400"><figcaption>全局搜索 · 唤起应用</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta">
+  <div class="cta-bg" aria-hidden="true"><div class="glow glow-red"></div></div>
+    <div class="wrap cta-inner">
+      <h2>下一次买入之前，先把计划写下来</h2>
+      <p>免费、开源、无需注册。给交易加一道纪律，比盯盘更重要。</p>
+      <a class="btn btn-primary btn-lg" href="download.html" data-download>
+        <svg viewBox="0 0 24 24" class="ic"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        立即下载
+      </a>
+      <p class="cta-note">Android / Windows / macOS 三平台均提供 · 本地存储无需注册</p>
+      <a class="cta-alt" href="https://github.com/wscqs/stock_notes/releases/latest/download/android_stocknote.apk" data-release-link="android" target="_blank" rel="noopener">直接下载 Android 版（GitHub Releases）↗</a>
+    </div>
+</section>
+
+</main>
+
+<!-- ===== 页脚 ===== -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark"><img src="assets/icon-192.png" alt="" width="36" height="36"></span>
+      <div>
+        <strong>股票笔记</strong>
+        <span>做有计划的交易 · 本地化股票复盘助手 · Flutter 多平台开源</span>
+      </div>
+    </div>
+    <nav class="footer-links">
+      <a href="#method">交易闭环</a>
+      <a href="https://github.com/wscqs/stock_notes" target="_blank" rel="noopener">源码仓库</a>
+      <a href="https://github.com/wscqs/stock_notes/releases" target="_blank" rel="noopener">发布记录</a>
+      <a href="https://github.com/wscqs/stock_notes/issues" target="_blank" rel="noopener">问题反馈</a>
+      <a href="https://github.com/wscqs/stock_notes/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0 许可</a>
+    </nav>
+  </div>
+  <div class="wrap footer-note">
+    <p>本站为非官方社区站点，项目版权归原作者所有。本应用仅用于个人交易记录与复盘管理，行情数据仅供参考，不构成任何投资建议。</p>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
