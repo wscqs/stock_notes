@@ -480,6 +480,10 @@ class AppDatabase extends _$AppDatabase {
         .go();
   }
 
+  Future<int> deleteAllMessages() {
+    return delete(messageItems).go();
+  }
+
   //note_assets
   Future<List<NoteAsset>> getNoteAssetsByNoteId(int noteId) {
     return (select(noteAssets)..where((tbl) => tbl.noteId.equals(noteId)))

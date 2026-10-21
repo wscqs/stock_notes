@@ -173,6 +173,12 @@ class TextKey {
   static const xiaohongdiantixing = 'xiaohongdiantixing'; // 小红点提醒
   static const anchicunguolvtixing = 'anchicunguolvtixing'; // 按持仓过滤提醒
   static const maichutixingjinchicang = 'maichutixingjinchicang'; // 卖出提醒仅限持仓股票
+  static const qingkongxiaoxiliebiao = 'qingkongxiaoxiliebiao'; // 清空消息列表
+  static const qingkonghouwufahuifu = 'qingkonghouwufahuifu'; // 清空后无法恢复
+  static const qingkong = 'qingkong'; // 清空
+  static const yiqingkong = 'yiqingkong'; // 已清空
+  static const querenshanchu = 'querenshanchu'; // 确认删除
+  static const querenshanchusuoyouxiaoxi = 'querenshanchusuoyouxiaoxi'; // 确认删除所有消息？
   static const xiaoxishuoming = 'xiaoxishuoming'; // 消息说明
   static const xiaoxishuomingtitle = 'xiaoxishuomingtitle'; // 消息说明（标题）
   static const bianjibieming = 'bianjibieming'; // 编辑别名
@@ -413,6 +419,12 @@ const Map<String, String> zh = {
   TextKey.xiaohongdiantixing: '小红点提醒',
   TextKey.anchicunguolvtixing: '按持仓过滤提醒',
   TextKey.maichutixingjinchicang: '卖出提醒仅限持仓股票',
+  TextKey.qingkongxiaoxiliebiao: '清空消息列表',
+  TextKey.qingkonghouwufahuifu: '清空后所有消息将被删除，无法恢复',
+  TextKey.qingkong: '清空',
+  TextKey.yiqingkong: '已清空',
+  TextKey.querenshanchu: '确认删除',
+  TextKey.querenshanchusuoyouxiaoxi: '确定要删除所有消息吗？此操作不可恢复。',
   TextKey.xiaoxishuomingtitle: '消息说明',
   TextKey.xiaoxishuoming: '''
 • 当股票的价格、市值或市盈TTM 满足你设置的买入/卖出目标时，会生成一条提醒消息。
@@ -664,6 +676,12 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.xiaohongdiantixing: 'Red Dot Reminder',
   TextKey.anchicunguolvtixing: 'Filter by Holdings',
   TextKey.maichutixingjinchicang: 'Sell reminders only for held stocks',
+  TextKey.qingkongxiaoxiliebiao: 'Clear All Messages',
+  TextKey.qingkonghouwufahuifu: 'All messages will be permanently deleted.',
+  TextKey.qingkong: 'Clear',
+  TextKey.yiqingkong: 'Cleared',
+  TextKey.querenshanchu: 'Confirm Delete',
+  TextKey.querenshanchusuoyouxiaoxi: 'Delete all messages? This cannot be undone.',
   TextKey.xiaoxishuomingtitle: 'About Messages',
   TextKey.xiaoxishuoming: '''
 • A reminder message is generated when a stock's price, market cap, or PE TTM meets your buy/sell target.
