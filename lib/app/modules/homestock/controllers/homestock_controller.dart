@@ -46,17 +46,28 @@ class HomestockController extends BaseController
   List<String> sortOptions = [
     TextKey.paixuBianjiRiqi.tr,
     TextKey.paixuGupiaoJiage.tr,
+    TextKey.paixuChiyouE.tr,
     TextKey.paixuShouyilv.tr,
     TextKey.paixuShouyie.tr,
     TextKey.paixuGupiaoDaima.tr,
   ];
-  // 排序选择本地持久化（0=编辑日期,1=股票价格,2=收益率,3=收益额,4=股票代码）
+  // 排序选择本地持久化（0=编辑日期,1=股票价格,2=持有额,3=收益率,4=收益额,5=股票代码）
+  // key 升级：新增持有额排序后索引语义变化，使用新 key 避免旧缓存错位
   final selectedSortIndex =
-      (QsCache.get<int>("homestockSelectedSortIndexKey") ?? 0).clamp(0, 4).obs;
+      (QsCache.get<int>("homestockSelectedSortIndexKeyV2") ?? 0)
+          .clamp(0, 5)
+          .obs;
   final sortAscending =
       (QsCache.get<bool>("homestockSortAscendingKey") ?? false).obs;
-  // 各排序字段默认方向：日期降序、价格降序、收益率降序、收益额降序、代码升序
-  final List<bool> _defaultSortAscending = [false, false, false, false, true];
+  // 各排序字段默认方向：日期降序、价格降序、持有额降序、收益率降序、收益额降序、代码升序
+  final List<bool> _defaultSortAscending = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    true
+  ];
 
   void changeSelectedOrderIndex(int index) {
     selectedOrderIndex.value = index;
@@ -68,6 +79,7 @@ class HomestockController extends BaseController
     sortOptions = [
       TextKey.paixuBianjiRiqi.tr,
       TextKey.paixuGupiaoJiage.tr,
+      TextKey.paixuChiyouE.tr,
       TextKey.paixuShouyilv.tr,
       TextKey.paixuShouyie.tr,
       TextKey.paixuGupiaoDaima.tr,
@@ -91,12 +103,58 @@ class HomestockController extends BaseController
   }
 
   void _persistSortState() {
-    QsCache.set("homestockSelectedSortIndexKey", selectedSortIndex.value);
+    QsCache.set("homestockSelectedSortIndexKeyV2", selectedSortIndex.value);
     QsCache.set("homestockSortAscendingKey", sortAscending.value);
   }
 
   /// 对列表进行排序（收益率/收益额优先把持有中排前面）
   List<StockItem> _sortStockItems(List<StockItem> list) {
+    return applySortToList(list);
+  }
+
+  /// 根据当前排序规则，返回首页股票单元格代码行要显示的盈亏/持有指标文本与对应数值/颜色类型。
+  List<({String text, Color? color})> stockCellMetrics(StockItem item) {
+    final amount = item.holdingAmount;
+    final amountText = item.holdingAmountText;
+    final profit = item.holdingProfit;
+    final profitText = item.holdingProfitText;
+    final yieldRate = item.holdingYieldRate;
+    final yieldRateText = item.holdingYieldRateText;
+
+    final result = <({String text, Color? color})>[];
+
+    switch (selectedSortIndex.value) {
+      case 2: // 持有额
+        if (yieldRateText != null && yieldRate != null) {
+          result.add((text: yieldRateText, color: _metricColor(yieldRate)));
+        }
+        if (amountText != null && amount != null) {
+          result.add((text: amountText, color: Colors.white60));
+        }
+      case 3: // 收益率
+        if (yieldRateText != null && yieldRate != null) {
+          result.add((text: yieldRateText, color: _metricColor(yieldRate)));
+        }
+        if (profitText != null && profit != null) {
+          // result.add((text: profitText, color: _metricColor(profit)));
+          result.add((text: profitText, color: Colors.white60));
+        }
+      case 4: // 收益额
+        if (profitText != null && profit != null) {
+          result.add((text: profitText, color: _metricColor(profit)));
+        }
+    }
+    return result;
+  }
+
+  Color? _metricColor(double value) {
+    if (value > 0) return Colors.red;
+    if (value < 0) return Colors.green;
+    return Colors.grey;
+  }
+
+  /// 暴露给测试的排序方法
+  List<StockItem> applySortToList(List<StockItem> list) {
     final index = selectedSortIndex.value;
     final ascending = sortAscending.value;
 
@@ -124,7 +182,19 @@ class HomestockController extends BaseController
           return ascending ? pa.compareTo(pb) : pb.compareTo(pa);
         });
         break;
-      case 2: // 收益率
+      case 2: // 持有额
+        list.sort((a, b) {
+          final holdCompare = compareHolding(a, b);
+          if (holdCompare != 0) return holdCompare;
+          final aa = a.holdingAmount;
+          final bb = b.holdingAmount;
+          if (aa == null && bb == null) return 0;
+          if (aa == null) return 1;
+          if (bb == null) return -1;
+          return ascending ? aa.compareTo(bb) : bb.compareTo(aa);
+        });
+        break;
+      case 3: // 收益率
         list.sort((a, b) {
           final holdCompare = compareHolding(a, b);
           if (holdCompare != 0) return holdCompare;
@@ -136,7 +206,7 @@ class HomestockController extends BaseController
           return ascending ? ra.compareTo(rb) : rb.compareTo(ra);
         });
         break;
-      case 3: // 收益额
+      case 4: // 收益额
         list.sort((a, b) {
           final holdCompare = compareHolding(a, b);
           if (holdCompare != 0) return holdCompare;
@@ -148,10 +218,9 @@ class HomestockController extends BaseController
           return ascending ? pa.compareTo(pb) : pb.compareTo(pa);
         });
         break;
-      case 4: // 股票代码
-        list.sort((a, b) => ascending
-            ? a.code.compareTo(b.code)
-            : b.code.compareTo(a.code));
+      case 5: // 股票代码
+        list.sort((a, b) =>
+            ascending ? a.code.compareTo(b.code) : b.code.compareTo(a.code));
         break;
     }
     return list;

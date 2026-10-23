@@ -188,6 +188,7 @@ class TextKey {
   // 首页排序
   static const paixuBianjiRiqi = 'paixuBianjiRiqi'; // 编辑日期
   static const paixuGupiaoJiage = 'paixuGupiaoJiage'; // 股票价格
+  static const paixuChiyouE = 'paixuChiyouE'; // 持有额
   static const paixuShouyilv = 'paixuShouyilv'; // 收益率
   static const paixuShouyie = 'paixuShouyie'; // 收益额
   static const paixuGupiaoDaima = 'paixuGupiaoDaima'; // 股票代码
@@ -441,6 +442,7 @@ const Map<String, String> zh = {
   // 首页排序
   TextKey.paixuBianjiRiqi: '编辑日期',
   TextKey.paixuGupiaoJiage: '股票价格',
+  TextKey.paixuChiyouE: '持有额',
   TextKey.paixuShouyilv: '收益率',
   TextKey.paixuShouyie: '收益额',
   TextKey.paixuGupiaoDaima: '股票代码',
@@ -698,6 +700,7 @@ A privacy-first, offline investment journaling and review app. All data is store
   // Home sort
   TextKey.paixuBianjiRiqi: 'Edit Date',
   TextKey.paixuGupiaoJiage: 'Stock Price',
+  TextKey.paixuChiyouE: 'Holding Amount',
   TextKey.paixuShouyilv: 'Yield',
   TextKey.paixuShouyie: 'Profit',
   TextKey.paixuGupiaoDaima: 'Code',

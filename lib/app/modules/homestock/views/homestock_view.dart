@@ -679,13 +679,7 @@ class _HomeStockCellState extends State<HomeStockCell>
 
   Widget buildContents() {
     final conditionInfo = widget.item.showCellConditionInfo() ?? "";
-    final isProfitSort = controller.selectedSortIndex.value == 3;
-    final yieldRate = widget.item.holdingYieldRate;
-    final yieldRateText = widget.item.holdingYieldRateText;
-    final profit = widget.item.holdingProfit;
-    final profitText = widget.item.holdingProfitText;
-    final showValue = isProfitSort ? profit : yieldRate;
-    final showText = isProfitSort ? profitText : yieldRateText;
+    final metrics = controller.stockCellMetrics(widget.item);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -774,25 +768,24 @@ class _HomeStockCellState extends State<HomeStockCell>
                       _buildHoldStatusTag(widget.item.rHoldStatus),
                     ],
                   ],
-                  if (showValue != null && showText != null) ...[
-                    kSpaceW(4),
-                    Flexible(
-                      child: Text(
-                        showText,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: showValue > 0
-                              ? Colors.red
-                              : showValue < 0
-                                  ? Colors.green
-                                  : Colors.grey,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
+                  ...metrics.map((metric) => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          kSpaceW(4),
+                          Flexible(
+                            child: Text(
+                              metric.text,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: metric.color,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
+                      )),
                 ],
               ),
               if (widget.item.tagList.isNotEmpty) ...[

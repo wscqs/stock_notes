@@ -33,7 +33,7 @@ void main() {
       final controller = HomestockController();
       controller.selectedSortIndex.value = 2;
       final metrics = controller.stockCellMetrics(item);
-      expect(metrics.map((e) => e.text).toList(), ['+10.0%', '+11000']);
+      expect(metrics.map((e) => e.text).toList(), ['+10.0%', '11000']);
     });
 
     test('yield rate sort returns yield rate and profit', () {
