@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="format-detection" content="telephone=no">
+<!-- 部分行情接口会对外部 Referer 返回 567，全局关闭 Referer -->
+<meta name="referrer" content="no-referrer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>个股新闻</title>
+<style>
+:root{
+  --bg:#0b0e13; --bg2:#121722; --card:#161c28; --card2:#1d2534;
+  --line:#242d3d; --line2:#2f3a4d;
+  --fg:#e8edf6; --fg2:#9aa7bd; --fg3:#6b7891;
+  --up:#ff4d4f; --down:#12b886; --acc:#00c2d7; --acc2:#e8453c;
+  --hl:#ffd54a; --tagbg:rgba(0,194,215,.13);
+  --shadow:0 8px 28px rgba(0,0,0,.5);
+  --safeT:env(safe-area-inset-top,0px);
+  --safeB:env(safe-area-inset-bottom,0px);
+}
+/* App 内嵌时固定深浅色 color-scheme，避免 WebView 在深色下仍用浅色表单控件/滚动条 */
+:root.force-dark{ color-scheme:dark; }
+:root.force-dark.light{ color-scheme:light; }
+:root.light{
+  --bg:#f2f4f8; --bg2:#ffffff; --card:#ffffff; --card2:#f7f9fc;
+  --line:#e3e8f0; --line2:#d3dae6;
+  --fg:#161d2b; --fg2:#5b6779; --fg3:#8b96a8;
+  --up:#e0303e; --down:#0f9d76; --acc:#0091a8; --acc2:#d0342c;
+  --hl:#b8860b; --tagbg:rgba(0,145,168,.1);
+  --shadow:0 6px 22px rgba(20,30,50,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  overscroll-behavior-y:none; -webkit-font-smoothing:antialiased;
+  transition:background .25s,color .25s;
+}
+button,input{font-family:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer;padding:0}
+
+/* ---------- 布局 ---------- */
+.app{display:flex;flex-direction:column;min-height:100dvh;max-width:900px;margin:0 auto}
+
+/* App 内嵌 WebView 时：页面容器已避开系统栏，CSS 安全区再叠加一遍会产生明显空隙，
+   直接归零（App 侧用 SafeArea 避开了状态栏/手势条，不需要再让） */
+html.app-inset{ --safeT:0px; --safeB:0px; }
+
+/* ---------- 顶栏 ---------- */
+.topbar{
+  position:sticky;top:0;z-index:40;padding:calc(var(--safeT) + 6px) 12px 10px;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.tb-row{display:flex;align-items:center;gap:10px}
+.idblock{min-width:0;flex:1}
+.sname{font-size:17px;font-weight:700;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.scode{font-size:12px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scode b{color:var(--acc);font-weight:600}
+.quote{display:flex;align-items:baseline;gap:6px;flex-shrink:0}
+.qprice{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.qchg{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--fg2)}
+.tb-btns{display:flex;gap:6px;flex-shrink:0}
+.iconbtn{
+  width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  background:var(--card2);border:1px solid var(--line);color:var(--fg2);
+}
+.iconbtn:active{background:var(--line2)}
+.iconbtn svg{width:17px;height:17px;display:block}
+
+/* ---------- 列表 ---------- */
+.list{flex:1;padding:2px 8px 6px;min-height:0}
+.item{
+  display:flex;gap:10px;align-items:flex-start;padding:10px 10px;
+  border-radius:11px;background:var(--card);margin-bottom:6px;
+  border:1px solid transparent;cursor:pointer;
+}
+.item:active{background:var(--card2);border-color:var(--line2)}
+.item.on{background:var(--card2);border-color:var(--acc)}
+.tcol{flex-shrink:0;width:44px;text-align:center;padding-top:1px}
+.tday{font-size:11px;color:var(--fg3);font-variant-numeric:tabular-nums;line-height:1.3}
+.ttime{font-size:12.5px;color:var(--fg2);font-weight:600;font-variant-numeric:tabular-nums}
+.body{flex:1;min-width:0}
+.title{font-size:14.5px;line-height:1.5;font-weight:500;word-break:break-word;color:var(--fg)}
+.item.on .title{color:var(--acc)}
+.meta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap}
+.tag{
+  font-size:10.5px;padding:1.5px 6px;border-radius:5px;background:var(--tagbg);
+  color:var(--acc);font-weight:600;white-space:nowrap;line-height:1.5
+}
+.tag.ann{background:rgba(232,69,60,.14);color:var(--acc2)}
+.src{font-size:11px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+
+/* ---------- 状态 ---------- */
+.state{padding:52px 24px;text-align:center;color:var(--fg3);font-size:14px}
+.state .big{font-size:34px;margin-bottom:12px;opacity:.5}
+.state .retry{
+  margin-top:16px;display:inline-block;padding:9px 22px;border-radius:9px;
+  background:var(--acc);color:#fff;font-size:14px;font-weight:600
+}
+.skel{height:64px;border-radius:11px;background:var(--card);margin-bottom:6px;position:relative;overflow:hidden}
+.skel::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--card2),transparent);animation:sh 1.3s infinite}
+@keyframes sh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* ---------- 分页 ---------- */
+.pager{
+  position:sticky;bottom:0;display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:8px 12px calc(var(--safeB) + 8px);border-top:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 90%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+.pg{
+  padding:7px 15px;border-radius:8px;background:var(--card2);border:1px solid var(--line);
+  color:var(--fg2);font-size:13.5px;font-weight:600;min-height:34px
+}
+.pg:active{background:var(--line2)}
+.pg[disabled]{opacity:.35}
+.pginfo{font-size:12.5px;color:var(--fg3);font-variant-numeric:tabular-nums;min-width:76px;text-align:center}
+.srcnote{padding:2px 14px calc(var(--safeB) + 6px);font-size:10.5px;color:var(--fg3);text-align:center;opacity:.75}
+
+/* ---------- 搜索 ---------- */
+.mask{
+  position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.62);
+  opacity:0;pointer-events:none;transition:opacity .22s;backdrop-filter:blur(2px)
+}
+.mask.on{opacity:1;pointer-events:auto}
+.spanel{
+  position:fixed;left:0;right:0;top:0;z-index:61;background:var(--bg2);
+  border-bottom:1px solid var(--line);border-radius:0 0 16px 16px;
+  padding:calc(var(--safeT) + 10px) 12px 12px;box-shadow:var(--shadow);
+  transform:translateY(-102%);transition:transform .26s cubic-bezier(.32,.72,0,1);
+  max-height:88dvh;display:flex;flex-direction:column
+}
+.spanel.on{transform:translateY(0)}
+.shead{display:flex;gap:8px;align-items:center}
+.sinput{
+  flex:1;min-width:0;height:40px;padding:0 13px;border-radius:10px;font-size:16px;
+  background:var(--card);border:1px solid var(--line2);color:var(--fg);outline:none;
+}
+.sinput:focus{border-color:var(--acc)}
+.sinput::placeholder{color:var(--fg3);font-size:14px}
+.sclose{width:40px;height:40px;border-radius:10px;background:var(--card2);display:grid;place-items:center;color:var(--fg2);font-size:19px}
+.sres{margin-top:10px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0}
+.srow{
+  display:flex;align-items:center;gap:9px;padding:10px 8px;border-radius:9px;
+  border-bottom:1px solid var(--line);cursor:pointer
+}
+.srow:active{background:var(--card2)}
+.srow .c{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;min-width:56px}
+.srow .n{font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srow .m{font-size:11px;color:var(--fg3);flex-shrink:0}
+.shint{padding:16px 10px;font-size:12.5px;color:var(--fg3);text-align:center}
+
+/* ---------- 阅读浮层 ---------- */
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;height:88dvh;
+  background:var(--bg2);border-radius:16px 16px 0 0;box-shadow:var(--shadow);
+  transform:translateY(102%);transition:transform .28s cubic-bezier(.32,.72,0,1);
+  display:flex;flex-direction:column;max-width:900px;margin:0 auto
+}
+.sheet.on{transform:translateY(0)}
+.sbar{
+  display:flex;align-items:center;gap:10px;padding:12px 12px 10px;
+  border-bottom:1px solid var(--line);flex-shrink:0;
+  padding-top:calc(var(--safeT) + 12px)
+}
+.grip{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:34px;height:4px;border-radius:2px;background:var(--line2)}
+.stitle{flex:1;min-width:0;font-size:14.5px;font-weight:600;line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sbtn{width:32px;height:32px;border-radius:8px;background:var(--card2);display:grid;place-items:center;color:var(--fg2);flex-shrink:0;font-size:15px}
+.sbtn:active{background:var(--line2)}
+.sframewrap{flex:1;min-height:0;position:relative;background:var(--bg)}
+.sframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.fallback{padding:30px 24px;text-align:center;color:var(--fg2);font-size:14px}
+.fallback .ic{font-size:38px;margin-bottom:14px;opacity:.6}
+.fallback .link{
+  margin-top:18px;display:inline-block;padding:10px 24px;border-radius:9px;
+  background:var(--acc);color:#fff;font-weight:600;font-size:14px
+}
+.fallback .copy{margin-top:10px;display:inline-block;padding:10px 20px;border-radius:9px;background:var(--card2);border:1px solid var(--line);color:var(--fg2);font-size:13.5px}
+
+.toast{
+  position:fixed;left:50%;bottom:calc(var(--safeB) + 78px);transform:translateX(-50%) translateY(14px);
+  z-index:90;background:var(--card2);border:1px solid var(--line2);color:var(--fg);
+  padding:9px 17px;border-radius:9px;font-size:13.5px;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:.24s;max-width:82vw;text-align:center
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (min-width:700px){
+  .list{padding:10px 14px 4px}
+  .item{padding:12px 13px}
+  .title{font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="tb-row">
+      <div class="idblock">
+        <div class="sname" id="sname">加载中…</div>
+        <div class="scode" id="scode">—</div>
+      </div>
+      <div class="quote" id="quote" hidden>
+        <span class="qprice" id="qprice">—</span>
+        <span class="qchg" id="qchg"></span>
+      </div>
+      <div class="tb-btns">
+        <button class="iconbtn" id="btnRefresh" aria-label="刷新">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        </button>
+        <button class="iconbtn" id="btnSearch" aria-label="搜索">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+        <button class="iconbtn" id="btnTheme" aria-label="切换主题">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="list" id="list"></main>
+
+  <div class="pager" id="pager">
+    <button class="pg" id="pgFirst">首页</button>
+    <button class="pg" id="pgPrev">上一页</button>
+    <span class="pginfo" id="pgInfo">—</span>
+    <button class="pg" id="pgNext">下一页</button>
+  </div>
+</div>
+
+<div class="mask" id="mask"></div>
+
+<div class="spanel" id="spanel">
+  <div class="grip" style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:34px;height:4px;border-radius:2px;background:var(--line2)"></div>
+  <div class="shead">
+    <input class="sinput" id="sinput" type="search" inputmode="search" autocomplete="off" placeholder="输入代码或名称，如 300848 / 美瑞" enterkeyhint="search">
+    <button class="sclose" id="sclose" aria-label="关闭">✕</button>
+  </div>
+  <div class="sres" id="sres"><div class="shint">输入代码、名称或拼音首字母</div></div>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="grip"></div>
+  <div class="sbar">
+    <div class="stitle" id="stitle"></div>
+    <button class="sbtn" id="sCopy" title="复制链接" aria-label="复制链接">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+    <button class="sbtn" id="sOpen" title="新窗口打开" aria-label="新窗口打开">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+    </button>
+    <button class="sbtn" id="sClose" title="关闭" aria-label="关闭">✕</button>
+  </div>
+  <div class="sframewrap" id="sframewrap"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   数据源（全部已验证跨域可用）
+   - 列表: news.10jqka.com.cn/tapp/listv4  (ACAO: *)   ← 主源
+            m.0033.com/listv4              (通达信内嵌降级)
+   - 行情: d.10jqka.com.cn/v6/realhead    (ACAO: *)
+            push2.eastmoney.com/api/qt/stock/get (ACAO: *)
+   - 搜索: smartbox.gtimg.cn (script 标签，非 fetch，无跨域限制)
+   ============================================================ */
+var LIST_HOSTS = [
+  "https://news.10jqka.com.cn/tapp/listv4",
+  "https://m.0033.com/listv4"
+];
+var RH_HOST  = "https://d.10jqka.com.cn/v6/realhead";
+var EM_HOST  = "https://push2.eastmoney.com/api/qt/stock/get";
+var SB_HOST  = "https://smartbox.gtimg.cn/s3/";
+
+/* ---------------- 状态 ---------------- */
+var S = {
+  market:"hs", code:"", name:"", raw:"",
+  page:1, pages:1, total:0,
+  loading:false, items:[], quote:null
+};
+var recent = load("sn_recent", []);
+var THEME_KEY = "sn_theme";
+
+/* ---------------- 工具 ---------------- */
+function $(id){ return document.getElementById(id); }
+function load(k, def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
+function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function pad(n){ return n<10 ? "0"+n : ""+n; }
+function toast(msg){
+  var t=$("toast"); t.textContent=msg; t.classList.add("on");
+  clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove("on"); }, 2000);
+}
+
+/* ---------------- 主题 ---------------- */
+function applyTheme(mode){
+  var root=document.documentElement;
+  if(mode==="light") root.classList.add("light");
+  else root.classList.remove("light");
+  var dark=mode!=="light";
+  var mt=document.querySelector('meta[name="theme-color"]');
+  if(mt) mt.setAttribute("content", dark?"#0b0e13":"#f2f4f8");
+  save(THEME_KEY, mode);
+}
+(function initTheme(){
+  var saved=load(THEME_KEY,null);
+  if(!saved){
+    /* App 内嵌 WebView 时强制默认夜间模式（跟随 App 主题切换的代价太大），
+       系统浏览器里仍跟随 prefers-color-scheme */
+    var inApp=(typeof window.APP_STOCK_CODE==='string' && window.APP_STOCK_CODE!=='');
+    saved = (inApp || !window.matchMedia || !window.matchMedia("(prefers-color-scheme: light)").matches) ? "dark" : "light";
+  }
+  applyTheme(saved);
+})();
+$("btnTheme").onclick=function(){
+  applyTheme(document.documentElement.classList.contains("light")?"dark":"light");
+};
+
+/* ---------------- 代码规范化 ---------------- */
+/* A股 6位数字 | 港股 4-5位数字 | 美股 字母 */
+function detectMarket(code){
+  if(/^[0-9]{6}$/.test(code)) return "hs";
+  if(/^[0-9]{4,5}$/.test(code)) return "hk";
+  if(/^[A-Z][A-Z.]{0,5}$/.test(code)) return "us";
+  return "hs";
+}
+/* 港股 → HK+4位（列表接口用） */
+function hkFeedCode(code){
+  var d=code.replace(/\D/g,"");
+  if(d.length>4 && d.charAt(0)==="0") d=d.slice(1);
+  while(d.length<4) d="0"+d;
+  return "HK"+d;
+}
+/* 港股 → 5位标准显示码 */
+function hkDisplayCode(code){
+  var d=code.replace(/\D/g,"");
+  while(d.length<5) d="0"+d;
+  return "HK"+d;
+}
+function feedCode(){
+  if(S.market==="hk") return hkFeedCode(S.code);
+  if(S.market==="us") return S.code.replace(/\..*$/,"").toUpperCase();
+  return S.code;
+}
+function displayCode(){
+  if(S.market==="hk") return hkDisplayCode(S.code);
+  if(S.market==="us") return S.code.replace(/\..*$/,"").toUpperCase();
+  return S.code;
+}
+function marketLabel(){
+  return S.market==="hk" ? "港股" : S.market==="us" ? "美股" : "A股";
+}
+
+/* ---------------- HTTP ---------------- */
+function fetchText(url, timeout){
+  timeout = timeout || 15000;
+  if(window.fetch){
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function(){ if(ctl) ctl.abort(); }, timeout);
+    return fetch(url, { signal: ctl?ctl.signal:undefined, cache:"no-store", credentials:"omit", referrerPolicy:"no-referrer" })
+      .then(function(r){ clearTimeout(timer); if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); });
+  }
+  return new Promise(function(res, rej){
+    var x=new XMLHttpRequest(); x.open("GET",url,true); x.timeout=timeout;
+    x.onload=function(){ if(x.status>=200&&x.status<300) res(x.responseText); else rej(new Error("HTTP "+x.status)); };
+    x.onerror=function(){ rej(new Error("网络错误")); };
+    x.ontimeout=function(){ rej(new Error("请求超时")); };
+    x.send();
+  });
+}
+/* 带主源/降级源切换的 JSON 获取 */
+function fetchJSON(urls, timeout){
+  var i=0;
+  function attempt(){
+    if(i>=urls.length) return Promise.reject(new Error("全部数据源均不可用"));
+    var u=urls[i++];
+    return fetchText(u, timeout).then(function(t){ return JSON.parse(t); })
+      .catch(function(e){ return attempt(); });
+  }
+  return attempt();
+}
+
+/* ---------------- 列表 ---------------- */
+function listURLs(market, code, page){
+  var p = "/"+market+"/"+code+"_"+page+".json";
+  return LIST_HOSTS.map(function(h){ return h+p; });
+}
+
+function loadNews(){
+  if(S.loading) return;
+  S.loading=true; renderSkeleton();
+  var m = S.market, code = feedCode();
+
+  fetchJSON(listURLs(m, code, S.page)).then(function(j){
+    var d=j && j.data ? j.data : null;
+    var items = d && d.pageItems ? d.pageItems : [];
+    S.items = items;
+    var totalPages = d && d.pages ? parseInt(d.pages,10) : 1;
+    if(!isFinite(totalPages) || totalPages<1) totalPages=1;
+    S.pages = totalPages;
+    S.total = d && d.total ? parseInt(d.total,10) : items.length;
+    if(S.page>totalPages) S.page=totalPages;
+    S.loading=false;
+    renderList();
+  }).catch(function(err){
+    S.loading=false; S.items=[];
+    renderError("加载失败："+(err&&err.message||"网络异常"));
+  });
+}
+
+/* ---------------- 行情 / 名称 ---------------- */
+function parseRealhead(text){
+  if(!text) return null;
+  var i=text.indexOf("{"), j=text.lastIndexOf("}");
+  if(i<0||j<i) return null;
+  try{ return JSON.parse(text.slice(i,j+1)); }catch(e){ return null; }
+}
+function loadQuote(){
+  if(S.market==="us") return loadQuoteEM();
+  var url = RH_HOST+"/"+(S.market==="hk"?"hk":"hs")+"_"+feedCode()+"/last.js";
+  fetchText(url, 12000).then(function(t){
+    var j=parseRealhead(t);
+    if(j && j.items){
+      var it=j.items;
+      var price=parseFloat(it["10"]), prev=parseFloat(it["6"]);
+      var chg=parseFloat(it["264648"]), pct=parseFloat(it["199112"]);
+      if(!S.name && it.name) S.name=it.name;
+      if(isFinite(price)&&price>0){
+        S.quote={price:price, prev:prev, chg:isFinite(chg)?chg:(prev?price-prev:0),
+                 pct:isFinite(pct)?pct:(prev?(price-prev)/prev*100:0), name:it.name, time:it.time||""};
+        renderHeader();
+        return;
+      }
+    }
+    return loadQuoteEM();
+  }).catch(function(){ return loadQuoteEM(); });
+}
+function loadQuoteEM(){
+  var sid=null;
+  if(S.market==="hs"){
+    var c=S.code;
+    sid = (c.charAt(0)==="6" ? "1." : "0.") + c;
+  } else if(S.market==="hk"){
+    sid = "116." + hkDisplayCode(S.code).replace(/^HK/,"");
+  } else {
+    var t=S.code.replace(/\..*$/,"").toUpperCase();
+    sid = "105."+t;
+  }
+  var url=EM_HOST+"?secid="+encodeURIComponent(sid)+"&fields=f43,f57,f58,f59,f60,f169,f170";
+  fetchText(url,12000).then(function(t){
+    var j=JSON.parse(t), d=j&&j.data;
+    if(!d||!d.f58) return;
+    if(!S.name) S.name=d.f58;
+    var dec=Math.pow(10, d.f59||2);
+    var price=parseFloat(d.f43)/dec, prev=parseFloat(d.f60)/dec;
+    S.quote={price:price, prev:prev, chg:parseFloat(d.f169)/dec,
+             pct:parseFloat(d.f170)/100, name:d.f58, time:""};
+    renderHeader();
+  }).catch(function(){
+    /* 行情接口不可用时，至少保证股票名称能显示 */
+    if(!S.name) resolveNameBySearch();
+  });
+}
+/* 名称兜底：用腾讯 smartbox 反查名称（script 标签，不受 CORS/风控影响） */
+function resolveNameBySearch(){
+  if(S.name) return;
+  var q = S.market==="us" ? S.code.replace(/\..*$/,"").toUpperCase()
+        : (S.market==="hk" ? hkDisplayCode(S.code).replace(/^HK/,"") : S.code);
+  smartbox(q).then(function(list){
+    if(!list.length || S.name) return;
+    var want = S.market==="us" ? S.code.replace(/\..*$/,"").toUpperCase()
+             : (S.market==="hk" ? hkDisplayCode(S.code).replace(/^HK/,"") : S.code);
+    for(var i=0;i<list.length;i++){
+      var c=list[i].code.replace(/\D/g,"").replace(/^0+/,"") || list[i].code;
+      var w=want.replace(/\D/g,"").replace(/^0+/,"");
+      if(c===w || list[i].code===want){
+        S.name=list[i].name; renderHeader(); return;
+      }
+    }
+  });
+}
+
+/* ---------------- 搜索（script 标签，无跨域限制） ---------------- */
+function smartbox(q){
+  return new Promise(function(resolve){
+    if(!q){ resolve([]); return; }
+    var s=document.createElement("script");
+    var done=false;
+    function finish(){
+      if(done) return; done=true;
+      var raw=window.v_hint;
+      try{ delete window.v_hint; }catch(e){}
+      resolve(parseHint(raw));
+    }
+    s.onload=finish; s.onerror=function(){ if(!done){done=true;resolve([]);} };
+    s.src = SB_HOST+"?t=all&v=2&_="+Date.now()+"&q="+encodeURIComponent(q);
+    document.head.appendChild(s);
+    setTimeout(finish, 7000);
+  });
+}
+function parseHint(raw){
+  var out=[];
+  if(!raw || raw==="N") return out;
+  raw=String(raw).replace(/^v_hint\s*=\s*/,"").replace(/;\s*$/,"").trim();
+  if(raw.charAt(0)==='"') raw=raw.slice(1,-1);
+  raw=raw.replace(/\\u([0-9a-fA-F]{4})/g, function(m,h){ return String.fromCharCode(parseInt(h,16)); });
+  if(raw.indexOf("~")<0) return out;
+  raw.split("^").forEach(function(rec){
+    var p=rec.split("~");
+    if(p.length<3) return;
+    var mk=p[0], code=p[1], name=p[2], py=p[3]||"";
+    if(mk==="sz"||mk==="sh"){
+      out.push({m:"hs", code:code, name:name, py:py, mkt:"A股"});
+    } else if(mk==="hk"){
+      out.push({m:"hk", code:code, name:name, py:py, mkt:"港股"});
+    } else if(mk==="us"){
+      out.push({m:"us", code:code.replace(/\..*$/,"").toUpperCase(), name:name, py:py, mkt:"美股"});
+    }
+  });
+  return out;
+}
+
+/* ---------------- 渲染 ---------------- */
+function renderSkeleton(){
+  var h=""; for(var i=0;i<6;i++) h+='<div class="skel"></div>';
+  $("list").innerHTML=h;
+}
+function renderError(msg){
+  $("list").innerHTML='<div class="state"><div class="big">⚠</div><div>'+esc(msg)+'</div>'+
+    '<div class="retry" onclick="__retry()">重试</div></div>';
+}
+window.__retry=function(){ S.loading=false; loadNews(); };
+
+function fmtTime(item){
+  if(item.dateOnly) return {day:item.dateOnly.slice(5), time:""};
+  var ts=parseInt(item.ctime,10);
+  if(!isFinite(ts)||ts<=0) return {day:"", time:""};
+  var d=new Date(ts*1000);
+  return {day:pad(d.getMonth()+1)+"-"+pad(d.getDate()), time:pad(d.getHours())+":"+pad(d.getMinutes())};
+}
+function renderList(){
+  var box=$("list");
+  if(!S.items.length){
+    box.innerHTML='<div class="state"><div class="big">📭</div><div>暂无数据</div></div>';
+    updatePager(); return;
+  }
+  var h="";
+  for(var i=0;i<S.items.length;i++){
+    var it=S.items[i], t=fmtTime(it);
+    var lab=it.label||"新闻";
+    var isAnn=/公告/.test(lab);
+    h+='<div class="item" data-i="'+i+'">'+
+         '<div class="tcol"><div class="tday">'+esc(t.day)+'</div><div class="ttime">'+esc(t.time)+'</div></div>'+
+         '<div class="body">'+
+           '<div class="title">'+esc(it.title)+'</div>'+
+           '<div class="meta"><span class="tag'+(isAnn?" ann":"")+'">'+esc(lab)+'</span>'+
+           (it.source?'<span class="src">'+esc(it.source)+'</span>':'')+'</div>'+
+         '</div></div>';
+  }
+  box.innerHTML=h;
+  updatePager();
+}
+function updatePager(){
+  $("pgInfo").textContent = S.page+"/"+S.pages;
+  $("pgFirst").disabled = S.page<=1;
+  $("pgPrev").disabled = S.page<=1;
+  $("pgNext").disabled = S.page>=S.pages;
+  $("pgInfo").style.visibility = S.pages>1 ? "visible":"hidden";
+}
+function renderHeader(){
+  $("sname").textContent = S.name || displayCode();
+  $("scode").innerHTML = '<b>'+esc(displayCode())+'</b> · '+esc(marketLabel());
+  if(S.quote){
+    var q=S.quote, dir=q.chg>0?"up":(q.chg<0?"down":"flat");
+    $("quote").hidden=false;
+    $("qprice").textContent=q.price.toFixed(q.price>=1000?2:2);
+    $("qprice").className="qprice "+dir;
+    $("qchg").textContent=(q.chg>0?"+":"")+q.chg.toFixed(2)+"  "+(q.pct>0?"+":"")+q.pct.toFixed(2)+"%";
+    $("qchg").className="qchg "+dir;
+  } else {
+    $("quote").hidden=true;
+  }
+  if(S.name) $("sname").textContent=S.name;
+}
+
+/* ---------------- 交互 ---------------- */
+$("list").addEventListener("click", function(e){
+  var el=e.target.closest(".item"); if(!el) return;
+  var it=S.items[+el.dataset.i]; if(!it) return;
+  openArticle(it, el);
+});
+$("pgFirst").onclick=function(){ S.page=1; S.loading=false; loadNews(); };
+$("pgPrev").onclick=function(){ if(S.page>1){ S.page--; S.loading=false; loadNews(); } };
+$("pgNext").onclick=function(){ if(S.page<S.pages){ S.page++; S.loading=false; loadNews(); } };
+$("btnRefresh").onclick=function(){ S.loading=false; S.quote=null; renderHeader(); loadNews(); loadQuote(); toast("已刷新"); };
+
+/* 搜索面板 */
+var sTimer=null;
+function openSearch(){
+  $("spanel").classList.add("on"); $("mask").classList.add("on");
+  setTimeout(function(){ $("sinput").focus(); }, 240);
+}
+function closeSearch(){
+  $("spanel").classList.remove("on");
+  if(!$("sheet").classList.contains("on")) $("mask").classList.remove("on");
+}
+$("btnSearch").onclick=openSearch;
+$("sclose").onclick=closeSearch;
+$("mask").onclick=function(){ closeSearch(); closeSheet(); };
+$("sinput").addEventListener("input", function(){
+  var v=this.value.trim();
+  clearTimeout(sTimer);
+  if(!v){ $("sres").innerHTML='<div class="shint">输入代码、名称或拼音首字母</div>'; return; }
+  sTimer=setTimeout(function(){ doSearch(v); }, 260);
+});
+$("sinput").addEventListener("keydown", function(e){
+  if(e.key==="Enter"){ e.preventDefault(); var f=$("sres").querySelector(".srow"); if(f) f.click(); }
+});
+function doSearch(v){
+  var recentHTML = recent.length ? '<div class="shint" style="text-align:left;padding:8px 8px 4px">最近查看</div>' : "";
+  var rr="";
+  recent.slice(0,6).forEach(function(r){
+    rr+='<div class="srow" data-code="'+esc(r.code)+'" data-m="'+esc(r.m)+'" data-name="'+esc(r.name)+'">'+
+        '<span class="c">'+esc(r.code)+'</span><span class="n">'+esc(r.name)+'</span><span class="m">'+esc(r.mkt)+'</span></div>';
+  });
+  $("sres").innerHTML = recentHTML+rr + '<div class="shint">搜索中…</div>';
+  smartbox(v).then(function(list){
+    var h="";
+    if(list.length){
+      h+='<div class="shint" style="text-align:left;padding:8px 8px 4px">搜索结果</div>';
+      list.slice(0,12).forEach(function(r){
+        h+='<div class="srow" data-code="'+esc(r.code)+'" data-m="'+esc(r.m)+'" data-name="'+esc(r.name)+'">'+
+             '<span class="c">'+esc(r.code)+'</span><span class="n">'+esc(r.name)+'</span><span class="m">'+esc(r.mkt)+'</span></div>';
+      });
+    }
+    if(!h) h='<div class="shint">未找到匹配结果</div>';
+    $("sres").innerHTML=h;
+  });
+}
+$("sres").addEventListener("click", function(e){
+  var r=e.target.closest(".srow"); if(!r) return;
+  var code=r.dataset.code, m=r.dataset.m, name=r.dataset.name;
+  if(!code) return;
+  var finalM = m || detectMarket(code);
+  var finalCode = finalM==="us" ? code.replace(/\..*$/,"").toUpperCase() : code.replace(/\D/g,"");
+  setStock(finalM, finalCode, name||"");
+  closeSearch();
+});
+
+/* 打开文章 */
+var curArticle=null;
+function canFrame(url){
+  try{ var h=new URL(url, location.href).hostname; return /(^|\.)10jqka\.com\.cn$/.test(h); }
+  catch(e){ return false; }
+}
+function openArticle(it, el){
+  if(!it.url) return;
+  if(el){ el.classList.add("on"); setTimeout(function(){ el.classList.remove("on"); }, 900); }
+  curArticle=it;
+  $("stitle").textContent=it.title||"";
+  $("sframewrap").innerHTML="";
+  if(canFrame(it.url)){
+    var f=document.createElement("iframe");
+    f.className="sframe"; f.src=it.url; f.setAttribute("sandbox","allow-scripts allow-same-origin allow-popups allow-forms");
+    $("sframewrap").appendChild(f);
+  } else {
+    $("sframewrap").innerHTML='<div class="fallback"><div class="ic">🔗</div>'+
+      '<div>该来源不支持内嵌预览</div>'+
+      '<div class="link" id="fbOpen">打开原文</div>'+
+      '<div class="copy" id="fbCopy">复制链接</div></div>';
+    $("fbOpen").onclick=function(){ window.open(it.url,"_blank","noopener"); };
+    $("fbCopy").onclick=function(){ copyText(it.url); };
+  }
+  $("sheet").classList.add("on"); $("mask").classList.add("on");
+}
+function closeSheet(){
+  $("sheet").classList.remove("on");
+  $("sframewrap").innerHTML="";
+  if(!$("spanel").classList.contains("on")) $("mask").classList.remove("on");
+}
+$("sClose").onclick=closeSheet;
+$("sOpen").onclick=function(){ if(curArticle&&curArticle.url) window.open(curArticle.url,"_blank","noopener"); };
+$("sCopy").onclick=function(){ if(curArticle&&curArticle.url) copyText(curArticle.url); };
+function copyText(t){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){ toast("链接已复制"); },function(){ toast("复制失败，请手动复制"); });
+  } else {
+    var ta=document.createElement("textarea"); ta.value=t;
+    ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand("copy"); toast("链接已复制"); }catch(e){ toast("复制失败"); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ---------------- 核心：设置股票 ---------------- */
+function setStock(market, code, name){
+  S.market=market; S.code=code; S.name=name||""; S.quote=null; S.page=1; S.items=[]; S.loading=false;
+  renderHeader();
+  try{ history.replaceState(null,"", buildURL(code, name)); }catch(e){}
+  var key=market+":"+code;
+  recent=recent.filter(function(r){ return (r.m+":"+r.code)!==key; });
+  recent.unshift({m:market, code:code, name:name||code, mkt:marketLabel()});
+  recent=recent.slice(0,12); save("sn_recent", recent);
+  loadNews(); loadQuote();
+  /* 名称兜底：行情接口不可用时用 smartbox 反查 */
+  setTimeout(resolveNameBySearch, 1500);
+}
+/* 生成带代码的当前页 URL（保留其它查询参数） */
+function buildURL(code, name){
+  var base = location.pathname;
+  var qs = new URLSearchParams(location.search);
+  qs.set("code", code);
+  if(name) qs.set("name", name);
+  return base + "?" + qs.toString();
+}
+
+/* ---------------- 启动 ---------------- */
+/* 从各种链接形态里解析股票代码：
+   1. ?code=300848&name=美瑞新材   （网页标准写法，推荐）
+   2. ##300848##美瑞新材##        （通达信 / 开盘啦 约定）
+   3. #300848                     （纯 hash 写法）
+   4. ?code=300848 之外的 fallback：最近一次查看的股票
+*/
+function parseLinkStock(){
+  var code="", name="";
+  var qs=new URLSearchParams(location.search);
+  code=(qs.get("code")||"").trim().toUpperCase();
+  name=(qs.get("name")||"").trim();
+  /* 兼容通达信 / 开盘啦 的 ##code##name## 约定 */
+  if(!code){
+    var h=location.href;
+    if(h.indexOf("##")>-1){
+      var segs=h.split("##");
+      for(var i=1;i<segs.length;i++){
+        var s=segs[i];
+        if(!s||s.indexOf("=")>-1||s.indexOf("&")>-1||s.indexOf("tdxmyie")>-1) continue;
+        if(/^[0-9]{4,6}$/.test(s)||/^[A-Z]{1,5}$/.test(s)){ code=s.toUpperCase(); break; }
+      }
+    }
+  }
+  /* 纯 hash 写法 #300848 */
+  if(!code && location.hash){
+    var hm=location.hash.replace(/^#/,"").split(/[&?]/)[0];
+    if(/^[0-9]{4,6}$/.test(hm)||/^[A-Z]{1,5}$/.test(hm)) code=hm.toUpperCase();
+  }
+  if(!code){
+    var rec=recent[0];
+    if(rec) return {m:rec.m, code:rec.code, name:rec.name};
+    code="300848";
+  }
+  if(!name){
+    var r2=recent.filter(function(r){ return r.code===code; })[0];
+    if(r2) name=r2.name;
+  }
+  var m=detectMarket(code);
+  return {m:m, code: m==="us" ? code.replace(/\..*$/,"").toUpperCase() : code, name:name};
+}
+function boot(){
+  /* App 内嵌 WebView 时：window.APP_STOCK_CODE 由原生注入（六通/简况同款约定），
+     地址栏参数为 data: URI，无法读，故优先取注入值 */
+  var injectCode=(typeof window.APP_STOCK_CODE==='string')?window.APP_STOCK_CODE.trim().toUpperCase():'';
+  if(/^[0-9]{4,6}$/.test(injectCode)){
+    /* App 内嵌：状态栏为浅色、页面同为深色，安全区不再叠加（html.app-inset 归零） */
+    var injectName=(typeof window.APP_STOCK_NAME==='string')?window.APP_STOCK_NAME.trim():'';
+    document.documentElement.classList.add('force-dark','app-inset');
+    setStock(detectMarket(injectCode), injectCode, injectName);
+    return;
+  }
+  var s=parseLinkStock();
+  setStock(s.m, s.code, s.name);
+}
+document.addEventListener("DOMContentLoaded", boot);
+if(document.readyState!=="loading") boot();
+
+/* ---------------- 对外接入 API ----------------
+   父页面 / App 可用以下任一方式控制本页面：
+   1) 链接参数：xxx.html?code=300848&name=美瑞新材
+   2) iframe 载入后 postMessage：
+        iframe.contentWindow.postMessage({type:"stock", code:"300848", name:"美瑞新材"}, "*")
+   3) 直接调用（同源时）：
+        iframe.contentWindow.setStock("300848", "美瑞新材")
+---------------------------------------------------------- */
+window.setStock=function(code, name){
+  code=String(code||"").trim().toUpperCase();
+  if(!code) return;
+  var m=detectMarket(code);
+  setStock(m, m==="us" ? code.replace(/\..*$/,"").toUpperCase() : code, name||"");
+};
+window.addEventListener("message", function(e){
+  var d=e.data;
+  if(d===null || d===undefined) return;
+  /* 接受 {type:"stock", code, name} / {code} / {stockCode} / 纯字符串 */
+  var code, name="";
+  if(typeof d==="string"){ code=d; }
+  else if(typeof d==="object"){
+    code = d.code||d.stockCode||d.symbol;
+    name = d.name||d.stockName||"";
+    if(d.type && d.type!=="stock" && d.type!=="setStock") return;
+  } else return;
+  if(!code) return;
+  window.setStock(code, name);
+});
+
+/* ---------------- 通达信内嵌兼容（仅当确实在通达信内时启用） ---------------- */
+(function(){
+  var inTDX = /treeid|treeid\/dlglocalurl/i.test(location.href);
+  if(!inTDX) return;
+  window.setActiveLink=function(el){
+    var ls=document.querySelectorAll(".news-link");
+    for(var i=0;i<ls.length;i++) ls[i].classList.remove("on");
+    if(el) el.classList.add("on");
+  };
+  window.showNewsDetail=function(url,title){
+    var full="http://www.treeid/dlg"+url+"&tdxmyietitle="+encodeURIComponent(title||"")+"&tdxmyieleft=750&tdxmyietop=30&tdxmyiewidth=900&tdxmyieheight=850&canchangesize=1&padmode=1";
+    window.open(full,"_self");
+  };
+})();
+
+})();
+</script>
+</body>
+</html>

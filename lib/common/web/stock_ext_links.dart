@@ -85,6 +85,13 @@ class StockExtLinks {
       isLocalAsset: true,
     ),
     StockExtLink(
+      id: 'zixun_ths',
+      title: '资讯同',
+      icon: RemixIcons.newspaper_line,
+      urlTemplate: 'assets/html/zixuntong.html',
+      isLocalAsset: true,
+    ),
+    StockExtLink(
       id: 'dashi_em',
       title: '大事东',
       icon: RemixIcons.calendar_event_line,
@@ -189,13 +196,14 @@ class StockExtLinks {
 
   /// 构建跳转目标：URL 类型返回替换后的 url；本地 asset 返回注入股票代码后的 html 字符串。
   /// 非 A 股返回 null。
-  static Future<String?> buildLoadResource(
-      StockExtLink link, String stockCode) async {
+  /// [stockCodeName] 可选股票名称，仅本地 asset 页用来跳过名称反查
+  static Future<String?> buildLoadResource(StockExtLink link, String stockCode,
+      {String? stockCodeName}) async {
     if (!isAStock(stockCode)) return null;
     final number = stockCode.substring(2);
     if (link.isLocalAsset) {
       final html = await rootBundle.loadString(link.urlTemplate);
-      return _injectStockCode(html, number);
+      return _injectStockCode(html, number, stockCodeName ?? '');
     }
     final replacement = link.useMarketPrefix
         ? '${stockCode.substring(0, 2).toUpperCase()}$number'
@@ -207,9 +215,11 @@ class StockExtLinks {
     return link.urlTemplate.replaceAll(_placeholder, replacement);
   }
 
-  /// 在 `<head>` 后注入 window.APP_STOCK_CODE；无 `<head>` 时前置到文档开头
-  static String _injectStockCode(String html, String number) {
-    final injected = '<script>window.APP_STOCK_CODE="$number";</script>';
+  /// 在 `<head>` 后注入 window.APP_STOCK_CODE / window.APP_STOCK_NAME；无 `<head>` 时前置到文档开头
+  static String _injectStockCode(String html, String number, String name) {
+    final safeName = name.replaceAll('"', '');
+    final injected =
+        '<script>window.APP_STOCK_CODE="$number";window.APP_STOCK_NAME="$safeName";</script>';
     if (html.contains('<head>')) {
       return html.replaceFirst('<head>', '<head>\n$injected');
     }

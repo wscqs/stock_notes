@@ -722,7 +722,8 @@ class StockeditController extends BaseController {
     }
     final String? resource;
     try {
-      resource = await StockExtLinks.buildLoadResource(link, code);
+      resource = await StockExtLinks.buildLoadResource(link, code,
+          stockCodeName: serStockData.value.name ?? '');
     } catch (_) {
       QsHud.showToast(TextKey.jiazashibai.tr);
       return;
