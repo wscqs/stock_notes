@@ -16,6 +16,7 @@ class TextKey {
   static const quxiao = 'quxiao';
   static const lianxi = 'lianxi';
   static const gupiao = 'gupiao';
+  static const xuanpiao = 'xuanpiao'; // 选票
   static const gupiaodaima = 'gupiaodaima';
   static const biji = 'biji';
   static const baocun = 'baochun';
@@ -215,6 +216,7 @@ const Map<String, String> zh = {
   TextKey.quxiao: '取消',
   TextKey.lianxi: '联系',
   TextKey.gupiao: '股票',
+  TextKey.xuanpiao: '选票',
   TextKey.gupiaodaima: '代码',
   TextKey.biji: '笔记',
   TextKey.baocun: '保存',
@@ -466,6 +468,7 @@ const Map<String, String> en = {
   TextKey.quxiao: 'Cancel',
   TextKey.lianxi: 'Contact',
   TextKey.gupiao: 'Stock',
+  TextKey.xuanpiao: 'Ballot',
   TextKey.gupiaodaima: 'Code',
   TextKey.biji: 'Note',
   TextKey.baocun: 'Save',

@@ -6,6 +6,8 @@ import '../../utils/qs_cache.dart';
 import '../../utils/qs_hud.dart';
 import '../modules/about/bindings/about_binding.dart';
 import '../modules/about/views/about_view.dart';
+import '../modules/ballot/bindings/ballot_binding.dart';
+import '../modules/ballot/views/ballot_view.dart';
 import '../modules/datesource/bindings/datesource_binding.dart';
 import '../modules/datesource/views/datesource_view.dart';
 import '../modules/famous/bindings/famous_binding.dart';
@@ -209,6 +211,11 @@ class AppPages {
       name: _Paths.MESSAGESETTING,
       page: () => const MessagesettingView(),
       binding: MessagesettingBinding(),
+    ),
+    GetPage(
+      name: _Paths.BALLOT,
+      page: () => const BallotView(),
+      binding: BallotBinding(),
     ),
   ];
 }

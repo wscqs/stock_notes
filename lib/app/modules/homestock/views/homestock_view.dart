@@ -32,6 +32,29 @@ class HomestockView extends GetView<HomestockController> {
           appBar: AppBar(
             title: Text(TextKey.gupiao.tr),
             centerTitle: true,
+            leadingWidth: 98,
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(
+                    RemixIcons.settings_line,
+                    size: 24,
+                  ),
+                  onPressed: () =>
+                      controller.scaffoldKey.currentState?.openDrawer(),
+                ),
+                kSpaceW(2),
+                IconButton(
+                  icon: const Icon(
+                    RemixIcons.play_list_add_line,
+                    size: 22,
+                  ),
+                  tooltip: TextKey.xuanpiao.tr,
+                  onPressed: () => Get.toNamed(Routes.BALLOT),
+                ),
+              ],
+            ),
             actions: [
               IconButton(
                 icon: const Icon(
