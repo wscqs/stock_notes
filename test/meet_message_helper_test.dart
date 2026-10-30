@@ -209,6 +209,23 @@ void main() {
     expect(await db.getMessages(), isEmpty);
   });
 
+  test('锁仓状态同时抑制买入和卖出提醒', () async {
+    await MeetMessageHelper.addMeetMessageIfNeeded(
+      db,
+      newCondition: ConditionStatus.targetBoth,
+      condKind: 1,
+      stockCode: 'sz300848',
+      stockName: '美瑞新材',
+      buyTarget: '12.0',
+      saleTarget: '9.0',
+      holdFilterEnabled: false,
+      isHolding: true,
+      rHoldStatus: 1,
+    );
+
+    expect(await db.getMessages(), isEmpty);
+  });
+
   test('临近条件不生成消息', () async {
     await MeetMessageHelper.addMeetMessageIfNeeded(
       db,

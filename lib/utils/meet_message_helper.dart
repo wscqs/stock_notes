@@ -9,6 +9,7 @@ class MeetMessageHelper {
   /// - 电平触发：条件满足即提醒，不要求「未满足 -> 满足」跳变（条件位会持久化，
   ///   跳变只发生一次，持续满足的股票也要每天能收到提醒）
   /// - 去重：同股票+同方向+同维度当天最多一条（当天内多次刷新/价格震荡不刷屏）
+  /// - 锁仓（rHoldStatus 1）抑制全部买卖提醒
   /// - 停买/停卖（rHoldStatus 2/3）是用户的显式操作，始终抑制对应方向提醒
   /// - 持仓过滤开关开启时，卖提醒仅持仓股票才发；买提醒不过滤（允许加仓场景）
   static Future<void> addMeetMessageIfNeeded(
@@ -25,8 +26,10 @@ class MeetMessageHelper {
     int rHoldStatus = 0,
   }) async {
     // 持有操作状态：1=锁仓,2=停买,3=停卖
-    final suppressBuy = rHoldStatus == 2;
-    final suppressSell = rHoldStatus == 3 || (holdFilterEnabled && !isHolding);
+    final suppressBuy = rHoldStatus == 1 || rHoldStatus == 2;
+    final suppressSell = rHoldStatus == 1 ||
+        rHoldStatus == 3 ||
+        (holdFilterEnabled && !isHolding);
 
     if (newCondition.hasTargetBuy && !suppressBuy) {
       final sentToday = await db.hasMessageToday(

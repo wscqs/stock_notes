@@ -179,7 +179,8 @@ class TextKey {
   static const qingkong = 'qingkong'; // 清空
   static const yiqingkong = 'yiqingkong'; // 已清空
   static const querenshanchu = 'querenshanchu'; // 确认删除
-  static const querenshanchusuoyouxiaoxi = 'querenshanchusuoyouxiaoxi'; // 确认删除所有消息？
+  static const querenshanchusuoyouxiaoxi =
+      'querenshanchusuoyouxiaoxi'; // 确认删除所有消息？
   static const xiaoxishuoming = 'xiaoxishuoming'; // 消息说明
   static const xiaoxishuomingtitle = 'xiaoxishuomingtitle'; // 消息说明（标题）
   static const bianjibieming = 'bianjibieming'; // 编辑别名
@@ -433,7 +434,7 @@ const Map<String, String> zh = {
 • 当股票的价格、市值或市盈TTM 满足你设置的买入/卖出目标时，会生成一条提醒消息。
 • 同一股票、同一方向、同一维度每天最多提醒一次；条件持续满足时，每天会再次提醒。
 • 「按持仓过滤提醒」开启时，卖出提醒仅对持仓股票生效；买入提醒不受持仓影响。
-• 股票标记为「停买」或「停卖」时，不再生成对应方向的提醒。
+• 股票标记为「锁仓」时，不再生成买入和卖出提醒；标记为「停买」或「停卖」时，不再生成对应方向的提醒。
 • 「小红点提醒」控制首页消息入口的未读角标。
 • 进入消息页后，所有消息会自动标记为已读。
 ''',
@@ -686,7 +687,8 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.qingkong: 'Clear',
   TextKey.yiqingkong: 'Cleared',
   TextKey.querenshanchu: 'Confirm Delete',
-  TextKey.querenshanchusuoyouxiaoxi: 'Delete all messages? This cannot be undone.',
+  TextKey.querenshanchusuoyouxiaoxi:
+      'Delete all messages? This cannot be undone.',
   TextKey.xiaoxishuomingtitle: 'About Messages',
   TextKey.xiaoxishuoming: '''
 • A reminder message is generated when a stock's price, market cap, or PE TTM meets your buy/sell target.
