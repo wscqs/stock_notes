@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../../base/base_Controller.dart';
+import '../../base/base_controller.dart';
 
 class BallotController extends BaseController {
   /// 选票清单项（占位数据，后续接入真实的想买股票筛选功能）

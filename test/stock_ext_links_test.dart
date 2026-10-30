@@ -104,16 +104,16 @@ void main() {
       final ids = StockExtLinks.all.map((l) => l.id).toSet();
       expect(ids.length, 12);
     });
-    test('顺序为k线百/简况/资讯同/扫雷同/扫雷安/概念同/大事东/分析研/综评同/综评东/综评新/财务同', () {
+    test('顺序为k线百/简况/扫雷同/扫雷安/概念同/资讯同/大事东/分析研/综评同/综评东/综评新/财务同', () {
       expect(
           StockExtLinks.all.map((l) => l.id).toList(),
           [
             'kline_baidu',
             'jiankuan',
-            'zixun_ths',
             'saolei_ths',
             'saolei_essence',
             'gainian_ths',
+            'zixun_ths',
             'dashi_em',
             'fenxi_stockstar',
             'zongping_ths',
