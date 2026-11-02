@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:remixicon/remixicon.dart';
 import 'package:zikzak_inappwebview/zikzak_inappwebview.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
@@ -10,6 +10,7 @@ import '../../../../common/langs/text_key.dart';
 import '../../../../common/web/webview_page.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/ballot_controller.dart';
+import '../../../../common/web/webview_widget.dart';
 
 class BallotView extends GetView<BallotController> {
   const BallotView({super.key});
@@ -36,7 +37,7 @@ class BallotView extends GetView<BallotController> {
             final item = controller.items[index];
             return ListTile(
               leading: Icon(
-                Remix.checkbox_multiple_line,
+                item.icon,
                 color: Get.theme.colorScheme.primary,
               ),
               title: Text(
@@ -58,9 +59,13 @@ class BallotView extends GetView<BallotController> {
   /// 应用内 WebView 打开。注入 `StockNotesBridge.openStock(json)` 桥，
   /// 并拦截 `stocknotes://stock?code=...` scheme 作为兜底，
   /// 页面里点股票卡片 → 把 {"code","name","market","lbts"} 交给原生打开详情页
-  void _openWeb(BallotItem item) {
+  Future<void> _openWeb(BallotItem item) async {
+    final resource =
+        item.isLocalAsset ? await rootBundle.loadString(item.url) : item.url;
     Get.to(() => WebViewPage(
-          loadResource: item.url,
+          webViewType:
+              item.isLocalAsset ? WebViewType.HTMLTEXT : WebViewType.URL,
+          loadResource: resource,
           title: item.title,
           userScripts: [
             UserScript(
