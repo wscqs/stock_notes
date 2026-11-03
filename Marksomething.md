@@ -33,8 +33,9 @@ cd /Users/cqs/Documents/flutter/stock_notes && gh release create v3.4.2 --title 
 
 ## 打包flutter
 https://mp.weixin.qq.com/s/qYK_MX9BpGd_Wrm-Q04AXw
-Android 分包：flutter build apk --split-per-abi --release
+Android 分包：flutter build apk --split-per-abi --release(不打这)
 一般只用arm64-v8a （64位，99%以上机型）
+Android：flutter build apk --release --target-platform android-arm64
 web打包：flutter build web --release --wasm --tree-shake-icons
 https://docs.flutter.cn/deployment/android
 https://www.jianshu.com/p/f13f4f996e2a

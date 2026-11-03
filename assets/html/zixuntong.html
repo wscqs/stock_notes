@@ -44,7 +44,7 @@ button,input{font-family:inherit;color:inherit}
 button{border:0;background:none;cursor:pointer;padding:0}
 
 /* ---------- 布局 ---------- */
-.app{display:flex;flex-direction:column;min-height:100dvh;max-width:900px;margin:0 auto}
+.app{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;max-width:900px;margin:0 auto}
 
 /* App 内嵌 WebView 时：页面容器已避开系统栏，CSS 安全区再叠加一遍会产生明显空隙，
    直接归零（App 侧用 SafeArea 避开了状态栏/手势条，不需要再让） */
@@ -135,7 +135,7 @@ html.app-inset{ --safeT:0px; --safeB:0px; }
   border-bottom:1px solid var(--line);border-radius:0 0 16px 16px;
   padding:calc(var(--safeT) + 10px) 12px 12px;box-shadow:var(--shadow);
   transform:translateY(-102%);transition:transform .26s cubic-bezier(.32,.72,0,1);
-  max-height:88dvh;display:flex;flex-direction:column
+  max-height:88vh;max-height:88dvh;display:flex;flex-direction:column
 }
 .spanel.on{transform:translateY(0)}
 .shead{display:flex;gap:8px;align-items:center}
@@ -159,7 +159,7 @@ html.app-inset{ --safeT:0px; --safeB:0px; }
 
 /* ---------- 阅读浮层 ---------- */
 .sheet{
-  position:fixed;left:0;right:0;bottom:0;z-index:70;height:88dvh;
+  position:fixed;left:0;right:0;bottom:0;z-index:70;height:88vh;height:88dvh;
   background:var(--bg2);border-radius:16px 16px 0 0;box-shadow:var(--shadow);
   transform:translateY(102%);transition:transform .28s cubic-bezier(.32,.72,0,1);
   display:flex;flex-direction:column;max-width:900px;margin:0 auto
