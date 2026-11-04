@@ -65,6 +65,88 @@ void main() {
     expect(find.textContaining('12.00%'), findsOneWidget);
   });
 
+  testWidgets('completed trade chart ends at the selected close date',
+      (tester) async {
+    final closeDate = DateTime(2026, 10, 22);
+    final closedTrade = trade.copyWith(
+      closePrice: const Value('27'),
+      closeShares: const Value('100'),
+      closeDate: Value(closeDate),
+    );
+    final service = StockKlineService(rawFetcher: (_, param) async {
+      expect(param, contains('2026-10-22'));
+      return '{"code":0,"data":{"sh600900":{"qfqday":[["2026-10-20","25","25","25","25","1"],["2026-10-21","30","30","30","30","1"],["2026-10-22","27","27","27","27","1"]]}}}';
+    });
+    await tester.pumpWidget(GetMaterialApp(
+        translations: TranslationLibrary(),
+        locale: TranslationLibrary.fallbackLocale,
+        fallbackLocale: TranslationLibrary.fallbackLocale,
+        home: Scaffold(
+            body: TradeProfitChartContent(
+                stock: stock,
+                trade: closedTrade,
+                service: service,
+                onCloseDateSaved: (_) async {}))));
+    await tester.pumpAndSettle();
+    expect(find.text('2026-10-22'), findsWidgets);
+    expect(find.textContaining('200.00'), findsWidgets);
+  });
+
+  testWidgets('non-trading close date gets an actual close price endpoint',
+      (tester) async {
+    final closeDate = DateTime(2026, 11, 1);
+    final closedTrade = trade.copyWith(
+      closePrice: const Value('27'),
+      closeShares: const Value('100'),
+      closeDate: Value(closeDate),
+    );
+    final service = StockKlineService(
+        rawFetcher: (_, __) async =>
+            '{"code":0,"data":{"sh600900":{"qfqday":[["2026-10-20","25","25","25","25","1"],["2026-10-30","26","26","26","26","1"]]}}}');
+    await tester.pumpWidget(GetMaterialApp(
+        translations: TranslationLibrary(),
+        locale: TranslationLibrary.fallbackLocale,
+        fallbackLocale: TranslationLibrary.fallbackLocale,
+        home: Scaffold(
+            body: TradeProfitChartContent(
+                stock: stock,
+                trade: closedTrade,
+                service: service,
+                onCloseDateSaved: (_) async {}))));
+    await tester.pumpAndSettle();
+    expect(find.text('2026-11-01'), findsWidgets);
+    expect(find.textContaining('200.00'), findsWidgets);
+  });
+
+  testWidgets('trade with a close date never extends beyond that date',
+      (tester) async {
+    final closeDate = DateTime(2026, 10, 22);
+    final partiallyClosedTrade = trade.copyWith(
+      closePrice: const Value('27'),
+      closeShares: const Value('50'),
+      closeDate: Value(closeDate),
+    );
+    final service = StockKlineService(rawFetcher: (_, param) async {
+      expect(param, contains('2026-10-22'));
+      return '{"code":0,"data":{"sh600900":{"qfqday":[["2026-10-20","25","25","25","25","1"],["2026-10-21","30","30","30","30","1"],["2026-10-22","27","27","27","27","1"]]}}}';
+    });
+    await tester.pumpWidget(GetMaterialApp(
+        translations: TranslationLibrary(),
+        locale: TranslationLibrary.fallbackLocale,
+        fallbackLocale: TranslationLibrary.fallbackLocale,
+        home: Scaffold(
+            body: TradeProfitChartContent(
+                stock: stock,
+                trade: partiallyClosedTrade,
+                currentPrice: '40',
+                service: service,
+                onCloseDateSaved: (_) async {}))));
+    await tester.pumpAndSettle();
+    expect(find.text('2026-10-22'), findsWidgets);
+    expect(find.text(DateFormat('yyyy-MM-dd').format(DateTime.now())),
+        findsNothing);
+  });
+
   testWidgets('shows retry after network failure', (tester) async {
     var calls = 0;
     final retryTrade = trade.copyWith(tradeDate: Value(DateTime(2026, 10, 19)));

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:intl/intl.dart';
 import 'package:stock_notes/common/database/database.dart';
-import 'package:stock_notes/common/extension/StockTrade++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 class StockTradeDialog {
@@ -57,7 +56,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
   late final RxInt tradeType;
   late final Rx<DateTime> tradeDate;
   late final Rxn<DateTime> closeDate;
-  final showCloseDate = false.obs;
+  late final TextEditingController closeDateController;
+  late final RxBool showCloseDate;
   late final TextEditingController openPriceController;
   late final TextEditingController openSharesController;
   late final TextEditingController closePriceController;
@@ -74,9 +74,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     tradeType =
         (widget.existingTrade?.tradeType ?? widget.defaultTradeType ?? 0).obs;
     tradeDate = (widget.existingTrade?.tradeDate ?? DateTime.now()).obs;
-    showCloseDate.value = widget.existingTrade?.isCompleted == true;
-    closeDate = Rxn<DateTime>(widget.existingTrade?.closeDate ??
-        (widget.existingTrade == null ? tradeDate.value : null));
+    closeDate = Rxn<DateTime>(widget.existingTrade?.closeDate);
+    closeDateController = TextEditingController();
     openPriceController = TextEditingController(
       text: widget.existingTrade?.openPrice ??
           widget.existingTrade?.price ??
@@ -92,6 +91,10 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     closePriceController = TextEditingController(
       text: widget.existingTrade?.closePrice ?? '',
     );
+    showCloseDate = closePriceController.text.trim().isNotEmpty.obs;
+    closePriceController.addListener(() {
+      showCloseDate.value = closePriceController.text.trim().isNotEmpty;
+    });
     closeSharesController = TextEditingController(
       text: widget.existingTrade?.closeShares ?? '',
     );
@@ -106,18 +109,7 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     );
     planBuyPoints = 0.0.obs;
     planSalePoints = 0.0.obs;
-    void refreshCloseVisibility() {
-      showCloseDate.value = _isComplete;
-      if (!_isComplete) {
-        closeDate.value = null;
-      } else if (widget.existingTrade == null) {
-        closeDate.value ??= tradeDate.value;
-      }
-    }
-
-    openSharesController.addListener(refreshCloseVisibility);
-    closeSharesController.addListener(refreshCloseVisibility);
-    closePriceController.addListener(refreshCloseVisibility);
+    closeDateController.text = _formatCloseDate(closeDate.value);
     updatePlanPricePoints();
   }
 
@@ -127,6 +119,7 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     tradeDate.close();
     closeDate.close();
     showCloseDate.close();
+    closeDateController.dispose();
     openPriceController.dispose();
     openSharesController.dispose();
     closePriceController.dispose();
@@ -138,6 +131,9 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     planSalePoints.close();
     super.dispose();
   }
+
+  String _formatCloseDate(DateTime? value) =>
+      value == null ? '' : DateFormat('yyyy-MM-dd').format(value);
 
   void updatePlanPricePoints() {
     final current = double.tryParse(widget.currentPrice);
@@ -164,8 +160,7 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
       planSalePrice: Value(planSalePriceController.text),
       remark: Value(tradeRemarkController.text),
       tradeDate: Value(tradeDate.value),
-      closeDate: Value(
-          _isComplete ? closeDate.value : widget.existingTrade?.closeDate),
+      closeDate: Value(closeDate.value),
     );
     if (widget.existingTrade != null) {
       companion = companion.copyWith(id: Value(widget.existingTrade!.id));
@@ -173,23 +168,13 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     widget.onSaved(companion);
   }
 
-  bool get _isComplete {
-    final open = double.tryParse(openSharesController.text);
-    final close = double.tryParse(closeSharesController.text);
-    return open != null &&
-        close != null &&
-        open > 0 &&
-        open == close &&
-        double.tryParse(closePriceController.text) != null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       //可以设置宽度吗
-      contentPadding: const EdgeInsets.all(16),
-      titlePadding: const EdgeInsets.only(left: 20, top: 20),
-      actionsPadding: const EdgeInsets.only(right: 16, bottom: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      titlePadding: const EdgeInsets.only(left: 20, top: 24),
+      actionsPadding: const EdgeInsets.only(right: 16, bottom: 12),
       title: Text(
         widget.existingTrade != null
             ? TextKey.xiugai.tr
@@ -339,23 +324,44 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
             Obx(() {
               if (!showCloseDate.value) return const SizedBox.shrink();
               final value = closeDate.value;
+              final today = DateTime.now();
+              final lastDate = DateTime(today.year, today.month, today.day);
+              final firstDate = DateTime(1);
               return TextFormField(
                 key: const Key('tradeCloseDateField'),
                 readOnly: true,
-                controller: TextEditingController(
-                    text: value == null
-                        ? ''
-                        : DateFormat('yyyy-MM-dd').format(value)),
+                textAlign: TextAlign.center,
+                controller: closeDateController,
                 decoration: InputDecoration(
-                    labelText:
-                        '${TextKey.pingcang.tr}${TextKey.jiaoyiriqi.tr}'),
+                  labelText: '${TextKey.pingcang.tr}${TextKey.jiaoyiriqi.tr}',
+                  hintText: TextKey.weishezhipingcangriqi.tr,
+                  suffixIcon: value == null
+                      ? const Icon(Icons.calendar_today_outlined)
+                      : IconButton(
+                          key: const Key('clearTradeCloseDate'),
+                          tooltip: TextKey.qingkong.tr,
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            closeDate.value = null;
+                            closeDateController.clear();
+                          },
+                        ),
+                ),
                 onTap: () async {
+                  final initialDate = closeDate.value ?? lastDate;
                   final picked = await showDatePicker(
                       context: context,
-                      initialDate: closeDate.value ?? tradeDate.value,
-                      firstDate: tradeDate.value,
-                      lastDate: DateTime.now());
-                  if (picked != null) closeDate.value = picked;
+                      initialDate: initialDate.isAfter(lastDate)
+                          ? lastDate
+                          : initialDate.isBefore(firstDate)
+                              ? firstDate
+                              : initialDate,
+                      firstDate: firstDate,
+                      lastDate: lastDate);
+                  if (picked != null) {
+                    closeDate.value = picked;
+                    closeDateController.text = _formatCloseDate(picked);
+                  }
                 },
               );
             }),

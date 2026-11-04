@@ -67,7 +67,8 @@ void main() {
     expect(saved?.closeDate.value, now);
   });
 
-  testWidgets('open trade does not show close date', (tester) async {
+  testWidgets('close date appears only after close price is entered',
+      (tester) async {
     await tester.pumpWidget(buildTestableWidget(Builder(builder: (context) {
       return ElevatedButton(
           onPressed: () => StockTradeDialog.show(
@@ -79,6 +80,16 @@ void main() {
     })));
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tradeCloseDateField')), findsNothing);
+
+    final closePriceField = find.ancestor(
+        of: find.text('价格').last, matching: find.byType(TextField));
+    await tester.enterText(closePriceField, '12');
+    await tester.pump();
+    expect(find.byKey(const Key('tradeCloseDateField')), findsOneWidget);
+
+    await tester.enterText(closePriceField, '');
+    await tester.pump();
     expect(find.byKey(const Key('tradeCloseDateField')), findsNothing);
   });
 
@@ -143,6 +154,79 @@ void main() {
     await tester.tap(find.text('确定'));
     expect(saved?.closeDate.value, DateTime(2026, 10, 21));
   });
-}
 
-// Close date behavior is isolated below to keep the original dialog smoke test unchanged.
+  testWidgets('partial close date can be picked and saved', (tester) async {
+    final tradeDate = DateTime(2026, 10, 20);
+    final trade = StockTrade(
+        id: 1,
+        createdAt: tradeDate,
+        updateAt: tradeDate,
+        stockId: 1,
+        tradeType: 0,
+        openPrice: '10',
+        openShares: '100',
+        closePrice: '12',
+        closeShares: '50',
+        tradeDate: tradeDate);
+    StockTradesCompanion? saved;
+    await tester.pumpWidget(buildTestableWidget(Builder(builder: (context) {
+      return ElevatedButton(
+          onPressed: () => StockTradeDialog.show(
+              context: context,
+              existingTrade: trade,
+              currentPrice: '12',
+              onSaved: (value) => saved = value),
+          child: const Text('open'));
+    })));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    final closeDateField = tester.widget<TextField>(find.descendant(
+        of: find.byKey(const Key('tradeCloseDateField')),
+        matching: find.byType(TextField)));
+    closeDateField.onTap!();
+    await tester.pumpAndSettle();
+    final datePicker =
+        tester.widget<DatePickerDialog>(find.byType(DatePickerDialog));
+    expect(datePicker.firstDate, DateTime(1));
+    expect(datePicker.lastDate, DateUtils.dateOnly(DateTime.now()));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('取消'));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('close date can be cleared from the dialog', (tester) async {
+    final tradeDate = DateTime(2026, 10, 20);
+    final trade = StockTrade(
+        id: 1,
+        createdAt: tradeDate,
+        updateAt: tradeDate,
+        stockId: 1,
+        tradeType: 0,
+        openPrice: '10',
+        openShares: '100',
+        closePrice: '12',
+        closeShares: '100',
+        tradeDate: tradeDate,
+        closeDate: DateTime(2026, 10, 21));
+    StockTradesCompanion? saved;
+    await tester.pumpWidget(buildTestableWidget(Builder(builder: (context) {
+      return ElevatedButton(
+          onPressed: () => StockTradeDialog.show(
+              context: context,
+              existingTrade: trade,
+              currentPrice: '12',
+              onSaved: (value) => saved = value),
+          child: const Text('open'));
+    })));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('clearTradeCloseDate')));
+    await tester.pump();
+    expect(find.text('2026-10-21'), findsNothing);
+    expect(find.byIcon(Icons.calendar_today_outlined), findsOneWidget);
+    await tester.tap(find.text('确定'));
+    expect(saved?.closeDate.present, isTrue);
+    expect(saved?.closeDate.value, isNull);
+  });
+}

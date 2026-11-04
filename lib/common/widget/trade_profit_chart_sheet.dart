@@ -85,7 +85,8 @@ class _TradeProfitChartContentState extends State<TradeProfitChartContent> {
       _selectedIndex = null;
     });
     try {
-      final end = _trade.isCompleted ? _trade.closeDate : null;
+      final end = _trade.closeDate;
+      final hasCloseDate = end != null;
       final rows = await widget.service.fetchDaily(
           stock: widget.stock,
           start: _trade.tradeDate ?? _trade.createdAt,
@@ -98,8 +99,8 @@ class _TradeProfitChartContentState extends State<TradeProfitChartContent> {
             tradeType: _trade.tradeType,
             dailyCloses: rows,
             actualClosePrice: _trade.isCompleted ? _trade.closePrice : null,
-            latestPrice: _trade.isCompleted ? null : widget.currentPrice,
-            latestDate: _trade.isCompleted ? null : DateTime.now());
+            latestPrice: hasCloseDate ? null : widget.currentPrice,
+            latestDate: hasCloseDate ? end : DateTime.now());
         _loading = false;
       });
     } catch (error) {
@@ -209,7 +210,7 @@ class _TradeProfitChartContentState extends State<TradeProfitChartContent> {
     final selected = _selectedIndex == null
         ? series.points.last
         : series.points[_selectedIndex!];
-    final headerDate = _selectedIndex == null && !_trade.isCompleted
+    final headerDate = _selectedIndex == null && _trade.closeDate == null
         ? DateTime.now()
         : selected.date;
     final dateText = DateFormat('yyyy-MM-dd').format(headerDate);
