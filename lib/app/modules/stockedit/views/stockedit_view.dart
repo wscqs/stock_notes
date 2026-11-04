@@ -484,6 +484,7 @@ class StockeditView extends GetView<StockeditController> {
       currentPrice: controller.serStockData.value.currentPrice,
       onEdit: () => controller.editTrade(trade),
       onDelete: () => controller.deleteTrade(trade),
+      onShowProfitChart: () => controller.showTradeProfitChart(trade),
     );
   }
 

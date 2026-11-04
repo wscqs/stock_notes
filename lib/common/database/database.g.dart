@@ -2514,6 +2514,12 @@ class $StockTradesTable extends StockTrades
   late final GeneratedColumn<DateTime> tradeDate = GeneratedColumn<DateTime>(
       'trade_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _closeDateMeta =
+      const VerificationMeta('closeDate');
+  @override
+  late final GeneratedColumn<DateTime> closeDate = GeneratedColumn<DateTime>(
+      'close_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _openPriceMeta =
       const VerificationMeta('openPrice');
   @override
@@ -2561,6 +2567,7 @@ class $StockTradesTable extends StockTrades
         shares,
         remark,
         tradeDate,
+        closeDate,
         openPrice,
         openShares,
         closePrice,
@@ -2616,6 +2623,10 @@ class $StockTradesTable extends StockTrades
     if (data.containsKey('trade_date')) {
       context.handle(_tradeDateMeta,
           tradeDate.isAcceptableOrUnknown(data['trade_date']!, _tradeDateMeta));
+    }
+    if (data.containsKey('close_date')) {
+      context.handle(_closeDateMeta,
+          closeDate.isAcceptableOrUnknown(data['close_date']!, _closeDateMeta));
     }
     if (data.containsKey('open_price')) {
       context.handle(_openPriceMeta,
@@ -2678,6 +2689,8 @@ class $StockTradesTable extends StockTrades
           .read(DriftSqlType.string, data['${effectivePrefix}remark']),
       tradeDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}trade_date']),
+      closeDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}close_date']),
       openPrice: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}open_price']),
       openShares: attachedDatabase.typeMapping
@@ -2709,6 +2722,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
   final String? shares;
   final String? remark;
   final DateTime? tradeDate;
+  final DateTime? closeDate;
   final String? openPrice;
   final String? openShares;
   final String? closePrice;
@@ -2725,6 +2739,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       this.shares,
       this.remark,
       this.tradeDate,
+      this.closeDate,
       this.openPrice,
       this.openShares,
       this.closePrice,
@@ -2750,6 +2765,9 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
     }
     if (!nullToAbsent || tradeDate != null) {
       map['trade_date'] = Variable<DateTime>(tradeDate);
+    }
+    if (!nullToAbsent || closeDate != null) {
+      map['close_date'] = Variable<DateTime>(closeDate);
     }
     if (!nullToAbsent || openPrice != null) {
       map['open_price'] = Variable<String>(openPrice);
@@ -2788,6 +2806,9 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       tradeDate: tradeDate == null && nullToAbsent
           ? const Value.absent()
           : Value(tradeDate),
+      closeDate: closeDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(closeDate),
       openPrice: openPrice == null && nullToAbsent
           ? const Value.absent()
           : Value(openPrice),
@@ -2822,6 +2843,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       shares: serializer.fromJson<String?>(json['shares']),
       remark: serializer.fromJson<String?>(json['remark']),
       tradeDate: serializer.fromJson<DateTime?>(json['tradeDate']),
+      closeDate: serializer.fromJson<DateTime?>(json['closeDate']),
       openPrice: serializer.fromJson<String?>(json['openPrice']),
       openShares: serializer.fromJson<String?>(json['openShares']),
       closePrice: serializer.fromJson<String?>(json['closePrice']),
@@ -2843,6 +2865,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       'shares': serializer.toJson<String?>(shares),
       'remark': serializer.toJson<String?>(remark),
       'tradeDate': serializer.toJson<DateTime?>(tradeDate),
+      'closeDate': serializer.toJson<DateTime?>(closeDate),
       'openPrice': serializer.toJson<String?>(openPrice),
       'openShares': serializer.toJson<String?>(openShares),
       'closePrice': serializer.toJson<String?>(closePrice),
@@ -2862,6 +2885,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
           Value<String?> shares = const Value.absent(),
           Value<String?> remark = const Value.absent(),
           Value<DateTime?> tradeDate = const Value.absent(),
+          Value<DateTime?> closeDate = const Value.absent(),
           Value<String?> openPrice = const Value.absent(),
           Value<String?> openShares = const Value.absent(),
           Value<String?> closePrice = const Value.absent(),
@@ -2878,6 +2902,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
         shares: shares.present ? shares.value : this.shares,
         remark: remark.present ? remark.value : this.remark,
         tradeDate: tradeDate.present ? tradeDate.value : this.tradeDate,
+        closeDate: closeDate.present ? closeDate.value : this.closeDate,
         openPrice: openPrice.present ? openPrice.value : this.openPrice,
         openShares: openShares.present ? openShares.value : this.openShares,
         closePrice: closePrice.present ? closePrice.value : this.closePrice,
@@ -2898,6 +2923,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       shares: data.shares.present ? data.shares.value : this.shares,
       remark: data.remark.present ? data.remark.value : this.remark,
       tradeDate: data.tradeDate.present ? data.tradeDate.value : this.tradeDate,
+      closeDate: data.closeDate.present ? data.closeDate.value : this.closeDate,
       openPrice: data.openPrice.present ? data.openPrice.value : this.openPrice,
       openShares:
           data.openShares.present ? data.openShares.value : this.openShares,
@@ -2926,6 +2952,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
           ..write('shares: $shares, ')
           ..write('remark: $remark, ')
           ..write('tradeDate: $tradeDate, ')
+          ..write('closeDate: $closeDate, ')
           ..write('openPrice: $openPrice, ')
           ..write('openShares: $openShares, ')
           ..write('closePrice: $closePrice, ')
@@ -2947,6 +2974,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
       shares,
       remark,
       tradeDate,
+      closeDate,
       openPrice,
       openShares,
       closePrice,
@@ -2966,6 +2994,7 @@ class StockTrade extends DataClass implements Insertable<StockTrade> {
           other.shares == this.shares &&
           other.remark == this.remark &&
           other.tradeDate == this.tradeDate &&
+          other.closeDate == this.closeDate &&
           other.openPrice == this.openPrice &&
           other.openShares == this.openShares &&
           other.closePrice == this.closePrice &&
@@ -2984,6 +3013,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
   final Value<String?> shares;
   final Value<String?> remark;
   final Value<DateTime?> tradeDate;
+  final Value<DateTime?> closeDate;
   final Value<String?> openPrice;
   final Value<String?> openShares;
   final Value<String?> closePrice;
@@ -3000,6 +3030,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     this.shares = const Value.absent(),
     this.remark = const Value.absent(),
     this.tradeDate = const Value.absent(),
+    this.closeDate = const Value.absent(),
     this.openPrice = const Value.absent(),
     this.openShares = const Value.absent(),
     this.closePrice = const Value.absent(),
@@ -3017,6 +3048,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     this.shares = const Value.absent(),
     this.remark = const Value.absent(),
     this.tradeDate = const Value.absent(),
+    this.closeDate = const Value.absent(),
     this.openPrice = const Value.absent(),
     this.openShares = const Value.absent(),
     this.closePrice = const Value.absent(),
@@ -3035,6 +3067,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     Expression<String>? shares,
     Expression<String>? remark,
     Expression<DateTime>? tradeDate,
+    Expression<DateTime>? closeDate,
     Expression<String>? openPrice,
     Expression<String>? openShares,
     Expression<String>? closePrice,
@@ -3052,6 +3085,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
       if (shares != null) 'shares': shares,
       if (remark != null) 'remark': remark,
       if (tradeDate != null) 'trade_date': tradeDate,
+      if (closeDate != null) 'close_date': closeDate,
       if (openPrice != null) 'open_price': openPrice,
       if (openShares != null) 'open_shares': openShares,
       if (closePrice != null) 'close_price': closePrice,
@@ -3071,6 +3105,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
       Value<String?>? shares,
       Value<String?>? remark,
       Value<DateTime?>? tradeDate,
+      Value<DateTime?>? closeDate,
       Value<String?>? openPrice,
       Value<String?>? openShares,
       Value<String?>? closePrice,
@@ -3087,6 +3122,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
       shares: shares ?? this.shares,
       remark: remark ?? this.remark,
       tradeDate: tradeDate ?? this.tradeDate,
+      closeDate: closeDate ?? this.closeDate,
       openPrice: openPrice ?? this.openPrice,
       openShares: openShares ?? this.openShares,
       closePrice: closePrice ?? this.closePrice,
@@ -3126,6 +3162,9 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
     if (tradeDate.present) {
       map['trade_date'] = Variable<DateTime>(tradeDate.value);
     }
+    if (closeDate.present) {
+      map['close_date'] = Variable<DateTime>(closeDate.value);
+    }
     if (openPrice.present) {
       map['open_price'] = Variable<String>(openPrice.value);
     }
@@ -3159,6 +3198,7 @@ class StockTradesCompanion extends UpdateCompanion<StockTrade> {
           ..write('shares: $shares, ')
           ..write('remark: $remark, ')
           ..write('tradeDate: $tradeDate, ')
+          ..write('closeDate: $closeDate, ')
           ..write('openPrice: $openPrice, ')
           ..write('openShares: $openShares, ')
           ..write('closePrice: $closePrice, ')
@@ -6187,6 +6227,7 @@ typedef $$StockTradesTableCreateCompanionBuilder = StockTradesCompanion
   Value<String?> shares,
   Value<String?> remark,
   Value<DateTime?> tradeDate,
+  Value<DateTime?> closeDate,
   Value<String?> openPrice,
   Value<String?> openShares,
   Value<String?> closePrice,
@@ -6205,6 +6246,7 @@ typedef $$StockTradesTableUpdateCompanionBuilder = StockTradesCompanion
   Value<String?> shares,
   Value<String?> remark,
   Value<DateTime?> tradeDate,
+  Value<DateTime?> closeDate,
   Value<String?> openPrice,
   Value<String?> openShares,
   Value<String?> closePrice,
@@ -6264,6 +6306,9 @@ class $$StockTradesTableFilterComposer
 
   ColumnFilters<DateTime> get tradeDate => $composableBuilder(
       column: $table.tradeDate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get closeDate => $composableBuilder(
+      column: $table.closeDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get openPrice => $composableBuilder(
       column: $table.openPrice, builder: (column) => ColumnFilters(column));
@@ -6336,6 +6381,9 @@ class $$StockTradesTableOrderingComposer
 
   ColumnOrderings<DateTime> get tradeDate => $composableBuilder(
       column: $table.tradeDate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get closeDate => $composableBuilder(
+      column: $table.closeDate, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get openPrice => $composableBuilder(
       column: $table.openPrice, builder: (column) => ColumnOrderings(column));
@@ -6411,6 +6459,9 @@ class $$StockTradesTableAnnotationComposer
   GeneratedColumn<DateTime> get tradeDate =>
       $composableBuilder(column: $table.tradeDate, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get closeDate =>
+      $composableBuilder(column: $table.closeDate, builder: (column) => column);
+
   GeneratedColumn<String> get openPrice =>
       $composableBuilder(column: $table.openPrice, builder: (column) => column);
 
@@ -6482,6 +6533,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             Value<String?> shares = const Value.absent(),
             Value<String?> remark = const Value.absent(),
             Value<DateTime?> tradeDate = const Value.absent(),
+            Value<DateTime?> closeDate = const Value.absent(),
             Value<String?> openPrice = const Value.absent(),
             Value<String?> openShares = const Value.absent(),
             Value<String?> closePrice = const Value.absent(),
@@ -6499,6 +6551,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             shares: shares,
             remark: remark,
             tradeDate: tradeDate,
+            closeDate: closeDate,
             openPrice: openPrice,
             openShares: openShares,
             closePrice: closePrice,
@@ -6516,6 +6569,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             Value<String?> shares = const Value.absent(),
             Value<String?> remark = const Value.absent(),
             Value<DateTime?> tradeDate = const Value.absent(),
+            Value<DateTime?> closeDate = const Value.absent(),
             Value<String?> openPrice = const Value.absent(),
             Value<String?> openShares = const Value.absent(),
             Value<String?> closePrice = const Value.absent(),
@@ -6533,6 +6587,7 @@ class $$StockTradesTableTableManager extends RootTableManager<
             shares: shares,
             remark: remark,
             tradeDate: tradeDate,
+            closeDate: closeDate,
             openPrice: openPrice,
             openShares: openShares,
             closePrice: closePrice,

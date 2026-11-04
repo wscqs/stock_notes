@@ -155,8 +155,7 @@ void main() {
     expect(find.textContaining('满足BS'), findsOneWidget);
   });
 
-  testWidgets('does not render meet tag when no condition met',
-      (tester) async {
+  testWidgets('does not render meet tag when no condition met', (tester) async {
     final trade = StockTrade(
       id: 1,
       createdAt: now,
@@ -176,5 +175,20 @@ void main() {
     expect(find.textContaining('满足B'), findsNothing);
     expect(find.textContaining('满足S'), findsNothing);
     expect(find.textContaining('满足BS'), findsNothing);
+  });
+
+  testWidgets('shows chart entry and invokes callback', (tester) async {
+    var tapped = false;
+    await tester.pumpWidget(buildTestableWidget(
+        StockTradeItem(trade: trade, onShowProfitChart: () => tapped = true)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('tradeProfitChartButton')));
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('hides chart entry when callback is absent', (tester) async {
+    await tester.pumpWidget(buildTestableWidget(StockTradeItem(trade: trade)));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tradeProfitChartButton')), findsNothing);
   });
 }

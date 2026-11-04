@@ -48,7 +48,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   //改表要处理合并migration
   @override
@@ -99,6 +99,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from <= 12) {
             await migrator.createTable(noteAssets);
+          }
+          if (from <= 13) {
+            await migrator.addColumn(stockTrades, stockTrades.closeDate);
           }
         },
         onCreate: (migrator) async {

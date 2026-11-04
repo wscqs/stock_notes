@@ -12,6 +12,7 @@ class StockTradeItem extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final String? currentPrice;
+  final VoidCallback? onShowProfitChart;
 
   const StockTradeItem({
     super.key,
@@ -21,6 +22,7 @@ class StockTradeItem extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.currentPrice,
+    this.onShowProfitChart,
   });
 
   @override
@@ -202,10 +204,26 @@ class StockTradeItem extends StatelessWidget {
         ),
         if (shares != null && shares.isNotEmpty) ...[
           const SizedBox(width: 12),
-          Text(
+          Flexible(
+              child: Text(
             "${TextKey.gushu.tr}: $shares",
             style: const TextStyle(fontSize: 13, color: Colors.grey),
-          ),
+            overflow: TextOverflow.ellipsis,
+          )),
+        ],
+        if (label == TextKey.kaicang.tr && onShowProfitChart != null) ...[
+          const SizedBox(width: 2),
+          SizedBox(
+              width: 32,
+              height: 28,
+              child: IconButton(
+                key: const Key('tradeProfitChartButton'),
+                onPressed: onShowProfitChart,
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                tooltip: TextKey.lishiyingkui.tr,
+                icon: const Icon(Icons.bar_chart, size: 19, color: Colors.grey),
+              )),
         ],
       ],
     );

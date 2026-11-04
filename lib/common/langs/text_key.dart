@@ -127,6 +127,16 @@ class TextKey {
   static const jiage = 'jiage';
   static const xinzengjiaoyi = 'xinzengjiaoyi';
   static const jiaoyiriqi = 'jiaoyiriqi';
+  static const lishiyingkui = 'lishiyingkui';
+  static const dangqianyingkui = 'dangqianyingkui';
+  static const zuidahuiche = 'zuidahuiche';
+  static const qianfuquangusuan = 'qianfuquangusuan';
+  static const bufuquangusuan = 'bufuquangusuan';
+  static const weishezhipingcangriqi = 'weishezhipingcangriqi';
+  static const zanbuzhichihangqing = 'zanbuzhichihangqing';
+  static const hangqingjiazai = 'hangqingjiazai';
+  static const chongshi = 'chongshi';
+  static const zanwulishihangqing = 'zanwulishihangqing';
   static const xiugai = 'xiugai';
   static const cicaozuoxubaocun = 'cicaozuoxubaocun';
   static const yidaoshanchuliebiao = 'yidaoshanchuliebiao';
@@ -326,6 +336,16 @@ const Map<String, String> zh = {
   TextKey.jiage: '价格',
   TextKey.xinzengjiaoyi: '新增交易',
   TextKey.jiaoyiriqi: '交易日期',
+  TextKey.lishiyingkui: '历史盈亏',
+  TextKey.dangqianyingkui: '当前盈亏',
+  TextKey.zuidahuiche: '最大回撤',
+  TextKey.qianfuquangusuan: '前复权估算，不含交易费用',
+  TextKey.bufuquangusuan: '不复权估算，不含交易费用',
+  TextKey.weishezhipingcangriqi: '未设置平仓日期，点击补填',
+  TextKey.zanbuzhichihangqing: '暂不支持该市场行情',
+  TextKey.hangqingjiazai: '行情加载失败，请检查网络',
+  TextKey.chongshi: '重试',
+  TextKey.zanwulishihangqing: '暂无历史行情',
   TextKey.xiugai: '修改',
   TextKey.baocunbingcaozu: '保存并操作',
   TextKey.yidaoshanchuliebiao: '移动到删除列表',
@@ -582,6 +602,17 @@ const Map<String, String> en = {
   TextKey.jiage: 'Price',
   TextKey.xinzengjiaoyi: 'New Trade',
   TextKey.jiaoyiriqi: 'Trade Date',
+  TextKey.lishiyingkui: 'Profit History',
+  TextKey.dangqianyingkui: 'Current P/L',
+  TextKey.zuidahuiche: 'Max Drawdown',
+  TextKey.qianfuquangusuan: 'Forward-adjusted estimate, fees excluded',
+  TextKey.bufuquangusuan: 'Unadjusted estimate, fees excluded',
+  TextKey.weishezhipingcangriqi: 'Close date missing. Tap to set',
+  TextKey.zanbuzhichihangqing:
+      'Historical quotes are unavailable for this market',
+  TextKey.hangqingjiazai: 'Unable to load quotes. Check your connection',
+  TextKey.chongshi: 'Retry',
+  TextKey.zanwulishihangqing: 'No historical quotes',
   TextKey.xiugai: 'Modify',
   TextKey.baocunbingcaozu: 'Save and operate',
   TextKey.yidaoshanchuliebiao: 'Move to the delete list',

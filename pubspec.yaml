@@ -36,6 +36,7 @@ dependencies:
   #图片预览与保存 https://juejin.cn/post/7295654213618073615?searchId=2024092915095437248644A536B2AA155A
   #readmore: ^3.0.0
   #linkfy_text: ^1.1.6 文本链接化
+  fl_chart: ^1.3.0
 
   #icon (remixicon胜出 https://remixicon.com/）
   remixicon: ^4.9.3

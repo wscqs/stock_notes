@@ -431,4 +431,31 @@ void main() {
       expect(controller.filteredTrades.length, 2);
     });
   });
+
+  test('showTradeProfitChart refreshes stale current price before opening',
+      () async {
+    final stock = await db.stockItems.insertOne(StockItemsCompanion.insert(
+        marketType: 'sh', code: '600900', name: '长江电力'));
+    final trade = await db.stockTrades.insertOne(StockTradesCompanion.insert(
+        stockId: stock,
+        tradeType: 0,
+        tradeDate: Value(DateTime(2026, 1, 1)),
+        openPrice: const Value('25'),
+        openShares: const Value('100')));
+    final controller = TradelistController(
+        stockDataFetcher: ({required List<String> stockCodes}) async => [
+              StockTxModel.fromJson({
+                'market_type': 'sh',
+                'name': '长江电力',
+                'code': 'sh600900',
+                'current_price': '30'
+              })
+            ]);
+    Get.put(controller, permanent: true);
+    await controller.loadTrades();
+    controller.showTradeProfitChart(
+        await db.getAllStockTrades().then((v) => v.first));
+    final updated = controller.stockMap[stock];
+    expect(updated?.currentPrice, '30');
+  });
 }

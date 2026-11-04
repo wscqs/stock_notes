@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:intl/intl.dart';
 import 'package:stock_notes/common/database/database.dart';
+import 'package:stock_notes/common/extension/StockTrade++.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 
 class StockTradeDialog {
@@ -55,6 +56,8 @@ class _StockTradeDialogContent extends StatefulWidget {
 class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
   late final RxInt tradeType;
   late final Rx<DateTime> tradeDate;
+  late final Rxn<DateTime> closeDate;
+  final showCloseDate = false.obs;
   late final TextEditingController openPriceController;
   late final TextEditingController openSharesController;
   late final TextEditingController closePriceController;
@@ -68,11 +71,12 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
   @override
   void initState() {
     super.initState();
-    tradeType = (widget.existingTrade?.tradeType ??
-            widget.defaultTradeType ??
-            0)
-        .obs;
+    tradeType =
+        (widget.existingTrade?.tradeType ?? widget.defaultTradeType ?? 0).obs;
     tradeDate = (widget.existingTrade?.tradeDate ?? DateTime.now()).obs;
+    showCloseDate.value = widget.existingTrade?.isCompleted == true;
+    closeDate = Rxn<DateTime>(widget.existingTrade?.closeDate ??
+        (widget.existingTrade == null ? tradeDate.value : null));
     openPriceController = TextEditingController(
       text: widget.existingTrade?.openPrice ??
           widget.existingTrade?.price ??
@@ -102,6 +106,18 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
     );
     planBuyPoints = 0.0.obs;
     planSalePoints = 0.0.obs;
+    void refreshCloseVisibility() {
+      showCloseDate.value = _isComplete;
+      if (!_isComplete) {
+        closeDate.value = null;
+      } else if (widget.existingTrade == null) {
+        closeDate.value ??= tradeDate.value;
+      }
+    }
+
+    openSharesController.addListener(refreshCloseVisibility);
+    closeSharesController.addListener(refreshCloseVisibility);
+    closePriceController.addListener(refreshCloseVisibility);
     updatePlanPricePoints();
   }
 
@@ -109,6 +125,8 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
   void dispose() {
     tradeType.close();
     tradeDate.close();
+    closeDate.close();
+    showCloseDate.close();
     openPriceController.dispose();
     openSharesController.dispose();
     closePriceController.dispose();
@@ -146,11 +164,23 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
       planSalePrice: Value(planSalePriceController.text),
       remark: Value(tradeRemarkController.text),
       tradeDate: Value(tradeDate.value),
+      closeDate: Value(
+          _isComplete ? closeDate.value : widget.existingTrade?.closeDate),
     );
     if (widget.existingTrade != null) {
       companion = companion.copyWith(id: Value(widget.existingTrade!.id));
     }
     widget.onSaved(companion);
+  }
+
+  bool get _isComplete {
+    final open = double.tryParse(openSharesController.text);
+    final close = double.tryParse(closeSharesController.text);
+    return open != null &&
+        close != null &&
+        open > 0 &&
+        open == close &&
+        double.tryParse(closePriceController.text) != null;
   }
 
   @override
@@ -305,6 +335,30 @@ class _StockTradeDialogContentState extends State<_StockTradeDialogContent> {
                 ),
               ],
             ),
+            const SizedBox(height: 4),
+            Obx(() {
+              if (!showCloseDate.value) return const SizedBox.shrink();
+              final value = closeDate.value;
+              return TextFormField(
+                key: const Key('tradeCloseDateField'),
+                readOnly: true,
+                controller: TextEditingController(
+                    text: value == null
+                        ? ''
+                        : DateFormat('yyyy-MM-dd').format(value)),
+                decoration: InputDecoration(
+                    labelText:
+                        '${TextKey.pingcang.tr}${TextKey.jiaoyiriqi.tr}'),
+                onTap: () async {
+                  final picked = await showDatePicker(
+                      context: context,
+                      initialDate: closeDate.value ?? tradeDate.value,
+                      firstDate: tradeDate.value,
+                      lastDate: DateTime.now());
+                  if (picked != null) closeDate.value = picked;
+                },
+              );
+            }),
             const SizedBox(height: 4),
             TextField(
               controller: tradeRemarkController,

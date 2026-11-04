@@ -55,6 +55,7 @@ class TradelistView extends GetView<TradelistController> {
                               onTap: () => controller.openStockDetail(trade),
                               onEdit: () => controller.editTrade(trade),
                               onDelete: () => controller.deleteTrade(trade),
+                              onShowProfitChart: () => controller.showTradeProfitChart(trade),
                             );
                           },
                         ),

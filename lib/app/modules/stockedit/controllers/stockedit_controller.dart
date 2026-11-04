@@ -14,6 +14,7 @@ import 'package:stock_notes/common/services/stock_name_service.dart';
 import 'package:stock_notes/common/web/stock_ext_links.dart';
 import 'package:stock_notes/common/web/webview_widget.dart';
 import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
+import 'package:stock_notes/common/widget/trade_profit_chart_sheet.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/meet_message_helper.dart';
 import 'package:stock_notes/utils/qs_cache.dart';
@@ -1027,7 +1028,8 @@ class StockeditController extends BaseController {
     await db.updateStockAlias(id, alias.isEmpty ? null : alias);
     stockAlias.value = alias;
     //同步刷新 localStockData，避免返回后再进来丢失
-    final item = await db.getStockItemWithTagsByCode(localStockData.value!.code!);
+    final item =
+        await db.getStockItemWithTagsByCode(localStockData.value!.code!);
     if (item != null) {
       localStockData.value = item;
     }
@@ -1107,7 +1109,8 @@ class StockeditController extends BaseController {
 
   String get _savedTradeListFilter {
     final saved = QsCache.get<String>(_tradeListFilterKey);
-    if (saved != null && (saved == 'all' || saved == 'trade' || saved == 'history')) {
+    if (saved != null &&
+        (saved == 'all' || saved == 'trade' || saved == 'history')) {
       return saved;
     }
     return 'trade';
@@ -1246,6 +1249,20 @@ class StockeditController extends BaseController {
       closeShares: trade.closeShares,
       tradeType: trade.tradeType,
     );
+  }
+
+  void showTradeProfitChart(StockTrade trade) {
+    final stock = localStockData.value;
+    if (stock == null) return;
+    TradeProfitChartSheet.show(
+        stock: stock,
+        trade: trade,
+        currentPrice: serStockData.value.currentPrice,
+        onCloseDateSaved: (closeDate) async {
+          await db.updateStockTrade(
+              trade.toCompanion(true).copyWith(closeDate: Value(closeDate)));
+          await loadTrades();
+        });
   }
 
   void showAllTradesSheet(Widget Function(StockTrade) buildTradeItem) {

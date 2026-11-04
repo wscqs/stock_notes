@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'dart:async' show unawaited;
 import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/app/modules/base/base_controller.dart';
 import 'package:stock_notes/app/routes/app_pages.dart';
@@ -9,6 +10,7 @@ import 'package:stock_notes/common/extension/StockTrade++.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/widget/stock_trade_dialog.dart';
+import 'package:stock_notes/common/widget/trade_profit_chart_sheet.dart';
 import 'package:stock_notes/model/stock_tx_model.dart';
 import 'package:stock_notes/utils/qs_hud.dart';
 
@@ -16,8 +18,12 @@ class TradelistController extends BaseController {
   final db = Get.find<DatabaseManager>().db;
   final trades = <StockTrade>[].obs;
   final stockMap = <int, StockItem>{}.obs;
-  final Future<List<StockTxModel>?> Function({required List<String> stockCodes})?
-      stockDataFetcher;
+  final Future<List<StockTxModel>?> Function(
+      {required List<String> stockCodes})? stockDataFetcher;
+  final void Function(
+      {required StockItem stock,
+      required StockTrade trade,
+      required String? currentPrice})? onShowChart;
 
   // Filter state
   final TextEditingController searchController = TextEditingController();
@@ -39,7 +45,7 @@ class TradelistController extends BaseController {
 
   final List<bool> _defaultSortAscending = [false, false, false, true];
 
-  TradelistController({this.stockDataFetcher});
+  TradelistController({this.stockDataFetcher, this.onShowChart});
 
   @override
   void onInit() {
@@ -52,6 +58,55 @@ class TradelistController extends BaseController {
     super.onResume();
     _refreshSortOptions();
     loadTrades();
+  }
+
+  void showTradeProfitChart(StockTrade trade) {
+    final stock = stockMap[trade.stockId];
+    if (stock == null) return;
+    unawaited(_openProfitChartWithFreshPrice(trade, stock));
+  }
+
+  Future<void> _openProfitChartWithFreshPrice(
+      StockTrade trade, StockItem stock) async {
+    final refreshed = await _refreshStockPrice(stock);
+    if (!Get.isRegistered<TradelistController>(tag: runtimeType.toString())) {
+      // no-op guard for tests
+    }
+    final show = onShowChart;
+    if (show != null) {
+      show(
+          stock: refreshed, trade: trade, currentPrice: refreshed.currentPrice);
+      return;
+    }
+    TradeProfitChartSheet.show(
+        stock: refreshed,
+        trade: trade,
+        currentPrice: refreshed.currentPrice,
+        onCloseDateSaved: (closeDate) async {
+          await db.updateStockTrade(
+              trade.toCompanion(true).copyWith(closeDate: Value(closeDate)));
+          await loadTrades();
+        });
+  }
+
+  Future<StockItem> _refreshStockPrice(StockItem stock) async {
+    final fetcher = stockDataFetcher ?? QsApi.instance().requestStockData;
+    final results = await fetcher(stockCodes: [stock.code]);
+    final result = results?.firstWhereOrNull(
+        (r) => _pureCode(r.code ?? '') == _pureCode(stock.code));
+    if (result?.currentPrice == null || result!.currentPrice!.isEmpty) {
+      return stock;
+    }
+    await db.updateStock(
+      StockItemsCompanion(
+        code: Value(stock.code),
+        name: Value(result.name ?? stock.name),
+        currentPrice: Value(result.currentPrice),
+      ),
+      stock.code,
+    );
+    final updated = await db.getStockItem(stock.code);
+    return updated ?? stock.copyWith(currentPrice: Value(result.currentPrice));
   }
 
   void _refreshSortOptions() {
@@ -97,8 +152,7 @@ class TradelistController extends BaseController {
       result = result.where((trade) {
         final stock = stockMap[trade.stockId];
         if (stock == null) return false;
-        return stock.name.contains(queryText) ||
-            stock.code.contains(queryText);
+        return stock.name.contains(queryText) || stock.code.contains(queryText);
       }).toList();
     }
 
@@ -132,9 +186,7 @@ class TradelistController extends BaseController {
         list.sort((a, b) {
           final da = a.tradeDate ?? a.createdAt;
           final db = b.tradeDate ?? b.createdAt;
-          return sortAscending.value
-              ? da.compareTo(db)
-              : db.compareTo(da);
+          return sortAscending.value ? da.compareTo(db) : db.compareTo(da);
         });
       case 1: // Yield rate
         list.sort((a, b) {
@@ -162,9 +214,7 @@ class TradelistController extends BaseController {
         list.sort((a, b) {
           final ca = stockMap[a.stockId]?.code ?? '';
           final cb = stockMap[b.stockId]?.code ?? '';
-          return sortAscending.value
-              ? ca.compareTo(cb)
-              : cb.compareTo(ca);
+          return sortAscending.value ? ca.compareTo(cb) : cb.compareTo(ca);
         });
     }
     return list;
@@ -233,7 +283,8 @@ class TradelistController extends BaseController {
       currentPrice: stock?.currentPrice ?? '',
       onSaved: (companion) async {
         if ((companion.openPrice.value ?? '').isEmpty) {
-          QsHud.showToast(TextKey.qingshuru.tr + TextKey.kaicang.tr + TextKey.jiage.tr);
+          QsHud.showToast(
+              TextKey.qingshuru.tr + TextKey.kaicang.tr + TextKey.jiage.tr);
           return;
         }
         await db.updateStockTrade(companion);

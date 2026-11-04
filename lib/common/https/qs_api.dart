@@ -73,40 +73,23 @@ class QsApi {
     return datas;
   }
 
+  static String formatStockCode(String stockCode) {
+    var code = stockCode.trim();
+    if (RegExp(r'^\d{6}$').hasMatch(code)) {
+      if (code.startsWith('6') || code.startsWith('5')) return 'sh$code';
+      if (code.startsWith('0') || code.startsWith('3') || code.startsWith('1')) {
+        return 'sz$code';
+      }
+      if (code.startsWith('92')) return 'bj$code';
+    }
+    if (RegExp(r'^\d{1,5}$').hasMatch(code)) return 'hk${code.padLeft(5, '0')}';
+    if (RegExp(r'^[a-zA-Z.]+$').hasMatch(code)) return 'us${code.toUpperCase()}';
+    if (code.toLowerCase().startsWith('us')) return 'us${code.substring(2).toUpperCase()}';
+    return code.toLowerCase();
+  }
+
   String buildStockUrl(List<String> stockCodes) {
-    List<String> formattedCodes = stockCodes.map((code) {
-      code = code.trim();
-
-      // A 股逻辑
-      if (RegExp(r'^\d{6}$').hasMatch(code)) {
-        if (code.startsWith('6') || code.startsWith('5')) {
-          return 'sh$code'; // 包括科创板、上证基金
-        } else if (code.startsWith('0') ||
-            code.startsWith('3') ||
-            code.startsWith('1')) {
-          return 'sz$code'; // 深证主板、创业板、深市基金
-        } else if (code.startsWith('92')) {
-          return 'bj$code'; // 北交所
-        }
-      }
-
-      // 港股逻辑：纯数字，不足5位补0
-      if (RegExp(r'^\d{1,5}$').hasMatch(code)) {
-        return 'hk${code.padLeft(5, '0')}';
-      }
-
-      // 美股（字母或带 US 前缀）
-      if (RegExp(r'^[a-zA-Z.]+$').hasMatch(code)) {
-        return 'us${code.toUpperCase()}';
-      }
-      if (code.toLowerCase().startsWith('us')) {
-        return 'us${code.substring(2).toUpperCase()}';
-      }
-
-      // 兜底逻辑（SH/SZ）
-      return code.toLowerCase();
-    }).toList();
-
+    final formattedCodes = stockCodes.map(formatStockCode).toList();
     return 'https://qt.gtimg.cn/q=${formattedCodes.join(',')}';
   }
 
