@@ -154,7 +154,20 @@ class StockTradeItem extends StatelessWidget {
                     _buildMeetStatusTag(meetStatus),
                   ],
                   const SizedBox(height: 8),
-                  _buildTradeEstimate(estimate),
+                  _buildTradeEstimate(
+                      estimate,
+                      leading: onShowProfitChart != null &&
+                              double.tryParse(trade.openShares ?? '') != null
+                          ? IconButton(
+                              key: const Key('tradeProfitChartButton'),
+                              onPressed: onShowProfitChart,
+                              padding: EdgeInsets.zero,
+                              visualDensity: VisualDensity.compact,
+                              tooltip: TextKey.lishiyingkui.tr,
+                              icon: const Icon(Icons.bar_chart,
+                                  size: 18, color: Colors.grey),
+                            )
+                          : null),
                 ],
               ),
             ],
@@ -210,20 +223,6 @@ class StockTradeItem extends StatelessWidget {
             style: const TextStyle(fontSize: 13, color: Colors.grey),
             overflow: TextOverflow.ellipsis,
           )),
-        ],
-        if (label == TextKey.kaicang.tr && onShowProfitChart != null) ...[
-          const SizedBox(width: 2),
-          SizedBox(
-              width: 32,
-              height: 28,
-              child: IconButton(
-                key: const Key('tradeProfitChartButton'),
-                onPressed: onShowProfitChart,
-                padding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
-                tooltip: TextKey.lishiyingkui.tr,
-                icon: const Icon(Icons.bar_chart, size: 19, color: Colors.grey),
-              )),
         ],
       ],
     );
@@ -333,7 +332,8 @@ class StockTradeItem extends StatelessWidget {
     );
   }
 
-  Widget _buildTradeEstimate(({double? yieldRate, double? profit}) estimate) {
+  Widget _buildTradeEstimate(({double? yieldRate, double? profit}) estimate,
+      {Widget? leading}) {
     final yieldRate = estimate.yieldRate;
     final valueColor = yieldRate == null
         ? Colors.grey
@@ -347,15 +347,24 @@ class StockTradeItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text.rich(TextSpan(children: [
-          TextSpan(text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
-          TextSpan(
-            text: yieldRate == null
-                ? "-"
-                : "${(yieldRate * 100).toStringAsFixed(1)}%",
-            style: valueStyle,
-          ),
-        ])),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (leading != null) ...[
+              SizedBox(width: 28, height: 24, child: leading),
+              const SizedBox(width: 2),
+            ],
+            Text.rich(TextSpan(children: [
+              TextSpan(text: "${TextKey.shouyilv.tr}: ", style: labelStyle),
+              TextSpan(
+                text: yieldRate == null
+                    ? "-"
+                    : "${(yieldRate * 100).toStringAsFixed(1)}%",
+                style: valueStyle,
+              ),
+            ])),
+          ],
+        ),
         if (estimate.profit != null)
           Text.rich(TextSpan(children: [
             TextSpan(text: "${TextKey.shouyie.tr}: ", style: labelStyle),

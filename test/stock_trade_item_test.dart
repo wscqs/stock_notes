@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/langs/translation_library.dart';
 import 'package:stock_notes/common/widget/stock_trade_item.dart';
@@ -36,6 +37,22 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('买'), findsOneWidget);
     expect(find.text('2026-07-27'), findsOneWidget);
+  });
+
+  testWidgets('shows profit chart button only when open shares are filled',
+      (tester) async {
+    var chartTapped = false;
+    await tester.pumpWidget(buildTestableWidget(StockTradeItem(
+        trade: trade, onShowProfitChart: () => chartTapped = true)));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tradeProfitChartButton')), findsOneWidget);
+
+    final noSharesTrade = trade.copyWith(openShares: Value<String?>(null));
+    await tester.pumpWidget(buildTestableWidget(StockTradeItem(
+        trade: noSharesTrade, onShowProfitChart: () => chartTapped = true)));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tradeProfitChartButton')), findsNothing);
+    expect(chartTapped, isFalse);
   });
 
   testWidgets('renders stock name and code when stock is provided',
@@ -177,13 +194,20 @@ void main() {
     expect(find.textContaining('满足BS'), findsNothing);
   });
 
-  testWidgets('shows chart entry and invokes callback', (tester) async {
-    var tapped = false;
-    await tester.pumpWidget(buildTestableWidget(
-        StockTradeItem(trade: trade, onShowProfitChart: () => tapped = true)));
+  testWidgets('chart entry sits above profit value and before yield rate',
+      (tester) async {
+    await tester.pumpWidget(buildTestableWidget(StockTradeItem(
+        trade: trade, currentPrice: '12.00', onShowProfitChart: () {})));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('tradeProfitChartButton')));
-    expect(tapped, isTrue);
+    final buttonRect =
+        tester.getRect(find.byKey(const Key('tradeProfitChartButton')));
+    final profitRect =
+        tester.getRect(find.textContaining('收益额: ').first);
+    final yieldRect =
+        tester.getRect(find.textContaining('收益率: ').first);
+    expect(profitRect.top > yieldRect.top, isTrue);
+    expect((yieldRect.top - buttonRect.top).abs() <= 8, isTrue);
+    expect(buttonRect.right <= yieldRect.right + 24, isTrue);
   });
 
   testWidgets('hides chart entry when callback is absent', (tester) async {

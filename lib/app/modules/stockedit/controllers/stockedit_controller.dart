@@ -1338,7 +1338,7 @@ class StockeditController extends BaseController {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             filterButton('all', TextKey.all.tr),
-                            filterButton('trade', TextKey.jiaoyi.tr),
+                            filterButton('trade', TextKey.jiaoyizhong.tr),
                             filterButton('history', TextKey.lishi.tr),
                           ],
                         );

@@ -120,6 +120,7 @@ class TextKey {
   static const maichujiage = 'maichujiage';
   static const baocunbingcaozu = 'baocunbingcaozu';
   static const jiaoyi = 'jiaoyi';
+  static const jiaoyizhong = 'jiaoyizhong';
   static const jiaoyijilu = 'jiaoyijilu';
   static const gengduo = 'gengduo'; // 更多
   static const jiaoyileixing = 'jiaoyileixing';
@@ -329,6 +330,7 @@ const Map<String, String> zh = {
   TextKey.mairujiage: '买入价格',
   TextKey.maichujiage: '卖出价格',
   TextKey.jiaoyi: '交易',
+  TextKey.jiaoyizhong: '交易中',
   TextKey.jiaoyijilu: '交易记录',
   TextKey.gengduo: '更多',
   TextKey.jiaoyileixing: '交易类型',
@@ -595,6 +597,7 @@ const Map<String, String> en = {
   TextKey.mairujiage: 'Buy Price',
   TextKey.maichujiage: 'Sell Price',
   TextKey.jiaoyi: 'Trade',
+  TextKey.jiaoyizhong: 'Trading',
   TextKey.jiaoyijilu: 'Trade Records',
   TextKey.gengduo: 'More',
   TextKey.jiaoyileixing: 'Trade Type',
