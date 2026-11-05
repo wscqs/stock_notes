@@ -4,16 +4,16 @@
 
 /* ---------- 站点配置（发版脚本 sync-release.sh 会自动改这里） ---------- */
 const SITE = {
-  version: '4.0.0',
+  version: '4.1.1',
   /* 发布日期（发版脚本自动更新） */
-  releaseDate: '2026-10-30',
+  releaseDate: '2026-11-05',
   /* 三平台文件：固定文件名，不含版本号，永远指向最新版 */
   files: {
     android: 'stocknote-android.apk',
     windows: 'stocknote-windows.zip',
     macos:   'stocknote-macos.zip'
   },
-  apkSize: '28.0 MB',
+  apkSize: '28.3 MB',
   github: 'https://github.com/wscqs/stock_notes',
   /* 是否提供本站本地镜像（workbuddy 托管版 true / GitHub Pages 版 false） */
   localMirror: false,
