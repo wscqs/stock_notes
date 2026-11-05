@@ -5,7 +5,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:intl/intl.dart';
-import 'package:stock_notes/common/comment_style.dart';
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/extension/StockTrade++.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
@@ -121,19 +120,21 @@ class _TradeProfitChartContentState extends State<TradeProfitChartContent> {
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Row(children: [
-            Text('${widget.stock.name} ',
-                style: theme.textTheme.titleLarge,
-                overflow: TextOverflow.ellipsis),
-            Text(
-              TextKey.lishiyingkui.tr,
-              style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+            Expanded(
+              child: Text('${widget.stock.name} ',
+                  style: TextStyle(fontSize: 20),
+                  overflow: TextOverflow.ellipsis),
             ),
-            kSpaceMax(),
+            // Text(
+            //   TextKey.lishiyingkui.tr,
+            //   style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+            // ),
+            // kSpaceMax(),
             _buildModeSwitch(theme),
-            const SizedBox(width: 4),
+            const SizedBox(width: 2),
             IconButton(onPressed: Get.back, icon: const Icon(Icons.close)),
           ]),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Expanded(child: _buildBody(theme)),
         ]),
       ),

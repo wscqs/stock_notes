@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/https/qs_api.dart';
 
@@ -20,12 +21,19 @@ typedef StockKlineRawFetcher = Future<String> Function(
 class StockKlineService {
   static void clearMemoryCacheForTest() => _memoryCache.clear();
 
-  static const baseUrl = 'https://web.ifzq.gtimg.cn/appstock/app/fqkline/get';
+  // The legacy fqkline endpoint only returns the latest bar for Beijing
+  // Exchange (bj) symbols; the newfqkline endpoint serves their full history.
+  static const baseUrl =
+      'https://proxy.finance.qq.com/ifzqgtimg/appstock/app/newfqkline/get';
   final StockKlineRawFetcher _rawFetcher;
   static final Map<String, List<StockDailyClose>> _memoryCache = {};
 
   StockKlineService({StockKlineRawFetcher? rawFetcher})
       : _rawFetcher = rawFetcher ?? _fetchRaw;
+
+  @visibleForTesting
+  static Future<String> fetchRawForTest(String url, String param) =>
+      _fetchRaw(url, param);
 
   static Future<String> _fetchRaw(String url, String param) async {
     final response = await Dio().get<String>(url,
@@ -36,7 +44,15 @@ class StockKlineService {
 
   static bool isSupported(StockItem stock) {
     final market = stock.marketType.toLowerCase();
-    return market == 'sh' || market == 'sz' || market == 'hk';
+    if (market == 'sh' || market == 'sz' || market == 'hk' || market == 'bj') {
+      return true;
+    }
+    // Legacy rows may carry an empty/unknown marketType; infer from the code.
+    final code = QsApi.formatStockCode(stock.code);
+    return code.startsWith('sh') ||
+        code.startsWith('sz') ||
+        code.startsWith('hk') ||
+        code.startsWith('bj');
   }
 
   Future<List<StockDailyClose>> fetchDaily({
@@ -44,10 +60,29 @@ class StockKlineService {
     required DateTime start,
     DateTime? end,
   }) async {
-    final market = stock.marketType.toLowerCase();
+    var market = stock.marketType.toLowerCase();
     final code = QsApi.formatStockCode(stock.code);
+    if (market != 'sh' &&
+        market != 'sz' &&
+        market != 'hk' &&
+        market != 'bj' &&
+        market != 'us') {
+      // Legacy rows may carry an empty/unknown marketType; infer the market
+      // from the formatted code instead of rejecting the stock.
+      if (code.startsWith('sh')) {
+        market = 'sh';
+      } else if (code.startsWith('sz')) {
+        market = 'sz';
+      } else if (code.startsWith('hk')) {
+        market = 'hk';
+      } else if (code.startsWith('bj')) {
+        market = 'bj';
+      }
+    }
+    // BJ (北交所) has no corporate-action adjustment data; fall back to raw
+    // day bars like HK.
     final adjusted = market == 'sh' || market == 'sz';
-    if (!adjusted && market != 'hk') {
+    if (!adjusted && market != 'hk' && market != 'bj') {
       throw const UnsupportedStockMarketException();
     }
     final firstDay = DateTime(start.year, start.month, start.day);
@@ -97,7 +132,11 @@ class StockKlineService {
       throw FormatException(payload['msg']?.toString() ?? 'K-line error');
     final stock = payload['data']?[code];
     if (stock is! Map) return [];
-    final rawRows = stock[adjusted ? 'qfqday' : 'day'];
+    // ETFs (512880/513090) and some STAR stocks (688825) have no corporate
+    // actions, so Tencent returns only the unadjusted 'day' key even when
+    // qfq is requested — fall back to it.
+    final rawRows = stock[adjusted ? 'qfqday' : 'day'] ??
+        (adjusted ? stock['day'] : null);
     if (rawRows is! List) return [];
     final rows = <String, StockDailyClose>{};
     for (final raw in rawRows) {

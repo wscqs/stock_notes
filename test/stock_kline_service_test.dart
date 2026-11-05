@@ -72,6 +72,34 @@ void main() {
     expect(requested, hasLength(1));
   });
 
+  test('parses Beijing exchange day data without adjustment', () async {
+    final service = StockKlineService(
+        rawFetcher: (_, param) async =>
+            '{"code":0,"data":{"bj920019":{"day":[["2026-01-05","13.0","13.5","13.7","12.9","1"]]}}}');
+    final rows = await service.fetchDaily(
+        stock: stock('bj', '920019'),
+        start: DateTime(2026, 1, 1),
+        end: DateTime(2026, 1, 10));
+    expect(rows.single.close, 13.5);
+  });
+
+  test('infers market from code when marketType is empty or unknown', () async {
+    final service = StockKlineService(
+        rawFetcher: (_, param) async =>
+            '{"code":0,"data":{"bj920491":{"day":[["2026-01-05","13.0","13.5","13.7","12.9","1"]]}}}');
+    for (final market in ['', 'unknown']) {
+      final item = stock(market, '920491');
+      expect(StockKlineService.isSupported(item), isTrue,
+          reason: 'marketType="$market"');
+      final rows = await service.fetchDaily(
+          stock: item,
+          start: DateTime(2026, 1, 1),
+          end: DateTime(2026, 1, 10));
+      expect(rows.single.close, 13.5);
+      StockKlineService.clearMemoryCacheForTest();
+    }
+  });
+
   test('rejects unsupported markets without making a request', () async {
     var called = false;
     final service = StockKlineService(rawFetcher: (_, __) async {
@@ -115,6 +143,20 @@ void main() {
     final rows = await service.fetchDaily(
         stock: stock('SH', 'sh600900'), start: DateTime(2026, 1, 1));
     expect(rows.single.close, 10);
+  });
+
+  test('falls back to unadjusted day key for ETFs without qfqday', () {
+    final rows = StockKlineService.parseDaily({
+      'code': 0,
+      'data': {
+        'sh512880': {
+          'day': [
+            ['2023-01-03', '1.0', '1.1', '1.2', '0.9', '100'],
+          ]
+        }
+      }
+    }, 'sh512880', true);
+    expect(rows.single.close, 1.1);
   });
 
   test('drops zero-close suspension rows', () {
