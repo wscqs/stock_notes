@@ -11,6 +11,7 @@ class StockExtLink {
     required this.urlTemplate,
     required this.icon,
     this.isLocalAsset = false,
+    this.startCss,
     this.useMarketPrefix = false,
     this.useMarketPrefixLower = false,
     this.useMarketSuffix = false,
@@ -30,6 +31,9 @@ class StockExtLink {
 
   /// 是否本地 html asset（assets/html/ 下）
   final bool isLocalAsset;
+
+  /// 非本地链接时注入的"文档起始"CSS（给网页补 App 内嵌样式，如抵消 safe-area-inset-top 留白）
+  final String? startCss;
 
   /// true 时 xxxxxx 替换为「市场大写前缀+6位数字」（如 SZ300848），否则替换为 6 位数字
   final bool useMarketPrefix;
@@ -90,6 +94,13 @@ class StockExtLinks {
       icon: RemixIcons.newspaper_line,
       urlTemplate: 'assets/html/zixuntong.html',
       isLocalAsset: true,
+    ),
+    StockExtLink(
+      id: 'zhangdiezong_tl',
+      title: '涨跌同',
+      icon: RemixIcons.stock_line,
+      urlTemplate:
+          'https://stock-move-timeline.app.workbuddy.host/?sharecode=A57QFCJEKM&code=xxxxxx',
     ),
     StockExtLink(
       id: 'dashi_em',
