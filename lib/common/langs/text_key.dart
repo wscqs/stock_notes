@@ -375,6 +375,7 @@ const Map<String, String> zh = {
 【股票管理】
 • 新增股票：输入股票代码，自动联想 A 股、港股、美股及基金代码。
 • 股票详情：记录买入计划、目标价、备注等信息，随时更新。
+• 快速切换：从首页进入股票编辑页后，在顶部股票信息卡片上左右滑动，可按首页当前列表顺序切换上/下一只股票。
 • 列表操作：左滑单元格可进行持有/买入、置顶、标签、收藏、删除等操作。
 • 批量删除：长按列表进入多选模式，可批量移入删除列表。
 • 删除与恢复：
@@ -645,6 +646,7 @@ A privacy-first, offline investment journaling and review app. All data is store
 【Stock Management】
 • Add stocks: Enter a stock code and get suggestions for A-shares, HK stocks, US stocks, and funds.
 • Stock detail: Record plans, target prices, remarks, and more, then update anytime.
+• Quick switching: When entering the stock editor from Home, swipe left or right on the stock info card at the top to switch to the previous/next stock in the current Home list order.
 • List actions: Swipe left on a cell to buy/hold, pin to top, tag, favorite, or delete.
 • Batch delete: Long-press the list to enter multi-select mode and move items to the delete list in bulk.
 • Delete & recover:
