@@ -24,7 +24,7 @@ class TradelistView extends GetView<TradelistController> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(TextKey.jiaoyi.tr),
+            title: Text(TextKey.jiaoyizhong.tr),
             centerTitle: true,
             actions: [
               IconButton(

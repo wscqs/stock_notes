@@ -385,8 +385,8 @@ const Map<String, String> zh = {
 • 在股票详情中新增交易，记录买入/卖出、股数、价格。
 • 支持设置持有成本价，便于跟踪收益情况。
 • 股票详情的交易列表默认只显示进行中的交易（开仓股数≠平仓股数）。
-• 点击详情页左侧“列表”按钮，可切换查看：全部、交易（默认）、历史。
-• 底部“交易”页只汇总显示进行中的交易（开仓股数≠平仓股数），已平仓的记录请在详情页“历史”中查看。
+• 在“设置 → 股票 → 交易模块展示”中，可将股票详情的交易列表默认设置为全部、交易中或历史。
+• 底部“交易中”页只汇总显示进行中的交易（开仓股数≠平仓股数），已平仓的记录请在详情页“历史”中查看。
 
 【笔记】
 • 富文本笔记，支持图文混排，可用于记录投资逻辑与复盘。
@@ -655,7 +655,7 @@ A privacy-first, offline investment journaling and review app. All data is store
 • Add trades inside a stock detail, recording buy/sell type, shares, and price.
 • Set a holding cost price to track returns.
 • The trade list in a stock detail shows only in-progress trades by default (open shares ≠ closed shares).
-• Tap the "List" button on the left of the detail page to switch between: All, Trades (default), and History.
+• Go to Settings - Stocks - Trade list display to set the default stock detail trade list to All, Trades, or History. 
 • The bottom "Trades" tab only shows in-progress trades (open shares ≠ closed shares); view closed records under "History" in the detail page.
 
 【Notes】
