@@ -17,6 +17,7 @@ import '../../../../utils/qs_cache.dart';
 import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
+import '../../stockedit/stockedit_args.dart';
 import '../../tabs/controllers/tabs_controller.dart';
 import '../../tagsedit/views/tagsedit_view.dart';
 
@@ -623,7 +624,10 @@ class HomestockController extends BaseController
 
   void pushDetailPage(StockItem item) {
     cancelUIoP();
-    Get.toNamed(Routes.STOCKEDIT, arguments: item.copyWith());
+    // 带上当前筛选/排序后的列表，编辑页股票卡片可左右滑动切换
+    Get.toNamed(Routes.STOCKEDIT,
+        arguments: StockeditArgs(item.copyWith(),
+            items: items.map((e) => e.copyWith()).toList()));
   }
 
   clickSearchClose() {

@@ -88,6 +88,7 @@ class StockeditView extends GetView<StockeditController> {
 
   Widget buildContentView(BuildContext context) {
     return SingleChildScrollView(
+      controller: controller.contentScrollController,
       child: RepaintBoundary(
         key: controller.contentKey,
         child: Container(
@@ -666,123 +667,135 @@ class StockeditView extends GetView<StockeditController> {
   }
 
   Widget _buildStockInfoWithAlias() {
-    final data = controller.serStockData.value;
-    final alias = controller.stockAlias.value;
-    final theme = Get.theme;
-    final colorScheme = theme.colorScheme;
+    return buildStockInfoCard(
+      data: controller.serStockData.value,
+      alias: controller.stockAlias.value,
+      onAliasTap: controller.showAliasDialog,
+    );
+  }
+}
 
-    String fmt(String? value) {
-      if (value == null || value.isEmpty || value == '0' || value == '0.0') {
-        return '--';
-      }
-      return value;
+/// 股票信息卡片内容（红框区域）。供单卡片与左右滑动卡片共用。
+Widget buildStockInfoCard({
+  required StockTxModel data,
+  required String alias,
+  VoidCallback? onAliasTap,
+}) {
+  final theme = Get.theme;
+  final colorScheme = theme.colorScheme;
+
+  String fmt(String? value) {
+    if (value == null || value.isEmpty || value == '0' || value == '0.0') {
+      return '--';
     }
+    return value;
+  }
 
-    Widget infoItem(String label, String value, {bool fullWidth = false}) {
-      return SizedBox(
-        width: fullWidth ? double.infinity : null,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '$label：',
-              style: TextStyle(
-                fontSize: 12,
-                color: theme.hintColor,
-              ),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget infoItem(String label, String value, {bool fullWidth = false}) {
+    return SizedBox(
+      width: fullWidth ? double.infinity : null,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // 名称 + 别名标签 + 编辑按钮
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 6,
-            runSpacing: 4,
-            children: [
-              Text(
-                fmt(data.name),
-                style: Get.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ) ??
-                    const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              if (alias.isNotEmpty)
-                Text(
-                  "($alias)",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-              InkWell(
-                onTap: controller.showAliasDialog,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  child: const Icon(
-                    Icons.edit_attributes_outlined,
-                    size: 18,
-                  ),
-                ),
-              ),
-            ],
+          Text(
+            '$label：',
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.hintColor,
+            ),
           ),
-          const SizedBox(height: 10),
-          // 代码
-          infoItem(TextKey.gupiaodaima.tr, fmt(data.code)),
-          const SizedBox(height: 8),
-          // 市价 / 市值
-          Row(
-            children: [
-              Expanded(
-                child: infoItem(TextKey.shijia.tr, fmt(data.currentPrice)),
-              ),
-              Expanded(
-                child:
-                    infoItem(TextKey.zongshizhi.tr, fmt(data.totalMarketCap)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          // 市盈率 / 市净率
-          Row(
-            children: [
-              Expanded(
-                child: infoItem(TextKey.shiyinglv.tr, fmt(data.peRatioTtm)),
-              ),
-              Expanded(
-                child: infoItem(TextKey.shijinglv.tr, fmt(data.pbRatio)),
-              ),
-            ],
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
     );
   }
 
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 名称 + 别名标签 + 编辑按钮
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 6,
+          runSpacing: 4,
+          children: [
+            Text(
+              fmt(data.name),
+              style: Get.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ) ??
+                  const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            if (alias.isNotEmpty)
+              Text(
+                "($alias)",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: colorScheme.onPrimaryContainer,
+                ),
+              ),
+            InkWell(
+              onTap: onAliasTap,
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                child: const Icon(
+                  Icons.edit_attributes_outlined,
+                  size: 18,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // 代码
+        infoItem(TextKey.gupiaodaima.tr, fmt(data.code)),
+        const SizedBox(height: 8),
+        // 市价 / 市值
+        Row(
+          children: [
+            Expanded(
+              child: infoItem(TextKey.shijia.tr, fmt(data.currentPrice)),
+            ),
+            Expanded(
+              child: infoItem(TextKey.zongshizhi.tr, fmt(data.totalMarketCap)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        // 市盈率 / 市净率
+        Row(
+          children: [
+            Expanded(
+              child: infoItem(TextKey.shiyinglv.tr, fmt(data.peRatioTtm)),
+            ),
+            Expanded(
+              child: infoItem(TextKey.shijinglv.tr, fmt(data.pbRatio)),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+extension StockeditViewInfoSection on StockeditView {
   Widget _gupiaoinfo() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -825,7 +838,9 @@ class StockeditView extends GetView<StockeditController> {
         ),
         kSpaceH(8),
         (controller.serStockData.value.code != null)
-            ? _buildStockInfoWithAlias()
+            ? (controller.canSwipe
+                ? _buildSwipeStockInfo()
+                : _buildStockInfoWithAlias())
             : Text(TextKey.no.tr, style: TextStyle(color: Colors.grey)),
         if ((controller.localStockData.value?.tagList.length ?? 0) > 0)
           Padding(
@@ -851,6 +866,10 @@ class StockeditView extends GetView<StockeditController> {
           ),
       ],
     );
+  }
+
+  Widget _buildSwipeStockInfo() {
+    return StockInfoSwipeCard(controller: controller);
   }
 
   // 已勾选的外链图标按钮：横向滚动，A股才显示，顺序同选择弹窗自定义排序
@@ -1078,6 +1097,78 @@ class StockTradeListWithMore extends StatelessWidget {
               ),
             ),
           ),
+      ],
+    );
+  }
+}
+
+/// 股票信息卡片左右滑动切换（只在卡片区域响应横向手势）
+class StockInfoSwipeCard extends StatefulWidget {
+  final StockeditController controller;
+
+  const StockInfoSwipeCard({super.key, required this.controller});
+
+  @override
+  State<StockInfoSwipeCard> createState() => _StockInfoSwipeCardState();
+}
+
+class _StockInfoSwipeCardState extends State<StockInfoSwipeCard> {
+  late final PageController _pageController;
+
+  StockeditController get controller => widget.controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: controller.swipeIndex.value);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  StockTxModel _neighborData(StockItem item) {
+    return StockTxModel(
+      marketType: item.marketType,
+      name: item.name,
+      code: item.code,
+      currentPrice: item.currentPrice,
+      peRatioTtm: item.peRatioTtm,
+      totalMarketCap: item.totalMarketCap,
+      pbRatio: item.pbRatio,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 140,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: controller.swipeItems.length,
+            onPageChanged: controller.switchToSwipeIndex,
+            itemBuilder: (context, index) {
+              final item = controller.swipeItems[index];
+              final isCurrent = index == controller.swipeIndex.value;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: buildStockInfoCard(
+                  data: isCurrent
+                      ? controller.serStockData.value
+                      : _neighborData(item),
+                  alias: isCurrent
+                      ? controller.stockAlias.value
+                      : item.alias ?? '',
+                  onAliasTap: isCurrent ? controller.showAliasDialog : null,
+                ),
+              );
+            },
+          ),
+        ),
       ],
     );
   }

@@ -29,6 +29,7 @@ import '../../../../utils/stock_link_utils.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
 import '../../tagsedit/views/tagsedit_view.dart';
+import '../stockedit_args.dart';
 
 class StockeditController extends BaseController {
   final db = Get.find<DatabaseManager>().db;
@@ -37,6 +38,7 @@ class StockeditController extends BaseController {
   final stockNumFocusNode = FocusNode();
   final searchFieldKey = GlobalKey();
   final contentKey = GlobalKey(); // 用于截图滚动全部内容
+  final contentScrollController = ScrollController();
   static const _attachTag = 'stock_search_suggestions';
 
   final pPriceBuyController = TextEditingController();
@@ -94,6 +96,12 @@ class StockeditController extends BaseController {
   var isFirstCome = true;
   var _ignoreNextSuggestionUpdate = false;
 
+  // 可滑动切换的股票列表（从首页进入时传入，顺序同首页当前列表）
+  final swipeItems = <StockItem>[];
+  final swipeIndex = 0.obs;
+
+  bool get canSwipe => swipeItems.length > 1;
+
   @override
   void onInit() {
     super.onInit();
@@ -113,7 +121,14 @@ class StockeditController extends BaseController {
     rHoldSharesController.addListener(_updateBuyPriceYieldRate);
 
     final args = Get.arguments;
-    if (args is StockItem) {
+    if (args is StockeditArgs) {
+      localStockData.value = args.item;
+      swipeItems.assignAll(args.items);
+      if (swipeItems.isNotEmpty) {
+        final index = swipeItems.indexWhere((e) => e.id == args.item.id);
+        swipeIndex.value = index < 0 ? 0 : index;
+      }
+    } else if (args is StockItem) {
       localStockData.value = args;
     }
     if (localStockData.value != null) {
@@ -133,6 +148,40 @@ class StockeditController extends BaseController {
         stockNumFocusNode.requestFocus();
       });
     }
+  }
+
+  /// 卡片左右滑动切换到上/下一只股票，整页数据一起切换。
+  /// 不自动保存未提交的编辑，行为与返回一致。
+  Future<void> switchToSwipeIndex(int index) async {
+    if (!canSwipe) return;
+    if (index < 0 || index >= swipeItems.length) return;
+    if (index == swipeIndex.value) return;
+    swipeIndex.value = index;
+
+    FocusManager.instance.primaryFocus?.unfocus();
+    _dismissAttachPopup();
+
+    // 重置上一只股票的临时状态，避免串到下一只
+    _lastNoteContent = null;
+    noteQuillController.document = Document();
+    hasNote.value = false;
+    if (notePreviewScrollController.hasClients) {
+      notePreviewScrollController.jumpTo(0);
+    }
+    if (contentScrollController.hasClients) {
+      contentScrollController.jumpTo(0);
+    }
+    stockTrades.clear();
+    serStockData.value = StockTxModel();
+    searchSuggestions.clear();
+
+    localStockData.value = swipeItems[index].copyWith();
+    isLocalData.value = true;
+    _dealHasLocalDataRefreshUI();
+    await loadTrades();
+    if (isClosed) return;
+    // 拉最新行情，卡片与其他入口展示保持一致
+    await search();
   }
 
   //根据有没有本地数据，刷新页面
@@ -872,6 +921,7 @@ class StockeditController extends BaseController {
     noteQuillController.dispose();
     notePreviewFocusNode.dispose();
     notePreviewScrollController.dispose();
+    contentScrollController.dispose();
     super.onClose();
   }
 
