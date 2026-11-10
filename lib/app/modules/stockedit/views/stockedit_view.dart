@@ -461,7 +461,7 @@ class StockeditView extends GetView<StockeditController> {
         ),
         kSpaceH(8),
         Obx(() {
-          final trades = controller.incompleteTrades;
+          final trades = controller.displayedTrades;
           if (trades.isEmpty) {
             return Text(
               TextKey.noData.tr,

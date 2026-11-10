@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_notes/app/modules/stockedit/controllers/stockedit_controller.dart';
 import 'package:stock_notes/app/modules/stockedit/views/stockedit_view.dart';
 import 'package:stock_notes/common/database/database.dart';
 import 'package:stock_notes/common/langs/text_key.dart';
 import 'package:stock_notes/common/database/DatabaseManager.dart';
 import 'package:stock_notes/common/langs/translation_library.dart';
+import 'package:stock_notes/common/globle_service.dart';
 
 void main() {
   Widget buildTestableWidget(Widget child) {
@@ -32,6 +34,8 @@ void main() {
     setUp(() async {
       Get.testMode = true;
       Get.reset();
+      SharedPreferences.setMockInitialValues({});
+      await Get.putAsync(() => GlobalService().init());
       final manager = DatabaseManager();
       await manager.init(
           path:
@@ -61,6 +65,44 @@ void main() {
       await tester.tap(find.text('open'));
       await tester.pumpAndSettle();
       expect(find.text('交易中'), findsOneWidget);
+    });
+
+    testWidgets('popup filter only changes the popup and does not persist',
+        (tester) async {
+      final controller = StockeditController();
+      controller.stockTrades.value = [
+        _fakeTrade(id: 1, closeShares: '100'),
+        _fakeTrade(id: 2),
+      ];
+      await tester.pumpWidget(buildTestableWidget(
+        Builder(
+          builder: (context) => ElevatedButton(
+            onPressed: () => controller.showAllTradesSheet(buildTradeItem),
+            child: const Text('open'),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('历史'));
+      await tester.pumpAndSettle();
+
+      expect(controller.filteredTrades.map((trade) => trade.id), [1]);
+      expect(GlobalService.to.rxStockeditTradeFilter.value, 'trade');
+      expect(
+        GlobalService.to.sharedPreferences
+            .getString(GlobalService.stockeditTradeFilterKey),
+        isNull,
+      );
+      expect(controller.displayedTrades.map((trade) => trade.id), [2]);
+
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      expect(controller.tradeListFilter.value, 'trade');
+      expect(GlobalService.to.rxStockeditTradeFilter.value, 'trade');
     });
   });
 
@@ -117,7 +159,7 @@ void main() {
   });
 }
 
-StockTrade _fakeTrade({required int id}) {
+StockTrade _fakeTrade({required int id, String? closeShares}) {
   final now = DateTime(2026, 7, 27);
   return StockTrade(
     id: id,
@@ -126,6 +168,8 @@ StockTrade _fakeTrade({required int id}) {
     stockId: 1,
     tradeType: 0,
     price: '10.00',
+    openShares: '100',
+    closeShares: closeShares,
     shares: '100',
     tradeDate: now,
   );

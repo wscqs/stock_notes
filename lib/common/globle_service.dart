@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/qs_cache.dart';
 import 'langs/translation_library.dart';
 
 /// 语言改变的回调
@@ -15,6 +16,7 @@ class GlobalService extends GetxService {
   late SharedPreferences sharedPreferences;
   static const String themeCodeKey = 'themeCodeKey';
   static const String languageCodeKey = 'languageCodeKey';
+  static const String stockeditTradeFilterKey = 'stockeditTradeFilter';
 
   //主题
   ThemeMode _themeMode = ThemeMode.system;
@@ -28,6 +30,8 @@ class GlobalService extends GetxService {
   RxBool rxMsgRedDotEnabled = true.obs;
   // 按持仓过滤提醒开关（开启时卖提醒仅持仓股票才发）
   RxBool rxMsgHoldFilterEnabled = true.obs;
+  // 股票编辑页交易模块展示：全部、交易中、历史
+  RxString rxStockeditTradeFilter = 'trade'.obs;
 
   //语言
   Locale locale = PlatformDispatcher.instance.locale;
@@ -54,6 +58,7 @@ class GlobalService extends GetxService {
     _initLofEnabled();
     _initMsgRedDotEnabled();
     _initMsgHoldFilterEnabled();
+    _initStockeditTradeFilter();
     return this;
   }
 
@@ -169,6 +174,23 @@ class GlobalService extends GetxService {
   Future<void> changeMsgHoldFilterEnabled(bool value) async {
     rxMsgHoldFilterEnabled.value = value;
     await sharedPreferences.setBool("msgHoldFilterEnabled", value);
+  }
+
+  void _initStockeditTradeFilter() {
+    final saved = sharedPreferences.getString(stockeditTradeFilterKey) ??
+        QsCache.get<String>(stockeditTradeFilterKey);
+    rxStockeditTradeFilter.value =
+        _isValidStockeditTradeFilter(saved) ? saved! : 'trade';
+  }
+
+  static bool _isValidStockeditTradeFilter(String? value) {
+    return value == 'all' || value == 'trade' || value == 'history';
+  }
+
+  Future<void> changeStockeditTradeFilter(String value) async {
+    if (!_isValidStockeditTradeFilter(value)) return;
+    rxStockeditTradeFilter.value = value;
+    await sharedPreferences.setString(stockeditTradeFilterKey, value);
   }
 
   void refreshAppui() {

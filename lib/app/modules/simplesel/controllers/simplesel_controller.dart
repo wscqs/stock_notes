@@ -48,6 +48,14 @@ class SimpleselController extends GetxController {
         {"name": "20%", "value": "0.2"},
       ];
       selKey.value = GlobalService.to.rxNearBSPoint.value.toString();
+    } else if (type == 'stockedit trade filter') {
+      title.value = TextKey.jiaoyimokuaizhanshi.tr;
+      datas.value = [
+        {'name': TextKey.all.tr, 'value': 'all'},
+        {'name': TextKey.jiaoyizhong.tr, 'value': 'trade'},
+        {'name': TextKey.lishi.tr, 'value': 'history'},
+      ];
+      selKey.value = GlobalService.to.rxStockeditTradeFilter.value;
     }
   }
 
@@ -68,6 +76,8 @@ class SimpleselController extends GetxController {
       }
     } else if (type == "near points") {
       GlobalService.to.changeNearBSPoint(double.parse(selKey.value));
+    } else if (type == 'stockedit trade filter') {
+      GlobalService.to.changeStockeditTradeFilter(selKey.value);
     }
     // datas.refresh();
     Get.back();

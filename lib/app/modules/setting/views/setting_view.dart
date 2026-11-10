@@ -69,6 +69,19 @@ class SettingView extends GetView<SettingController> {
                 },
               ),
               SimpleCell(
+                title: TextKey.jiaoyimokuaizhanshi.tr,
+                subTitle: switch (
+                    GlobalService.to.rxStockeditTradeFilter.value) {
+                  'all' => TextKey.all.tr,
+                  'history' => TextKey.lishi.tr,
+                  _ => TextKey.jiaoyizhong.tr,
+                },
+                onPressed: () {
+                  Get.toNamed(Routes.SIMPLESEL,
+                      arguments: {'type': 'stockedit trade filter'});
+                },
+              ),
+              SimpleCell(
                 title: TextKey.quanlianggupiaodaimashuaxin.tr,
                 isShowRightArrow: false,
                 rightWidget: Obx(() {
