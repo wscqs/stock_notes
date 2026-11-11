@@ -7,6 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
     <title>同花顺今天炒什么 · 双模增强版</title>
     <!-- Flatpickr 日历组件 (深色主题 + 中文) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -660,97 +663,21 @@
             text-align: right;
             background: #26293b;
         }
+        .footer-fallback {
+            margin-top: 4px;
+            font-size: 11px;
+            color: #8c909a;
+        }
+        .footer-fallback a {
+            color: #6f9eff;
+            text-decoration: none;
+        }
+        .footer-fallback a:hover { text-decoration: underline; }
+        .in-app-tip { color: #e8b23a; }
         .loading, .error, .empty { padding: 30px; text-align: center; color: #6c6f8a; }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-thumb { background: #393d60; border-radius: 5px; }
 
-        /* ===== 唤起 App 降级面板 ===== */
-        .app-jump {
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            display: none;
-        }
-        .app-jump.show { display: block; }
-        .app-jump-mask {
-            position: absolute;
-            inset: 0;
-            background: rgba(10, 10, 18, .66);
-        }
-        .app-jump-card {
-            position: absolute;
-            left: 50%;
-            bottom: 24px;
-            transform: translateX(-50%);
-            width: min(420px, calc(100vw - 28px));
-            background: #26293b;
-            border: 1px solid #393d60;
-            border-radius: 12px;
-            padding: 14px 16px 16px;
-            box-shadow: 0 16px 44px rgba(0, 0, 0, .55);
-        }
-        .app-jump-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        .app-jump-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #e0e0e5;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .app-jump-close {
-            background: transparent;
-            border: none;
-            color: #8c909a;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .app-jump-close:hover { background: #313452; color: #e0e0e5; }
-        .app-jump-tip {
-            font-size: 12px;
-            color: #9aa0b5;
-            line-height: 1.6;
-            margin: 6px 0 12px;
-        }
-        .app-jump-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .app-jump-btn {
-            flex: 1 1 auto;
-            text-align: center;
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: none;
-            min-height: 42px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .app-jump-btn.primary {
-            background: #6f9eff;
-            border: 1px solid #6f9eff;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .app-jump-btn.primary:hover { background: #5f8fea; }
-        .app-jump-btn.ghost {
-            background: transparent;
-            border: 1px solid #393d60;
-            color: #b1b1b5;
-            flex: 0 1 auto;
-        }
-        .app-jump-btn.ghost:hover { background: #313452; color: #e0e0e5; }
 
         /* ===== 涨停池明细（整合自 同花顺最强风口） ===== */
         .emotion-card { background:#1e1e2f; padding:10px 16px 4px; display:flex; flex-wrap:wrap; border-bottom:1px solid #313452; }
@@ -1143,18 +1070,6 @@
                 line-height: 1.6;
                 padding: 8px 12px;
             }
-
-            /* 降级面板贴底，避开刘海/手势条 */
-            .app-jump-card {
-                left: 10px;
-                right: 10px;
-                bottom: calc(12px + env(safe-area-inset-bottom));
-                width: auto;
-                transform: none;
-                padding: 12px 14px 14px;
-            }
-            .app-jump-actions { flex-direction: column; }
-            .app-jump-btn { width: 100%; }
         }
     </style>
 </head>
@@ -1198,22 +1113,9 @@
             <div class="stock-table-wrapper"><table id="stockTable"><thead><tr><th>代码</th><th>名称</th><th>涨跌幅</th><th>涨停状态</th><th>驱动原因</th></tr></thead><tbody id="stockTableBody"><tr><td colspan="5" class="empty">暂无成分股</td></tr></tbody></table></div>
         </div>
     </div>
-    <div class="footer-note">数据: 同花顺涨停池/炸板池/跌停池/板块榜/涨跌分布 | 抱团=游资冰点抱团取暖（资金聚焦30+梯队25+同步25+冰点动机20）· 抱团股=总龙+分支龙+活口（全市场≤12只） | 点击个股可在股票笔记 App 中编辑 | 点击表头排序</div>
-
-    <!-- 唤起 App 的降级面板：自定义 Scheme 无安装回调，提供手动主按钮 + HTTPS 下载兜底 -->
-    <div class="app-jump" id="appJump" role="dialog" aria-modal="false" aria-labelledby="appJumpName">
-        <div class="app-jump-mask" id="appJumpMask"></div>
-        <div class="app-jump-card">
-            <div class="app-jump-head">
-                <span class="app-jump-title" id="appJumpName">--</span>
-                <button class="app-jump-close" id="appJumpClose" aria-label="关闭">✕</button>
-            </div>
-            <div class="app-jump-tip" id="appJumpTip"></div>
-            <div class="app-jump-actions">
-                <button class="app-jump-btn primary" id="appJumpBtn">在股票笔记 App 中编辑</button>
-                <a class="app-jump-btn ghost" id="appJumpDl" href="download.html" target="_blank" rel="noopener">未安装？前往下载</a>
-            </div>
-        </div>
+    <div class="footer-note">
+        <div>数据: 同花顺涨停池/炸板池/跌停池/板块榜/涨跌分布 | 抱团=游资冰点抱团取暖（资金聚焦30+梯队25+同步25+冰点动机20）· 抱团股=总龙+分支龙+活口（全市场≤12只） | 点击个股在股票笔记 App 中编辑 | 点击表头排序</div>
+        <div class="footer-fallback">未安装股票笔记 App？<a href="download.html" target="_blank" rel="noopener">前往下载</a> · <span id="inAppTip" class="in-app-tip" style="display:none;">微信/QQ 内无法直接唤起，请点右上角「···」在系统浏览器中打开</span></div>
     </div>
 </div>
 
@@ -1703,7 +1605,7 @@
                     <div style="display:flex;align-items:center;"><span class="heat-area ${heatClass}"><span class="heat-icon">${heatIcon}</span><span class="heat-value">${limitNum}家</span></span></div></div>
                     <div class="concept-row"><div class="event-concept-row"><span class="concept-label">🔗 关联概念(${tags.length})：</span><div class="concept-badge-list">${tagsHtml}</div></div>
                     <div class="event-direction-row"><div class="direction-value">概念方向：<span class="direction-content">${escapeHtml(direction)}</span></div>
-                    <div class="lead-stock" data-code="${leadCode}" data-name="${escapeAttr(leadName)}">领涨股：<span class="lead-stockname">${escapeHtml(leadName)} ${leadCode}</span>${leadRiseHtml}</div></div></div>
+                    <div class="lead-stock" data-code="${leadCode}">领涨股：<span class="lead-stockname">${escapeHtml(leadName)} ${leadCode}</span>${leadRiseHtml}</div></div></div>
                 </div>`;
             });
         } else if(currentView === 'plate') {
@@ -1732,7 +1634,7 @@
                     <div class="event-header"><div class="event-title-wrapper"><span class="${rankClass}">${rank}</span><span class="event-title">${escapeHtml(b.name || '--')}</span></div>${headerRight}</div>
                     <div class="concept-row">
                     <div class="plate-meta-row"><div class="plate-stats-group"><span>涨停家数 <span class="plate-limit">${limitNum}</span></span><span>连板 <span class="plate-limit">${b.continuous_plate_num || 0}</span></span><span>高度 <span class="plate-limit">${escapeHtml(b.high || '--')}</span></span></div>
-                    <div class="lead-stock" data-code="${leadCode}" data-name="${escapeAttr(leadName)}">领涨股：<span class="lead-stockname">${escapeHtml(leadName)} ${leadCode}</span>${leadRiseHtml}</div></div>
+                    <div class="lead-stock" data-code="${leadCode}">领涨股：<span class="lead-stockname">${escapeHtml(leadName)} ${leadCode}</span>${leadRiseHtml}</div></div>
                     <div class="drive-event-row">驱动事件：<span class="drive-event-text">${escapeHtml(driveText)}</span></div>
                     </div>
                 </div>`;
@@ -1783,7 +1685,7 @@
                     <div style="display:flex;align-items:center;white-space:nowrap;"><span class="hug-tag hug-${g.level}">${g.label}</span><span class="hug-score hug-${g.level}">${g.score.toFixed(0)}分</span></div></div>
                     ${boardChipRow}
                     <div class="plate-meta-row" style="font-size:12px;color:#8c909a;"><span>${countText}</span><span>${dimsText}</span></div>
-                    <div class="event-direction-row"><div class="lead-stock" data-code="${leadCode}" data-name="${escapeAttr(leadName)}">总龙：<span class="lead-stockname">${escapeHtml(leadName)} ${leadCode}</span>${leadRiseHtml}</div></div></div>
+                    <div class="event-direction-row"><div class="lead-stock" data-code="${leadCode}">总龙：<span class="lead-stockname">${escapeHtml(leadName)} ${leadCode}</span>${leadRiseHtml}</div></div></div>
                 </div>`;
             });
         } else {
@@ -1863,7 +1765,7 @@
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const code = el.getAttribute('data-code');
-                if(code) openStock(code, el.getAttribute('data-name'));
+                if(code) openStock(code);
             });
         });
     }
@@ -1916,7 +1818,7 @@
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const code = el.getAttribute('data-code');
-                if(code) openStock(code, el.getAttribute('data-name'));
+                if(code) openStock(code);
             });
         });
     }
@@ -2101,7 +2003,7 @@
             // 涨停解析：优先板块榜个股 reason_info
             const bs = getBlockStockInfo(s.code);
             const info = (bs && bs.reason_info) ? bs.reason_info : (s.reason_info || '暂无详细解析');
-            rows += `<tr class="stock-row-main" data-code="${s.code || ''}" data-name="${escapeAttr(s.name || '')}">
+            rows += `<tr class="stock-row-main" data-code="${s.code || ''}">
                 <td class="stock-code-name">${roleTag}${escapeHtml(s.name || '--')}${contTag}<br>${s.code || '--'}</td>
                 <td>${s.latest ?? '--'}</td>
                 <td class="${gainClass}">${rise > 0 ? '+' : ''}${rise.toFixed(2)}%</td>
@@ -2250,7 +2152,7 @@
             tr.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const code = tr.getAttribute('data-code');
-                if(code) openStock(code, tr.getAttribute('data-name'));
+                if(code) openStock(code);
             });
         });
     }
@@ -2271,32 +2173,15 @@
         window.location.href = `${APP_SCHEME_BASE}${query}`;
         return normalizedCode;
     }
-    // 唤起 App 后的降级面板：自定义 Scheme 无可靠回调，
-    // 因此提供「在 App 中编辑」主按钮 + 「下载 App」HTTPS 链接作为手动兜底。
-    function showAppJumpPanel(code, name){
-        const panel = document.getElementById('appJump');
-        if(!panel) return;
-        const nameEl = document.getElementById('appJumpName');
-        const tipEl = document.getElementById('appJumpTip');
-        const btnEl = document.getElementById('appJumpBtn');
-        if(nameEl) nameEl.textContent = name ? `${name} ${code}` : (code || '--');
-        if(btnEl) btnEl.dataset.code = code || '';
-        if(tipEl){
-            tipEl.textContent = isInAppBrowser()
-                ? '当前浏览器（如微信/QQ）无法直接唤起 App，请点右上角「···」在系统浏览器中打开'
-                : '未自动跳转？可手动点击下方按钮在股票笔记 App 中编辑';
-        }
-        panel.classList.add('show');
-    }
-    // 内置浏览器（微信/QQ/微博等）会拦截自定义 Scheme
+    // 内置浏览器（微信/QQ/微博等）会拦截自定义 Scheme，给出系统浏览器引导
     function isInAppBrowser(){
         const ua = navigator.userAgent || '';
         return /MicroMessenger|QQ\/|Weibo/i.test(ua);
     }
-    function openStock(code, name){
+    // 点击个股 → 直接唤起股票笔记 App
+    function openStock(code){
         if(!code) return;
-        const c = openStockNoteEdit(code);
-        showAppJumpPanel(c, name);
+        openStockNoteEdit(code);
     }
 
     // 板块涨停池（图一样式：代码/名称·现价·涨幅·几天几板·首封·终封·形态·涨停原因 + 涨停解析）
@@ -2309,7 +2194,7 @@
             const rise = Number(s.change_rate ?? 0);
             const gainClass = rise >= 0 ? 'gain-positive' : 'gain-negative';
             const tagCls = s.change_tag === 'LIMIT_BACK' ? 'limit-back' : (s.change_tag === 'LIMIT_FAILED' ? 'limit-fail' : '');
-            rows += `<tr class="stock-row-main" data-code="${s.code || ''}" data-name="${escapeAttr(s.name || '')}">
+            rows += `<tr class="stock-row-main" data-code="${s.code || ''}">
                 <td class="stock-code-name">${escapeHtml(s.name || '--')}<br>${s.code || '--'}</td>
                 <td>${s.latest ?? '--'}</td>
                 <td class="${gainClass}">${rise > 0 ? '+' : ''}${rise.toFixed(2)}%</td>
@@ -2351,7 +2236,7 @@
             const reason = s.reason_type || '--';
             const turn = Number(s.turnover_rate);
             const info = s.reason_info || (`涨停原因：${reason} · 开板 ${s.open_num ?? 0} 次 · 封单 ${fmtFund(s.order_amount)} · 换手 ${isNaN(turn) ? '--' : turn.toFixed(1) + '%'}`);
-            rows += `<tr class="stock-row-main" data-code="${s.code || ''}" data-name="${escapeAttr(s.name || '')}">
+            rows += `<tr class="stock-row-main" data-code="${s.code || ''}">
                 <td class="stock-code-name">${escapeHtml(s.name || '--')}<br>${s.code || '--'}</td>
                 <td>${s.latest ?? '--'}</td>
                 <td class="${gainClass}">${rise > 0 ? '+' : ''}${rise.toFixed(2)}%</td>
@@ -2378,7 +2263,7 @@
             const cval = Number(s.currency_value);
             const again = Number(s.is_again_limit) === 1;
             const info = `跌停封单 ${fmtFund(s.order_amount)} · 换手率 ${isNaN(turn) ? '--' : turn.toFixed(1) + '%'} · 流通市值 ${isNaN(cval) ? '--' : (cval / 1e8).toFixed(1) + '亿'}${again ? ' · 连续跌停' : ''}（首次跌停为分时估算值）`;
-            rows += `<tr class="stock-row-main" data-code="${s.code || ''}" data-name="${escapeAttr(s.name || '')}">
+            rows += `<tr class="stock-row-main" data-code="${s.code || ''}">
                 <td class="stock-code-name">${escapeHtml(s.name || '--')}<br>${s.code || '--'}</td>
                 <td>${s.latest ?? '--'}</td>
                 <td class="gain-negative">${rise.toFixed(2)}%</td>
@@ -2746,19 +2631,11 @@
     viewDownBtn.addEventListener('click', () => switchView('down'));
 
     // ------------------- 移动端交互 -------------------
-    // 降级面板：关闭、主按钮再次唤起 App
-    function closeAppJump(){
-        const panel = document.getElementById('appJump');
-        if(panel) panel.classList.remove('show');
+    // 微信/QQ 等内置浏览器会拦截自定义 Scheme，页脚给出系统浏览器引导（非弹窗）
+    if(isInAppBrowser()){
+        const tip = document.getElementById('inAppTip');
+        if(tip) tip.style.display = '';
     }
-    document.getElementById('appJumpClose').addEventListener('click', closeAppJump);
-    document.getElementById('appJumpMask').addEventListener('click', closeAppJump);
-    document.getElementById('appJumpBtn').addEventListener('click', (e) => {
-        const code = e.currentTarget.dataset.code || '';
-        if(code) openStockNoteEdit(code);
-    });
-    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeAppJump(); });
-
     // 记录顶栏实际高度到 --topbar-h，供返回条吸顶定位避让
     function syncTopBarHeight(){
         const bar = document.querySelector('.top-bar');
