@@ -11,4 +11,18 @@ void main() {
     expect(marketOverview.url, 'assets/html/market_overview.html');
     expect(marketOverview.isLocalAsset, isTrue);
   });
+
+  test('latest theme is immediately above what is trending today', () {
+    final controller = BallotController();
+    final titles = controller.items.map((item) => item.title).toList();
+    final latestThemeIndex = titles.indexOf('最新主题');
+
+    expect(latestThemeIndex, greaterThanOrEqualTo(0));
+    expect(titles[latestThemeIndex + 1], '今天炒什么');
+    expect(
+      controller.items[latestThemeIndex].url,
+      'https://latest-theme.app.workbuddy.host/?sharecode=M25PNRLUQH',
+    );
+    expect(controller.items[latestThemeIndex].isLocalAsset, isFalse);
+  });
 }

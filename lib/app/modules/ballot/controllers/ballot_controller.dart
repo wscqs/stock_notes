@@ -25,6 +25,11 @@ class BallotController extends BaseController {
       isLocalAsset: true,
     ),
     BallotItem(
+      title: '最新主题',
+      icon: Remix.fire_line,
+      url: 'https://latest-theme.app.workbuddy.host/?sharecode=M25PNRLUQH',
+    ),
+    BallotItem(
       title: '今天炒什么',
       icon: Remix.calendar_event_line,
       url: 'https://ths-today.app.workbuddy.host/?sharecode=NOF5SC6TMB',
