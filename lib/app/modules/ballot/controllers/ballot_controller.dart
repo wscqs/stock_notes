@@ -18,6 +18,11 @@ class BallotController extends BaseController {
       url: 'assets/html/limit_up_review.html',
       isLocalAsset: true,
     ),
+    BallotItem(
+      title: '今天炒什么',
+      icon: Remix.calendar_event_line,
+      url: 'https://ths-today.app.workbuddy.host/?sharecode=NOF5SC6TMB',
+    ),
   ].obs;
 }
 

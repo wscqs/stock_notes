@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../common/database/DatabaseManager.dart';
 import '../../common/langs/text_key.dart';
 import '../../common/services/stock_name_service.dart';
 import '../../utils/qs_cache.dart';
@@ -87,8 +88,13 @@ class AppPages {
     Uri trueUri = Uri.parse(fragment);
     String path = trueUri.path;
     Map<String, String> params = trueUri.queryParameters;
-    if (fragment == '/stockedit') {
-      Get.toNamed(Routes.STOCKEDIT);
+    if (trueUri.path == '/stockedit') {
+      final code = params['code']?.trim() ?? '';
+      if (code.isEmpty) {
+        Get.toNamed(Routes.STOCKEDIT);
+      } else {
+        _openStockFromDeepLink(code);
+      }
     } else if (fragment == '/noteedit') {
       Get.toNamed(Routes.NOTEEDIT);
     } else if (fragment.startsWith('/tabs')) {
@@ -115,6 +121,13 @@ class AppPages {
         Get.toNamed(Routes.STOCKEDIT, arguments: code);
       });
     }
+  }
+
+  /// 网页拉起股票编辑：本地已有记录则直接编辑，否则预填代码并查询行情。
+  /// 新记录仍需用户在编辑页主动保存。
+  static Future<void> _openStockFromDeepLink(String code) async {
+    final stock = await Get.find<DatabaseManager>().db.getStockItem(code);
+    Get.toNamed(Routes.STOCKEDIT, arguments: stock ?? code);
   }
 
   static const INITIAL = Routes.TABS;

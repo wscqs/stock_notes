@@ -7,6 +7,7 @@ import 'package:zikzak_inappwebview/zikzak_inappwebview.dart';
 
 import '../../../../common/database/DatabaseManager.dart';
 import '../../../../common/langs/text_key.dart';
+import '../../../../common/web/stock_note_web_link.dart';
 import '../../../../common/web/webview_page.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/ballot_controller.dart';
@@ -137,6 +138,11 @@ class BallotView extends GetView<BallotController> {
                 'market': url.queryParameters['market'] ?? 0,
               }));
               return false; // 阻止 WebView 加载未知 scheme
+            }
+            final code = StockNoteWebLink.stockEditCode(url);
+            if (code != null) {
+              _openStockDetail(jsonEncode({'code': code}));
+              return false;
             }
             return true;
           },
