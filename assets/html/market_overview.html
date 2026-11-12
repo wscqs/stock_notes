@@ -1,0 +1,2312 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes"
+    />
+    <title>同花顺 · 市场概况</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+      }
+
+      body {
+        background-color: #1e1e2f;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 5px 10px;
+        margin: 0;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 5px 15px;
+        max-width: 1400px;
+        width: 100%;
+        margin: 0 auto 10px auto;
+      }
+
+      .card {
+        min-width: 0;
+        background: rgba(20, 22, 36, 0.9);
+        backdrop-filter: blur(4px);
+        border: 1px solid #313452;
+        border-radius: 16px;
+        padding: 5px 10px;
+        box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.7);
+        color: #eef2f8;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #313452;
+        font-weight: 800;
+        font-size: 1rem;
+        color: #b0c6da;
+      }
+
+      .card-header span:last-child {
+        font-size: 0.8rem;
+        font-weight: 400;
+        padding: 4px 12px;
+        border-radius: 40px;
+        color: #9bb8da;
+      }
+
+      .gauge-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 0 16px 0;
+        position: relative;
+      }
+
+      /* 成交分析图区加高后，让表盘在左卡的剩余空间里自然居中 */
+      .card-score .gauge-wrapper {
+        flex: 1;
+        justify-content: center;
+        margin: 0;
+      }
+
+      canvas#gaugeCanvas {
+        width: 100%;
+        max-width: 380px;
+        height: auto;
+        aspect-ratio: 2/1;
+        display: block;
+        margin: 0 auto;
+        filter: drop-shadow(0 6px 12px #00000080);
+        background: transparent;
+      }
+
+      .gauge-center-number {
+        background-color: transparent;
+        position: relative;
+        margin-top: -55px;
+        font-size: 2.4rem;
+        font-weight: 700;
+        backdrop-filter: blur(8px);
+        padding: 6px 28px;
+        border-radius: 60px;
+        border: 0px solid #313452;
+        z-index: 10;
+        color: #c3cad1;
+        line-height: 1.2;
+      }
+
+      .gauge-center-number small {
+        font-size: 1.1rem;
+        color: #a0b8cc;
+        margin-left: 6px;
+      }
+
+      .score-mini-tags {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        padding: 3px 20px;
+        border-radius: 3px;
+        margin-top: 5px;
+        border: 0px solid #313452;
+      }
+
+      .mini-tag {
+        text-align: center;
+      }
+
+      .mini-tag .label {
+        font-size: 0.95rem;
+        color: #8199b0;
+        margin-left: 25px;
+      }
+
+      .mini-tag .value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding-left: 5px;
+      }
+
+      .value.tech {
+        color: #6fc3b0;
+      }
+
+      .value.money {
+        color: #f4b740;
+      }
+
+      .value.finance {
+        color: #c597e0;
+      }
+
+      .score-comment {
+        border-radius: 0px;
+        padding: 5px 10px;
+        margin-top: 5px;
+        border-top: 1px dashed #313452;
+        color: #b2c6e0;
+        font-size: 0.95rem;
+      }
+
+      /* ===== 成交分析：三列数据 + 当日/60日切换 ===== */
+      .ta-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        padding: 12px 4px 14px;
+      }
+
+      .ta-stat {
+        text-align: center;
+        min-width: 0;
+      }
+
+      .ta-stat .ta-label {
+        color: #8fa5c0;
+        font-size: 0.82rem;
+        margin-bottom: 7px;
+        white-space: nowrap;
+      }
+
+      .ta-stat .ta-value {
+        color: #eef2f8;
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+
+      .ta-stat .ta-value.plus {
+        color: #ff5b5b;
+      }
+
+      .ta-stat .ta-value.minus {
+        color: #4dcb8f;
+      }
+
+      .ta-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 0 4px 8px;
+      }
+
+      .ta-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: #8fa5c0;
+        font-size: 0.76rem;
+      }
+
+      .ta-legend .lg {
+        display: inline-block;
+        width: 12px;
+        height: 2px;
+        margin-right: 5px;
+        vertical-align: middle;
+        background: #4c8dff;
+      }
+
+      .ta-legend .lg.pre {
+        background: #ffa62b;
+      }
+
+      .ta-legend .lg.predict {
+        width: 14px;
+        height: 0;
+        border-top: 3px dashed #e6007e;
+        background: transparent;
+      }
+
+      .ta-legend .lg.bar {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #3b82f6;
+      }
+
+      .ta-legend .lg.avg {
+        width: 16px;
+        height: 3px;
+        border-radius: 2px;
+        border: 0;
+        background: #ffa62b;
+      }
+
+      /* 60日视图：参考同花顺的大字号图例 */
+      .ta-legend.lg60 {
+        font-size: 1.05rem;
+        gap: 18px;
+        color: #d5dde8;
+        font-weight: 500;
+      }
+
+      .ta-switch {
+        display: flex;
+        flex-shrink: 0;
+        background: #1b2133;
+        border: 1px solid #313452;
+        border-radius: 40px;
+        padding: 2px;
+      }
+
+      .ta-btn {
+        border: 0;
+        background: transparent;
+        color: #8fa5c0;
+        font-size: 0.78rem;
+        padding: 5px 14px;
+        border-radius: 40px;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+      }
+
+      .ta-btn.active {
+        background: #313c5c;
+        color: #ffffff;
+        font-weight: 600;
+      }
+
+      .ta-chart-box {
+        position: relative;
+        width: 100%;
+        height: 420px;
+      }
+
+      .ta-pane {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .ta-pane.active {
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      #pane60 {
+        display: block;
+      }
+
+      #turnoverChartWrap {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+      }
+
+      #changeBarWrap {
+        position: relative;
+        height: 170px;
+        margin-top: 10px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* 「较昨日累计增减」标题：红绿双色小方块 + 灰白大字 */
+      .change-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+        padding: 8px 2px 6px;
+        border-top: 1px solid #2c3348;
+        color: #c2cbd9;
+        font-size: 0.95rem;
+      }
+
+      .change-icon {
+        display: inline-block;
+        width: 13px;
+        height: 13px;
+        border-radius: 2px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #f5335c 0 52%, #22c55e 52% 100%);
+      }
+
+      .change-canvas-wrap {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+      }
+
+      canvas#turnoverChart,
+      canvas#changeBarChart,
+      canvas#volumeChart {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ===== 点击 / 悬停提示浮层：同花顺风格大卡片 ===== */
+      .ta-tip {
+        position: absolute;
+        display: none;
+        pointer-events: none;
+        z-index: 30;
+        min-width: 278px;
+        max-width: 330px;
+        padding: 15px 20px 18px;
+        background: #34363d;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.46);
+        color: #eef1f6;
+        font-family: inherit;
+      }
+
+      .ta-tip .tt-time {
+        font-size: 1.45rem;
+        font-weight: 600;
+        line-height: 1.25;
+        margin-bottom: 14px;
+        color: #f4f6fa;
+      }
+
+      .ta-tip .tt-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 13px;
+        white-space: nowrap;
+      }
+
+      .ta-tip .tt-mark {
+        display: inline-block;
+        flex: 0 0 auto;
+        width: 14px;
+        height: 3px;
+        border-radius: 2px;
+      }
+
+      .ta-tip .tt-mark.blue {
+        background: #4c8dff;
+      }
+
+      .ta-tip .tt-mark.orange {
+        background: #ffa62b;
+      }
+
+      .ta-tip .tt-mark.dash {
+        background: #e6007e;
+      }
+
+      .ta-tip .tt-mark.mix {
+        width: 13px;
+        height: 13px;
+        border-radius: 2px;
+        background: linear-gradient(
+          135deg,
+          #f5335c 0 52%,
+          #22c55e 52% 100%
+        );
+      }
+
+      .ta-tip .tt-k {
+        flex: 1 1 auto;
+        color: #ccd3de;
+        font-size: 0.94rem;
+      }
+
+      .ta-tip .tt-v {
+        flex: 0 0 auto;
+        color: #f2f5f9;
+        font-size: 1.06rem;
+        font-weight: 600;
+        text-align: right;
+      }
+
+      .ta-tip .tt-v.up {
+        color: #ff4d6a;
+      }
+
+      .ta-tip .tt-v.down {
+        color: #4dcb8f;
+      }
+
+      .ta-crosshair {
+        position: absolute;
+        display: none;
+        pointer-events: none;
+        z-index: 12;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        border-left: 1px dashed rgba(255, 255, 255, 0.42);
+      }
+
+      .ta-dot {
+        position: absolute;
+        display: none;
+        pointer-events: none;
+        z-index: 13;
+        width: 9px;
+        height: 9px;
+        margin: -4.5px 0 0 -4.5px;
+        border-radius: 50%;
+        border: 2px solid #141624;
+      }
+
+      /* ===== 涨跌分布：桌面通栏置底 ===== */
+      .card-dist {
+        grid-column: 1 / -1;
+        order: 3;
+      }
+
+      /* 桌面第一行：大盘评分 | 成交分析 */
+      .card-score {
+        order: 1;
+      }
+
+      .card-turnover {
+        order: 2;
+      }
+
+      .dist-title small {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 400;
+        color: #8199b0;
+        margin-top: 3px;
+      }
+
+      .dist-body {
+        display: block;
+        padding: 10px 4px 14px;
+      }
+
+      .dist-bar-container {
+        width: 100%;
+        height: 200px;
+        background: #141624;
+        border-radius: 12px;
+        padding: 8px;
+      }
+
+      canvas#distBarChart {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* 柱状图下方：参考盘面分析的四格统计条 */
+      .dist-summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        align-items: center;
+        margin-top: 14px;
+        padding: 14px 8px 16px;
+        background: #1b2030;
+        border: 1px solid #2c3348;
+        border-radius: 10px;
+      }
+
+      .dist-summary-item {
+        text-align: center;
+        min-width: 0;
+      }
+
+      .dist-summary-item .k {
+        display: block;
+        color: #a0adc4;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+        white-space: nowrap;
+      }
+
+      .dist-summary-item .v {
+        display: block;
+        font-size: 1.6rem;
+        line-height: 1.1;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .dist-summary .loading-placeholder,
+      .dist-summary .error-message {
+        grid-column: 1 / -1;
+        padding: 10px;
+      }
+
+      .v-up {
+        color: #ff5b5b;
+      }
+
+      .v-down {
+        color: #4dcb8f;
+      }
+
+      .v-flat {
+        color: #a9b4c8;
+      }
+
+      /* 底部全局时间 */
+      .dashboard-footer {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        text-align: right;
+        color: #7489ab;
+        font-size: 0.8rem;
+        padding: 6px 16px;
+        border-top: 1px solid #313452;
+        background: transparent;
+      }
+
+      /* 「涨跌趋势（日内）」模块已移除 */
+
+      .error-message {
+        background: #3a2f42;
+        border: 1px solid #a0667a;
+        border-radius: 5px;
+        padding: 16px;
+        color: #fbc0c0;
+        text-align: center;
+      }
+
+      .loading-placeholder {
+        color: #6b82a3;
+        text-align: center;
+        padding: 30px 10px;
+      }
+
+      ::-webkit-scrollbar {
+        width: 0px;
+        height: 6px;
+      }
+
+      /* 60日柱状图已并入「成交分析」卡片的切换视图 */
+
+      @media (max-width: 900px) {
+        .dashboard {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        /* 单列时回到 DOM 顺序：大盘评分 → 涨跌分布 → 成交分析 */
+        .card-dist,
+        .card-score,
+        .card-turnover {
+          order: 0;
+        }
+
+        .dist-bar-container {
+          height: 175px;
+        }
+
+        .ta-chart-box {
+          height: 365px;
+        }
+
+        #changeBarWrap {
+          height: 145px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .ta-chart-box {
+          height: 335px;
+        }
+
+        #changeBarWrap {
+          height: 135px;
+        }
+
+        .change-head {
+          font-size: 0.82rem;
+        }
+
+        /* 手机宽度下收紧元素，避免内容撑出屏幕 */
+        .score-mini-tags {
+          gap: 10px;
+          padding: 3px 4px;
+        }
+
+        .mini-tag .label {
+          margin-left: 0;
+        }
+
+        .ta-stats {
+          gap: 4px;
+          padding: 10px 0 12px;
+        }
+
+        .ta-stat .ta-label {
+          font-size: 0.7rem;
+        }
+
+        .ta-stat .ta-value {
+          font-size: 1.05rem;
+        }
+
+        .ta-legend {
+          gap: 8px;
+          font-size: 0.68rem;
+        }
+
+        .ta-legend.lg60 {
+          gap: 8px;
+          font-size: 0.82rem;
+        }
+
+        .ta-tip {
+          min-width: 204px;
+          max-width: 260px;
+          padding: 11px 14px 13px;
+        }
+
+        .ta-tip .tt-time {
+          font-size: 1.18rem;
+          margin-bottom: 9px;
+        }
+
+        .ta-tip .tt-row {
+          gap: 8px;
+          margin-top: 10px;
+        }
+
+        .ta-tip .tt-k {
+          font-size: 0.78rem;
+        }
+
+        .ta-tip .tt-v {
+          font-size: 0.9rem;
+        }
+
+        .ta-btn {
+          padding: 4px 10px;
+          font-size: 0.72rem;
+        }
+
+        .dist-bar-container {
+          height: 165px;
+        }
+
+        .dist-summary {
+          margin-top: 10px;
+          padding: 12px 2px 14px;
+        }
+
+        .dist-summary-item .k {
+          font-size: 0.72rem;
+          margin-bottom: 6px;
+        }
+
+        .dist-summary-item .v {
+          font-size: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <!-- 左上：大盘评分表盘 -->
+      <div class="card card-score">
+        <div class="card-header">
+          <span>📊 大盘评分</span><span id="scoreUpdateTime">--</span>
+        </div>
+        <div class="gauge-wrapper">
+          <canvas id="gaugeCanvas" width="600" height="300"></canvas>
+          <div class="gauge-center-number">
+            <span id="sumScore">0.0</span><small>综合评分</small>
+          </div>
+        </div>
+        <div class="score-mini-tags">
+          <div class="mini-tag">
+            <span class="label">技术面</span
+            ><span class="value tech" id="techScore">0.0</span>
+          </div>
+          <div class="mini-tag">
+            <span class="label">资金面</span
+            ><span class="value money" id="financeScore">0.0</span>
+          </div>
+          <div class="mini-tag">
+            <span class="label">货币</span
+            ><span class="value finance" id="moneyScore">0.0</span>
+          </div>
+        </div>
+        <div class="score-comment" id="scoreContent">加载点评…</div>
+      </div>
+
+      <!-- 涨跌分布：桌面通栏置顶，窄屏排在成交分析之上 -->
+      <div class="card card-dist">
+        <div class="card-header">
+          <span class="dist-title"
+            >📈 涨跌分布<small id="distMood">市场人气 --</small></span
+          >
+          <span id="distUpdateTime">--</span>
+        </div>
+        <div class="dist-body">
+          <div class="dist-bar-container">
+            <canvas id="distBarChart"></canvas>
+          </div>
+          <div class="dist-summary" id="distStatArea">
+            <div class="loading-placeholder">加载中…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右上：成交分析（当日分时 / 60日柱状切换） -->
+      <div class="card card-turnover">
+        <div class="card-header">
+          <span>💰 成交分析</span><span id="turnoverTime">--</span>
+        </div>
+        <div class="ta-stats">
+          <div class="ta-stat">
+            <div class="ta-label">市场总成交额</div>
+            <div class="ta-value" id="taTotal">--</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-label">较昨日此时</div>
+            <div class="ta-value" id="taChange">--</div>
+          </div>
+          <div class="ta-stat">
+            <div class="ta-label">预测市场总成交额</div>
+            <div class="ta-value" id="taPredict">--</div>
+          </div>
+        </div>
+        <div class="ta-toolbar">
+          <div class="ta-legend" id="taLegend"><!--动态--></div>
+          <div class="ta-switch">
+            <button type="button" class="ta-btn active" id="btnToday">当日</button>
+            <button type="button" class="ta-btn" id="btn60">60日</button>
+          </div>
+        </div>
+        <div class="ta-chart-box">
+          <div class="ta-pane active" id="paneToday">
+            <div id="turnoverChartWrap">
+              <canvas id="turnoverChart"></canvas>
+              <div class="ta-crosshair" id="todayCrosshair"></div>
+              <i class="ta-dot" id="todayDot0" style="background: #4c8dff"></i>
+              <i class="ta-dot" id="todayDot1" style="background: #ffa62b"></i>
+              <i class="ta-dot" id="todayDot2" style="background: #e6007e"></i>
+              <div class="ta-tip" id="todayTip"></div>
+            </div>
+            <div id="changeBarWrap">
+              <div class="change-head">
+                <i class="change-icon"></i><span>较昨日累计增减</span>
+              </div>
+              <div class="change-canvas-wrap">
+                <canvas id="changeBarChart"></canvas>
+                <div class="ta-crosshair" id="changeCrosshair"></div>
+              </div>
+            </div>
+          </div>
+          <div class="ta-pane" id="pane60">
+            <canvas id="volumeChart"></canvas>
+            <div class="ta-crosshair" id="volumeCrosshair"></div>
+            <div class="ta-tip" id="volumeTooltip"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 全局底部：显示涨跌分布更新时间 -->
+    <div class="dashboard-footer" id="dashboardFooter">更新时间: --</div>
+
+    <script>
+      (function () {
+        // ----- 常量与工具函数 -----
+        var SCORE_API =
+          "https://dq.10jqka.com.cn/fuyao/market_analysis_api/score/v1/get_market_score"; //市场得分
+        var TURNOVER_API =
+          "https://dq.10jqka.com.cn/fuyao/market_analysis_api/chart/v1/get_chart_data?chart_key=turnover_minute"; //市场成交额
+        var VOLUME_DAY_API =
+          "https://dq.10jqka.com.cn/fuyao/market_analysis_api/chart/v1/get_chart_data?chart_key=turnover_day"; //市场成交额日K（近60交易日）
+        var DISTRIBUTION_API =
+          "https://dq.10jqka.com.cn/fuyao/up_down_distribution/distribution/v2/realtime"; //涨跌分布
+
+        // DOM
+        var scoreUpdateSpan = document.getElementById("scoreUpdateTime");
+        var sumScoreSpan = document.getElementById("sumScore");
+        var techSpan = document.getElementById("techScore");
+        var moneySpan = document.getElementById("moneyScore");
+        var financeSpan = document.getElementById("financeScore");
+        var scoreCommentDiv = document.getElementById("scoreContent");
+        var gaugeCanvas = document.getElementById("gaugeCanvas");
+
+        var turnoverTimeSpan = document.getElementById("turnoverTime");
+        var taTotal = document.getElementById("taTotal");
+        var taChange = document.getElementById("taChange");
+        var taPredict = document.getElementById("taPredict");
+        var turnoverChartCanvas = document.getElementById("turnoverChart");
+        var changeBarCanvas = document.getElementById("changeBarChart");
+        var taLegend = document.getElementById("taLegend");
+        var btnToday = document.getElementById("btnToday");
+        var btn60 = document.getElementById("btn60");
+        var paneToday = document.getElementById("paneToday");
+        var pane60 = document.getElementById("pane60");
+
+        var volCanvas = document.getElementById("volumeChart");
+        var volBox = document.getElementById("pane60");
+        var volTip = document.getElementById("volumeTooltip");
+        var volumeData = [],
+          volumeAvgYi = 0,
+          volumeHover = -1,
+          volumeLoadedAt = 0;
+        var changeData = [];
+        var currentView = "today";
+
+        var distUpdateSpan = document.getElementById("distUpdateTime");
+        var distMood = document.getElementById("distMood");
+        var distStatArea = document.getElementById("distStatArea");
+        var distBarCanvas = document.getElementById("distBarChart");
+        var distTableCache = null;
+        var dashboardFooter = document.getElementById("dashboardFooter");
+
+        var turnoverChart = null;
+
+        // 点击 / 悬停提示浮层
+        var todayTip = document.getElementById("todayTip");
+        var todayCrosshair = document.getElementById("todayCrosshair");
+        var changeCrosshair = document.getElementById("changeCrosshair");
+        var volumeCrosshair = document.getElementById("volumeCrosshair");
+        var todayDots = [
+          document.getElementById("todayDot0"),
+          document.getElementById("todayDot1"),
+          document.getElementById("todayDot2"),
+        ];
+        var todaySeries = { labels: [], today: [], pre: [], change: [] };
+        var todayTipLocked = false,
+          volumeTipLocked = false,
+          todayTipIndex = -1;
+
+        function tipRow(mark, key, val, cls) {
+          return (
+            '<div class="tt-row"><i class="tt-mark ' +
+            mark +
+            '"></i><span class="tt-k">' +
+            key +
+            '</span><span class="tt-v ' +
+            (cls || "") +
+            '">' +
+            val +
+            "</span></div>"
+          );
+        }
+
+        // ========== 通用格式化（金额统一用「21,353亿」这种口径） ==========
+        function thousands(num) {
+          var s = Math.round(Math.abs(num)).toString();
+          var out = "";
+          var c = 0;
+          for (var i = s.length - 1; i >= 0; i--) {
+            out = s.charAt(i) + out;
+            c++;
+            if (c % 3 === 0 && i > 0) out = "," + out;
+          }
+          return (num < 0 ? "-" : "") + out;
+        }
+
+        function formatYi(val) {
+          if (val === null || val === undefined || isNaN(val)) return "--";
+          return thousands(val) + "亿";
+        }
+
+        function formatAmount(val) {
+          if (val === null || val === undefined) return "--";
+          var num = Number(val);
+          if (isNaN(num)) return "--";
+          return formatYi(num / 1e8);
+        }
+
+        function formatAmountChange(val) {
+          if (val === null || val === undefined) return "--";
+          var num = Number(val);
+          if (isNaN(num)) return "--";
+          var yi = num / 1e8;
+          return (yi > 0 ? "+" : "") + formatYi(yi);
+        }
+
+        function pad2(n) {
+          return (n < 10 ? "0" : "") + n;
+        }
+
+        function formatUTCDate(ts) {
+          var d = new Date(ts);
+          return (
+            d.getUTCFullYear() +
+            "-" +
+            pad2(d.getUTCMonth() + 1) +
+            "-" +
+            pad2(d.getUTCDate())
+          );
+        }
+
+        function formatTimeFromTimestamp(ts) {
+          var d = new Date(ts);
+          return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+        }
+
+        // ========== 表盘绘制（适配通达信Canvas） ==========
+        function drawGauge(sumValue) {
+          var canvas = gaugeCanvas;
+          if (!canvas) return;
+          var ctx = canvas.getContext("2d");
+          var w = canvas.width,
+            h = canvas.height;
+          ctx.clearRect(0, 0, w, h);
+
+          // 关闭抗锯齿，适配通达信
+          ctx.imageSmoothingEnabled = false;
+          ctx.webkitImageSmoothingEnabled = false;
+          ctx.mozImageSmoothingEnabled = false;
+
+          var centerX = w / 2;
+          var centerY = h * 0.65;
+          var radius = Math.min(w, h) * 0.35;
+
+          // 1. 上半圆背景弧（从 π 到 0，顺时针）
+          var gradient = ctx.createLinearGradient(
+            centerX - radius,
+            centerY - radius,
+            centerX + radius,
+            centerY - radius,
+          );
+          gradient.addColorStop(0, "#4DAA8C");
+          gradient.addColorStop(0.35, "#F4B740");
+          gradient.addColorStop(0.65, "#F4B740");
+          gradient.addColorStop(1, "#E86A6A");
+
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, Math.PI, 0, false);
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 24;
+          ctx.lineCap = "round";
+          ctx.stroke();
+
+          // 2. 主刻度线 (0,2,4,6,8,10) 及数字 (Y轴用减法)
+          ctx.save();
+          for (var i = 0; i <= 10; i += 2) {
+            var angle = Math.PI - (i / 10) * Math.PI;
+            var startX = centerX + Math.cos(angle) * (radius + 20);
+            var startY = centerY - Math.sin(angle) * (radius + 20);
+            var endX = centerX + Math.cos(angle) * (radius + 40);
+            var endY = centerY - Math.sin(angle) * (radius + 40);
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            var tx = centerX + Math.cos(angle) * (radius + 65);
+            var ty = centerY - Math.sin(angle) * (radius + 35);
+            ctx.fillStyle = "#F0F4FA";
+            ctx.font = 'bold 20px "Inter", "Segoe UI", monospace';
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(i.toString(), tx, ty);
+          }
+
+          // 3. 短刻度线 (1,3,5,7,9)
+          for (var i = 1; i <= 9; i += 2) {
+            var angle = Math.PI - (i / 10) * Math.PI;
+            var startX = centerX + Math.cos(angle) * (radius + 30);
+            var startY = centerY - Math.sin(angle) * (radius + 30);
+            var endX = centerX + Math.cos(angle) * (radius + 20);
+            var endY = centerY - Math.sin(angle) * (radius + 20);
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = "#CCDDFF";
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          // 4. 指针
+          var score = Math.min(10, Math.max(0, sumValue));
+          var ptrAngle = Math.PI - (score / 10) * Math.PI;
+          var tipX = centerX + Math.cos(ptrAngle) * (radius - 40);
+          var tipY = centerY - Math.sin(ptrAngle) * (radius - 40);
+
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(tipX, tipY);
+          ctx.strokeStyle = "#FFFAFA";
+          ctx.lineWidth = 8;
+          ctx.lineCap = "round";
+          ctx.shadowBlur = 0;
+          ctx.stroke();
+
+          var backX = centerX + Math.cos(ptrAngle) * (radius - 56);
+          var backY = centerY - Math.sin(ptrAngle) * (radius - 56);
+          var leftX = backX + Math.cos(ptrAngle + Math.PI / 2) * 14;
+          var leftY = backY - Math.sin(ptrAngle + Math.PI / 2) * 14;
+          var rightX = backX + Math.cos(ptrAngle - Math.PI / 2) * 14;
+          var rightY = backY - Math.sin(ptrAngle - Math.PI / 2) * 14;
+
+          ctx.beginPath();
+          ctx.moveTo(tipX, tipY);
+          ctx.lineTo(leftX, leftY);
+          ctx.lineTo(rightX, rightY);
+          ctx.closePath();
+          ctx.fillStyle = "#FFE484";
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 16, 0, 2 * Math.PI);
+          ctx.fillStyle = "#18222E";
+          ctx.fill();
+          ctx.strokeStyle = "#B0C6E0";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          // 恢复抗锯齿
+          ctx.imageSmoothingEnabled = true;
+          ctx.webkitImageSmoothingEnabled = true;
+          ctx.mozImageSmoothingEnabled = true;
+        }
+
+        drawGauge(0);
+
+        // ----- 替换fetch为XHR，适配通达信 -----
+        function fetchJSON(url, callback) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url, true);
+          xhr.timeout = 8000;
+          // 添加跨域/兼容头
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.setRequestHeader("Accept", "application/json");
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                try {
+                  var json = JSON.parse(xhr.responseText);
+                  if (json.status_code !== 0) {
+                    callback(new Error(json.status_msg), null);
+                  } else {
+                    callback(null, json.data);
+                  }
+                } catch (e) {
+                  callback(e, null);
+                }
+              } else {
+                callback(new Error("HTTP " + xhr.status), null);
+              }
+            }
+          };
+
+          xhr.ontimeout = function () {
+            callback(new Error("请求超时"), null);
+          };
+
+          xhr.onerror = function () {
+            callback(new Error("网络错误"), null);
+          };
+
+          xhr.send();
+        }
+
+        // ----- 大盘评分 -----
+        function loadScore() {
+          fetchJSON(SCORE_API, function (err, data) {
+            if (err || !data) {
+              sumScoreSpan.textContent = "0.0";
+              techSpan.textContent = "0.0";
+              moneySpan.textContent = "0.0";
+              financeSpan.textContent = "0.0";
+              scoreCommentDiv.textContent = "评分数据暂不可用";
+              scoreUpdateSpan.textContent = "--";
+              drawGauge(0);
+              return;
+            }
+            var sum = data.sum_score || data.sum_socre || 0;
+            sumScoreSpan.textContent = sum.toFixed(1);
+            techSpan.textContent = (data.tech_score || 0).toFixed(1);
+            moneySpan.textContent = (data.money_score || 0).toFixed(1);
+            financeSpan.textContent = (data.finance_score || 0).toFixed(1);
+            scoreCommentDiv.textContent = data.score_content || "暂无点评";
+            scoreUpdateSpan.textContent = data.update_time
+              ? data.update_time.slice(5, 16)
+              : "--";
+            drawGauge(sum);
+          });
+        }
+
+        // ----- 成交分析：三列数据 + 当日分时图 + 较昨日累计增减 -----
+        function loadTurnover() {
+          fetchJSON(TURNOVER_API, function (err, data) {
+            if (err || !data || !data.charts) {
+              taTotal.textContent = "--";
+              taChange.textContent = "--";
+              taPredict.textContent = "--";
+              return;
+            }
+            var charts = data.charts;
+            var pointList = charts.point_list || [];
+            if (pointList.length === 0) {
+              return;
+            }
+
+            // point_list 是全天 241 个分钟点，盘中未到的时间点今日成交额为 null，
+            // 直接取最后一个点会拿到 null（页面显示 "--"）。优先用 header 的实时
+            // 「当日成交额」，其次倒序找最后一个有效的今日分钟点。
+            var lastIdx = -1;
+            for (var li = pointList.length - 1; li >= 0; li--) {
+              var pv = pointList[li][1];
+              if (pv !== null && pv !== undefined && pv !== 0) {
+                lastIdx = li;
+                break;
+              }
+            }
+            if (lastIdx < 0) lastIdx = pointList.length - 1;
+            var last = pointList[lastIdx];
+            var turnover = last[1];
+            var pre = last[2];
+            var predict = 0;
+            var diff = null;
+            var hdr = charts.header || [];
+            for (var h = 0; h < hdr.length; h++) {
+              if (hdr[h].key === "turnover" && isFinite(hdr[h].val)) {
+                turnover = hdr[h].val;
+              }
+              if (hdr[h].key === "predict_turnover") predict = hdr[h].val;
+              if (hdr[h].key === "turnover_change") diff = hdr[h].val;
+            }
+            if (!predict) predict = turnover;
+            if (diff === null || diff === undefined) {
+              diff = turnover && pre ? turnover - pre : 0;
+            }
+
+            taTotal.textContent = formatAmount(turnover);
+            taChange.textContent = formatAmountChange(diff);
+            taChange.className =
+              "ta-value " + (diff > 0 ? "plus" : diff < 0 ? "minus" : "");
+            taPredict.textContent = formatAmount(predict);
+
+            var labels = charts.x_label_list || [];
+            if (labels.length === 0) {
+              labels = [];
+              for (var i = 0; i < pointList.length; i++) {
+                labels.push(
+                  i % 10 === 0 ? formatTimeFromTimestamp(pointList[i][0]) : "",
+                );
+              }
+            }
+            var turnoverData = [],
+              preData = [],
+              predictData = [];
+            changeData = [];
+            for (var i = 0; i < pointList.length; i++) {
+              var p = pointList[i];
+              turnoverData.push(p[1] ? p[1] / 1e8 : null);
+              preData.push(p[2] ? p[2] / 1e8 : null);
+              predictData.push(predict / 1e8);
+              changeData.push(p[3] !== null && p[3] !== undefined ? p[3] / 1e8 : 0);
+            }
+
+            // 供点击 / 悬停提示浮层读取的当日分时序列
+            todaySeries = {
+              labels: labels.slice(),
+              today: turnoverData.slice(),
+              pre: preData.slice(),
+              change: changeData.slice(),
+            };
+            hideTodayTip(true);
+
+            // Y 轴按 6000 亿整档，刻度与参考图一致（6000/12000/18000/24000亿）
+            var yMaxVal = predict / 1e8;
+            for (var m = 0; m < turnoverData.length; m++) {
+              if (turnoverData[m] > yMaxVal) yMaxVal = turnoverData[m];
+              if (preData[m] > yMaxVal) yMaxVal = preData[m];
+            }
+            var yStep = 6000;
+            var yMax = Math.max(yStep, Math.ceil(yMaxVal / yStep) * yStep);
+            var startRadii = [];
+            for (var r = 0; r < turnoverData.length; r++) {
+              startRadii.push(r === 0 ? 4 : 0);
+            }
+            var chartCtx = turnoverChartCanvas.getContext("2d");
+
+            if (typeof Chart === "undefined") {
+              // 图表库未加载时，60日柱状图仍可用，这里只补齐当日数据与时间
+              drawChangeBars();
+              turnoverTimeSpan.textContent = charts.mtime
+                ? charts.mtime.slice(5, 16)
+                : "--";
+              return;
+            }
+            if (turnoverChart) turnoverChart.destroy();
+
+            // Y 轴刻度直接嵌在绘图区内部左侧（同花顺原图样式）：
+            // 隐藏 Chart.js 外侧刻度，改由插件把数字画在曲线之上
+            var embeddedYAxis = {
+              afterDatasetsDraw: function (chart) {
+                var ctx = chart.ctx;
+                var area = chart.chartArea;
+                if (!ctx || !area) return;
+                var yScale = null;
+                for (var sid in chart.scales) {
+                  if (!chart.scales[sid].isHorizontal()) {
+                    yScale = chart.scales[sid];
+                    break;
+                  }
+                }
+                if (!yScale || !yScale.getPixelForValue) return;
+                ctx.save();
+                ctx.font = '600 16px "Inter", "Helvetica Neue", sans-serif';
+                ctx.textAlign = "left";
+                ctx.textBaseline = "top";
+                for (var v = yStep; v <= yMax + 0.1; v += yStep) {
+                  var py = yScale.getPixelForValue(v);
+                  if (py < area.top || py > area.bottom - 20) continue;
+                  var ty = py + 4;
+                  var tx = area.left + 10;
+                  var txt = v + "亿";
+                  var tw = ctx.measureText(txt).width;
+                  // 左深右淡的窄遮罩：挡住穿过数字的预测虚线/曲线，又不会显得像贴片
+                  var shade = ctx.createLinearGradient(
+                    tx - 4,
+                    0,
+                    tx + tw + 14,
+                    0,
+                  );
+                  shade.addColorStop(0, "rgba(20,22,36,0.92)");
+                  shade.addColorStop(0.7, "rgba(20,22,36,0.82)");
+                  shade.addColorStop(1, "rgba(20,22,36,0)");
+                  ctx.fillStyle = shade;
+                  ctx.fillRect(tx - 4, ty - 2, tw + 18, 21);
+                  ctx.lineWidth = 3;
+                  ctx.strokeStyle = "rgba(18,22,36,0.85)";
+                  ctx.strokeText(txt, tx, ty);
+                  ctx.fillStyle = "#a8b5c9";
+                  ctx.fillText(txt, tx, ty);
+                }
+                ctx.restore();
+              },
+              // X 轴时间标签改由插件内嵌绘制：不再让 Chart.js 为首尾标签
+              // 预留半个字符宽度，绘图区才能与下方「较昨日累计增减」左右对齐
+              afterDraw: function (chart) {
+                var ctx = chart.ctx;
+                var area = chart.chartArea;
+                if (!ctx || !area) return;
+                ctx.save();
+                ctx.font = '15px "Inter", "Helvetica Neue", sans-serif';
+                ctx.fillStyle = "#98a2b3";
+                ctx.textBaseline = "middle";
+                var ty = area.bottom + 20;
+                ctx.textAlign = "left";
+                ctx.fillText("9:30", area.left, ty);
+                ctx.textAlign = "center";
+                ctx.fillText("11:30", (area.left + area.right) / 2, ty);
+                ctx.textAlign = "right";
+                ctx.fillText("15:00", area.right, ty);
+                ctx.restore();
+              },
+            };
+
+            var areaFill = chartCtx.createLinearGradient(
+              0,
+              0,
+              0,
+              turnoverChartCanvas.clientHeight || 240,
+            );
+            areaFill.addColorStop(0, "rgba(76,141,255,0.20)");
+            areaFill.addColorStop(1, "rgba(76,141,255,0)");
+            turnoverChart = new Chart(chartCtx, {
+              type: "line",
+              plugins: [embeddedYAxis],
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: "今日总成交",
+                    data: turnoverData,
+                    borderColor: "#4c8dff",
+                    backgroundColor: areaFill,
+                    fill: true,
+                    pointRadius: startRadii,
+                    pointHoverRadius: 4,
+                    pointBackgroundColor: "#141624",
+                    pointBorderColor: "#4c8dff",
+                    pointBorderWidth: 2,
+                    borderWidth: 3,
+                    lineTension: 0.22,
+                    borderCapStyle: "round",
+                    borderJoinStyle: "round",
+                  },
+                  {
+                    label: "昨日总成交",
+                    data: preData,
+                    borderColor: "#ffa62b",
+                    backgroundColor: "transparent",
+                    pointRadius: 0,
+                    borderWidth: 3,
+                    lineTension: 0.22,
+                    borderCapStyle: "round",
+                    borderJoinStyle: "round",
+                  },
+                  {
+                    label: "预测总成交",
+                    data: predictData,
+                    borderColor: "#e6007e",
+                    backgroundColor: "transparent",
+                    pointRadius: 0,
+                    borderWidth: 3,
+                    borderDash: [14, 9],
+                    lineTension: 0,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { display: false },
+                // 内置小气泡关掉，改用自定义大浮层（见 showTodayTip）
+                tooltips: { enabled: false },
+                hover: { mode: null },
+                // 上下两图共用同一个绘图区左右边界（0 ~ canvas 宽度），
+                // 底部留白给自绘的 9:30 / 11:30 / 15:00 时间标签
+                layout: { padding: { left: 0, right: 0, top: 6, bottom: 36 } },
+                scales: {
+                  xAxes: [
+                    {
+                      gridLines: {
+                        display: false,
+                        drawTicks: false,
+                        drawBorder: false,
+                      },
+                      ticks: {
+                        // 时间标签由 embeddedYAxis.afterDraw 内嵌绘制，
+                        // 关掉外侧刻度避免 Chart.js 为 9:30/15:00 撑开左右边距
+                        display: false,
+                        autoSkip: false,
+                      },
+                    },
+                  ],
+                  yAxes: [
+                    {
+                      gridLines: {
+                        color: "rgba(255,255,255,0.075)",
+                        lineWidth: 1,
+                        drawTicks: false,
+                        drawBorder: false,
+                        zeroLineColor: "rgba(255,255,255,0.14)",
+                      },
+                      ticks: {
+                        min: 0,
+                        max: yMax,
+                        stepSize: yStep,
+                        beginAtZero: true,
+                        display: false,
+                        padding: 0,
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            turnoverTimeSpan.textContent = charts.mtime
+              ? charts.mtime.slice(5, 16)
+              : "--";
+            drawChangeBars();
+          });
+        }
+
+        // ----- 当日视图下方：较昨日累计增减（同花顺原图风格） -----
+        // ========== 「较昨日累计增减」动态刻度 ==========
+        // 把任意数值向上取整到 1/2/3/5/6 × 10^n 的漂亮档位，单位「亿」。
+        // 早盘几十亿波动时给几十亿的刻度，收盘上千亿时自动放大，不再固定 3000 亿。
+        function niceAxisStep(v) {
+          if (!(v > 0)) return 1;
+          var exp = Math.floor(Math.log(v) / Math.LN10);
+          var pow = Math.pow(10, exp);
+          var f = v / pow;
+          var m =
+            f <= 1 ? 1 : f <= 2 ? 2 : f <= 3 ? 3 : f <= 5 ? 5 : f <= 6 ? 6 : 10;
+          var s = m * pow;
+          // 最小刻度 1 亿，避免出现 0.5亿 这类取整后显示成 0 的标签
+          return s < 1 ? 1 : s;
+        }
+
+        function axisTickText(v) {
+          if (v === 0) return "0";
+          var a = Math.abs(v);
+          var s = a < 10 ? String(Math.round(a * 10) / 10) : String(Math.round(a));
+          return (v < 0 ? "-" : "") + s + "亿";
+        }
+
+        function drawChangeBars() {
+          if (!changeBarCanvas || changeData.length === 0) return;
+          var w = changeBarCanvas.clientWidth || 400;
+          var h = changeBarCanvas.clientHeight || 140;
+          if (w < 40 || h < 40) return;
+          var dpr = window.devicePixelRatio || 1;
+          if (dpr > 3) dpr = 3;
+          changeBarCanvas.width = Math.round(w * dpr);
+          changeBarCanvas.height = Math.round(h * dpr);
+          var ctx = changeBarCanvas.getContext("2d");
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, changeBarCanvas.width, changeBarCanvas.height);
+          ctx.scale(dpr, dpr);
+
+          var n = changeData.length;
+          var maxPos = 0,
+            maxNeg = 0;
+          for (var i = 0; i < n; i++) {
+            if (changeData[i] > maxPos) maxPos = changeData[i];
+            if (-changeData[i] > maxNeg) maxNeg = -changeData[i];
+          }
+          // 量程随当前实际增减极值动态计算；有负值时上下对称，0 基线居中
+          var maxAbs = Math.max(maxPos, maxNeg);
+          var step = niceAxisStep((maxAbs / 2) * 1.05);
+          var yMax = step * 2;
+          var yMin = maxNeg > 0 ? -step * 2 : 0;
+          var top = 10,
+            bottom = h - 2;
+          var plotH = bottom - top;
+          var total = yMax - yMin;
+          var zeroY = bottom - ((0 - yMin) / total) * plotH;
+          var unit = plotH / total;
+          var compact = w < 560;
+          var fontSize = compact ? 13 : 16;
+          // 固定 3 条刻度：绘图区只有 ~130px 高，5 条会让底部两个数字叠在一起。
+          // 有负值时 0 基线居中，上下各一个满档；全正时沿用参考图的「满/半/0」。
+          var ticks = yMin < 0 ? [yMax, 0, yMin] : [yMax, yMax / 2, 0];
+
+          // 淡水平刻度线
+          for (var t = 0; t < ticks.length; t++) {
+            var gy = zeroY - ticks[t] * unit;
+            if (gy < top - 1 || gy > bottom + 1) continue;
+            ctx.beginPath();
+            ctx.moveTo(0, gy);
+            ctx.lineTo(w, gy);
+            ctx.strokeStyle = "rgba(255,255,255,0.075)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+
+          // 密集细竖线组成实心面积：正值红色向上、负值绿色向下
+          var slot = w / n;
+          var barW = Math.max(1, slot - 0.9);
+          for (var i = 0; i < n; i++) {
+            var v = changeData[i];
+            var bh = Math.abs(v) * unit;
+            var x = i * slot + (slot - barW) / 2;
+            ctx.fillStyle = v >= 0 ? "#f5335c" : "#22c55e";
+            ctx.fillRect(x, v >= 0 ? zeroY - bh : zeroY, barW, bh);
+          }
+
+          // 0 基线
+          ctx.beginPath();
+          ctx.moveTo(0, zeroY);
+          ctx.lineTo(w, zeroY);
+          ctx.strokeStyle = "rgba(255,255,255,0.22)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // 刻度数字嵌在图内左侧（最后绘制，压在柱图之上）
+          ctx.font =
+            "600 " + fontSize + 'px "Inter", "Helvetica Neue", sans-serif';
+          ctx.textAlign = "left";
+          ctx.textBaseline = "top";
+          for (var t = 0; t < ticks.length; t++) {
+            var tv = ticks[t];
+            var ty = zeroY - tv * unit;
+            if (ty < top - 1 || ty > bottom + 1) continue;
+            var txt = axisTickText(tv);
+            // 统一贴在刻度线下方并夹在绘图区内：顶部不会被标题切掉、
+            // 底部不越界，相邻刻度也不会上下叠字
+            var labelY = ty + 4;
+            if (labelY > bottom - fontSize - 2) {
+              labelY = bottom - fontSize - 2;
+            }
+            var tx = 10;
+            var tw = ctx.measureText(txt).width;
+            var shade = ctx.createLinearGradient(tx - 4, 0, tx + tw + 14, 0);
+            shade.addColorStop(0, "rgba(20,22,36,0.92)");
+            shade.addColorStop(0.7, "rgba(20,22,36,0.82)");
+            shade.addColorStop(1, "rgba(20,22,36,0)");
+            ctx.fillStyle = shade;
+            ctx.fillRect(tx - 4, labelY - 2, tw + 18, fontSize + 5);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "rgba(18,22,36,0.85)";
+            ctx.strokeText(txt, tx, labelY);
+            ctx.fillStyle = "#a8b5c9";
+            ctx.fillText(txt, tx, labelY);
+          }
+
+          // 起点空心圆最后画，避免被「0」刻度的深色遮罩盖掉半边
+          var fy = zeroY - changeData[0] * unit;
+          ctx.beginPath();
+          ctx.arc(
+            Math.max(slot / 2, compact ? 5 : 6),
+            fy,
+            compact ? 3.5 : 4,
+            0,
+            Math.PI * 2,
+          );
+          ctx.fillStyle = "#141624";
+          ctx.fill();
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        // ========== 当日分时图：点击 / 悬停提示（同花顺大浮层） ==========
+        var todayWrap = document.getElementById("turnoverChartWrap");
+
+        function todayIndexFromMain(clientX, clientY) {
+          var c = turnoverChart;
+          var n = todaySeries.labels.length;
+          if (n === 0) return -1;
+          var rect = turnoverChartCanvas.getBoundingClientRect();
+          var x = clientX - rect.left,
+            y = clientY - rect.top;
+          // 图表库未加载时，按整段绘图区宽度退化定位
+          if (!c) {
+            return Math.max(
+              0,
+              Math.min(n - 1, Math.round((x / (rect.width || 1)) * (n - 1))),
+            );
+          }
+          var area = c.chartArea;
+          if (!area || x < area.left - 14 || x > area.right + 14) return -1;
+          try {
+            var ev = {
+              clientX: clientX,
+              clientY: clientY,
+              target: turnoverChartCanvas,
+              currentTarget: turnoverChartCanvas,
+              type: "mousemove",
+              offsetX: x,
+              offsetY: y,
+            };
+            var els = c.getElementsAtEventForMode(
+              ev,
+              "index",
+              { intersect: false },
+              false,
+            );
+            if (els && els.length && els[0]._index >= 0) return els[0]._index;
+          } catch (e) {}
+          if (n < 2) return -1;
+          var idx = Math.round(
+            ((x - area.left) / (area.right - area.left)) * (n - 1),
+          );
+          return Math.max(0, Math.min(n - 1, idx));
+        }
+
+        function todayIndexFromChange(clientX) {
+          var n = todaySeries.labels.length;
+          if (!n || !changeBarCanvas) return -1;
+          var rect = changeBarCanvas.getBoundingClientRect();
+          var x = clientX - rect.left;
+          if (x < 0 || x > rect.width) return -1;
+          // 与上方分时图一致：点数按 0 ~ n-1 映射到整段绘图区
+          return Math.max(
+            0,
+            Math.min(n - 1, Math.round((x / rect.width) * (n - 1))),
+          );
+        }
+
+        function todayPointXY(ds, idx) {
+          var c = turnoverChart;
+          try {
+            var meta = c.getDatasetMeta(ds);
+            var pt = meta && meta.data && meta.data[idx];
+            if (pt && pt._model) return { x: pt._model.x, y: pt._model.y };
+          } catch (e) {}
+          return null;
+        }
+
+        // 浮层优先放在准线左侧（贴近参考图），空间不够时翻到右侧
+        function positionTip(tip, wrap, px) {
+          tip.style.display = "block";
+          var tipW = tip.offsetWidth || 250;
+          var wrapW = wrap.clientWidth || tipW + 40;
+          var left = px - tipW - 20;
+          if (left < 4) left = px + 20;
+          if (left + tipW > wrapW - 4) left = wrapW - tipW - 4;
+          if (left < 4) left = 4;
+          tip.style.left = left + "px";
+          tip.style.top = "10px";
+        }
+
+        function showTodayTip(idx, lock) {
+          if (idx < 0 || idx >= todaySeries.labels.length) return;
+          var s = todaySeries;
+          var cur = s.today[idx],
+            pre = s.pre[idx],
+            ch = s.change[idx];
+          if (ch === null || ch === undefined) ch = 0;
+          todayTip.innerHTML =
+            '<div class="tt-time">' +
+            (s.labels[idx] || "--") +
+            "</div>" +
+            tipRow(
+              "blue",
+              "总成交额",
+              cur === null || cur === undefined ? "--" : formatYi(cur),
+            ) +
+            tipRow(
+              "orange",
+              "昨日总成交额",
+              pre === null || pre === undefined ? "--" : formatYi(pre),
+            ) +
+            tipRow(
+              "mix",
+              "较昨日累计增减",
+              formatYi(ch),
+              ch >= 0 ? "up" : "down",
+            );
+          todayTipIndex = idx;
+          if (lock !== undefined) todayTipLocked = !!lock;
+
+          var c = turnoverChart;
+          var p0 = c ? todayPointXY(0, idx) : null;
+          var px = p0 ? p0.x : 0;
+          if (!p0 && c && c.chartArea) {
+            var a = c.chartArea;
+            px =
+              a.left +
+              (idx / Math.max(1, s.labels.length - 1)) * (a.right - a.left);
+          } else if (!p0) {
+            px =
+              (idx / Math.max(1, s.labels.length - 1)) *
+              (turnoverChartCanvas.clientWidth || 1);
+          }
+          positionTip(todayTip, todayWrap, px);
+          todayCrosshair.style.left = px + "px";
+          todayCrosshair.style.display = "block";
+          for (var d = 0; d < 3; d++) {
+            var pt = c ? todayPointXY(d, idx) : null;
+            if (pt && isFinite(pt.y)) {
+              todayDots[d].style.left = pt.x + "px";
+              todayDots[d].style.top = pt.y + "px";
+              todayDots[d].style.display = "block";
+            } else {
+              todayDots[d].style.display = "none";
+            }
+          }
+          // 下方「较昨日累计增减」同步一条准线：复用上方数据点的 x，
+          // 两图绘图区左右一致时准线自然上下贯通
+          var cw = changeBarCanvas.clientWidth || 0;
+          var tw = turnoverChartCanvas.clientWidth || cw || 1;
+          changeCrosshair.style.left = px * (cw / tw) + "px";
+          changeCrosshair.style.display = "block";
+        }
+
+        function hideTodayTip(force) {
+          if (todayTipLocked && !force) return;
+          todayTipLocked = false;
+          todayTipIndex = -1;
+          todayTip.style.display = "none";
+          todayCrosshair.style.display = "none";
+          changeCrosshair.style.display = "none";
+          for (var d = 0; d < 3; d++) todayDots[d].style.display = "none";
+        }
+
+        turnoverChartCanvas.onmousemove = function (e) {
+          showTodayTip(todayIndexFromMain(e.clientX, e.clientY));
+        };
+        turnoverChartCanvas.onmouseleave = function () {
+          hideTodayTip(false);
+        };
+        turnoverChartCanvas.onclick = function (e) {
+          showTodayTip(todayIndexFromMain(e.clientX, e.clientY), true);
+        };
+        changeBarCanvas.onmousemove = function (e) {
+          showTodayTip(todayIndexFromChange(e.clientX));
+        };
+        changeBarCanvas.onmouseleave = function () {
+          hideTodayTip(false);
+        };
+        changeBarCanvas.onclick = function (e) {
+          showTodayTip(todayIndexFromChange(e.clientX), true);
+        };
+        turnoverChartCanvas.ontouchstart = turnoverChartCanvas.ontouchmove =
+          function (e) {
+            var t = e.touches && e.touches[0];
+            if (t) showTodayTip(todayIndexFromMain(t.clientX, t.clientY), true);
+          };
+        changeBarCanvas.ontouchstart = changeBarCanvas.ontouchmove = function (
+          e,
+        ) {
+          var t = e.touches && e.touches[0];
+          if (t) showTodayTip(todayIndexFromChange(t.clientX), true);
+        };
+
+        // ----- 涨跌分布柱状图：柱顶数值 + 红涨绿跌 + 圆角柱 -----
+        function roundRectTop(ctx, x, y, w, h, r) {
+          var rr = Math.min(r, w / 2, h);
+          ctx.beginPath();
+          ctx.moveTo(x, y + h);
+          ctx.lineTo(x, y + rr);
+          ctx.quadraticCurveTo(x, y, x + rr, y);
+          ctx.lineTo(x + w - rr, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + rr);
+          ctx.lineTo(x + w, y + h);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        function drawDistributionBarChart(tableData) {
+          if (!distBarCanvas || !tableData || tableData.length < 11) return;
+          var w = distBarCanvas.clientWidth || 400;
+          var h = distBarCanvas.clientHeight || 180;
+          if (w < 50 || h < 50) return;
+          var dpr = window.devicePixelRatio || 1;
+          if (dpr > 3) dpr = 3;
+          distBarCanvas.width = Math.round(w * dpr);
+          distBarCanvas.height = Math.round(h * dpr);
+          var ctx = distBarCanvas.getContext("2d");
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, distBarCanvas.width, distBarCanvas.height);
+          ctx.scale(dpr, dpr);
+
+          var values = [];
+          for (var i = 0; i < tableData.length; i++) {
+            values.push(tableData[i].value || 0);
+          }
+          var maxVal = Math.max.apply(null, values);
+          if (maxVal <= 0) maxVal = 1;
+
+          var n = values.length;
+          var slot = w / n;
+          var barW = Math.max(3, Math.min(slot * 0.56, 80));
+          var baseY = h - 26;
+          var maxHeight = baseY - 26;
+          // X 轴区间标签：左侧为跌幅（由大到小），中间平盘，右侧为涨幅（由小到大）
+          var labels = [
+            ">10%",
+            "10~7",
+            "7~5",
+            "5~3",
+            "3~0",
+            "0",
+            "0~3",
+            "3~5",
+            "5~7",
+            "7~10",
+            ">10%",
+          ];
+          var colors = [
+            "#4dcb8f",
+            "#4dcb8f",
+            "#4dcb8f",
+            "#4dcb8f",
+            "#4dcb8f",
+            "#a9b4c8",
+            "#ff5b5b",
+            "#ff5b5b",
+            "#ff5b5b",
+            "#ff5b5b",
+            "#ff5b5b",
+          ];
+
+          for (var i = 0; i < n; i++) {
+            var x = i * slot + (slot - barW) / 2;
+            var bh = (values[i] / maxVal) * maxHeight;
+            var y = baseY - bh;
+            if (bh > 0) {
+              ctx.fillStyle = colors[i];
+              roundRectTop(ctx, x, y, barW, Math.max(2, bh), 3);
+            }
+            ctx.strokeStyle = "#3a4260";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x - 3, baseY + 2);
+            ctx.lineTo(x + barW + 3, baseY + 2);
+            ctx.stroke();
+
+            ctx.fillStyle = colors[i];
+            ctx.font = 'bold 12px "Inter", sans-serif';
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+            ctx.fillText(values[i], x + barW / 2, y - 4);
+
+            ctx.fillStyle = "#8fa2c0";
+            ctx.font = '12px "Inter", sans-serif';
+            ctx.textBaseline = "top";
+            ctx.fillText(labels[i], x + barW / 2, baseY + 7);
+          }
+        }
+
+        // ----- 涨跌分布：人气评价 + 下方四格统计条 + 柱状图 -----
+        function loadDistribution() {
+          fetchJSON(DISTRIBUTION_API, function (err, data) {
+            if (err || !data) {
+              distMood.textContent = "市场人气 --";
+              distStatArea.innerHTML =
+                '<div class="error-message">分布数据异常</div>';
+              dashboardFooter.textContent = "更新时间: --";
+              return;
+            }
+            var up = data.up || 0;
+            var down = data.down || 0;
+            var flat = data.flat || 0;
+            var limit_up = data.limit_up || 0;
+            var limit_down = data.limit_down || 0;
+            var suspend = data.suspend || 0;
+            var table = data.table || [];
+            var last_update_time = data.last_update_time || "";
+
+            // 人气评价：按上涨家数占比
+            var total = up + down + flat;
+            var ratio = total ? up / total : 0;
+            var mood =
+              ratio >= 0.8
+                ? "市场人气火爆"
+                : ratio >= 0.62
+                  ? "市场人气较旺"
+                  : ratio >= 0.45
+                    ? "市场人气一般"
+                    : ratio >= 0.28
+                      ? "市场人气偏弱"
+                      : "市场情绪冰点";
+            distMood.textContent = mood;
+            distMood.style.color =
+              ratio >= 0.62
+                ? "#ff7b7b"
+                : ratio < 0.28
+                  ? "#4dcb8f"
+                  : "#8199b0";
+
+            var ratioText = down ? (up / down).toFixed(1) : "--";
+            var upPct = total ? (ratio * 100).toFixed(1) + "%" : "--";
+            // 柱状图下方的四格统计条：上涨 / 下跌 / 涨停 / 跌停
+            var items = [
+              { k: "上涨", v: up, c: "v-up" },
+              { k: "下跌", v: down, c: "v-down" },
+              { k: "涨停", v: limit_up, c: "v-up" },
+              { k: "跌停", v: limit_down, c: "v-down" },
+            ];
+            var html = "";
+            for (var i = 0; i < items.length; i++) {
+              var empty = !items[i].v;
+              html +=
+                '<div class="dist-summary-item"><span class="k">' +
+                items[i].k +
+                '</span><span class="v ' +
+                (empty ? "v-flat" : items[i].c) +
+                '">' +
+                (empty ? "--" : items[i].v) +
+                "</span></div>";
+            }
+            distStatArea.innerHTML = html;
+
+            if (Array.isArray(table) && table.length >= 11) {
+              distTableCache = table;
+              drawDistributionBarChart(table);
+            }
+
+            distUpdateSpan.textContent = last_update_time
+              ? last_update_time.slice(5, 16)
+              : "--";
+            dashboardFooter.textContent =
+              "平盘 " +
+              flat +
+              " · 停牌 " +
+              suspend +
+              " · 涨跌比 " +
+              ratioText +
+              " · 上涨占比 " +
+              upPct +
+              " · 更新 " +
+              (last_update_time || "--");
+          });
+        }
+
+        // ========== 60日柱状图与视图切换（原生 Canvas，不依赖图表库） ==========
+        function volumeLayout() {
+          var w = volCanvas.clientWidth || 600;
+          var h = volCanvas.clientHeight || 210;
+          var compact = w < 560;
+          var padL = compact ? 68 : 96;
+          var padR = compact ? 6 : 12;
+          var padT = compact ? 12 : 18;
+          var padB = compact ? 28 : 34;
+          return {
+            w: w,
+            h: h,
+            compact: compact,
+            padL: padL,
+            padR: padR,
+            padT: padT,
+            padB: padB,
+            plotW: w - padL - padR,
+            plotH: h - padT - padB,
+          };
+        }
+
+        function showVolumeError(msg) {
+          if (!volCanvas) return;
+          var L = volumeLayout();
+          var dpr = window.devicePixelRatio || 1;
+          volCanvas.width = L.w * dpr;
+          volCanvas.height = L.h * dpr;
+          var ctx = volCanvas.getContext("2d");
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, volCanvas.width, volCanvas.height);
+          ctx.scale(dpr, dpr);
+          ctx.fillStyle = "#8199b0";
+          ctx.font = '13px "Inter", sans-serif';
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(msg, L.w / 2, L.h / 2);
+        }
+
+        function drawVolumeChart() {
+          if (!volCanvas || volumeData.length === 0) return;
+          var L = volumeLayout();
+          if (L.w < 80 || L.h < 60) return;
+          var dpr = window.devicePixelRatio || 1;
+          if (dpr > 3) dpr = 3;
+          volCanvas.width = Math.round(L.w * dpr);
+          volCanvas.height = Math.round(L.h * dpr);
+          var ctx = volCanvas.getContext("2d");
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, volCanvas.width, volCanvas.height);
+          ctx.scale(dpr, dpr);
+          ctx.imageSmoothingEnabled = false;
+
+          var n = volumeData.length;
+          var minV = Infinity,
+            maxV = -Infinity;
+          for (var i = 0; i < n; i++) {
+            var val = volumeData[i].value;
+            if (val < minV) minV = val;
+            if (val > maxV) maxV = val;
+          }
+          if (!isFinite(minV) || !isFinite(maxV)) return;
+          var span = maxV - minV;
+          if (span <= 0) span = maxV || 1;
+          // 参考图：Y 轴从略低于最小值起，放大日间差异；刻度为精确数值
+          var yMin = Math.max(0, minV - span * 0.1);
+          var yMax = maxV + span * 0.08;
+          var yRange = yMax - yMin || 1;
+          var baseY = L.padT + L.plotH;
+          var slot = L.plotW / n;
+          var barW = Math.max(2, slot * 0.66);
+          var yFont = L.compact ? 12 : 17;
+          var xFont = L.compact ? 12 : 15;
+
+          // Y 轴：5 档精确刻度，不画网格线，只留底部基线
+          ctx.font = yFont + 'px "Inter", sans-serif';
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          for (var g = 0; g <= 4; g++) {
+            var gy = baseY - (L.plotH * g) / 4;
+            ctx.fillStyle = "#b9c3d0";
+            ctx.fillText(formatYi(yMin + (yRange * g) / 4), L.padL - 10, gy);
+          }
+          ctx.strokeStyle = "rgba(255,255,255,0.12)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(L.padL, baseY + 0.5);
+          ctx.lineTo(L.w - L.padR, baseY + 0.5);
+          ctx.stroke();
+
+          // 柱体：亮蓝方柱，最新一根略提亮
+          for (var i = 0; i < n; i++) {
+            var v = volumeData[i].value;
+            var bh = Math.max(2, ((v - yMin) / yRange) * L.plotH);
+            var x = L.padL + i * slot + (slot - barW) / 2;
+            var y = baseY - bh;
+            ctx.fillStyle = i === n - 1 ? "#6aa9ff" : "#3b82f6";
+            ctx.fillRect(x, y, barW, bh);
+            if (i === volumeHover) {
+              ctx.strokeStyle = "rgba(255,255,255,0.85)";
+              ctx.lineWidth = 1;
+              ctx.strokeRect(
+                x + 0.5,
+                y + 0.5,
+                Math.max(0, barW - 1),
+                Math.max(0, bh - 1),
+              );
+            }
+          }
+
+          // 60日均量：橙色虚线 + 橙底白字数值标签
+          if (volumeAvgYi > 0) {
+            var avgY = baseY - ((volumeAvgYi - yMin) / yRange) * L.plotH;
+            ctx.save();
+            if (ctx.setLineDash) ctx.setLineDash([10, 7]);
+            ctx.strokeStyle = "#ffa62b";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(L.padL, avgY);
+            ctx.lineTo(L.w - L.padR, avgY);
+            ctx.stroke();
+            ctx.restore();
+
+            var avgText = formatYi(volumeAvgYi);
+            ctx.font = "bold " + yFont + 'px "Inter", sans-serif';
+            var boxW = ctx.measureText(avgText).width + 12;
+            var boxH = yFont + 10;
+            var boxX = L.padL + 2;
+            ctx.fillStyle = "#a8660f";
+            ctx.fillRect(boxX, avgY - boxH / 2, boxW, boxH);
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.fillText(avgText, boxX + 6, avgY);
+          }
+
+          // X 轴：只标首 / 中 / 尾三个完整日期
+          ctx.fillStyle = "#b9c3d0";
+          ctx.font = xFont + 'px "Inter", sans-serif';
+          ctx.textBaseline = "top";
+          var marks = [0, Math.floor(n / 2), n - 1];
+          for (var k = 0; k < marks.length; k++) {
+            var idx = marks[k];
+            var tx = L.padL + idx * slot + slot / 2;
+            ctx.textAlign = k === 0 ? "left" : k === 2 ? "right" : "center";
+            if (k === 2) tx = L.w - L.padR;
+            ctx.fillText(volumeData[idx].label, tx, baseY + 9);
+          }
+          ctx.imageSmoothingEnabled = true;
+        }
+
+        function hideVolumeTip(force) {
+          if (volumeTipLocked && !force) return;
+          volumeTipLocked = false;
+          volTip.style.display = "none";
+          volumeCrosshair.style.display = "none";
+          if (volumeHover !== -1) {
+            volumeHover = -1;
+            drawVolumeChart();
+          }
+        }
+
+        function volumeIndexAt(clientX) {
+          if (volumeData.length === 0 || !volCanvas) return -1;
+          var rect = volCanvas.getBoundingClientRect();
+          var x = clientX - rect.left;
+          var L = volumeLayout();
+          var slot = L.plotW / volumeData.length;
+          var idx = Math.floor((x - L.padL) / slot);
+          if (
+            x < L.padL ||
+            x > L.w - L.padR ||
+            idx < 0 ||
+            idx >= volumeData.length
+          ) {
+            return -1;
+          }
+          return idx;
+        }
+
+        function showVolumeTip(idx, lock) {
+          if (idx < 0 || idx >= volumeData.length) return;
+          if (lock !== undefined) volumeTipLocked = !!lock;
+          if (idx !== volumeHover) {
+            volumeHover = idx;
+            drawVolumeChart();
+          }
+          var d = volumeData[idx];
+          var pct = volumeAvgYi
+            ? ((d.value / volumeAvgYi - 1) * 100).toFixed(1)
+            : "0.0";
+          var up = Number(pct) >= 0;
+          volTip.innerHTML =
+            '<div class="tt-time">' +
+            d.label +
+            "</div>" +
+            tipRow("blue", "当日成交额", formatYi(d.value)) +
+            tipRow("orange", "60日平均成交额", formatYi(volumeAvgYi)) +
+            tipRow(
+              "mix",
+              "较60日均量",
+              (up ? "+" : "") + pct + "%",
+              up ? "up" : "down",
+            );
+          var L = volumeLayout();
+          var slot = L.plotW / volumeData.length;
+          var px = L.padL + idx * slot + slot / 2;
+          positionTip(volTip, volBox, px);
+          volumeCrosshair.style.left = px + "px";
+          volumeCrosshair.style.display = "block";
+        }
+
+        volCanvas.onmousemove = function (e) {
+          showVolumeTip(volumeIndexAt(e.clientX || 0));
+        };
+        volCanvas.onmouseleave = function () {
+          hideVolumeTip(false);
+        };
+        volCanvas.onclick = function (e) {
+          showVolumeTip(volumeIndexAt(e.clientX || 0), true);
+        };
+        volCanvas.ontouchstart = volCanvas.ontouchmove = function (e) {
+          var t = e.touches && e.touches[0];
+          if (t) showVolumeTip(volumeIndexAt(t.clientX), true);
+        };
+
+        // 点击图表以外的区域解除锁定（浮层是 pointer-events:none，不会挡住点击）
+        document.onclick = function (e) {
+          if (!todayTipLocked && !volumeTipLocked) return;
+          var t = e.target || e.srcElement;
+          var inChart =
+            t === turnoverChartCanvas ||
+            t === changeBarCanvas ||
+            t === volCanvas;
+          if (inChart) return;
+          hideTodayTip(true);
+          hideVolumeTip(true);
+        };
+
+        function loadVolume60() {
+          // 日K数据变化慢，10分钟内不重复请求
+          if (volumeData.length > 0 && Date.now() - volumeLoadedAt < 600000) {
+            return;
+          }
+          fetchJSON(VOLUME_DAY_API, function (err, data) {
+            if (err || !data || !data.charts) {
+              showVolumeError("近60日成交量数据暂不可用");
+              return;
+            }
+            var charts = data.charts;
+            var pts = charts.point_list || [];
+            var labels = charts.x_label_list || [];
+            var list = [];
+            for (var i = 0; i < pts.length; i++) {
+              var p = pts[i];
+              if (!p || p[1] === null || p[1] === undefined) continue;
+              list.push({
+                label: labels[i] || formatUTCDate(p[0]),
+                value: Number(p[1]) / 1e8,
+              });
+            }
+            if (list.length > 60) list = list.slice(list.length - 60);
+            if (list.length === 0) {
+              showVolumeError("近60日成交量数据暂不可用");
+              return;
+            }
+            volumeData = list;
+
+            volumeAvgYi = 0;
+            var hdr = charts.header || [];
+            for (var j = 0; j < hdr.length; j++) {
+              if (hdr[j].key === "average_turnover") {
+                volumeAvgYi = Number(hdr[j].val) / 1e8;
+                break;
+              }
+            }
+            if (!volumeAvgYi || isNaN(volumeAvgYi)) {
+              var sum = 0;
+              for (var k = 0; k < list.length; k++) sum += list[k].value;
+              volumeAvgYi = sum / list.length;
+            }
+
+            volumeLoadedAt = Date.now();
+            drawVolumeChart();
+          });
+        }
+
+        // ----- 「当日 / 60日」视图切换 -----
+        var LEGEND_TODAY =
+          '<span><i class="lg"></i>今日总成交</span>' +
+          '<span><i class="lg pre"></i>昨日总成交</span>' +
+          '<span><i class="lg predict"></i>预测总成交</span>';
+        var LEGEND_60 =
+          '<span><i class="lg bar"></i>当日成交额</span>' +
+          '<span><i class="lg avg"></i>60日平均成交额</span>';
+
+        function setView(view) {
+          currentView = view;
+          hideTodayTip(true);
+          hideVolumeTip(true);
+          var isToday = view === "today";
+          btnToday.className = isToday ? "ta-btn active" : "ta-btn";
+          btn60.className = isToday ? "ta-btn" : "ta-btn active";
+          paneToday.className = isToday ? "ta-pane active" : "ta-pane";
+          pane60.className = isToday ? "ta-pane" : "ta-pane active";
+          taLegend.className = isToday ? "ta-legend" : "ta-legend lg60";
+          taLegend.innerHTML = isToday ? LEGEND_TODAY : LEGEND_60;
+          if (isToday) {
+            if (turnoverChart && turnoverChart.resize) turnoverChart.resize();
+            drawChangeBars();
+          } else {
+            drawVolumeChart();
+          }
+        }
+
+        btnToday.onclick = function () {
+          setView("today");
+        };
+        btn60.onclick = function () {
+          setView("60");
+        };
+
+        function redrawAll() {
+          drawVolumeChart();
+          drawChangeBars();
+          if (distTableCache) drawDistributionBarChart(distTableCache);
+          if (turnoverChart && turnoverChart.resize) turnoverChart.resize();
+          // 窗口变化后把提示浮层重新对齐到当前数据点，而不是直接消失
+          if (todayTipIndex >= 0 && todayTip.style.display === "block") {
+            showTodayTip(todayTipIndex);
+          }
+        }
+
+        if (window.addEventListener) {
+          window.addEventListener("resize", redrawAll);
+        } else {
+          window.onresize = redrawAll;
+        }
+        setView("today");
+        setTimeout(redrawAll, 300);
+
+        function isTradingTime() {
+          var now = new Date();
+          var day = now.getDay();
+          if (day === 0 || day === 6) return false;
+          var h = now.getHours();
+          return h >= 9 && h < 18;
+        }
+
+        function loadAll() {
+          loadVolume60();
+          loadScore();
+          loadTurnover();
+          loadDistribution();
+        }
+
+        // 初始加载
+        loadAll();
+        // 定时刷新（适配通达信定时器）
+        setInterval(function () {
+          if (isTradingTime()) loadAll();
+        }, 60000);
+      })();
+    </script>
+  </body>
+</html>

@@ -8,6 +8,12 @@ class BallotController extends BaseController {
   /// 选票清单项
   final items = <BallotItem>[
     BallotItem(
+      title: '市场概况',
+      icon: Remix.line_chart_line,
+      url: 'assets/html/market_overview.html',
+      isLocalAsset: true,
+    ),
+    BallotItem(
       title: '龙头挖掘',
       icon: Remix.search_eye_line,
       url: 'https://longtou-waji.app.workbuddy.host/?sharecode=DI5VYRA25N',
