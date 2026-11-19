@@ -22,6 +22,7 @@ class $AssetsHtmlGen {
   final String gainiantong = 'assets/html/gainiantong.html';
   final String jiankuan = 'assets/html/jiankuan.html';
   final String limitUpReview = 'assets/html/limit_up_review.html';
+  final String marketOverview = 'assets/html/market_overview.html';
   final String zixuntong = 'assets/html/zixuntong.html';
 }
 

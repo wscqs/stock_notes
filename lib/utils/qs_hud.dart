@@ -74,8 +74,8 @@ class QsHud {
   }
 
   // 显示自定义对话框
-  static void showDialog(Widget widget) {
-    SmartDialog.show(builder: (_) {
+  static Future<void> showDialog(Widget widget) {
+    return SmartDialog.show(builder: (_) {
       return widget;
     });
   }

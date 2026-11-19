@@ -17,6 +17,7 @@ class GlobalService extends GetxService {
   static const String themeCodeKey = 'themeCodeKey';
   static const String languageCodeKey = 'languageCodeKey';
   static const String stockeditTradeFilterKey = 'stockeditTradeFilter';
+  static const String announcementShownKey = 'announcementShownV1';
 
   //主题
   ThemeMode _themeMode = ThemeMode.system;
@@ -32,6 +33,8 @@ class GlobalService extends GetxService {
   RxBool rxMsgHoldFilterEnabled = true.obs;
   // 股票编辑页交易模块展示：全部、交易中、历史
   RxString rxStockeditTradeFilter = 'trade'.obs;
+
+  bool hasShownAnnouncement = false;
 
   //语言
   Locale locale = PlatformDispatcher.instance.locale;
@@ -59,6 +62,8 @@ class GlobalService extends GetxService {
     _initMsgRedDotEnabled();
     _initMsgHoldFilterEnabled();
     _initStockeditTradeFilter();
+    hasShownAnnouncement =
+        sharedPreferences.getBool(announcementShownKey) ?? false;
     return this;
   }
 
@@ -191,6 +196,11 @@ class GlobalService extends GetxService {
     if (!_isValidStockeditTradeFilter(value)) return;
     rxStockeditTradeFilter.value = value;
     await sharedPreferences.setString(stockeditTradeFilterKey, value);
+  }
+
+  Future<void> markAnnouncementShown() async {
+    hasShownAnnouncement = true;
+    await sharedPreferences.setBool(announcementShownKey, true);
   }
 
   void refreshAppui() {

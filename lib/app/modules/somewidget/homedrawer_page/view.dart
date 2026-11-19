@@ -178,6 +178,20 @@ class HomedrawerPage extends StatelessWidget {
               size: 18,
             ),
           ),
+          ListTile(
+            key: const Key('drawerAnnouncement'),
+            tileColor: Theme.of(context).colorScheme.surfaceContainer,
+            leading: const Icon(Icons.campaign_outlined),
+            title: Text(TextKey.gonggao.tr),
+            onTap: () {
+              parentVC.closeDrawer();
+              Get.toNamed(Routes.ANNOUNCEMENT);
+            },
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
         ],
       ),
     );

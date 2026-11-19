@@ -11,6 +11,7 @@ abstract class Routes {
   static const SPLASH = _Paths.SPLASH;
   static const SETTING = _Paths.SETTING;
   static const ABOUT = _Paths.ABOUT;
+  static const ANNOUNCEMENT = _Paths.ANNOUNCEMENT;
   static const SIMPLESEL = _Paths.SIMPLESEL;
   static const STOCKEDIT = _Paths.STOCKEDIT;
   static const STOCKNOTE = _Paths.STOCKNOTE;
@@ -34,6 +35,7 @@ abstract class _Paths {
   static const SPLASH = '/splash';
   static const SETTING = '/setting';
   static const ABOUT = '/about';
+  static const ANNOUNCEMENT = '/announcement';
   static const SIMPLESEL = '/simplesel';
   static const STOCKEDIT = '/stockedit';
   static const STOCKNOTE = '/stocknote';

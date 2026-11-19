@@ -6,6 +6,8 @@ import '../../common/services/stock_name_service.dart';
 import '../../utils/qs_cache.dart';
 import '../../utils/qs_hud.dart';
 import '../modules/about/bindings/about_binding.dart';
+import '../modules/announcement/bindings/announcement_binding.dart';
+import '../modules/announcement/views/announcement_view.dart';
 import '../modules/about/views/about_view.dart';
 import '../modules/ballot/bindings/ballot_binding.dart';
 import '../modules/ballot/views/ballot_view.dart';
@@ -172,6 +174,11 @@ class AppPages {
       name: _Paths.ABOUT,
       page: () => const AboutView(),
       binding: AboutBinding(),
+    ),
+    GetPage(
+      name: _Paths.ANNOUNCEMENT,
+      page: () => const AnnouncementView(),
+      binding: AnnouncementBinding(),
     ),
     GetPage(
       name: _Paths.SIMPLESEL,

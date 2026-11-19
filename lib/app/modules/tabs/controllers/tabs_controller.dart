@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:stock_notes/app/modules/announcement/controllers/announcement_controller.dart';
+import 'package:stock_notes/app/modules/announcement/views/announcement_content.dart';
 import 'package:stock_notes/app/modules/homenote/controllers/homenote_controller.dart';
 import 'package:stock_notes/app/modules/homenote/views/homenote_view.dart';
 import 'package:stock_notes/app/modules/homestock/controllers/homestock_controller.dart';
 import 'package:stock_notes/app/modules/homestock/views/homestock_view.dart';
 
 import '../../../../common/event_bus.dart';
+import '../../../../common/globle_service.dart';
+import '../../../../common/langs/text_key.dart';
+import '../../../../utils/qs_hud.dart';
 import '../../../routes/app_pages.dart';
 import '../../base/base_controller.dart';
 
@@ -24,6 +29,8 @@ class TabsController extends GetxController {
     print(arg);
   };
 
+  bool _announcementShowing = false;
+
   @override
   void onInit() {
     super.onInit();
@@ -33,6 +40,72 @@ class TabsController extends GetxController {
   void onReady() {
     super.onReady();
     dealWithDeepLink(Get.arguments);
+    maybeShowAnnouncement();
+  }
+
+  Future<void> maybeShowAnnouncement() async {
+    if (_announcementShowing || GlobalService.to.hasShownAnnouncement) return;
+    _announcementShowing = true;
+    try {
+      final announcementController = Get.isRegistered<AnnouncementController>()
+          ? Get.find<AnnouncementController>()
+          : Get.put(AnnouncementController());
+      QsHud.showDialog(
+        Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 380, maxHeight: 620),
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 20),
+                    Text(
+                      TextKey.gonggao.tr,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Flexible(
+                      child: AnnouncementContent(
+                        compact: true,
+                        onSaveImage: announcementController.saveQrCode,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: QsHud.dismiss,
+                          child: Text(TextKey.zhidaole.tr),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: IconButton(
+                    onPressed: QsHud.dismiss,
+                    icon: const Icon(Icons.close, size: 22),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await GlobalService.to.markAnnouncementShown();
+    } finally {
+      _announcementShowing = false;
+    }
   }
 
   //是否操作状态

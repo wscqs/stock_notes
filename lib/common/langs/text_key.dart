@@ -168,6 +168,10 @@ class TextKey {
   static const jiaoyilishi = 'jiaoyilishi';
   static const liebiao = 'liebiao';
   static const guanli = 'guanli';
+  static const gonggao = 'gonggao'; // 公告
+  static const zhidaole = 'zhidaole'; // 知道了
+  static const gonggaoneirong1 = 'gonggaoneirong1';
+  static const gonggaoneirong2 = 'gonggaoneirong2';
   static const qinghekafei = 'qinghekafei'; // 请喝咖啡
   static const changanbaocunerweima = 'changanbaocunerweima'; // 长按或截图保存上方二维码
   static const weixinsaoyisaoqgz = 'weixinsaoyisaoqgz'; // 微信扫一扫，请作者喝杯咖啡
@@ -430,6 +434,10 @@ const Map<String, String> zh = {
   TextKey.jiaoyilishi: '交易历史',
   TextKey.liebiao: '列表',
   TextKey.guanli: '管理',
+  TextKey.gonggao: '公告',
+  TextKey.zhidaole: '知道了',
+  TextKey.gonggaoneirong1: '之前居家办公时，我把较多精力投入到了这个开源项目。目前已离职、暂无收入，后续迭代可能会慢一些。',
+  TextKey.gonggaoneirong2: '如果股票笔记对你有帮助，欢迎请作者喝杯咖啡。你的支持是我继续维护和改进它的动力，谢谢！',
   TextKey.qinghekafei: '请咖啡',
   TextKey.changanbaocunerweima: '长按或截图保存上方二维码',
   TextKey.weixinsaoyisaoqgz: '微信扫一扫，请作者喝杯咖啡',
@@ -701,6 +709,12 @@ A privacy-first, offline investment journaling and review app. All data is store
   TextKey.jiaoyilishi: 'Trade History',
   TextKey.liebiao: 'List',
   TextKey.guanli: 'Manage',
+  TextKey.gonggao: 'Announcement',
+  TextKey.zhidaole: 'Got it',
+  TextKey.gonggaoneirong1:
+      'I used to devote much of my time to this open-source project while working from home. I have since left my job and currently have no income, so future updates may be slower.',
+  TextKey.gonggaoneirong2:
+      'If Stock Notes has been helpful, you are welcome to buy the author a coffee. Your support motivates me to keep maintaining and improving it. Thank you!',
   TextKey.qinghekafei: 'Buy Coffee',
   TextKey.changanbaocunerweima:
       'Long-press or screenshot to save the QR code above',
