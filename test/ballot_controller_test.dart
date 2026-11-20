@@ -25,4 +25,17 @@ void main() {
     );
     expect(controller.items[latestThemeIndex].isLocalAsset, isFalse);
   });
+
+  test('quant analysis is the last ballot item and opens its remote webpage',
+      () {
+    final controller = BallotController();
+    final quantAnalysis = controller.items.last;
+
+    expect(quantAnalysis.title, '量化分析');
+    expect(
+      quantAnalysis.url,
+      'https://stock-quant-dashboard-45464.app.workbuddy.host/?sharecode=4BXKJH355B',
+    );
+    expect(quantAnalysis.isLocalAsset, isFalse);
+  });
 }

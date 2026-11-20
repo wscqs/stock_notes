@@ -30,6 +30,12 @@ class BallotController extends BaseController {
       url: 'https://latest-theme.app.workbuddy.host/?sharecode=M25PNRLUQH',
     ),
     BallotItem(
+      title: '量化分析',
+      icon: Remix.bar_chart_2_line,
+      url:
+          'https://stock-quant-dashboard-45464.app.workbuddy.host/?sharecode=4BXKJH355B',
+    ),
+    BallotItem(
       title: '今天炒什么',
       icon: Remix.calendar_event_line,
       url: 'https://ths-today.app.workbuddy.host/?sharecode=NOF5SC6TMB',
