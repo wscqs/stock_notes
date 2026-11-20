@@ -4,9 +4,9 @@
 
 /* ---------- 站点配置（发版脚本 sync-release.sh 会自动改这里） ---------- */
 const SITE = {
-  version: '4.2.0',
+  version: '4.2.2',
   /* 发布日期（发版脚本自动更新） */
-  releaseDate: '2026-11-12',
+  releaseDate: '2026-11-19',
   /* 三平台文件：固定文件名，不含版本号，永远指向最新版 */
   files: {
     android: 'stocknote-android.apk',
